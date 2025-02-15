@@ -1,1 +1,47 @@
-<p>sign-in works!</p>
+<div class="auth__wrapper">
+  <div class="auth__info-container"></div>
+  <div class="auth__form-container">
+
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Sign in</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form class="auth__form" (submit)="onSubmit()" [formGroup]="form">
+          <div class="auth__form__controls">
+            <mat-form-field class="auth__form__control">
+              <mat-label>Email</mat-label>
+              <input type="email" matInput formControlName="email" 
+                     placeholder="Ex. pat@example.com">
+              @if (form.controls['email'].hasError('email')) {
+                <mat-error>Please enter a valid email address</mat-error>
+              }
+              @if (form.controls['email'].hasError('required')) {
+                <mat-error>Email is required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="auth__form__control">
+              <mat-label>Password</mat-label>
+              <input type="password" matInput formControlName="password" 
+                     placeholder="aB1!cdEf">
+              @if (form.controls['password'].hasError('required')) {
+                <mat-error>Password is required</mat-error>
+              }
+              @if (form.controls['password'].hasError('minlength')) {
+                <mat-error>Min length is 8</mat-error>
+              }
+              @if (form.controls['password'].hasError('pattern')) {
+                <mat-error>Should contain titlecase letters and special characters</mat-error>
+              }
+            </mat-form-field>
+          </div>
+          <mat-card-actions>
+            <button mat-button class="auth__form__submit" [disabled]="form.invalid">Sign in</button>
+          </mat-card-actions>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
