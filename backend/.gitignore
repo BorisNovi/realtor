@@ -1,0 +1,32 @@
+# Python #
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual Environment #
+venv/
+env/
+
+# Django #
+/media/
+staticfiles/
+
+# PostgreSQL (если используешь дампы) #
+*.dump
+*.backup
+
+# VS Code #
+.vscode/
+
+# Django Migrations (опционально) #
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# IDE и системные файлы #
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
