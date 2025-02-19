@@ -1,10 +1,4 @@
-import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormsModule,
@@ -14,15 +8,19 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sign-in',
   imports: [
+    RouterLink,
     MatButtonModule,
     MatCardModule,
     MatInputModule,
     MatFormFieldModule,
+    MatIconModule,
     FormsModule,
     ReactiveFormsModule,
   ],
@@ -31,6 +29,8 @@ import { MatInputModule } from '@angular/material/input';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInComponent {
+  public isPasswordHidden = true;
+
   private fb = inject(FormBuilder);
 
   public form = this.fb.group({

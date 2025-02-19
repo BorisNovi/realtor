@@ -2,15 +2,15 @@
   <div class="auth__info-container"></div>
   <div class="auth__form-container">
 
-    <mat-card appearance="outlined">
-      <mat-card-header>
+    <mat-card class="auth__card" appearance="outlined">
+      <mat-card-header class="auth__card__header">
         <mat-card-title>Sign in</mat-card-title>
       </mat-card-header>
 
       <mat-card-content>
         <form class="auth__form" (submit)="onSubmit()" [formGroup]="form">
           <div class="auth__form__controls">
-            <mat-form-field class="auth__form__control">
+            <mat-form-field class="auth__form__control" appearance="outline">
               <mat-label>Email</mat-label>
               <input type="email" matInput formControlName="email" 
                      placeholder="Ex. pat@example.com">
@@ -22,26 +22,33 @@
               }
             </mat-form-field>
 
-            <mat-form-field class="auth__form__control">
+            <mat-form-field class="auth__form__control" appearance="outline">
               <mat-label>Password</mat-label>
-              <input type="password" matInput formControlName="password" 
+              <input [type]="isPasswordHidden ? 'password' : 'text'" matInput formControlName="password" 
                      placeholder="aB1!cdEf">
+                     <button matSuffix mat-icon-button aria-label="Show password" (click)="isPasswordHidden = !isPasswordHidden">
+                      <mat-icon>{{ isPasswordHidden ? 'visibility' : 'visibility_off' }}</mat-icon>
+                    </button>
               @if (form.controls['password'].hasError('required')) {
                 <mat-error>Password is required</mat-error>
               }
               @if (form.controls['password'].hasError('minlength')) {
                 <mat-error>Min length is 8</mat-error>
               }
-              @if (form.controls['password'].hasError('pattern')) {
+              @if (!form.controls['password'].hasError('minlength') && form.controls['password'].hasError('pattern')) {
                 <mat-error>Should contain titlecase letters and special characters</mat-error>
               }
             </mat-form-field>
           </div>
           <mat-card-actions>
-            <button mat-button class="auth__form__submit" [disabled]="form.invalid">Sign in</button>
+            <button mat-flat-button class="auth__form__submit" [disabled]="form.invalid">Sign in</button>
           </mat-card-actions>
         </form>
       </mat-card-content>
+      
+      <mat-card-footer class="auth__card__footer">
+        <span>Don't have an account <a [routerLink]="['/auth/sign-up']">sign-up</a></span>
+      </mat-card-footer>
     </mat-card>
   </div>
 </div>
