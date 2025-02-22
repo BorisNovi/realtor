@@ -1,15 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+// import { MatButtonModule } from '@angular/material/button';
+// import { MatCardModule } from '@angular/material/card';
+// import { MatFormFieldModule } from '@angular/material/form-field';
+// import { MatIconModule } from '@angular/material/icon';
+// import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
 import { matchValuesValidator } from '@shared/validators';
 
@@ -17,11 +12,11 @@ import { matchValuesValidator } from '@shared/validators';
   selector: 'app-sign-up',
   imports: [
     RouterLink,
-    MatButtonModule,
-    MatCardModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatIconModule,
+    // MatButtonModule,
+    // MatCardModule,
+    // MatInputModule,
+    // MatFormFieldModule,
+    // MatIconModule,
     FormsModule,
     ReactiveFormsModule,
   ],
@@ -37,24 +32,15 @@ export class SignUpComponent {
   public form = this.fb.group(
     {
       email: ['', [Validators.required, Validators.email]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/),
-        ],
-      ],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/)]],
       repeatPassword: [
         '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/),
-        ],
+        [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/)],
       ],
     },
-    { validators: matchValuesValidator('password', 'repeatPassword') },
+    {
+      validators: matchValuesValidator('password', 'repeatPassword'),
+    }
   );
 
   public onSubmit(): void {
