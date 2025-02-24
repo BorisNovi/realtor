@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthComponent } from './auth.component';
-import { SignInComponent, SignUpComponent, ForgotComponent, RecoveryComponent } from './components';
+import { SignInComponent, SignUpComponent, ForgotComponent, RecoveryComponent, WidthTesterComponent } from './components';
 
 export const authRoutes: Routes = [
   {
@@ -16,6 +16,7 @@ export const authRoutes: Routes = [
       { path: 'sign-up', component: SignUpComponent },
       { path: 'forgot', component: ForgotComponent },
       { path: 'recovery', component: RecoveryComponent },
+      { path: 'w', component: WidthTesterComponent },
       { path: '**', redirectTo: 'sign-in' },
     ],
   },
