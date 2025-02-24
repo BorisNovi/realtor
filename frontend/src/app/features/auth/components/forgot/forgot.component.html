@@ -1,27 +1,48 @@
-<!-- По умолчанию (< 640px) -->
-<div class="bg-red-500 sm:hidden p-4 text-white">Виден только на экранах &lt; 640px (по умолчанию, до sm)</div>
-<div class="bg-red-700 hidden sm:block p-4 text-white">Виден на экранах ≥ 640px (начиная с sm)</div>
+<div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
+  <div
+    style="
+      border-radius: 56px;
+      padding: 0.3rem;
+      background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);
+    "
+  >
+    <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
+      <div class="text-center mb-8">
+        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Reset Password</div>
+        <span class="text-muted-color font-medium">Enter your email to continue</span>
+      </div>
 
-<!-- SM (≥ 640px) -->
-<div class="bg-yellow-500 md:hidden sm:block hidden p-4 text-white">
-  Виден только на экранах от 640px до &lt; 768px (sm до md)
-</div>
-<div class="bg-yellow-700 hidden md:block p-4 text-white">Виден на экранах ≥ 768px (начиная с md)</div>
+      <form (submit)="onSubmit()" [formGroup]="form" class="md:w-[30rem]">
+        <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
+        <input
+          pInputText
+          id="email1"
+          formControlName="email"
+          type="text"
+          placeholder="Email address"
+          class="w-full mb-2"
+        />
+        
+        @let mailInput = form.controls['email'];
+        @if (mailInput?.invalid && mailInput?.touched && mailInput?.dirty) {
+          <div class="text-red-500 flex flex-col mb-4 text-sm">
+            @if (mailInput?.errors?.['required']) {
+              <span>Email is required.</span>
+            }
+            @if (mailInput?.errors?.['email']) {
+              <span>Please enter a valid email.</span>
+            }
+          </div>
+        }
 
-<!-- MD (≥ 768px) -->
-<div class="bg-green-500 lg:hidden md:block hidden p-4 text-white">
-  Виден только на экранах от 768px до &lt; 1024px (md до lg)
+        <div class="flex items-center justify-between mt-2 mb-8 gap-8">
+          <span class="font-medium ml-2">
+            Back to 
+            <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-in']">Sign in</a>
+          </span>
+        </div>
+        <p-button label="Send" styleClass="w-full" type="submit" [disabled]="form.invalid"></p-button>
+      </form>
+    </div>
+  </div>
 </div>
-<div class="bg-green-700 hidden lg:block p-4 text-white">Виден на экранах ≥ 1024px (начиная с lg)</div>
-
-<!-- LG (≥ 1024px) -->
-<div class="bg-blue-500 xl:hidden lg:block hidden p-4 text-white">
-  Виден только на экранах от 1024px до &lt; 1280px (lg до xl)
-</div>
-<div class="bg-blue-700 hidden xl:block p-4 text-white">Виден на экранах ≥ 1280px (начиная с xl)</div>
-
-<!-- XL (≥ 1280px) -->
-<div class="bg-purple-500 2xl:hidden xl:block hidden p-4 text-white">
-  Виден только на экранах от 1280px до &lt; 1536px (xl до 2xl)
-</div>
-<div class="bg-purple-700 hidden 2xl:block p-4 text-white">Виден на экранах ≥ 1536px (начиная с 2xl)</div>

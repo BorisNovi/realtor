@@ -33,7 +33,7 @@
           <span class="text-muted-color font-medium">Sign in to continue</span>
         </div>
 
-        <form (submit)="onSubmit()" [formGroup]="form">
+        <form (submit)="onSubmit()" [formGroup]="form" class="md:w-[30rem]">
           <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
           <input
             pInputText
@@ -41,8 +41,20 @@
             formControlName="email"
             type="text"
             placeholder="Email address"
-            class="w-full md:w-[30rem] mb-8"
+            class="w-full mb-2"
           />
+
+          @let mailInput = form.controls['email'];
+          @if (mailInput?.invalid && mailInput?.touched && mailInput?.dirty) {
+            <div class="text-red-500 flex flex-col mb-4 text-sm">
+              @if (mailInput?.errors?.['required']) {
+                <span>Email is required.</span>
+              }
+              @if (mailInput?.errors?.['email']) {
+                <span>Please enter a valid email.</span>
+              }
+            </div>
+          }
 
           <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
           <p-password
@@ -50,17 +62,30 @@
             formControlName="password"
             placeholder="Password"
             [toggleMask]="true"
-            styleClass="mb-4"
+            styleClass="mb-2"
             [fluid]="true"
             [feedback]="false"
           ></p-password>
+
+          @let passwordInput = form.controls['password'];
+          @if (passwordInput?.invalid && passwordInput?.touched && passwordInput?.dirty) {
+            <div class="text-red-500 flex flex-col mb-4 text-sm">
+              @if (passwordInput?.errors?.['required']) {
+                <span>Password is required.</span>
+              }
+              @if (passwordInput?.errors?.['minlength']) {
+                <span>Password must be at least 8 characters.</span>
+              }
+            </div>
+          }
+
 
           <div class="flex items-center justify-between mt-2 mb-8 gap-8">
             <span class="font-medium no-underline ml-2 cursor-pointer text-primary" [routerLink]="['/auth/forgot']"
               >Forgot password?</span
             >
             <span class="font-medium ml-2"
-              >Don't have an account? <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-up']">sign-up</a></span
+              >Don't have an account? <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-up']">Sign-up</a></span
             >
           </div>
           <p-button label="Sign In" styleClass="w-full" type="submit" [disabled]="form.invalid"></p-button>

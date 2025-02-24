@@ -21,7 +21,7 @@ export const appConfig: ApplicationConfig = {
         anchorScrolling: 'enabled',
         scrollPositionRestoration: 'enabled',
       }),
-      withEnabledBlockingInitialNavigation()
+      withEnabledBlockingInitialNavigation(),
     ),
     provideHttpClient(withInterceptors([]), withFetch()),
     provideAnimationsAsync(),
@@ -37,7 +37,7 @@ export const appConfig: ApplicationConfig = {
       [],
       withNgxsReduxDevtoolsPlugin(),
       withNgxsFormPlugin(),
-      withNgxsRouterPlugin()
+      withNgxsRouterPlugin(),
       // withNgxsStoragePlugin({ keys: [''] }),
     ),
     provideStore([]),

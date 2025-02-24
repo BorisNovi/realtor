@@ -1,76 +1,109 @@
-<!-- <div class="auth__wrapper">
-  <div class="auth__info-container"></div>
-  <div class="auth__form-container">
-
-    <mat-card class="auth__card" appearance="outlined">
-      <mat-card-header class="auth__card__header">
-        <mat-card-title>Sign up</mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content>
-        <form class="auth__form" (submit)="onSubmit()" [formGroup]="form">
-          <div class="auth__form__controls">
-            <mat-form-field class="auth__form__control" appearance="outline">
-              <mat-label>Email</mat-label>
-              <input type="email" matInput formControlName="email" 
-                     placeholder="Ex. pat@example.com">
-              @if (form.controls['email'].hasError('email')) {
-                <mat-error>Please enter a valid email address</mat-error>
-              }
-              @if (form.controls['email'].hasError('required')) {
-                <mat-error>Email is required</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field class="auth__form__control" appearance="outline">
-              <mat-label>Password</mat-label>
-              <input [type]="isPasswordHidden ? 'password' : 'text'" matInput formControlName="password" 
-                     placeholder="aB1!cdEf">
-                     <button matSuffix mat-icon-button aria-label="Show password" (click)="isPasswordHidden = !isPasswordHidden">
-                      <mat-icon>{{ isPasswordHidden ? 'visibility' : 'visibility_off' }}</mat-icon>
-                    </button>
-              @if (form.controls['password'].hasError('required')) {
-                <mat-error>Password is required</mat-error>
-              }
-              @if (form.controls['password'].hasError('minlength')) {
-                <mat-error>Min length is 8</mat-error>
-              }
-              @if (!form.controls['password'].hasError('minlength') && form.controls['password'].hasError('pattern')) {
-                <mat-error>Should contain titlecase letters and special characters</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field class="auth__form__control" appearance="outline">
-              <mat-label>Repeat password</mat-label>
-              <input [type]="isPasswordRepeatHidden ? 'password' : 'text'" matInput formControlName="repeatPassword" 
-                     placeholder="aB1!cdEf">
-                     <button matSuffix mat-icon-button aria-label="Show password" (click)="isPasswordRepeatHidden = !isPasswordRepeatHidden">
-                      <mat-icon>{{ isPasswordRepeatHidden ? 'visibility' : 'visibility_off' }}</mat-icon>
-                    </button>
-                    @if (form.controls['repeatPassword'].hasError('required')) {
-                      <mat-error>Password is required</mat-error>
-                    }
-                    @if (!form.controls['repeatPassword'].hasError('required') && form.controls['repeatPassword'].hasError('minlength')) {
-                      <mat-error>Min length is 8</mat-error>
-                    }
-                    @if (!form.controls['repeatPassword'].hasError('required') && !form.controls['repeatPassword'].hasError('minlength') && form.controls['repeatPassword'].hasError('pattern')) {
-                      <mat-error>Should contain titlecase letters and special characters</mat-error>
-                    }
-                    @if (!form.controls['repeatPassword'].hasError('required') && !form.controls['repeatPassword'].hasError('minlength') && !form.controls['repeatPassword'].hasError('pattern') && form.controls['repeatPassword'].hasError('fieldsMismatch')) {
-                      <mat-error>Passwords do not match</mat-error>
-                    }
-            </mat-form-field>
-
-          </div>
-          <mat-card-actions>
-            <button mat-flat-button class="auth__form__submit" [disabled]="form.invalid">Sign up</button>
-          </mat-card-actions>
-        </form>
-      </mat-card-content>
-      
-      <mat-card-footer class="auth__card__footer">
-        <span>Have an account <a [routerLink]="['/auth/sign-in']">sign-in</a></span>
-      </mat-card-footer>
-    </mat-card>
+<div class="bg-surface-50 dark:bg-surface-950 flex items-center min-h-screen min-w-[100vw] overflow-hidden">
+  <div class="w-1/2 flex items-center justify-center min-h-dvh">
+    <div>Info-image right block</div>
   </div>
-</div> -->
+  <div class="w-1/2 flex items-center justify-center min-h-dvh">
+    <div
+      style="
+        border-radius: 56px;
+        padding: 0.3rem;
+        background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);
+      "
+    >
+      <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
+        <div class="text-center mb-8">
+          <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Join Realtor!</div>
+          <span class="text-muted-color font-medium">Sign up to get started</span>
+        </div>
+
+        <form (submit)="onSubmit()" [formGroup]="form" class="md:w-[30rem]">
+          <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
+          <input
+            pInputText
+            id="email1"
+            formControlName="email"
+            type="text"
+            placeholder="Email address"
+            class="w-full mb-2"
+          />
+          
+          @let mailInput = form.controls['email'];
+          @if (mailInput?.invalid && mailInput?.touched && mailInput?.dirty) {
+            <div class="text-red-500 flex flex-col mb-4 text-sm">
+              @if (mailInput?.errors?.['required']) {
+                <span>Email is required.</span>
+              }
+              @if (mailInput?.errors?.['email']) {
+                <span>Please enter a valid email.</span>
+              }
+            </div>
+          }
+
+
+          <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
+          <p-password
+            id="password1"
+            formControlName="password"
+            placeholder="Password"
+            [toggleMask]="true"
+            styleClass="mb-2"
+            [fluid]="true"
+            [feedback]="false"
+          ></p-password>
+
+          @let passwordInput = form.controls['password'];
+          @if (passwordInput?.invalid && passwordInput?.touched && passwordInput?.dirty) {
+            <div class="text-red-500 flex flex-col mb-4 text-sm">
+              @if (passwordInput?.errors?.['required']) {
+                <span>Password is required.</span>
+              }
+              @if (passwordInput?.errors?.['minlength']) {
+                <span>Password must be at least 8 characters.</span>
+              }
+              @if (!passwordInput?.errors?.['minlength'] && passwordInput?.errors?.['pattern']) {
+                <span>Password must contain an uppercase letter, a number, and a special character.</span>
+              }
+            </div>
+          }
+
+          <label for="repeatPassword1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Repeat Password</label>
+          <p-password
+            id="repeatPassword1"
+            formControlName="repeatPassword"
+            placeholder="Repeat Password"
+            [toggleMask]="true"
+            styleClass="mb-2"
+            [fluid]="true"
+            [feedback]="false"
+          ></p-password>
+
+          @let repeatPasswordInput = form.controls['repeatPassword'];
+          @if (repeatPasswordInput?.invalid && repeatPasswordInput?.touched && repeatPasswordInput?.dirty) {
+            <div class="text-red-500 flex flex-col mb-4 text-sm">
+              @if (repeatPasswordInput?.errors?.['required']) {
+                <span>Password is required.</span>
+              }
+              @if (repeatPasswordInput?.errors?.['minlength']) {
+                <span>Password must be at least 8 characters.</span>
+              }
+              @if (!repeatPasswordInput?.errors?.['minlength'] && repeatPasswordInput?.errors?.['pattern']) {
+                <span>Password must contain an uppercase letter, a number, and a special character.</span>
+              }
+              @if (!repeatPasswordInput?.errors?.['minlength'] && !repeatPasswordInput?.errors?.['pattern'] && repeatPasswordInput?.errors?.['fieldsMismatch']) {
+                <span>Passwords do not match.</span>
+              }
+            </div>
+          }
+
+          <div class="flex items-center justify-between mt-2 mb-8 gap-8">
+            <span class="font-medium ml-2">
+              Already have an account? 
+              <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-in']">Sign in</a>
+            </span>
+          </div>
+          <p-button label="Sign Up" styleClass="w-full" type="submit" [disabled]="form.invalid"></p-button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
