@@ -22,7 +22,7 @@ import { AuthState } from 'src/app/core/auth/state/auth.state';
     RippleModule,
     ButtonModule,
   ],
-  styleUrl: './recovery.component.scss',
+  templateUrl: './recovery.component.html',
 })
 export class RecoveryComponent {
   private fb = inject(FormBuilder);
