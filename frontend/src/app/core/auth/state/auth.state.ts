@@ -2,11 +2,13 @@
 import { inject, Injectable } from '@angular/core';
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { tap, catchError } from 'rxjs/operators';
-import { of, pipe } from 'rxjs';
+import { of } from 'rxjs';
 import {
-  Activate,
-  ActivationFailed,
-  ActivationSuccess,
+  ActivateAfterRecover,
+  ActivateAfterSignup,
+  ActivationAfterRecoverSuccess,
+  ActivationAfterSignupFailed,
+  ActivationAfterSignupSuccess,
   Login,
   LoginFailed,
   LoginRedirect,
@@ -50,6 +52,16 @@ export class AuthState {
 
   // Selectors
   @Selector()
+  static user(state: AuthStateModel): IUser | null {
+    return state.user;
+  }
+
+  @Selector()
+  static loading(state: AuthStateModel): boolean {
+    return state.loading;
+  }
+
+  @Selector()
   static token(state: AuthStateModel): string | null {
     return state.token;
   }
@@ -60,11 +72,6 @@ export class AuthState {
   }
 
   @Selector()
-  static user(state: AuthStateModel): IUser | null {
-    return state.user;
-  }
-
-  @Selector()
   static isAuthenticated(state: AuthStateModel): boolean {
     return !!state.token;
   }
@@ -72,7 +79,7 @@ export class AuthState {
   // Actions
   // Log in
   @Action(Login)
-  public login(ctx: StateContext<AuthStateModel>, { email, password }: Login) {
+  public onLogin(ctx: StateContext<AuthStateModel>, { email, password }: Login) {
     ctx.patchState({ loading: true });
 
     return this.authService.login(email, password).pipe(
@@ -85,10 +92,7 @@ export class AuthState {
   }
 
   @Action(LoginSuccess)
-  public onLoginSuccess(
-    ctx: StateContext<AuthStateModel>,
-    { session }: LoginSuccess,
-  ) {
+  public onLoginSuccess(ctx: StateContext<AuthStateModel>, { session }: LoginSuccess) {
     ctx.patchState({
       user: session.user,
       loading: false,
@@ -97,15 +101,13 @@ export class AuthState {
       error: null,
     });
 
+    console.log('login success');
     // this.snackBar.open('Login Success');
     ctx.dispatch(new Navigate(['/']));
   }
 
   @Action(LoginFailed)
-  public onLoginFailed(
-    ctx: StateContext<AuthStateModel>,
-    { error }: LoginFailed,
-  ) {
+  public onLoginFailed(ctx: StateContext<AuthStateModel>, { error }: LoginFailed) {
     // if (isuserBannedError) {
     //   this.errorSnackBarService.showError('Ваша учетная запись заблокирована', 10000);
     // } else {
@@ -116,17 +118,14 @@ export class AuthState {
     return of(error);
   }
 
-  // Sign up
   @Action(Signup)
-  public signup(
-    ctx: StateContext<AuthStateModel>,
-    { email, password, passwordConfirmation }: Signup,
-  ) {
+  public onSignup(ctx: StateContext<AuthStateModel>, { email, password, passwordConfirmation }: Signup) {
     ctx.patchState({ loading: true });
 
-    this.authService.signup(email, password, passwordConfirmation).pipe(
+    return this.authService.signUp(email, password, passwordConfirmation).pipe(
       tap(() => {
         ctx.dispatch(new SignupSuccess());
+        // this.socketService.connect(session.user, session.token);
       }),
       catchError((error: Error) => ctx.dispatch(new SignupFailed(error))),
     );
@@ -134,24 +133,54 @@ export class AuthState {
 
   @Action(SignupSuccess)
   public onSignupSuccess(ctx: StateContext<AuthStateModel>) {
+    console.log('signup success');
     ctx.patchState({ loading: false, error: null });
   }
 
   @Action(SignupFailed)
-  public onSignupFailed(
-    ctx: StateContext<AuthStateModel>,
-    { error }: SignupFailed,
-  ) {
+  public onSignupFailed(ctx: StateContext<AuthStateModel>, { error }: SignupFailed) {
     // this.errorSnackBarService.showError('Signup error');
     ctx.patchState({ loading: false, error });
+    return of(error);
+  }
+
+  // Activate after signup
+  @Action(ActivateAfterSignup)
+  public onActivateAfterSignup(ctx: StateContext<AuthStateModel>, { token }: ActivateAfterSignup) {
+    ctx.patchState({ loading: true });
+    console.log('activation after signup');
+
+    return this.authService.activateAfterSignup(token).pipe(
+      tap((session: ISessionUser) => ctx.dispatch(new ActivationAfterSignupSuccess(session))),
+      catchError((error: Error) => ctx.dispatch(new ActivationAfterSignupFailed(error))),
+    );
+  }
+
+  @Action(ActivationAfterSignupSuccess)
+  public onActivationAfterSignupSuccess(ctx: StateContext<AuthStateModel>, { session }: ActivationAfterSignupSuccess) {
+    console.log('onActivationAfterSignupSuccess');
+    ctx.patchState({
+      user: session.user,
+      loading: false,
+      token: session.token,
+      refreshToken: session.refreshToken,
+      error: null,
+    });
+
+    ctx.dispatch(new Navigate(['/']));
+  }
+
+  @Action(ActivationAfterSignupFailed)
+  public onActivationAfterSignupFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
+    // this.errorSnackBarService.showError('Activation error');
+
+    ctx.patchState({ loading: false });
+    return of(error);
   }
 
   // Recover
   @Action(RecoverPassword)
-  public recoverPassword(
-    ctx: StateContext<AuthStateModel>,
-    { email }: RecoverPassword,
-  ) {
+  public onRecoverPassword(ctx: StateContext<AuthStateModel>, { email }: RecoverPassword) {
     ctx.patchState({ loading: true });
 
     return this.authService.recoverPassword(email).pipe(
@@ -163,45 +192,37 @@ export class AuthState {
   @Action(RecoverSuccess)
   public onRecoverSuccess(ctx: StateContext<AuthStateModel>) {
     // this.snackBar.open('Recovery link sent');
+    console.log('recover success');
     ctx.patchState({ loading: false });
   }
 
   @Action(RecoverFailed)
-  public onRecoverFailed(
-    ctx: StateContext<AuthStateModel>,
-    { error }: RecoverFailed,
-  ) {
+  public onRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: RecoverFailed) {
     // this.errorSnackBarService.showError('Cannot send recovery link');
     ctx.patchState({ loading: false });
     return of(error);
   }
 
-  // Activate
-  @Action(Activate)
-  public activate(
-    ctx: StateContext<AuthStateModel>,
-    { token, password }: Activate,
-  ) {
+  // Activate after recover
+  @Action(ActivateAfterRecover)
+  public onActivateAfterRecover(ctx: StateContext<AuthStateModel>, { token, password }: ActivateAfterRecover) {
     ctx.patchState({ loading: true });
 
     return this.authService.activate(token, password).pipe(
-      tap(() => ctx.dispatch(new ActivationSuccess())),
-      catchError((error: Error) => ctx.dispatch(new ActivationFailed(error))),
+      tap(() => ctx.dispatch(new ActivationAfterRecoverSuccess())),
+      catchError((error: Error) => ctx.dispatch(new ActivationAfterSignupFailed(error))),
     );
   }
 
-  @Action(ActivationSuccess)
-  public onActivationSuccess(ctx: StateContext<AuthStateModel>) {
+  @Action(ActivationAfterRecoverSuccess)
+  public onActivationAfterRecoverSuccess(ctx: StateContext<AuthStateModel>) {
     // this.snackBar.open('Password created');
     ctx.patchState({ loading: false });
     ctx.dispatch(new LoginRedirect());
   }
 
-  @Action(ActivationFailed)
-  public onActivationFailed(
-    ctx: StateContext<AuthStateModel>,
-    { error }: ActivationFailed,
-  ) {
+  @Action(ActivationAfterSignupFailed)
+  public onActivationAfterRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
     // this.errorSnackBarService.showError('Cannot create password');
     ctx.patchState({ loading: false });
     return of(error);
@@ -209,7 +230,7 @@ export class AuthState {
 
   // Other
   @Action(RefreshToken)
-  refreshToken(ctx: StateContext<AuthStateModel>) {
+  public onRefreshToken(ctx: StateContext<AuthStateModel>) {
     const { user } = ctx.getState();
 
     return this.authService.refreshToken(user?.id || 0).pipe(
@@ -220,7 +241,7 @@ export class AuthState {
           error: null,
         });
       }),
-      catchError((error) => {
+      catchError(error => {
         ctx.patchState({
           token: null,
           refreshToken: null,
@@ -238,12 +259,12 @@ export class AuthState {
   }
 
   @Action(Logout)
-  logout(ctx: StateContext<AuthStateModel>) {
+  public onLogout(ctx: StateContext<AuthStateModel>) {
     ctx.dispatch([new RemoveUser(), new LoginRedirect()]);
   }
 
   @Action(RemoveUser)
-  public removeUser(ctx: StateContext<AuthStateModel>) {
+  public onRemoveUser(ctx: StateContext<AuthStateModel>) {
     ctx.patchState({
       user: null,
       loading: false,

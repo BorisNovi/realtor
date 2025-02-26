@@ -4,7 +4,7 @@ import { CanActivateFn } from '@angular/router';
 import { loggedInGuard } from './logged-in.guard';
 
 describe('loggedInGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
+  const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => loggedInGuard(...guardParameters));
 
   beforeEach(() => {

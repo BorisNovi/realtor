@@ -1,3 +1,5 @@
+@let loading = isLoading();
+
 <div class="bg-surface-50 dark:bg-surface-950 flex items-center min-h-screen min-w-[100vw] overflow-hidden">
   <div class="w-1/2 flex items-center justify-center min-h-dvh">
     <div>Info-image right block</div>
@@ -35,14 +37,7 @@
 
         <form (submit)="onSubmit()" [formGroup]="form" class="md:w-[30rem]">
           <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-          <input
-            pInputText
-            id="email1"
-            formControlName="email"
-            type="text"
-            placeholder="Email address"
-            class="w-full mb-2"
-          />
+          <input pInputText id="email1" formControlName="email" type="text" placeholder="Email address" class="w-full mb-2" />
 
           @let mailInput = form.controls['email'];
           @if (mailInput?.invalid && mailInput?.touched && mailInput?.dirty) {
@@ -79,7 +74,6 @@
             </div>
           }
 
-
           <div class="flex items-center justify-between mt-2 mb-8 gap-8">
             <span class="font-medium no-underline ml-2 cursor-pointer text-primary" [routerLink]="['/auth/forgot']"
               >Forgot password?</span
@@ -88,7 +82,7 @@
               >Don't have an account? <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-up']">Sign-up</a></span
             >
           </div>
-          <p-button label="Sign In" styleClass="w-full" type="submit" [disabled]="form.invalid"></p-button>
+          <p-button label="Sign In" styleClass="w-full" type="submit" [disabled]="form.invalid" [loading]="loading"></p-button>
         </form>
       </div>
     </div>
