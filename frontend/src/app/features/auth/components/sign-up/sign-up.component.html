@@ -1,1 +1,109 @@
-<p>sign-up works!</p>
+@let loading = isLoading();
+
+<div class="bg-surface-50 dark:bg-surface-950 flex items-center min-h-screen min-w-[100vw] overflow-hidden">
+  <div class="w-1/2 flex items-center justify-center min-h-dvh">
+    <div>Info-image right block</div>
+  </div>
+  <div class="w-1/2 flex items-center justify-center min-h-dvh">
+    <div
+      style="
+        border-radius: 56px;
+        padding: 0.3rem;
+        background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);
+      "
+    >
+      <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
+        <div class="text-center mb-8">
+          <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Join Realtor!</div>
+          <span class="text-muted-color font-medium">Sign up to get started</span>
+        </div>
+
+        <form (submit)="onSubmit()" [formGroup]="form" class="md:w-[30rem]">
+          <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
+          <input pInputText id="email1" formControlName="email" type="text" placeholder="Email address" class="w-full mb-2" />
+
+          @let mailInput = form.controls['email'];
+          @if (mailInput?.invalid && mailInput?.touched && mailInput?.dirty) {
+            <div class="text-red-500 flex flex-col mb-4 text-sm">
+              @if (mailInput?.errors?.['required']) {
+                <span>Email is required.</span>
+              }
+              @if (mailInput?.errors?.['email']) {
+                <span>Please enter a valid email.</span>
+              }
+            </div>
+          }
+
+          <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
+          <p-password
+            id="password1"
+            formControlName="password"
+            placeholder="Password"
+            [toggleMask]="true"
+            styleClass="mb-2"
+            [fluid]="true"
+            [feedback]="false"
+          ></p-password>
+
+          @let passwordInput = form.controls['password'];
+          @if (passwordInput?.invalid && passwordInput?.touched && passwordInput?.dirty) {
+            <div class="text-red-500 flex flex-col mb-4 text-sm">
+              @if (passwordInput?.errors?.['required']) {
+                <span>Password is required.</span>
+              }
+              @if (passwordInput?.errors?.['minlength']) {
+                <span>Password must be at least 8 characters.</span>
+              }
+              @if (!passwordInput?.errors?.['minlength'] && passwordInput?.errors?.['pattern']) {
+                <span>Password must contain an uppercase letter, a number, and a special character.</span>
+              }
+            </div>
+          }
+
+          <label for="passwordConfirmation1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2"
+            >Repeat Password</label
+          >
+          <p-password
+            id="passwordConfirmation1"
+            formControlName="passwordConfirmation"
+            placeholder="Repeat Password"
+            [toggleMask]="true"
+            styleClass="mb-2"
+            [fluid]="true"
+            [feedback]="false"
+          ></p-password>
+
+          @let passwordConfirmationInput = form.controls['passwordConfirmation'];
+          @if (passwordConfirmationInput?.invalid && passwordConfirmationInput?.touched && passwordConfirmationInput?.dirty) {
+            <div class="text-red-500 flex flex-col mb-4 text-sm">
+              @if (passwordConfirmationInput?.errors?.['required']) {
+                <span>Password is required.</span>
+              }
+              @if (passwordConfirmationInput?.errors?.['minlength']) {
+                <span>Password must be at least 8 characters.</span>
+              }
+              @if (!passwordConfirmationInput?.errors?.['minlength'] && passwordConfirmationInput?.errors?.['pattern']) {
+                <span>Password must contain an uppercase letter, a number, and a special character.</span>
+              }
+              @if (
+                !passwordConfirmationInput?.errors?.['minlength'] &&
+                !passwordConfirmationInput?.errors?.['pattern'] &&
+                passwordConfirmationInput?.errors?.['fieldsMismatch']
+              ) {
+                <span>Passwords do not match.</span>
+              }
+            </div>
+          }
+
+          <div class="flex items-center justify-between mt-2 mb-8 gap-8">
+            <span class="font-medium ml-2">
+              Already have an account?
+              <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-in']">Sign in</a>
+            </span>
+          </div>
+          <p-button label="Sign Up" styleClass="w-full" type="submit" [disabled]="form.invalid" [loading]="loading"></p-button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

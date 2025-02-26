@@ -7,7 +7,11 @@ export const privateLayoutRoutes: Routes = [
     path: '',
     component: PrivateLayoutComponent,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'catalog' },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'catalog',
+      },
       { path: 'catalog', component: CatalogComponent },
       { path: '**', redirectTo: 'catalog' },
     ],
