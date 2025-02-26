@@ -38,6 +38,22 @@ export class SignupFailed {
   constructor(public readonly error: Error) {}
 }
 
+// Activate after signup
+export class ActivateAfterSignup {
+  public static readonly type = '[Auth] Activate After Signup';
+  constructor(public readonly token: string) {}
+}
+
+export class ActivationAfterSignupSuccess {
+  public static readonly type = '[Auth] Activation After Signup Success';
+  constructor(public readonly session: ISessionUser) {}
+}
+
+export class ActivationAfterSignupFailed {
+  public static readonly type = '[Auth] Activation After Signup Failed';
+  constructor(public readonly error: Error) {}
+}
+
 // Recover
 export class RecoverPassword {
   static readonly type = '[Auth] RecoverPassword';
@@ -54,20 +70,20 @@ export class RecoverFailed {
 }
 
 // Activate
-export class Activate {
-  static readonly type = '[Auth] Activate';
+export class ActivateAfterRecover {
+  static readonly type = '[Auth] Activate After Recover';
   constructor(
     public readonly token: string,
     public readonly password: string,
   ) {}
 }
 
-export class ActivationSuccess {
-  static readonly type = '[Auth] Activation Success';
+export class ActivationAfterRecoverSuccess {
+  static readonly type = '[Auth] Activation After Recover Success';
 }
 
-export class ActivationFailed {
-  static readonly type = '[Auth] Activation Failed';
+export class ActivationAfterRecoverFailed {
+  static readonly type = '[Auth] Activation After Recover Failed';
   constructor(public readonly error: Error) {}
 }
 
