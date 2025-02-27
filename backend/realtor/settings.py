@@ -1,6 +1,8 @@
 from datetime import timedelta
 from pathlib import Path
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Для локальных тестов SMTP (например для проверки отправки писем для сброса пароля)
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
