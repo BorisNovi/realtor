@@ -1,4 +1,6 @@
+from datetime import timedelta
 from pathlib import Path
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -18,11 +20,21 @@ INSTALLED_APPS = [
     'user_auth',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),  # Access-токен живёт 15 минут
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Refresh-токен живёт 7 дней
+    "ROTATE_REFRESH_TOKENS": True,  # Новый refresh-токен при каждом обновлении
+    "BLACKLIST_AFTER_ROTATION": True,  # Старый refresh-токен аннулируется
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_BLACKLIST_ENABLED": True,  # Включаем Blacklist
 }
 
 MIDDLEWARE = [
@@ -63,9 +75,6 @@ DATABASES = {
         'PASSWORD': 'admin',
         'HOST': 'localhost',
         'PORT': '5432',
-        # 'OPTIONS': {
-        #     'client_encoding': 'UTF8',
-        # },
     }
 }
 
