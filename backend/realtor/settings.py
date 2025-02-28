@@ -1,7 +1,9 @@
 from datetime import timedelta
 from pathlib import Path
 import os
+from decouple import config
 
+# TODO: Прикрутить SMTP сервис!
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Для локальных тестов SMTP (например для проверки отправки писем для сброса пароля)
 
 
@@ -73,11 +75,11 @@ WSGI_APPLICATION = 'realtor.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_NAME', 'postgres'),
-        'USER': os.getenv('DATABASE_USER', 'postgres'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'admin'),
-        'HOST': os.getenv('DATABASE_HOST', 'postgres'),
-        'PORT': os.getenv('DATABASE_PORT', '5432'),
+        'NAME': config('DATABASE_NAME', default='postgres'),
+        'USER': config('DATABASE_USER', default='postgres'),
+        'PASSWORD': config('DATABASE_PASSWORD', default='admin'),
+        'HOST': config('DATABASE_HOST', default='localhost'),
+        'PORT': config('DATABASE_PORT', default='5432'),
     }
 }
 
