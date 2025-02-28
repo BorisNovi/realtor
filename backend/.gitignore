@@ -30,3 +30,6 @@ staticfiles/
 *.swo
 .DS_Store
 Thumbs.db
+
+# environment
+.env
