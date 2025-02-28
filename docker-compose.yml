@@ -3,36 +3,41 @@ services:
     build: ./frontend
     ports:
       - '4200:80'
-    # depends_on:
-    #   - backend
+    depends_on:
+      - backend  # Frontend зависит от бэкенда
     networks:
       - app-network
 
-  # backend:
-  #   build: ./backend
-  #   ports:
-  #     - '3000:3000'
-  #   environment:
-  #     DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-  #   env_file:
-  #     - ./backend/.env
-  #   depends_on:
-  #     - postgres
-  #   networks:
-  #     - app-network
-    # volumes: # Uncomment for development
+  backend:
+    build: ./backend
+    ports:
+      - '8000:8000'  # Django по умолчанию использует 8000, а не 3000
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    # volumes:  # Раскомментируйте для разработки
     #   - ./backend:/app
-    # command: npm run start:dev
+    # command: python manage.py runserver 0.0.0.0:8000  # Перенесено в Dockerfile
 
-  # postgres:
-  #   image: postgres:latest
-  #   env_file:
-  #     - ./backend/.env
-  #   ports:
-  #     - '5432:5432'
-  #   networks:
-  #     - app-network
+  postgres:
+    image: postgres:16
+    env_file:
+      - ./backend/.env
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Для сохранения данных
+    networks:
+      - app-network
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  postgres_data:  # Определяем том для PostgreSQL
