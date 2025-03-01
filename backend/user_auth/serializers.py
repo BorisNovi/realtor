@@ -46,6 +46,14 @@ class SigninSerializer(serializers.Serializer):
 
         refresh = RefreshToken.for_user(user)
         return {
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
+            "accessToken": str(refresh.access_token),
+            "refreshToken": str(refresh),
+                "user": {
+                    "id": user.id,  # ID пользователя
+                    "name": user.name,  # Имя пользователя
+                    "email": user.email,  # Почта пользователя
+                    "role": user.role,  # Роль пользователя
+                    "insertedAt": user.insertedAt.isoformat(),  # Дата регистрации
+                    "bannedAt": user.banned.isoformat() if user.banned else None  # Дата бана (если есть)
+                }
         }
