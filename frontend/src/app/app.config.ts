@@ -11,7 +11,7 @@ import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
 import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { provideStore } from '@ngxs/store';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { AuthState } from './core/auth/state/auth.state';
+import { AuthState } from './core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
