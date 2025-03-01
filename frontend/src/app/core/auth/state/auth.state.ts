@@ -208,7 +208,7 @@ export class AuthState {
   public onActivateAfterRecover(ctx: StateContext<AuthStateModel>, { token, password }: ActivateAfterRecover) {
     ctx.patchState({ loading: true });
 
-    return this.authService.activate(token, password).pipe(
+    return this.authService.activateAfterRecover(token, password).pipe(
       tap(() => ctx.dispatch(new ActivationAfterRecoverSuccess())),
       catchError((error: Error) => ctx.dispatch(new ActivationAfterSignupFailed(error))),
     );
