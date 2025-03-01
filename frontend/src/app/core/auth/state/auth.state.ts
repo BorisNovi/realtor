@@ -31,7 +31,7 @@ import { Navigate } from '@ngxs/router-plugin';
 interface AuthStateModel {
   user: IUser | null;
   loading: boolean;
-  token: string | null;
+  accessToken: string | null;
   refreshToken: string | null;
   error: Error | null;
 }
@@ -41,7 +41,7 @@ interface AuthStateModel {
   defaults: {
     user: null,
     loading: false,
-    token: null,
+    accessToken: null,
     refreshToken: null,
     error: null,
   },
@@ -63,7 +63,7 @@ export class AuthState {
 
   @Selector()
   static token(state: AuthStateModel): string | null {
-    return state.token;
+    return state.accessToken;
   }
 
   @Selector()
@@ -73,7 +73,7 @@ export class AuthState {
 
   @Selector()
   static isAuthenticated(state: AuthStateModel): boolean {
-    return !!state.token;
+    return !!state.accessToken;
   }
 
   // Actions
@@ -96,7 +96,7 @@ export class AuthState {
     ctx.patchState({
       user: session.user,
       loading: false,
-      token: session.token,
+      accessToken: session.accessToken,
       refreshToken: session.refreshToken,
       error: null,
     });
@@ -162,7 +162,7 @@ export class AuthState {
     ctx.patchState({
       user: session.user,
       loading: false,
-      token: session.token,
+      accessToken: session.accessToken,
       refreshToken: session.refreshToken,
       error: null,
     });
@@ -236,14 +236,14 @@ export class AuthState {
     return this.authService.refreshToken(user?.id || 0).pipe(
       tap((result: ISessionUser) => {
         ctx.patchState({
-          token: result.token,
+          accessToken: result.accessToken,
           refreshToken: result.refreshToken,
           error: null,
         });
       }),
       catchError(error => {
         ctx.patchState({
-          token: null,
+          accessToken: null,
           refreshToken: null,
           user: null,
           error,
@@ -268,7 +268,7 @@ export class AuthState {
     ctx.patchState({
       user: null,
       loading: false,
-      token: null,
+      accessToken: null,
       refreshToken: null,
       error: null,
     });
