@@ -6,7 +6,6 @@ from decouple import config
 # TODO: Прикрутить SMTP сервис!
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Для локальных тестов SMTP (например для проверки отправки писем для сброса пароля)
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p'
@@ -42,6 +41,8 @@ SIMPLE_JWT = {
     "TOKEN_BLACKLIST_ENABLED": True,  # Включаем Blacklist
 }
 
+AUTH_USER_MODEL = 'user_auth.User'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -75,7 +76,7 @@ WSGI_APPLICATION = 'realtor.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME', default='postgres'),
+        'NAME': config('DATABASE_NAME', default='testdb'), # Проверь нахуй .енв в следующий раз когда будут беды с базами
         'USER': config('DATABASE_USER', default='postgres'),
         'PASSWORD': config('DATABASE_PASSWORD', default='admin'),
         'HOST': config('DATABASE_HOST', default='localhost'),
