@@ -1,107 +1,79 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ISessionUser, IUser } from '@shared/interfaces';
-import { Observable, switchMap, catchError, of, delay } from 'rxjs';
+import { Observable, switchMap, shareReplay } from 'rxjs';
+import { environment } from '@environments/environment';
+import { FingerprintService } from '../../services';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private fingerprintService = inject(FingerprintService);
+
+  private fingerprint$ = this.fingerprintService.getFingerprint().pipe(shareReplay(1));
+
+  public checkSession(): Observable<IUser> {
+    return this.fingerprint$.pipe(
+      switchMap(fingerprint => {
+        const body = { fingerprint };
+        return this.http.post<IUser>(`${environment.apiUrl}/auth/sessions/check`, body);
+      }),
+    );
+  }
 
   public login(email: string, password: string): Observable<ISessionUser> {
-    return of({
-      user: {
-        id: 0,
-        name: 'mock',
-        email: 'mock@mail.com',
-        role: 'mock role',
-      },
-      token: 'mock token',
-      refreshToken: 'mock refreshToken',
-    }).pipe(delay(2000));
-    // const utcOffset = getUtcOffset();
-
-    // return this.fingerprint$.pipe(
-    //   switchMap(({ fingerprint, fingerprintComponents }) =>
-    //     this.http.post<ISessionUser>(`${process.env.API_URL}/user/sessions`, {
-    //       email,
-    //       password,
-    //       fingerprint,
-    //       fingerprintComponents,
-    //       utcOffset
-    //     })
-    //   ),
-    //   catchError(error => throwError((error.error && error.error.errors) || error))
-    // );
+    return this.fingerprint$.pipe(
+      switchMap(fingerprint => {
+        const body = { email, password, fingerprint };
+        return this.http.post<ISessionUser>(`${environment.apiUrl}/auth/sign-in`, body);
+      }),
+    );
   }
 
   public signUp(email: string, password: string, passwordConfirmation: string): Observable<void> {
-    return of(void 0).pipe(delay(2000));
-    //   const utcOffset = getUtcOffset();
-
-    //   return this.fingerprint$.pipe(
-    //     switchMap(({ fingerprint, fingerprintComponents }) =>
-    //       this.http.post<void>(`${process.env.API_URL}/partner/sign_up`, {
-    //         email,
-    //         password,
-    //         passwordConfirmation,
-    //         fingerprint,
-    //         fingerprintComponents,
-    //         utcOffset,
-    //       }),
-    //     ),
-    //     catchError((error) =>
-    //       error((error.error && error.error.errors) || error),
-    //     ),
-    //   );
+    return this.fingerprint$.pipe(
+      switchMap(fingerprint => {
+        const body = { email, password, passwordConfirmation, fingerprint };
+        return this.http.post<void>(`${environment.apiUrl}/auth/sign-up`, body);
+      }),
+    );
   }
 
   public activateAfterSignup(token: string): Observable<ISessionUser> {
-    console.log('activate after signup method', token);
-    return of({
-      user: {
-        id: 0,
-        name: 'mock',
-        email: 'mock@mail.com',
-        role: 'mock role',
-      },
-      token: 'mock token',
-      refreshToken: 'mock refreshToken',
-    }).pipe(delay(2000));
+    return this.fingerprint$.pipe(
+      switchMap(fingerprint => {
+        const body = { token, fingerprint };
+        return this.http.post<ISessionUser>(`${environment.apiUrl}/auth/sign-up-activate`, body);
+      }),
+    );
   }
 
   public recoverPassword(email: string): Observable<void> {
-    return of(void 0).pipe(delay(2000));
-    // return this.http
-    //   .post<IUser>(`${process.env.API_URL}/user/recovery`, { email })
-    //   .pipe(catchError(error => throwError((error.error && error.error.errors) || error)));
+    return this.fingerprint$.pipe(
+      switchMap(fingerprint => {
+        const body = { email, fingerprint };
+        return this.http.post<void>(`${environment.apiUrl}/auth/recover`, body);
+      }),
+    );
   }
 
-  public activate(token: string, password: string): Observable<void> {
-    console.log('activate', token, password);
-    return of(void 0).pipe(delay(2000));
-    // return this.http
-    //   .post<IUser>(`${process.env.API_URL}/user/activation`, { token, password })
-    //   .pipe(catchError(error => throwError((error.error && error.error.errors) || error)));
+  public activateAfterRecover(token: string, password: string): Observable<void> {
+    return this.fingerprint$.pipe(
+      switchMap(fingerprint => {
+        const body = { token, password, fingerprint };
+        return this.http.post<void>(`${environment.apiUrl}/auth/recover-activate`, body);
+      }),
+    );
   }
 
   public refreshToken(id: number): Observable<ISessionUser> {
-    return of({
-      user: {
-        id: 0,
-        name: 'mock',
-        email: 'mock@mail.com',
-        role: 'mock role',
-      },
-      token: 'mock token',
-      refreshToken: 'mock refreshToken',
-    }).pipe(delay(2000));
-    // return this.fingerprint$.pipe(
-    //   switchMap(({ fingerprint, fingerprintComponents }) =>
-    //     this.http.put<ISessionUser>(`${process.env.API_URL}/user/sessions`, { id, fingerprint, fingerprintComponents })
-    //   ),
-    //   catchError(error => throwError((error.error && error.error.errors) || error))
-    // );
+    return this.fingerprint$.pipe(
+      switchMap(fingerprint => {
+        const body = { id, fingerprint };
+        return this.http.post<ISessionUser>(`${environment.apiUrl}/auth/refresh`, body);
+      }),
+    );
   }
 }

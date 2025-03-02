@@ -9,6 +9,7 @@ import {
   ActivationAfterRecoverSuccess,
   ActivationAfterSignupFailed,
   ActivationAfterSignupSuccess,
+  CheckSession,
   Login,
   LoginFailed,
   LoginRedirect,
@@ -31,7 +32,7 @@ import { Navigate } from '@ngxs/router-plugin';
 interface AuthStateModel {
   user: IUser | null;
   loading: boolean;
-  token: string | null;
+  accessToken: string | null;
   refreshToken: string | null;
   error: Error | null;
 }
@@ -41,7 +42,7 @@ interface AuthStateModel {
   defaults: {
     user: null,
     loading: false,
-    token: null,
+    accessToken: null,
     refreshToken: null,
     error: null,
   },
@@ -62,8 +63,8 @@ export class AuthState {
   }
 
   @Selector()
-  static token(state: AuthStateModel): string | null {
-    return state.token;
+  static accessToken(state: AuthStateModel): string | null {
+    return state.accessToken;
   }
 
   @Selector()
@@ -73,10 +74,36 @@ export class AuthState {
 
   @Selector()
   static isAuthenticated(state: AuthStateModel): boolean {
-    return !!state.token;
+    return !!state.accessToken;
   }
 
-  // Actions
+  // Dispatch CheckSession on start
+  public ngxsOnInit(ctx: StateContext<AuthStateModel>) {
+    ctx.dispatch(new CheckSession());
+  }
+
+  @Action(CheckSession)
+  public checkSession(ctx: StateContext<AuthStateModel>) {
+    const { accessToken } = ctx.getState();
+    if (!accessToken) {
+      ctx.dispatch(new LoginRedirect());
+      return;
+    }
+
+    return this.authService.checkSession().pipe(
+      tap(res => {
+        // const { user } = ctx.getState();
+        // if (!this.socketService.socket && user) {
+        //   this.socketService.connect(user, token);
+        // }
+      }),
+      catchError(error => {
+        ctx.dispatch(new Logout());
+        return of(error);
+      }),
+    );
+  }
+
   // Log in
   @Action(Login)
   public onLogin(ctx: StateContext<AuthStateModel>, { email, password }: Login) {
@@ -96,7 +123,7 @@ export class AuthState {
     ctx.patchState({
       user: session.user,
       loading: false,
-      token: session.token,
+      accessToken: session.accessToken,
       refreshToken: session.refreshToken,
       error: null,
     });
@@ -162,7 +189,7 @@ export class AuthState {
     ctx.patchState({
       user: session.user,
       loading: false,
-      token: session.token,
+      accessToken: session.accessToken,
       refreshToken: session.refreshToken,
       error: null,
     });
@@ -208,7 +235,7 @@ export class AuthState {
   public onActivateAfterRecover(ctx: StateContext<AuthStateModel>, { token, password }: ActivateAfterRecover) {
     ctx.patchState({ loading: true });
 
-    return this.authService.activate(token, password).pipe(
+    return this.authService.activateAfterRecover(token, password).pipe(
       tap(() => ctx.dispatch(new ActivationAfterRecoverSuccess())),
       catchError((error: Error) => ctx.dispatch(new ActivationAfterSignupFailed(error))),
     );
@@ -236,14 +263,14 @@ export class AuthState {
     return this.authService.refreshToken(user?.id || 0).pipe(
       tap((result: ISessionUser) => {
         ctx.patchState({
-          token: result.token,
+          accessToken: result.accessToken,
           refreshToken: result.refreshToken,
           error: null,
         });
       }),
       catchError(error => {
         ctx.patchState({
-          token: null,
+          accessToken: null,
           refreshToken: null,
           user: null,
           error,
@@ -268,7 +295,7 @@ export class AuthState {
     ctx.patchState({
       user: null,
       loading: false,
-      token: null,
+      accessToken: null,
       refreshToken: null,
       error: null,
     });
