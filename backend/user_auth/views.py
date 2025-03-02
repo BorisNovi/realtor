@@ -17,15 +17,118 @@ from datetime import timedelta
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from .models import PasswordResetRequest
+import uuid
+from django.core.cache import cache
+from django.db import IntegrityError
+from django.contrib.auth import get_user_model 
+
+
+logger = logging.getLogger(__name__)
+
+# TODO: Сделать возможность повторной отправки письма
 
 @api_view(['POST'])
 def signup(request):
-    if request.method == 'POST':
-        serializer = SignupSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'Пользователь успешно зарегистрирован'}, status=status.HTTP_201_CREATED)
+    serializer = SignupSerializer(data=request.data)
+    if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    email = serializer.validated_data['email']
+    password = serializer.validated_data['password']
+    token = str(uuid.uuid4())
+
+    # Сохраняем в Redis с TTL 1 час (3600 сек)
+    cache.set(f"signup_token:{token}", {'email': email, 'password': password}, timeout=3600)
+    logger.info(f"Generated signup token for {email}: {token}")
+
+    # Формируем ссылку динамически
+    activation_link = request.build_absolute_uri(f"/api/sign-up-activate/?token={token}")
+
+    try:
+        send_mail(
+            "Подтверждение регистрации",
+            f"Перейдите по ссылке для активации: {activation_link}",
+            "noreply@example.com",
+            [email],
+            fail_silently=False,
+        )
+        logger.info(f"Activation email sent to {email}")
+    except Exception as e:
+        logger.error(f"Failed to send email to {email}: {str(e)}")
+        return Response(
+            {'error': 'Failed to send confirmation email'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    return Response(
+        {'message': 'Confirmation link has been sent to your email'},
+        status=status.HTTP_202_ACCEPTED
+    )
+
+User = get_user_model()  # Получаем активную модель пользователя
+
+@api_view(['GET'])
+def signup_activate(request):
+    token = request.GET.get('token')
+    if not token:
+        return Response(
+            {'error': 'Token is required'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    user_data = _get_user_data_from_cache(token)
+    if not user_data:
+        return Response(
+            {'error': 'Invalid or expired token'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        user = _create_user(user_data) # Создаём пользователя
+        refresh = RefreshToken.for_user(user) # Генерируем JWT токены
+        cache.delete(f"signup_token:{token}") # Удаляем токен из кеша после использования
+        
+        # Формируем ответ с токенами и данными о пользователе
+        response_data = {
+            "accessToken": str(refresh.access_token),
+            "refreshToken": str(refresh),
+            "user": {
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "role": user.role,
+                "insertedAt": user.insertedAt.isoformat(),
+                "bannedAt": user.banned.isoformat() if user.banned else None
+            }
+        }
+        
+        return Response(response_data, status=status.HTTP_201_CREATED)
+    
+    except IntegrityError:
+        return Response(
+            {'error': 'Email is already registered'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    except Exception as e:
+        return Response(
+            {'error': f'Failed to create user: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+def _get_user_data_from_cache(token):
+    """Извлекает данные пользователя из кэша и проверяет их."""
+    user_data = cache.get(f"signup_token:{token}")
+    if not user_data or 'email' not in user_data or 'password' not in user_data:
+        return None
+    return user_data
+
+def _create_user(user_data):
+    """Создаёт пользователя в базе данных."""
+    return User.objects.create_user(
+        email=user_data['email'],
+        password=user_data['password']
+    )
+
 
 class SigninView(APIView):
     def post(self, request):

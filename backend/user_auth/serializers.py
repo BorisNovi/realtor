@@ -1,32 +1,31 @@
+from django.forms import ValidationError
 from rest_framework import serializers
 from user_auth.models import User
-
 from django.contrib.auth import authenticate # Либа для аутентикации
 from rest_framework_simplejwt.tokens import RefreshToken # Работа с токенами
 
-class SignupSerializer(serializers.ModelSerializer):
+class SignupSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
     password_confirmation = serializers.CharField(write_only=True)
 
-    class Meta:
-        model = User
-        fields = ['email', 'password', 'password_confirmation']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
-
     def validate(self, data):
+        # Проверка совпадения паролей
         if data['password'] != data['password_confirmation']:
-            raise serializers.ValidationError("Пароли не совпадают")
+            raise ValidationError("Пароли не совпадают")
         if len(data['password']) < 8:
-            raise serializers.ValidationError("Пароль должен быть не менее 8 символов")
+            raise ValidationError("Пароль должен быть не менее 8 символов")
+        
+        # Проверка на уникальность email (если требуется)
+        if User.objects.filter(email=data['email']).exists():
+            raise ValidationError("Пользователь с таким email уже существует")
+        
         return data
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password']
-        )
-        return user
+        # Здесь больше не создаём пользователя, так как это будет сделано в `sign-up-activate`
+        return validated_data
+
 
 class SigninSerializer(serializers.Serializer):
     email = serializers.EmailField()
