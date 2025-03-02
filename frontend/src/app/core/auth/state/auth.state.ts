@@ -9,6 +9,7 @@ import {
   ActivationAfterRecoverSuccess,
   ActivationAfterSignupFailed,
   ActivationAfterSignupSuccess,
+  CheckSession,
   Login,
   LoginFailed,
   LoginRedirect,
@@ -62,7 +63,7 @@ export class AuthState {
   }
 
   @Selector()
-  static token(state: AuthStateModel): string | null {
+  static accessToken(state: AuthStateModel): string | null {
     return state.accessToken;
   }
 
@@ -76,7 +77,33 @@ export class AuthState {
     return !!state.accessToken;
   }
 
-  // Actions
+  // Dispatch CheckSession on start
+  public ngxsOnInit(ctx: StateContext<AuthStateModel>) {
+    ctx.dispatch(new CheckSession());
+  }
+
+  @Action(CheckSession)
+  public checkSession(ctx: StateContext<AuthStateModel>) {
+    const { accessToken } = ctx.getState();
+    if (!accessToken) {
+      ctx.dispatch(new LoginRedirect());
+      return;
+    }
+
+    return this.authService.checkSession().pipe(
+      tap(res => {
+        // const { user } = ctx.getState();
+        // if (!this.socketService.socket && user) {
+        //   this.socketService.connect(user, token);
+        // }
+      }),
+      catchError(error => {
+        ctx.dispatch(new Logout());
+        return of(error);
+      }),
+    );
+  }
+
   // Log in
   @Action(Login)
   public onLogin(ctx: StateContext<AuthStateModel>, { email, password }: Login) {
