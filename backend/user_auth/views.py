@@ -192,7 +192,7 @@ class PasswordRecoveryView(APIView):
         PasswordResetRequest.objects.create(user=user, token=token)
         
         # Формирование URL и отправка email
-        reset_url = request.build_absolute_uri(f"/api/v1/auth/reset-password/?token={token}")
+        reset_url = request.build_absolute_uri(f"/api/v1/auth/recover-activate/?token={token}")
         try:
             send_mail(
                 "Password Reset Request",
@@ -211,9 +211,9 @@ class PasswordRecoveryView(APIView):
 class PasswordResetActivateView(APIView):
     def post(self, request):
         token = request.data.get("token")
-        new_password = request.data.get("new_password")
+        password = request.data.get("password")
 
-        if not token or not new_password:
+        if not token or not password:
             return Response({"error": "Token and new password are required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
@@ -228,7 +228,7 @@ class PasswordResetActivateView(APIView):
         
         # Обновляем пароль пользователя
         user = reset_request.user
-        user.set_password(new_password)  # Устанавливаем новый пароль
+        user.set_password(password)  # Устанавливаем новый пароль
         user.save()
         
         # Удаляем запрос на сброс пароля, чтобы токен больше не был использован
