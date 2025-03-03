@@ -10,15 +10,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p'
 
-
-
 ALLOWED_HOSTS = ['*']
 
 # Redis
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",  # Используем базу №1
+        "LOCATION": "redis://realtor_redis:6379/1",  # Заменили 127.0.0.1 на имя контейнера
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
