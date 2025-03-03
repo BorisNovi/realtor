@@ -41,10 +41,11 @@
 
     <div class="layout-topbar-menu hidden lg:block">
       <div class="layout-topbar-menu-content">
-        <button type="button" class="layout-topbar-action">
+        
+        <a class="layout-topbar-action" routerLink="/profile" routerLinkActive="layout-topbar-action_active" >
           <i class="pi pi-user"></i>
           <span>Profile</span>
-        </button>
+        </a>
 
         <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
           <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
