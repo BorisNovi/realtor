@@ -1,5 +1,5 @@
 services:
-  frontend:
+  frontend: #FRONTEND
     build: ./frontend
     ports:
       - '4200:80'
@@ -9,30 +9,49 @@ services:
       - app-network
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - '8000:8000'
     environment:
       - DATABASE_HOST=postgres
-      - DATABASE_NAME=postgres
+      - DATABASE_NAME=testdb
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=admin
       - DATABASE_PORT=5432
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - app-network
 
-  postgres:
+  postgres: # DATABASE
     image: postgres:16
     environment:
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=testdb
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
     ports:
       - '5432:5432'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data  # Сохранение данных
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d testdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  redis: # REDIS
+    image: redis:latest
+    container_name: realtor_redis
+    restart: always
+    ports:
+      - "6379:6379"
     networks:
       - app-network
 
@@ -41,4 +60,4 @@ networks:
     driver: bridge
 
 volumes:
-  postgres_data:
+  pgdata:
