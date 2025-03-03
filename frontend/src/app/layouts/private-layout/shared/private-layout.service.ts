@@ -23,7 +23,7 @@ export class PrivateLayoutService {
     preset: 'Aura',
     primary: 'emerald',
     surface: null,
-    darkTheme: false,
+    darkTheme: this.getStoredTheme() === 'dark',
     menuMode: 'static',
   };
 
@@ -41,7 +41,7 @@ export class PrivateLayoutService {
 
   private configUpdate = new Subject<ILayoutConfig>();
 
-  private overlayOpen = new Subject<any>();
+  private overlayOpen = new Subject<null>();
 
   private menuSource = new Subject<IMenuChangeEvent>();
 
@@ -55,7 +55,7 @@ export class PrivateLayoutService {
 
   overlayOpen$ = this.overlayOpen.asObservable();
 
-  theme = computed(() => (this.layoutConfig()?.darkTheme ? 'light' : 'dark'));
+  theme = computed(() => (this.layoutConfig().darkTheme ? 'light' : 'dark'));
 
   isSidebarActive = computed(() => this.layoutState().overlayMenuActive || this.layoutState().staticMenuMobileActive);
 
@@ -75,6 +75,7 @@ export class PrivateLayoutService {
     effect(() => {
       const config = this.layoutConfig();
       if (config) {
+        this.handleDarkModeTransition(config);
         this.onConfigUpdate();
       }
     });
@@ -89,10 +90,19 @@ export class PrivateLayoutService {
 
       this.handleDarkModeTransition(config);
     });
+
+    this.initSystemThemeListener();
+  }
+
+  toggleTheme() {
+    this.layoutConfig.update(config => ({
+      ...config,
+      darkTheme: !config.darkTheme,
+    }));
   }
 
   private handleDarkModeTransition(config: ILayoutConfig): void {
-    if ((document as any).startViewTransition) {
+    if ((document as Document).startViewTransition) {
       this.startViewTransition(config);
     } else {
       this.toggleDarkMode(config);
@@ -101,7 +111,7 @@ export class PrivateLayoutService {
   }
 
   private startViewTransition(config: ILayoutConfig): void {
-    const transition = (document as any).startViewTransition(() => {
+    const transition = (document as Document).startViewTransition(() => {
       this.toggleDarkMode(config);
     });
 
@@ -112,20 +122,30 @@ export class PrivateLayoutService {
       .catch(() => {});
   }
 
-  toggleDarkMode(config?: ILayoutConfig): void {
-    const _config = config || this.layoutConfig();
-    if (_config.darkTheme) {
-      document.documentElement.classList.add('app-dark');
-    } else {
-      document.documentElement.classList.remove('app-dark');
-    }
+  private toggleDarkMode(config: ILayoutConfig): void {
+    document.documentElement.classList.toggle('app-dark', config.darkTheme);
+    localStorage.setItem('realtor:theme', config.darkTheme ? 'dark' : 'light');
   }
 
-  private onTransitionEnd() {
+  private onTransitionEnd(): void {
     this.transitionComplete.set(true);
     setTimeout(() => {
       this.transitionComplete.set(false);
     });
+  }
+
+  private initSystemThemeListener(): void {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+      this.layoutConfig.update(config => ({
+        ...config,
+        darkTheme: event.matches,
+      }));
+    });
+  }
+
+  private getStoredTheme(): 'dark' | 'light' {
+    const stored = localStorage.getItem('realtor:theme');
+    return stored === 'dark' || stored === 'light' ? stored : 'light';
   }
 
   onMenuToggle() {
