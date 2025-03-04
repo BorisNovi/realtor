@@ -25,8 +25,6 @@ from django.contrib.auth import get_user_model
 
 logger = logging.getLogger(__name__)
 
-# TODO: Сделать возможность повторной отправки письма
-
 @api_view(['POST'])
 def signup(request):
     serializer = SignupSerializer(data=request.data)
@@ -67,9 +65,9 @@ def signup(request):
 
 User = get_user_model()  # Получаем активную модель пользователя
 
-@api_view(['GET'])
+@api_view(['POST'])
 def signup_activate(request):
-    token = request.GET.get('token')
+    token = request.data.get('token')  # Получаем токен из тела запроса
     if not token:
         return Response(
             {'error': 'Token is required'},
@@ -115,20 +113,17 @@ def signup_activate(request):
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
-def _get_user_data_from_cache(token):
-    """Извлекает данные пользователя из кэша и проверяет их."""
+def _get_user_data_from_cache(token): # Извлекаем данные пользователя из кэша и проверяет их
     user_data = cache.get(f"signup_token:{token}")
     if not user_data or 'email' not in user_data or 'password' not in user_data:
         return None
     return user_data
 
-def _create_user(user_data):
-    """Создаёт пользователя в базе данных."""
+def _create_user(user_data): # Создаём пользователя в базе данных
     return User.objects.create_user(
         email=user_data['email'],
         password=user_data['password']
     )
-
 
 class SigninView(APIView):
     def post(self, request):

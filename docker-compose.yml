@@ -12,6 +12,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    env_file: .env.docker  # Загружаем докер-версию переменных
     ports:
       - '8000:8000'
     environment:
@@ -20,6 +21,7 @@ services:
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=admin
       - DATABASE_PORT=5432
+      - DOCKERIZED=true
     depends_on:
       postgres:
         condition: service_healthy
@@ -46,7 +48,7 @@ services:
       timeout: 3s
       retries: 5
 
-  redis: # REDIS
+  redis:
     image: redis:latest
     container_name: realtor_redis
     restart: always
@@ -54,6 +56,8 @@ services:
       - "6379:6379"
     networks:
       - app-network
+    env_file:
+      - .env.docker  # 🔹 Загружаем переменные окружения для Redis
 
 networks:
   app-network:
