@@ -11,7 +11,7 @@
 
   <div class="layout-topbar-actions">
     <div class="layout-config-menu">
-      <div class="relative">
+      <!-- <div class="relative">
         <button
           class="layout-topbar-action layout-topbar-action-highlight"
           pStyleClass="@next"
@@ -23,8 +23,8 @@
         >
           <i class="pi pi-palette"></i>
         </button>
-        <!-- <app-configurator /> -->
-      </div>
+        <app-configurator />
+      </div> -->
     </div>
 
     <button
@@ -41,7 +41,6 @@
 
     <div class="layout-topbar-menu hidden lg:block">
       <div class="layout-topbar-menu-content">
-        
         <a class="layout-topbar-action" routerLink="/profile" routerLinkActive="layout-topbar-action_active" >
           <i class="pi pi-user"></i>
           <span>Profile</span>
@@ -50,6 +49,11 @@
         <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
           <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
           <span>Theme</span>
+        </button>
+
+        <button class="layout-topbar-action">
+          <i class="pi pi-globe"></i>
+          <span>Language</span>
         </button>
       </div>
     </div>
