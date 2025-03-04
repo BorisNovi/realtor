@@ -2,6 +2,7 @@ from datetime import timedelta
 from pathlib import Path
 import os
 from decouple import config
+from dotenv import load_dotenv
 
 # TODO: Прикрутить SMTP сервис!
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Для локальных тестов SMTP (например для проверки отправки писем для сброса пароля)
@@ -12,11 +13,23 @@ SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p
 
 ALLOWED_HOSTS = ['*']
 
+# Загружаем файл .env в зависимости от переменной DOCKERIZED
+ENV_FILE = BASE_DIR / ".env.docker" if os.getenv("DOCKERIZED") == "true" else BASE_DIR / ".env"
+print(f"Загружаем файл: {ENV_FILE}")
+load_dotenv(ENV_FILE)
+
+# Читаем переменные из .env
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+
+# Выводим для проверки
+print(f"REDIS_HOST: {REDIS_HOST}")
+
 # Redis
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://realtor_redis:6379/1",  # Заменили 127.0.0.1 на имя контейнера
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",  # Используем переменные REDIS_HOST и REDIS_PORT
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
