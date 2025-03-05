@@ -39,18 +39,29 @@ CACHES = {
 DEBUG = True
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'user_auth',
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
-    'corsheaders'
+    # Встроенные приложения Django (основные зависимости сначала)
+    'django.contrib.contenttypes',  # Нужен для auth и других
+    'django.contrib.auth',          # Аутентификация, основа для admin и кастомной модели
+    'django.contrib.admin',         # Админка зависит от auth
+    'django.contrib.sessions',      # Сессии
+    'django.contrib.messages',      # Сообщения
+    'django.contrib.staticfiles',   # Статические файлы
+
+    # Сторонние библиотеки
+    'rest_framework',               # DRF должен быть перед своими дополнениями
+    'rest_framework_simplejwt',     # JWT зависит от rest_framework
+    'rest_framework_simplejwt.token_blacklist',  # Blacklist зависит от simplejwt
+    'corsheaders',                  # CORS для API, независим
+
+    # Ваши приложения (в порядке возможных зависимостей)
+    'users',                        # Кастомная модель User, основа для других приложений
+    'user_auth',                    # Зависит от users (предположительно)
+    'ai_assistant',                 # Может зависеть от users или user_auth
+    'listings',                     # Листинги, возможно, зависят от users
+    'map',                          # Карта, может зависеть от listings или users
+    'payments',                     # Платежи, может зависеть от users
 ]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -59,14 +70,14 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),  # Access-токен живёт 15 минут
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Refresh-токен живёт 7 дней
-    "ROTATE_REFRESH_TOKENS": True,  # Новый refresh-токен при каждом обновлении
-    "BLACKLIST_AFTER_ROTATION": True,  # Старый refresh-токен аннулируется
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),     # Refresh-токен живёт 7 дней
+    "ROTATE_REFRESH_TOKENS": True,                   # Новый refresh-токен при каждом обновлении
+    "BLACKLIST_AFTER_ROTATION": True,                # Старый refresh-токен аннулируется
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_BLACKLIST_ENABLED": True,  # Включаем Blacklist
+    "TOKEN_BLACKLIST_ENABLED": True,                 # Включаем Blacklist
 }
 
-AUTH_USER_MODEL = 'user_auth.User'
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -102,7 +113,7 @@ WSGI_APPLICATION = 'realtor.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME', default='testdb'), # Проверь нахуй .енв в следующий раз когда будут беды с базами
+        'NAME': config('DATABASE_NAME', default='2testdb'), # Проверь нахуй .енв в следующий раз когда будут беды с базами
         'USER': config('DATABASE_USER', default='postgres'),
         'PASSWORD': config('DATABASE_PASSWORD', default='admin'),
         'HOST': config('DATABASE_HOST', default='localhost'),

@@ -1,8 +1,11 @@
 from django.forms import ValidationError
 from rest_framework import serializers
-from user_auth.models import User
+# from users.models import User
 from django.contrib.auth import authenticate # Либа для аутентикации
 from rest_framework_simplejwt.tokens import RefreshToken # Работа с токенами
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -25,7 +28,6 @@ class SignupSerializer(serializers.Serializer):
     def create(self, validated_data):
         # Здесь больше не создаём пользователя, так как это будет сделано в `sign-up-activate`
         return validated_data
-
 
 class SigninSerializer(serializers.Serializer):
     email = serializers.EmailField()
