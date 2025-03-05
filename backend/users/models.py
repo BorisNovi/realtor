@@ -38,7 +38,7 @@ class User(AbstractBaseUser):
         return self.email
 
 class PasswordResetRequest(models.Model):
-    user = models.ForeignKey('user_auth.User', on_delete=models.CASCADE)  # Ссылка на кастомную модель User
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)  # Ссылка на кастомную модель User
     token = models.CharField(max_length=255, unique=True)  # Уникальный токен для сброса пароля
     created_at = models.DateTimeField(auto_now_add=True)  # Дата запроса на восстановление
 
