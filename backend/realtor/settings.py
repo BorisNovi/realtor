@@ -4,7 +4,6 @@ import os
 from decouple import config
 from dotenv import load_dotenv
 
-# TODO: Прикрутить SMTP сервис!
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Для локальных тестов SMTP (например для проверки отправки писем для сброса пароля)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -74,6 +73,10 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,                   # Новый refresh-токен при каждом обновлении
     "BLACKLIST_AFTER_ROTATION": True,                # Старый refresh-токен аннулируется
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+#     "AUTH_TOKEN_CLASSES": (
+#     "rest_framework_simplejwt.tokens.AccessToken",
+#     "rest_framework_simplejwt.tokens.RefreshToken",
+# ),
     "TOKEN_BLACKLIST_ENABLED": True,                 # Включаем Blacklist
 }
 
