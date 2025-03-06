@@ -3,6 +3,7 @@ from user_auth import views
 from .views.activation import PasswordResetActivateView
 from .views.auth import LogoutView
 from .views.password import PasswordRecoveryView
+from .views.refresh import RefreshTokenView
 
 urlpatterns = [
     path('sign-up/', views.signup, name='signup'),
@@ -11,4 +12,5 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('recover/', PasswordRecoveryView.as_view(), name='password-recover'),
     path('recover-activate/', PasswordResetActivateView.as_view(), name='password-reset-activate'),
+    path('refresh/', RefreshTokenView.as_view(), name='refresh_token'),
 ]
