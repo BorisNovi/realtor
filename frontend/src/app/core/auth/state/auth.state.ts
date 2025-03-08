@@ -52,7 +52,7 @@ interface AuthStateModel {
 })
 @Injectable()
 export class AuthState {
-  private authService = inject(AuthService);
+  private readonly authService = inject(AuthService);
 
   // Selectors
   @Selector()

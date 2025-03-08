@@ -25,9 +25,9 @@ import { AuthState } from 'src/app/core/auth/state/auth.state';
   templateUrl: './recovery.component.html',
 })
 export class RecoveryComponent {
-  private fb = inject(FormBuilder);
-  private store = inject(Store);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly store = inject(Store);
+  private readonly router = inject(Router);
 
   public token: string | null = this.router.parseUrl(this.router.url).queryParamMap.get('token');
   public isLoading = this.store.selectSignal(AuthState.loading);

@@ -1,6 +1,7 @@
-import { Injectable, effect, signal, computed } from '@angular/core';
+import { Injectable, effect, signal, computed, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ILayoutConfig } from './layout-config.interface';
+import { StorageService } from 'src/app/core';
 
 interface ILayoutState {
   staticMenuDesktopInactive?: boolean;
@@ -19,6 +20,8 @@ interface IMenuChangeEvent {
   providedIn: 'root',
 })
 export class PrivateLayoutService {
+  private readonly storageService = inject(StorageService);
+
   _config: ILayoutConfig = {
     preset: 'Aura',
     primary: 'emerald',
@@ -124,7 +127,7 @@ export class PrivateLayoutService {
 
   private toggleDarkMode(config: ILayoutConfig): void {
     document.documentElement.classList.toggle('app-dark', config.darkTheme);
-    localStorage.setItem('realtor:theme', config.darkTheme ? 'dark' : 'light');
+    this.storageService.setItem<string>('theme', config.darkTheme ? 'dark' : 'light');
   }
 
   private onTransitionEnd(): void {
@@ -144,7 +147,7 @@ export class PrivateLayoutService {
   }
 
   private getStoredTheme(): 'dark' | 'light' {
-    const stored = localStorage.getItem('realtor:theme');
+    const stored = this.storageService.getItem<string>('theme');
     return stored === 'dark' || stored === 'light' ? stored : 'light';
   }
 

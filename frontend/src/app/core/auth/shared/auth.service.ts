@@ -9,8 +9,8 @@ import { FingerprintService } from '../../services';
   providedIn: 'root',
 })
 export class AuthService {
-  private http = inject(HttpClient);
-  private fingerprintService = inject(FingerprintService);
+  private readonly http = inject(HttpClient);
+  private readonly fingerprintService = inject(FingerprintService);
 
   private fingerprint$ = this.fingerprintService.getFingerprint().pipe(shareReplay(1));
 
