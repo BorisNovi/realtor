@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { DividerModule } from 'primeng/divider';
 import { Store } from '@ngxs/store';
-import { Logout } from 'src/app/core';
+import { Logout, Terminate } from 'src/app/core';
 
 @Component({
   selector: 'app-profile',
@@ -17,5 +17,9 @@ export class ProfileComponent {
 
   logOut(): void {
     this.store.dispatch(new Logout());
+  }
+
+  terminate(): void {
+    this.store.dispatch(new Terminate());
   }
 }
