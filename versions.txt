@@ -1,3 +1,6 @@
+08.03.2025:
+- Добавлен .env.example (.env copy) 
+
 07.03.2025:
 - Добавлена обработка ЭП /refresh: добавлен файл "refresh.py" с логикой, а также путь. 
 - Была проблема: Глобальная аутентификация JWTAuthentication отклоняла refresh token, так как он не был в settings.pt/AUTH_TOKEN_CLASSES.
