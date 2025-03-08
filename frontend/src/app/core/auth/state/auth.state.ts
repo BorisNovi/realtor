@@ -23,6 +23,9 @@ import {
   Signup,
   SignupFailed,
   SignupSuccess,
+  Terminate,
+  TerminationFailed,
+  TerminationSuccess,
 } from './auth.actions';
 import { ISessionUser, IUser } from '@shared/interfaces';
 import { AuthService } from '..';
@@ -255,7 +258,7 @@ export class AuthState {
     return of(error);
   }
 
-  // Other
+  // Refresh
   @Action(RefreshToken)
   public onRefreshToken(ctx: StateContext<AuthStateModel>) {
     const { user } = ctx.getState();
@@ -285,6 +288,7 @@ export class AuthState {
     );
   }
 
+  // Logout
   @Action(Logout)
   public onLogout(ctx: StateContext<AuthStateModel>) {
     ctx.dispatch([new RemoveUser(), new LoginRedirect()]);
@@ -305,5 +309,35 @@ export class AuthState {
   @Action(LoginRedirect)
   public onLoginRedirect(ctx: StateContext<AuthStateModel>) {
     ctx.dispatch(new Navigate(['/auth/sign-in']));
+  }
+
+  // Terminate
+  @Action(Terminate)
+  public onTerminate(ctx: StateContext<AuthStateModel>) {
+    ctx.patchState({ loading: true });
+
+    return this.authService.terminateSessions().pipe(
+      tap(() => {
+        ctx.dispatch(new TerminationSuccess());
+      }),
+      catchError((error: Error) => ctx.dispatch(new TerminationFailed(error))),
+    );
+  }
+
+  @Action(TerminationSuccess)
+  public onTerminationSuccess(ctx: StateContext<AuthStateModel>) {
+    ctx.patchState({
+      loading: false,
+      error: null,
+    });
+
+    // this.snackBar.open('Termination Success');
+  }
+
+  @Action(TerminationFailed)
+  public onTerminationFailed(ctx: StateContext<AuthStateModel>, { error }: TerminationFailed) {
+    // this.errorSnackBarService.showError('Termination failed');
+    ctx.patchState({ loading: false });
+    return of(error);
   }
 }

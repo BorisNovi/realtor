@@ -23,6 +23,15 @@ export class AuthService {
     );
   }
 
+  public terminateSessions(): Observable<void> {
+    return this.fingerprint$.pipe(
+      switchMap(fingerprint => {
+        const body = { fingerprint };
+        return this.http.post<void>(`${environment.apiUrl}/auth/sessions/terminate`, body);
+      }),
+    );
+  }
+
   public login(email: string, password: string): Observable<ISessionUser> {
     return this.fingerprint$.pipe(
       switchMap(fingerprint => {

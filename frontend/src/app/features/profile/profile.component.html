@@ -1,73 +1,84 @@
 <p-fluid>
   <div class="flex flex-col md:flex-row gap-8">
-      <div class="md:w-1/2">
+    <div class="md:w-1/2">
+      <div class="card flex flex-col gap-4">
+        <div class="font-semibold text-xl">Personal info</div>
+        <div class="flex flex-col gap-2">
+          <label for="name1">Name</label>
+          <input pInputText id="name1" type="text" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="email1">Email</label>
+          <input pInputText id="email1" type="text" />
+        </div>
+        <p-button class="self-end" icon="pi pi-save" label="Save" [fluid]="false"></p-button>
+      </div>
 
-        <div class="card flex flex-col gap-4">
-          <div class="font-semibold text-xl">Personal info</div>
+      <div class="card flex flex-col gap-4">
+        <div class="font-semibold text-xl" style="color: var(--p-red-500)">Danger zone</div>
+        <div class="flex flex-col gap-4">
+          <div class="font-semibold text-l">Change password</div>
           <div class="flex flex-col gap-2">
-              <label for="name1">Name</label>
-              <input pInputText id="name1" type="text" />
+            <label for="name1">Password</label>
+            <input pInputText id="name1" type="text" />
           </div>
           <div class="flex flex-col gap-2">
-              <label for="email1">Email</label>
-              <input pInputText id="email1" type="text" />
+            <label for="email1">Confirm password</label>
+            <input pInputText id="email1" type="text" />
           </div>
           <p-button class="self-end" icon="pi pi-save" label="Save" [fluid]="false"></p-button>
         </div>
 
-        <div class="card flex flex-col gap-4">
-          <div class="font-semibold text-xl" style="color: var(--p-red-500)">Danger zone</div>
-          <div class="flex flex-col gap-4">
-            <div class="font-semibold text-l">Change password</div>
-            <div class="flex flex-col gap-2">
-                <label for="name1">Password</label>
-                <input pInputText id="name1" type="text" />
-            </div>
-            <div class="flex flex-col gap-2">
-                <label for="email1">Confirm password</label>
-                <input pInputText id="email1" type="text" />
-            </div>
-            <p-button class="self-end" icon="pi pi-save" label="Save" [fluid]="false"></p-button>
+        <p-divider />
+
+        <div class="flex flex-col gap-4">
+          <div class="font-semibold text-l">Delete profile</div>
+          <div class="flex flex-col gap-2">
+            <label for="password1">Password</label>
+            <input pInputText id="password1" type="text" />
           </div>
+          <p-button
+            class=""
+            icon="pi pi-trash"
+            variant="text"
+            label="Delete profile"
+            severity="danger"
+            [fluid]="false"
+          ></p-button>
+        </div>
+      </div>
+    </div>
 
-          <p-divider />
+    <div class="md:w-1/2">
+      <div class="card flex flex-col gap-4">
+        <div class="font-semibold text-xl">Info aboout profile</div>
+        <div>Something about you</div>
+        <div>Something about you</div>
+        <div>Something about you</div>
+        <div>Something about you</div>
 
-          <div class="flex flex-col gap-4">
-            <div class="font-semibold text-l">Delete profile</div>
-            <div class="flex flex-col gap-2">
-                <label for="password1">Password</label>
-                <input pInputText id="password1" type="text" />
-            </div>
-            <p-button class="" icon="pi pi-trash" variant="text"  label="Delete profile" severity="danger" [fluid]="false"></p-button>
-          </div>
+        <p-divider />
 
+        <div class="flex flex-row justify-between gap-4">
+          <p-button
+            icon="pi pi-sign-out"
+            variant="text"
+            label="Terminate all sessions"
+            severity="danger"
+            (click)="terminate()"
+          ></p-button>
+          <p-button icon="pi pi-sign-out" label="Sign out" severity="danger" (click)="logOut()"></p-button>
         </div>
       </div>
 
-
-      <div class="md:w-1/2">
-          <div class="card flex flex-col gap-4">
-              <div class="font-semibold text-xl">Info aboout profile</div>
-              <div>Something about you</div>
-              <div>Something about you</div>
-              <div>Something about you</div>
-              <div>Something about you</div>
-
-              <p-divider />
-
-              <div class="flex flex-col gap-4">
-                <p-button icon="pi pi-sign-out" label="Sign out" severity="danger" (click)="logOut()"></p-button>
-              </div>
-          </div>
-
-          <div class="card flex flex-col gap-4">
-              <div class="font-semibold text-xl">Help Text</div>
-              <div class="flex flex-wrap gap-2">
-                  <label for="username">Username</label>
-                  <input pInputText id="username" type="text" />
-                  <small>Enter your username to reset your password.</small>
-              </div>
-          </div>
+      <div class="card flex flex-col gap-4">
+        <div class="font-semibold text-xl">Help Text</div>
+        <div class="flex flex-wrap gap-2">
+          <label for="username">Username</label>
+          <input pInputText id="username" type="text" />
+          <small>Enter your username to reset your password.</small>
+        </div>
       </div>
+    </div>
   </div>
 </p-fluid>
