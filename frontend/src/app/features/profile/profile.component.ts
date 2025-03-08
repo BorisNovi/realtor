@@ -13,7 +13,7 @@ import { Logout, Terminate } from 'src/app/core';
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent {
-  private store = inject(Store);
+  private readonly store = inject(Store);
 
   logOut(): void {
     this.store.dispatch(new Logout());

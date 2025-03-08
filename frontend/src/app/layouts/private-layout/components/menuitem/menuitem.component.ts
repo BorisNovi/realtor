@@ -32,8 +32,8 @@ import { RippleModule } from 'primeng/ripple';
   ],
 })
 export class MenuitemComponent implements OnInit, OnDestroy {
-  private router = inject(Router);
-  private layoutService = inject(PrivateLayoutService);
+  private readonly router = inject(Router);
+  private readonly layoutService = inject(PrivateLayoutService);
 
   @Input() item!: MenuItem;
 

@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { PrivateLayoutService } from '../../shared';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { StyleClassModule } from 'primeng/styleclass';
+import { LanguageSelectService } from 'src/app/core';
 
 @Component({
   selector: 'app-topbar',
@@ -12,11 +13,23 @@ import { StyleClassModule } from 'primeng/styleclass';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopbarComponent {
+  private readonly languageSelectService = inject(LanguageSelectService);
+  public readonly layoutService = inject(PrivateLayoutService);
   items!: MenuItem[];
-
-  constructor(public layoutService: PrivateLayoutService) {}
 
   toggleDarkMode() {
     this.layoutService.layoutConfig.update(state => ({ ...state, darkTheme: !state.darkTheme }));
+  }
+
+  toggleLanguage(): void {
+    const availableLanguages = this.languageSelectService.availableLanguages;
+    const currentLang = this.languageSelectService.currentLanguageOption().value;
+
+    const currentIndex = availableLanguages.indexOf(currentLang);
+    const nextIndex = (currentIndex + 1) % availableLanguages.length;
+    const nextLang = availableLanguages[nextIndex];
+
+    this.languageSelectService.changeLanguage(nextLang);
+    console.log(`Current language: ${nextLang}`);
   }
 }
