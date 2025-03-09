@@ -55,10 +55,10 @@ INSTALLED_APPS = [
     # Ваши приложения (в порядке возможных зависимостей)
     'users',                        # Кастомная модель User, основа для других приложений
     'user_auth',                    # Зависит от users (предположительно)
-    'ai_assistant',                 # Может зависеть от users или user_auth
-    'listings',                     # Листинги, возможно, зависят от users
-    'map',                          # Карта, может зависеть от listings или users
-    'payments',                     # Платежи, может зависеть от users
+    # 'ai_assistant',                 # Может зависеть от users или user_auth
+    # 'listings',                     # Листинги, возможно, зависят от users
+    # 'map',                          # Карта, может зависеть от listings или users
+    # 'payments',                     # Платежи, может зависеть от users
 ]
 
 REST_FRAMEWORK = {
