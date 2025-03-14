@@ -5,12 +5,12 @@ import { authGuard, loggedInGuard } from './core';
 export const routes: Routes = [
   {
     path: 'auth',
-    // canActivate: [loggedInGuard],
+    canActivate: [loggedInGuard],
     loadChildren: () => import('./features').then(c => c.authRoutes),
   },
   {
     path: '',
-    // canActivate: [authGuard],
+    canActivate: [authGuard],
     loadChildren: () => import('./layouts').then(c => c.privateLayoutRoutes),
   },
   { path: '**', component: NotFoundComponent },
