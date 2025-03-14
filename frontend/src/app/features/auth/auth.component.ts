@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ConfiguratorComponent } from 'src/app/layouts/private-layout/components';
 
 @Component({
   selector: 'app-auth',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ConfiguratorComponent],
   providers: [],
   templateUrl: './auth.component.html',
 })

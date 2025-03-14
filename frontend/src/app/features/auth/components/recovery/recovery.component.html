@@ -10,16 +10,20 @@
   >
     <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
       <div class="text-center mb-8">
-        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Set New Password</div>
-        <span class="text-muted-color font-medium">Enter your new password</span>
+        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">
+          {{ 'AUTH.SET_NEW_PASSWORD' | translate }}
+        </div>
+        <span class="text-muted-color font-medium">{{ 'AUTH.ENTER_YOUR_NEW_PASSWORD' | translate }}</span>
       </div>
 
       <form (submit)="onSubmit()" [formGroup]="form" class="md:w-[30rem]">
-        <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
+        <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">{{
+          'AUTH.PASSWORD_LABEL' | translate
+        }}</label>
         <p-password
           id="password1"
           formControlName="password"
-          placeholder="New Password"
+          [placeholder]="'AUTH.NEW_PASSWORD_PLACEHOLDER' | translate"
           [toggleMask]="true"
           styleClass="mb-2"
           [fluid]="true"
@@ -30,24 +34,24 @@
         @if (passwordInput?.invalid && passwordInput?.touched && passwordInput?.dirty) {
           <div class="text-red-500 flex flex-col mb-4 text-sm">
             @if (passwordInput?.errors?.['required']) {
-              <span>Password is required.</span>
+              <span>{{ 'AUTH.PASSWORD_REQUIRED_ERROR' | translate }}</span>
             }
             @if (passwordInput?.errors?.['minlength']) {
-              <span>Password must be at least 8 characters.</span>
+              <span>{{ 'AUTH.PASSWORD_MINLENGTH_ERROR' | translate }}</span>
             }
             @if (!passwordInput?.errors?.['minlength'] && passwordInput?.errors?.['pattern']) {
-              <span>Password must contain an uppercase letter, a number, and a special character.</span>
+              <span>{{ 'AUTH.PASSWORD_PATTERN_ERROR' | translate }}</span>
             }
           </div>
         }
 
-        <label for="passwordConfirmation1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2"
-          >Repeat Password</label
-        >
+        <label for="passwordConfirmation1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">
+          {{ 'AUTH.REPEAT_PASSWORD_LABEL' | translate }}
+        </label>
         <p-password
           id="passwordConfirmation1"
           formControlName="passwordConfirmation"
-          placeholder="Repeat New Password"
+          [placeholder]="'AUTH.REPEAT_NEW_PASSWORD_PLACEHOLDER' | translate"
           [toggleMask]="true"
           styleClass="mb-2"
           [fluid]="true"
@@ -58,28 +62,28 @@
         @if (passwordConfirmationInput?.invalid && passwordConfirmationInput?.touched && passwordConfirmationInput?.dirty) {
           <div class="text-red-500 flex flex-col mb-4 text-sm">
             @if (passwordConfirmationInput?.errors?.['required']) {
-              <span>Password is required.</span>
+              <span>{{ 'AUTH.PASSWORD_CONFIRMATION_REQUIRED_ERROR' | translate }}</span>
             }
             @if (passwordConfirmationInput?.errors?.['minlength']) {
-              <span>Password must be at least 8 characters.</span>
+              <span>{{ 'AUTH.PASSWORD_CONFIRMATION_MINLENGTH_ERROR' | translate }}</span>
             }
             @if (!passwordConfirmationInput?.errors?.['minlength'] && passwordConfirmationInput?.errors?.['pattern']) {
-              <span>Password must contain an uppercase letter, a number, and a special character.</span>
+              <span>{{ 'AUTH.PASSWORD_CONFIRMATION_PATTERN_ERROR' | translate }}</span>
             }
             @if (passwordConfirmationInput?.errors?.['fieldsMismatch']) {
-              <span>Passwords do not match.</span>
+              <span>{{ 'AUTH.PASSWORD_CONFIRMATION_MISMATCH_ERROR' | translate }}</span>
             }
           </div>
         }
 
         <div class="flex items-center justify-between mt-2 mb-8 gap-8">
           <span class="font-medium ml-2">
-            Back to
-            <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-in']">Sign in</a>
+            {{ 'AUTH.BACK_TO_TEXT' | translate }}
+            <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-in']">{{ 'AUTH.SIGN_IN_LINK' | translate }}</a>
           </span>
         </div>
         <p-button
-          label="Save"
+          [label]="'AUTH.SAVE_BUTTON' | translate"
           styleClass="w-full"
           type="submit"
           [disabled]="form.invalid || !this.token"
