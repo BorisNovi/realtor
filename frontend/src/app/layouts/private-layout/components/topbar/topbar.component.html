@@ -51,7 +51,7 @@
           <span>Theme</span>
         </button>
 
-        <button class="layout-topbar-action" (click)="toggleLanguage()">
+        <button [pTooltip]="currentLanguage().label" tooltipPosition="left" class="layout-topbar-action" (click)="toggleLanguage()">
           <i class="pi pi-globe"></i>
           <span>Language</span>
         </button>

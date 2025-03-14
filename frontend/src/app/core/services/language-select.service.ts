@@ -18,10 +18,10 @@ export class LanguageSelectService {
 
   // Вычисляемый сигнал для языковых опций
   public languageOptions = computed<ILanguageOption[]>(() => [
-    { value: 'en', label: this.translateService.instant('English') },
-    { value: 'ru', label: this.translateService.instant('Русский') },
-    { value: 'es', label: this.translateService.instant('Español') },
-    { value: 'pt', label: this.translateService.instant('Português') },
+    { value: 'en', label: 'English' },
+    { value: 'ru', label: 'Русский' },
+    { value: 'es', label: 'Español' },
+    { value: 'pt', label: 'Português' },
   ]);
 
   // Вычисляемый сигнал для текущей опции
