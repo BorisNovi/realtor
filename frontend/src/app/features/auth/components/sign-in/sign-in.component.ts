@@ -16,8 +16,8 @@ import { AuthState } from 'src/app/core/auth/state/auth.state';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInComponent {
-  private fb = inject(FormBuilder);
-  private store = inject(Store);
+  private readonly fb = inject(FormBuilder);
+  private readonly store = inject(Store);
 
   public isLoading = this.store.selectSignal(AuthState.loading);
 

@@ -4,3 +4,4 @@ export { AuthComponent } from './auth/auth.component';
 export { authRoutes } from './auth/auth.routes';
 
 export { CatalogComponent } from './catalog/catalog.component';
+export { ProfileComponent } from './profile/profile.component';

@@ -7,7 +7,7 @@ import { filter, map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthSocketSyncService {
-  private store = inject(Store);
+  private readonly store = inject(Store);
   // private socketService = inject(SocketService);
 
   public syncSocketWithAuth() {

@@ -26,9 +26,9 @@ import { AuthState } from 'src/app/core/auth/state/auth.state';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignUpComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private store = inject(Store);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly store = inject(Store);
+  private readonly router = inject(Router);
 
   private token: string | null = this.router.parseUrl(this.router.url).queryParamMap.get('token');
   public isLoading = this.store.selectSignal(AuthState.loading);
