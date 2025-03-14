@@ -23,6 +23,8 @@
     "@angular/platform-browser-dynamic": "^19.1.0",
     "@angular/router": "^19.1.0",
     "@fingerprintjs/fingerprintjs": "^4.6.1",
+    "@ngx-translate/core": "^16.0.4",
+    "@ngx-translate/http-loader": "^16.0.1",
     "@ngxs/devtools-plugin": "19.0.0",
     "@ngxs/form-plugin": "19.0.0",
     "@ngxs/router-plugin": "19.0.0",

@@ -49,6 +49,10 @@
     transition: background-color var(--element-transition-duration);
     cursor: pointer;
 
+    &_active {
+      color: var(--primary-color);
+    }
+
     &:hover {
       background-color: var(--surface-hover);
     }

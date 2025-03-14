@@ -26,8 +26,8 @@ import { RecoverPassword } from 'src/app/core/auth/state/auth.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForgotComponent {
-  private fb = inject(FormBuilder);
-  private store = inject(Store);
+  private readonly fb = inject(FormBuilder);
+  private readonly store = inject(Store);
 
   public isLoading = this.store.selectSignal(AuthState.loading);
 

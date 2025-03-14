@@ -9,8 +9,8 @@ import { FingerprintService } from '../../services';
   providedIn: 'root',
 })
 export class AuthService {
-  private http = inject(HttpClient);
-  private fingerprintService = inject(FingerprintService);
+  private readonly http = inject(HttpClient);
+  private readonly fingerprintService = inject(FingerprintService);
 
   private fingerprint$ = this.fingerprintService.getFingerprint().pipe(shareReplay(1));
 
@@ -19,6 +19,15 @@ export class AuthService {
       switchMap(fingerprint => {
         const body = { fingerprint };
         return this.http.post<IUser>(`${environment.apiUrl}/auth/sessions/check`, body);
+      }),
+    );
+  }
+
+  public terminateSessions(): Observable<void> {
+    return this.fingerprint$.pipe(
+      switchMap(fingerprint => {
+        const body = { fingerprint };
+        return this.http.post<void>(`${environment.apiUrl}/auth/sessions/terminate`, body);
       }),
     );
   }

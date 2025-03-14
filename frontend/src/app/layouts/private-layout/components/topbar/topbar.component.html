@@ -1,0 +1,61 @@
+<div class="layout-topbar">
+  <div class="layout-topbar-logo-container">
+    <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
+      <i class="pi pi-bars"></i>
+    </button>
+    <a class="layout-topbar-logo" routerLink="/">
+      <span class="text-xs">pace here a logo</span>
+      <span>REALTOR-X</span>
+    </a>
+  </div>
+
+  <div class="layout-topbar-actions">
+    <div class="layout-config-menu">
+      <!-- <div class="relative">
+        <button
+          class="layout-topbar-action layout-topbar-action-highlight"
+          pStyleClass="@next"
+          enterFromClass="hidden"
+          enterActiveClass="animate-scalein"
+          leaveToClass="hidden"
+          leaveActiveClass="animate-fadeout"
+          [hideOnOutsideClick]="true"
+        >
+          <i class="pi pi-palette"></i>
+        </button>
+        <app-configurator />
+      </div> -->
+    </div>
+
+    <button
+      class="layout-topbar-menu-button layout-topbar-action"
+      pStyleClass="@next"
+      enterFromClass="hidden"
+      enterActiveClass="animate-scalein"
+      leaveToClass="hidden"
+      leaveActiveClass="animate-fadeout"
+      [hideOnOutsideClick]="true"
+    >
+      <i class="pi pi-ellipsis-v"></i>
+    </button>
+
+    <div class="layout-topbar-menu hidden lg:block">
+      <div class="layout-topbar-menu-content">
+        <a class="layout-topbar-action" routerLink="/profile" routerLinkActive="layout-topbar-action_active">
+          <i class="pi pi-user"></i>
+          <span>Profile</span>
+        </a>
+
+        <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
+          <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
+          <span>Theme</span>
+        </button>
+
+        <button [pTooltip]="currentLanguage().label" tooltipPosition="left" class="layout-topbar-action" (click)="toggleLanguage()">
+          <i class="pi pi-globe"></i>
+          <span>Language</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

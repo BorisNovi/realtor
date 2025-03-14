@@ -13,6 +13,10 @@ export const privateLayoutRoutes: Routes = [
         redirectTo: 'catalog',
       },
       { path: 'catalog', component: CatalogComponent },
+      {
+        path: 'profile',
+        loadComponent: () => import('../../features/profile/profile.component').then(c => c.ProfileComponent),
+      },
       { path: '**', redirectTo: 'catalog' },
     ],
   },
