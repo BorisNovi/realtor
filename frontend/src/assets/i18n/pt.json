@@ -1,3 +1,42 @@
 {
-  "CHECK": "VERIFICAR (PT)"
+  "CHECK": "CHECK (PT)",
+
+  "AUTH": {
+    "WELCOME": "Bem-vindo ao Realtor!",
+    "SIGN_IN_TO_CONTINUE": "Faça login para continuar",
+    "JOIN": "Junte-se ao Realtor!",
+    "SIGN_UP_TO_GET_STARTED": "Cadastre-se para começar",
+    "RESET_PASSWORD": "Redefinir senha",
+    "ENTER_YOUR_EMAIL_TO_CONTINUE": "Digite seu e-mail para continuar",
+    "SET_NEW_PASSWORD": "Definir nova senha",
+    "ENTER_YOUR_NEW_PASSWORD": "Digite sua nova senha",
+    "INFO_IMAGE_RIGHT_BLOCK": "Bloco de imagem de informação à direita",
+    "EMAIL_LABEL": "E-mail",
+    "EMAIL_PLACEHOLDER": "Endereço de e-mail",
+    "EMAIL_REQUIRED_ERROR": "O e-mail é obrigatório.",
+    "EMAIL_INVALID_ERROR": "Por favor, insira um e-mail válido.",
+    "PASSWORD_LABEL": "Senha",
+    "PASSWORD_PLACEHOLDER": "Senha",
+    "NEW_PASSWORD_PLACEHOLDER": "Nova senha",
+    "PASSWORD_REQUIRED_ERROR": "A senha é obrigatória.",
+    "PASSWORD_MINLENGTH_ERROR": "A senha deve ter pelo menos 8 caracteres.",
+    "PASSWORD_PATTERN_ERROR": "A senha deve conter uma letra maiúscula, um número e um caractere especial.",
+    "REPEAT_PASSWORD_LABEL": "Repetir senha",
+    "REPEAT_PASSWORD_PLACEHOLDER": "Repetir senha",
+    "REPEAT_NEW_PASSWORD_PLACEHOLDER": "Repetir nova senha",
+    "PASSWORD_CONFIRMATION_REQUIRED_ERROR": "A senha é obrigatória.",
+    "PASSWORD_CONFIRMATION_MINLENGTH_ERROR": "A senha deve ter pelo menos 8 caracteres.",
+    "PASSWORD_CONFIRMATION_PATTERN_ERROR": "A senha deve conter uma letra maiúscula, um número e um caractere especial.",
+    "PASSWORD_CONFIRMATION_MISMATCH_ERROR": "As senhas não coincidem.",
+    "FORGOT_PASSWORD_LINK": "Esqueceu a senha?",
+    "DONT_HAVE_ACCOUNT_TEXT": "Não tem uma conta?",
+    "SIGN_UP_LINK": "Cadastre-se",
+    "SIGN_IN_BUTTON": "Entrar",
+    "ALREADY_HAVE_ACCOUNT_TEXT": "Já tem uma conta?",
+    "SIGN_IN_LINK": "Entrar",
+    "SIGN_UP_BUTTON": "Cadastrar",
+    "BACK_TO_TEXT": "Voltar para",
+    "SEND_BUTTON": "Enviar",
+    "SAVE_BUTTON": "Salvar"
+  }
 }

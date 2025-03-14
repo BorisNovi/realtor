@@ -10,33 +10,50 @@
   >
     <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
       <div class="text-center mb-8">
-        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Reset Password</div>
-        <span class="text-muted-color font-medium">Enter your email to continue</span>
+        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">
+          {{ 'AUTH.RESET_PASSWORD' | translate }}
+        </div>
+        <span class="text-muted-color font-medium">{{ 'AUTH.ENTER_YOUR_EMAIL_TO_CONTINUE' | translate }}</span>
       </div>
 
       <form (submit)="onSubmit()" [formGroup]="form" class="md:w-[30rem]">
-        <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-        <input pInputText id="email1" formControlName="email" type="text" placeholder="Email address" class="w-full mb-2" />
+        <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">{{
+          'AUTH.EMAIL_LABEL' | translate
+        }}</label>
+        <input
+          pInputText
+          id="email1"
+          formControlName="email"
+          type="text"
+          [placeholder]="'AUTH.EMAIL_PLACEHOLDER' | translate"
+          class="w-full mb-2"
+        />
 
         @let mailInput = form.controls['email'];
         @if (mailInput?.invalid && mailInput?.touched && mailInput?.dirty) {
           <div class="text-red-500 flex flex-col mb-4 text-sm">
             @if (mailInput?.errors?.['required']) {
-              <span>Email is required.</span>
+              <span>{{ 'AUTH.EMAIL_REQUIRED_ERROR' | translate }}</span>
             }
             @if (mailInput?.errors?.['email']) {
-              <span>Please enter a valid email.</span>
+              <span>{{ 'AUTH.EMAIL_INVALID_ERROR' | translate }}</span>
             }
           </div>
         }
 
         <div class="flex items-center justify-between mt-2 mb-8 gap-8">
           <span class="font-medium ml-2">
-            Back to
-            <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-in']">Sign in</a>
+            {{ 'AUTH.BACK_TO_TEXT' | translate }}
+            <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-in']">{{ 'AUTH.SIGN_IN_LINK' | translate }}</a>
           </span>
         </div>
-        <p-button label="Send" styleClass="w-full" type="submit" [disabled]="form.invalid" [loading]="loading"></p-button>
+        <p-button
+          [label]="'AUTH.SEND_BUTTON' | translate"
+          styleClass="w-full"
+          type="submit"
+          [disabled]="form.invalid"
+          [loading]="loading"
+        ></p-button>
       </form>
     </div>
   </div>

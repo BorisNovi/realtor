@@ -1,3 +1,42 @@
 {
-  "CHECK": "ПРОВЕРКА (РУ)"
+  "CHECK": "ПРОВЕРКА (РУ)",
+
+  "AUTH": {
+    "WELCOME": "Добро пожаловать в Realtor!",
+    "SIGN_IN_TO_CONTINUE": "Войдите, чтобы продолжить",
+    "JOIN": "Присоединяйтесь к Realtor!",
+    "SIGN_UP_TO_GET_STARTED": "Зарегистрируйтесь, чтобы начать",
+    "RESET_PASSWORD": "Сбросить пароль",
+    "ENTER_YOUR_EMAIL_TO_CONTINUE": "Введите ваш email, чтобы продолжить",
+    "SET_NEW_PASSWORD": "Установить новый пароль",
+    "ENTER_YOUR_NEW_PASSWORD": "Введите ваш новый пароль",
+    "INFO_IMAGE_RIGHT_BLOCK": "Информационное изображение правого блока",
+    "EMAIL_LABEL": "Email",
+    "EMAIL_PLACEHOLDER": "Адрес электронной почты",
+    "EMAIL_REQUIRED_ERROR": "Email обязателен.",
+    "EMAIL_INVALID_ERROR": "Пожалуйста, введите действительный email.",
+    "PASSWORD_LABEL": "Пароль",
+    "PASSWORD_PLACEHOLDER": "Пароль",
+    "NEW_PASSWORD_PLACEHOLDER": "Новый пароль",
+    "PASSWORD_REQUIRED_ERROR": "Пароль обязателен.",
+    "PASSWORD_MINLENGTH_ERROR": "Пароль должен содержать не менее 8 символов.",
+    "PASSWORD_PATTERN_ERROR": "Пароль должен содержать заглавную букву, цифру и специальный символ.",
+    "REPEAT_PASSWORD_LABEL": "Повторите пароль",
+    "REPEAT_PASSWORD_PLACEHOLDER": "Повторите пароль",
+    "REPEAT_NEW_PASSWORD_PLACEHOLDER": "Повторите новый пароль",
+    "PASSWORD_CONFIRMATION_REQUIRED_ERROR": "Пароль обязателен.",
+    "PASSWORD_CONFIRMATION_MINLENGTH_ERROR": "Пароль должен содержать не менее 8 символов.",
+    "PASSWORD_CONFIRMATION_PATTERN_ERROR": "Пароль должен содержать заглавную букву, цифру и специальный символ.",
+    "PASSWORD_CONFIRMATION_MISMATCH_ERROR": "Пароли не совпадают.",
+    "FORGOT_PASSWORD_LINK": "Забыли пароль?",
+    "DONT_HAVE_ACCOUNT_TEXT": "Нет аккаунта?",
+    "SIGN_UP_LINK": "Зарегистрироваться",
+    "SIGN_IN_BUTTON": "Войти",
+    "ALREADY_HAVE_ACCOUNT_TEXT": "Уже есть аккаунт?",
+    "SIGN_IN_LINK": "Войти",
+    "SIGN_UP_BUTTON": "Зарегистрироваться",
+    "BACK_TO_TEXT": "Назад к",
+    "SEND_BUTTON": "Отправить",
+    "SAVE_BUTTON": "Сохранить"
+  }
 }
