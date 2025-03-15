@@ -9,6 +9,7 @@ import { RippleModule } from 'primeng/ripple';
 import { Store } from '@ngxs/store';
 import { AuthState } from 'src/app/core/auth/state/auth.state';
 import { RecoverPassword } from 'src/app/core/auth/state/auth.actions';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-forgot',
@@ -21,6 +22,7 @@ import { RecoverPassword } from 'src/app/core/auth/state/auth.actions';
     ButtonModule,
     RippleModule,
     ButtonModule,
+    TranslatePipe,
   ],
   templateUrl: './forgot.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

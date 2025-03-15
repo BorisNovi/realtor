@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { matchValuesValidator } from '@shared/validators';
 import { ButtonModule } from 'primeng/button';
@@ -21,6 +22,7 @@ import { AuthState } from 'src/app/core/auth/state/auth.state';
     ButtonModule,
     RippleModule,
     ButtonModule,
+    TranslatePipe,
   ],
   templateUrl: './recovery.component.html',
 })
