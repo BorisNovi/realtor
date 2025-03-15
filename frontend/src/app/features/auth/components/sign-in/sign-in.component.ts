@@ -8,10 +8,20 @@ import { RippleModule } from 'primeng/ripple';
 import { Store } from '@ngxs/store';
 import { Login } from 'src/app/core/auth/state/auth.actions';
 import { AuthState } from 'src/app/core/auth/state/auth.state';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sign-in',
-  imports: [RouterLink, ButtonModule, InputTextModule, PasswordModule, RippleModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    RouterLink,
+    ButtonModule,
+    InputTextModule,
+    PasswordModule,
+    RippleModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslatePipe,
+  ],
   templateUrl: './sign-in.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

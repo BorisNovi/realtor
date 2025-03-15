@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { SidebarComponent } from './sidebar.component';
+import { provideRouter } from '@angular/router';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
@@ -9,6 +10,7 @@ describe('SidebarComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SidebarComponent],
+      providers: [provideAnimations(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SidebarComponent);
