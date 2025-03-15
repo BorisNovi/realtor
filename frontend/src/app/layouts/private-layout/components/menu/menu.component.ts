@@ -15,12 +15,16 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.model = [
       {
-        visible: false,
-        label: 'Section 1',
-        items: [{ label: 'Catalog', icon: 'pi pi-fw pi-home', routerLink: ['/catalog'] }],
+        visible: true,
+        label: 'Main',
+        items: [
+          { label: 'Catalog', icon: 'pi pi-fw pi-book', routerLink: ['/catalog'] },
+          { label: 'Map', icon: 'pi pi-fw pi-map', routerLink: ['/map'] },
+          { label: 'Listings', icon: 'pi pi-fw pi-list-check', routerLink: ['/listings'] },
+        ],
       },
       {
-        label: 'Section 2',
+        label: 'AI',
         items: [
           { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/'], visible: false },
           { label: 'Panel', icon: 'pi pi-fw pi-tablet', routerLink: ['/'] },
@@ -70,6 +74,7 @@ export class MenuComponent implements OnInit {
       },
       {
         label: 'Hierarchy',
+        visible: false,
         items: [
           {
             label: 'Submenu 1',
