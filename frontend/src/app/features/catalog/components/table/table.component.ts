@@ -1,29 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ICatalogData } from '@shared/interfaces';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ICatalogItem } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { ButtonGroupModule } from 'primeng/buttongroup';
 
 @Component({
   selector: 'app-table',
-  imports: [TableModule, TagModule, ButtonModule, CommonModule],
+  imports: [TableModule, TagModule, ButtonModule, CommonModule, ButtonGroupModule],
   templateUrl: './table.component.html',
-  styleUrl: './table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableComponent {
-  @Input() tableData?: ICatalogData[];
+  @Input() tableData?: ICatalogItem[];
+  @Output() filtersOpen = new EventEmitter<void>();
 
-  public selectedItems!: ICatalogData[];
+  public selectedItems: ICatalogItem[] = [];
 
   getSeverity(status: string) {
     switch (status) {
-      case 'Avaliable':
+      case 'available':
         return 'success';
-      case 'Rented':
+      case 'rented':
         return 'warn';
-      case 'Reserved':
+      case 'reserved':
         return 'danger';
       default:
         return 'info';
@@ -34,7 +35,11 @@ export class TableComponent {
     console.log(event);
   }
 
-  openActions(item: ICatalogData): void {
+  openActions(item: ICatalogItem): void {
     console.log('actions with', item);
+  }
+
+  onFiltersOpen(): void {
+    this.filtersOpen.emit();
   }
 }
