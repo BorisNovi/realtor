@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { ICatalogItem } from '@shared/interfaces';
+import { ICatalogItem, ITableData } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -13,7 +13,7 @@ import { ButtonGroupModule } from 'primeng/buttongroup';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableComponent {
-  @Input() tableData?: ICatalogItem[];
+  @Input() tableData?: ITableData<ICatalogItem>;
   @Output() filtersOpen = new EventEmitter<void>();
 
   public selectedItems: ICatalogItem[] = [];

@@ -23,3 +23,16 @@ export class DeletePropertyObjects {
   static readonly type = '[Catalog] Delete Property Objects';
   constructor(public readonly idList: number[]) {}
 }
+
+export class CatalogOperationSuccess {
+  public static readonly type = '[Catalog] CatalogOperationSuccess';
+  constructor(public readonly message?: string) {}
+}
+
+export class CatalogOperationFailed {
+  public static readonly type = '[Catalog] CatalogOperationFailed';
+  constructor(
+    public readonly error: Error,
+    public readonly message?: string,
+  ) {}
+}
