@@ -11,7 +11,7 @@ import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
 import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { provideStore } from '@ngxs/store';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { authInterceptor, AuthState } from './core';
+import { authInterceptor, AuthState, CatalogState } from './core';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -53,7 +53,7 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideStore(
-      [AuthState],
+      [AuthState, CatalogState],
       withNgxsReduxDevtoolsPlugin(),
       withNgxsFormPlugin(),
       withNgxsRouterPlugin(),
