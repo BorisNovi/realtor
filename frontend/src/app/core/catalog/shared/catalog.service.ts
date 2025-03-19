@@ -1,15 +1,50 @@
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { environment } from '@environments/environment';
 import { PropertyStatus, PropertyType } from '@shared/enums';
-import { ICatalogItem, ITableData } from '@shared/interfaces';
+import { ICatalogItem, IPagination, IPropertyObject, ITableData } from '@shared/interfaces';
 import { delay, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CatalogService {
-  constructor() {}
+  private readonly http = inject(HttpClient);
 
-  fetchCatalog(): Observable<ITableData<ICatalogItem>> {
+  private mockData: IPropertyObject = {
+    id: 2,
+    photos: [''],
+    propertyType: PropertyType.flat,
+    address: 'Zalupinsk',
+    mapLink: 'map',
+    price: {
+      value: 590,
+      currency: 'USD',
+    },
+    area: 78,
+    rooms: 3,
+    floor: {
+      current: 24,
+      full: 42,
+    },
+    dateAdded: `2025-03-01`,
+    status: PropertyStatus.available,
+    comment: 'comment',
+    specifies: {
+      bath: false,
+      shower: false,
+      airConditionig: false,
+      fireplace: false,
+      beautifulView: false,
+      newBuilding: false,
+      elevator: false,
+    },
+  };
+
+  public fetchCatalog(filters: any, pagination: IPagination): Observable<ITableData<ICatalogItem>> {
+    console.log('fetch', filters, pagination);
+    const { search } = filters;
+
     const mockData = Array.from({ length: 31 }, (_, index) => ({
       id: index,
       photos: [`https://example.com/photos/flat${index + 1}.jpg`],
@@ -30,6 +65,39 @@ export class CatalogService {
       status: index % 3 === 0 ? PropertyStatus.available : index % 3 === 1 ? PropertyStatus.reserved : PropertyStatus.rented,
     }));
 
+    const params = new HttpParams({
+      fromObject: {
+        ...(pagination && { page: String(pagination.first) }),
+        ...(pagination && { page_size: String(pagination.rows) }),
+        ...(search && { search }),
+      },
+    });
+
     return of({ items: mockData, total: 31 }).pipe(delay(1000)); // Задержка в 1 секунду
+    this.http.get<ITableData<ICatalogItem>>(`${environment.apiUrl}/catalog`, { params });
+  }
+
+  public fetchPropertyObject(id: number): Observable<IPropertyObject> {
+    console.log('get', id);
+    return of(this.mockData).pipe(delay(1000));
+    // this.http.get<IPropertyObject>(`${environment.apiUrl}/catalog/${id}`);
+  }
+
+  public createPropertyObject(body: ICatalogItem): Observable<IPropertyObject> {
+    console.log('create', body);
+    return of(this.mockData).pipe(delay(1000));
+    this.http.post<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
+  }
+
+  public updatePropertyObject(body: ICatalogItem): Observable<IPropertyObject> {
+    console.log('update', body);
+    return of(this.mockData).pipe(delay(1000));
+    this.http.put<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
+  }
+
+  public deletePropertyObject(id: number[]): Observable<void> {
+    console.log('delete', id);
+    return of().pipe(delay(1000));
+    this.http.delete<void>(`${environment.apiUrl}/catalog`);
   }
 }

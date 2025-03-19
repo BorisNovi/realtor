@@ -1,4 +1,4 @@
 export interface IPagination {
-  pageIndex: number;
-  pageSize: number;
+  first: number;
+  rows: number;
 }

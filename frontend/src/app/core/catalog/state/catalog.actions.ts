@@ -1,7 +1,12 @@
-import { IPropertyObject } from '@shared/interfaces';
+import { IPagination, IPropertyObject } from '@shared/interfaces';
 
 export class FetchCatalog {
   static readonly type = '[Catalog] Fetch Catalog';
+}
+
+export class SetCatalogPagination {
+  public static readonly type = '[Catalog] Set Catalog Pagination';
+  constructor(public readonly pagination: IPagination) {}
 }
 
 export class FetchPropertyObject {
