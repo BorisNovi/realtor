@@ -2,12 +2,21 @@ import { inject, Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { ICatalogItem, IPagination, IPropertyObject, ITableData } from '@shared/interfaces';
 import { CatalogService } from '../shared';
-import { Navigate } from '@ngxs/router-plugin';
 import { tap, catchError, of } from 'rxjs';
-import { CatalogOperationFailed, CatalogOperationSuccess, CreatePropertyObject, DeletePropertyObjects, FetchCatalog, FetchPropertyObject, UpdatePropertyObject } from './catalog.actions';
+import {
+  CatalogOperationFailed,
+  CatalogOperationSuccess,
+  CreatePropertyObject,
+  DeletePropertyObjects,
+  FetchCatalog,
+  FetchPropertyObject,
+  SetCatalogPagination,
+  UpdatePropertyObject,
+} from './catalog.actions';
 
 interface CatalogStateModel {
   catalog: ITableData<ICatalogItem>;
+  filters: any; // Создать интерфейс фильтров
   propertyObject: IPropertyObject | null;
   loading: boolean;
   pagination: IPagination;
@@ -17,10 +26,11 @@ interface CatalogStateModel {
   name: 'catalog',
   defaults: {
     catalog: { items: [], total: 0 },
+    filters: {},
     propertyObject: null,
     pagination: {
-      pageIndex: 0,
-      pageSize: 20,
+      first: 0,
+      rows: 20,
     },
     loading: false,
   },
@@ -47,51 +57,61 @@ export class CatalogState {
 
   @Action(FetchCatalog)
   public FetchCatalog(ctx: StateContext<CatalogStateModel>) {
+    const { filters, pagination } = ctx.getState();
     ctx.patchState({ loading: true });
-    return this.catalogService.fetchCatalog().pipe(
-      tap((catalog: ITableData<ICatalogItem>) => ctx.patchState({ catalog, loading: false })),
+    return this.catalogService.fetchCatalog(filters, pagination).pipe(
+      tap((catalog: ITableData<ICatalogItem>) => ctx.patchState({ catalog, loading: false, pagination })),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error))),
     );
+  }
+
+  @Action(SetCatalogPagination)
+  public setCatalogPagination(ctx: StateContext<CatalogStateModel>, { pagination }: SetCatalogPagination) {
+    ctx.patchState({
+      pagination: {
+        first: pagination.first,
+        rows: pagination.rows,
+      },
+    });
   }
 
   @Action(FetchPropertyObject)
   public fetchPropertyObject(ctx: StateContext<CatalogStateModel>, { id }: FetchPropertyObject) {
     ctx.patchState({ loading: true });
-    // return this.catalogService.getPropertyObject(id).pipe(
-    //   tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
-    //   catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error))),
-    // );
+    return this.catalogService.fetchPropertyObject(id).pipe(
+      tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
+      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error))),
+    );
   }
 
   @Action(CreatePropertyObject)
   public createPropertyObject(ctx: StateContext<CatalogStateModel>, { propertyObject }: CreatePropertyObject) {
     ctx.patchState({ loading: true });
-    // return this.catalogService.create(propertyObject).pipe(
-    //   tap(() => ctx.dispatch(new CatalogOperationSuccess('успешно создан'))),
-    //   catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось создать'))),
-    // );
+    return this.catalogService.createPropertyObject(propertyObject).pipe(
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('успешно создан'))),
+      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось создать'))),
+    );
   }
 
   @Action(UpdatePropertyObject)
   public updatePropertyObject(ctx: StateContext<CatalogStateModel>, { propertyObject }: UpdatePropertyObject) {
-    // const { id } = ctx.getState().propertyObject;
-    // ctx.patchState({ loading: true });
-    // return this.catalogService.update(id, propertyObject).pipe(
-    //   tap(() => ctx.dispatch(new CatalogOperationSuccess('успешно обновлен'))),
-    //   catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось обновить'))),
-    // );
+    ctx.patchState({ loading: true });
+    return this.catalogService.updatePropertyObject(propertyObject).pipe(
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('успешно обновлен'))),
+      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось обновить'))),
+    );
   }
 
   @Action(DeletePropertyObjects)
   public deletePropertyObjects(ctx: StateContext<CatalogStateModel>, { idList }: DeletePropertyObjects) {
     ctx.patchState({ loading: true });
-    // return this.catalogService.delete(idList).pipe(
-    //   tap(() => {
-    //     ctx.dispatch(new FetchCatalog());
-    //     ctx.dispatch(new CatalogOperationSuccess('успешно удален'));
-    //   }),
-    //   catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось удалить'))),
-    // );
+    return this.catalogService.deletePropertyObject(idList).pipe(
+      tap(() => {
+        ctx.dispatch(new FetchCatalog());
+        ctx.dispatch(new CatalogOperationSuccess('успешно удален'));
+      }),
+      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось удалить'))),
+    );
   }
 
   @Action(CatalogOperationSuccess)

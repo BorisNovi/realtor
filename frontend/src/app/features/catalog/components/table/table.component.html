@@ -1,13 +1,14 @@
 <div class="card">
+  @let tableData = tableDataS();
   <p-table
     #pTable
     [scrollable]="true"
     [scrollHeight]="'calc(100vh - 19.5rem)'"
     [value]="tableData!.items"
     [paginator]="true"
-    [loading]="false"
-    [rows]="20"
+    [loading]="loadingS()"
     [totalRecords]="tableData?.total || 0"
+    [lazy]="true"
     [rowsPerPageOptions]="[10, 20, 50]"
     [showCurrentPageReport]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
