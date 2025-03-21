@@ -12,7 +12,11 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+<<<<<<< HEAD
     env_file: ./backend/.env  # Загружаем докер-версию переменных
+=======
+    env_file: ./backend/.env.docker  # Загружаем докер-версию переменных
+>>>>>>> 2dda164c92e58c14546f590b42d22edf0f3269b3
     ports:
       - '8000:8000'
     environment:
@@ -21,6 +25,10 @@ services:
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=admin
       - DATABASE_PORT=5432
+<<<<<<< HEAD
+=======
+      - DOCKERIZED=true
+>>>>>>> 2dda164c92e58c14546f590b42d22edf0f3269b3
     depends_on:
       postgres:
         condition: service_healthy
@@ -56,7 +64,11 @@ services:
     networks:
       - app-network
     env_file:
+<<<<<<< HEAD
       - ./backend/.env
+=======
+      - ./backend/.env.docker  # 🔹 Загружаем переменные окружения для Redis
+>>>>>>> 2dda164c92e58c14546f590b42d22edf0f3269b3
 
 networks:
   app-network:

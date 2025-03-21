@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -11,7 +11,15 @@ import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
 import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { provideStore } from '@ngxs/store';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { AuthState } from './core/auth/state/auth.state';
+import { authInterceptor, AuthState } from './core';
+
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,7 +32,17 @@ export const appConfig: ApplicationConfig = {
       }),
       withEnabledBlockingInitialNavigation(),
     ),
-    provideHttpClient(withInterceptors([]), withFetch()),
+    provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        defaultLanguage: 'en',
+        loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient],
+        },
+      }),
+    ),
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
@@ -41,9 +59,9 @@ export const appConfig: ApplicationConfig = {
       withNgxsRouterPlugin(),
       withNgxsStoragePlugin({
         namespace: 'realtor',
-        keys: ['auth.token', 'auth.refreshToken', 'auth.user'],
+        keys: ['auth.accessToken', 'auth.refreshToken', 'auth.user'],
         afterDeserialize: (obj, key) => {
-          if (key === 'auth.token' && obj?.expires < Date.now()) {
+          if (key === 'auth.accessToken' && obj?.expires < Date.now()) {
             return null; // Очистка просроченного токена
           }
           return obj;
