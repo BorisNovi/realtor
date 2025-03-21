@@ -12,7 +12,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    env_file: ./backend/.env.docker  # Загружаем докер-версию переменных
+    env_file: ./backend/.env  # Загружаем докер-версию переменных
     ports:
       - '8000:8000'
     environment:
@@ -21,7 +21,6 @@ services:
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=admin
       - DATABASE_PORT=5432
-      - DOCKERIZED=true
     depends_on:
       postgres:
         condition: service_healthy
@@ -57,7 +56,7 @@ services:
     networks:
       - app-network
     env_file:
-      - ./backend/.env.docker  # 🔹 Загружаем переменные окружения для Redis
+      - ./backend/.env
 
 networks:
   app-network:
