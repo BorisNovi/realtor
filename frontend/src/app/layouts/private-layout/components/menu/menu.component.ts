@@ -29,22 +29,23 @@ export class MenuComponent implements OnInit {
           { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/'], visible: false },
           { label: 'Panel', icon: 'pi pi-fw pi-tablet', routerLink: ['/'] },
           { label: 'Message', icon: 'pi pi-fw pi-comment', routerLink: [''] },
-          { label: 'File', icon: 'pi pi-fw pi-file', routerLink: [''] },
-          { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: [''] },
-          { label: 'Timeline', icon: 'pi pi-fw pi-calendar', routerLink: [''] },
         ],
       },
       {
-        label: 'Pages',
+        label: 'Analytics',
         // icon: 'pi pi-fw pi-briefcase',
         // routerLink: ['/pages'],
         items: [
+          { label: 'Analysis', icon: 'pi pi-fw pi-chart-bar', routerLink: [''] },
+          { label: 'Plans', icon: 'pi pi-fw pi-calendar', routerLink: [''] },
           {
+            visible: false,
             label: 'Landing',
             icon: 'pi pi-fw pi-globe',
             routerLink: ['/landing'],
           },
           {
+            visible: false,
             label: 'Auth',
             icon: 'pi pi-fw pi-user',
             items: [
@@ -64,11 +65,6 @@ export class MenuComponent implements OnInit {
                 routerLink: ['/auth/access'],
               },
             ],
-          },
-          {
-            label: 'Crud',
-            icon: 'pi pi-fw pi-pencil',
-            routerLink: ['/pages/crud'],
           },
         ],
       },
