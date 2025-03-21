@@ -4,6 +4,8 @@ import os
 from decouple import config
 from dotenv import load_dotenv
 
+APPEND_SLASH = False
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Для локальных тестов SMTP (например для проверки отправки писем для сброса пароля)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
