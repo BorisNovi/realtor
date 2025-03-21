@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { matchValuesValidator } from '@shared/validators';
 import { ButtonModule } from 'primeng/button';
@@ -21,14 +22,15 @@ import { AuthState } from 'src/app/core/auth/state/auth.state';
     ButtonModule,
     RippleModule,
     ButtonModule,
+    TranslatePipe,
   ],
   templateUrl: './sign-up.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignUpComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private store = inject(Store);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly store = inject(Store);
+  private readonly router = inject(Router);
 
   private token: string | null = this.router.parseUrl(this.router.url).queryParamMap.get('token');
   public isLoading = this.store.selectSignal(AuthState.loading);

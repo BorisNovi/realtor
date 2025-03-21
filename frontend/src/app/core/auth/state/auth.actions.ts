@@ -1,6 +1,11 @@
 import { ISessionUser } from '@shared/interfaces';
 
 // Log in
+export class CheckSession {
+  static readonly type = '[Auth] Check Session';
+}
+
+// Log in
 export class Login {
   static readonly type = '[Auth] Login';
   constructor(
@@ -87,11 +92,12 @@ export class ActivationAfterRecoverFailed {
   constructor(public readonly error: Error) {}
 }
 
-// Other
+// Refresh
 export class RefreshToken {
   static readonly type = '[Auth] Refresh Token';
 }
 
+// Logout
 export class Logout {
   static readonly type = '[Auth] Logout';
 }
@@ -102,4 +108,18 @@ export class RemoveUser {
 
 export class LoginRedirect {
   static readonly type = '[Auth] Login Redirect';
+}
+
+// Terminate
+export class Terminate {
+  static readonly type = '[Auth] Terminate';
+}
+
+export class TerminationSuccess {
+  static readonly type = '[Auth] Termination Success';
+}
+
+export class TerminationFailed {
+  static readonly type = '[Auth] Termination Failed';
+  constructor(public readonly error: Error) {}
 }

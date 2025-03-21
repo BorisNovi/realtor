@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { matchValuesValidator } from '@shared/validators';
 import { ButtonModule } from 'primeng/button';
@@ -21,13 +22,14 @@ import { AuthState } from 'src/app/core/auth/state/auth.state';
     ButtonModule,
     RippleModule,
     ButtonModule,
+    TranslatePipe,
   ],
   templateUrl: './recovery.component.html',
 })
 export class RecoveryComponent {
-  private fb = inject(FormBuilder);
-  private store = inject(Store);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly store = inject(Store);
+  private readonly router = inject(Router);
 
   public token: string | null = this.router.parseUrl(this.router.url).queryParamMap.get('token');
   public isLoading = this.store.selectSignal(AuthState.loading);
