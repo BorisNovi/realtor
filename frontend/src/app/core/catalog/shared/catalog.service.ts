@@ -47,7 +47,7 @@ export class CatalogService {
 
     const mockData = Array.from({ length: 31 }, (_, index) => ({
       id: index,
-      photos: [`https://example.com/photos/flat${index + 1}.jpg`],
+      photos: [`https://picsum.photos/id/${index + 100}/400/300`],
       propertyType: index % 2 === 0 ? PropertyType.flat : PropertyType.house,
       address: `Город ${index + 1}, ул. Примерная, д. ${10 + index}`,
       mapLink: `https://maps.example.com/?lat=${55.751244 + index * 0.1}&lng=${37.618423 + index * 0.1}`,
