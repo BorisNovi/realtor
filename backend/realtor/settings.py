@@ -12,13 +12,13 @@ SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p
 
 ALLOWED_HOSTS = ['*']
 
-# Загружаем файл .env в зависимости от переменной DOCKERIZED
-ENV_FILE = BASE_DIR / ".env.docker" if os.getenv("DOCKERIZED") == "true" else BASE_DIR / ".env"
+# Загружаем файл .env
+ENV_FILE = BASE_DIR / ".env"
 print(f"Загружаем файл: {ENV_FILE}")
 load_dotenv(ENV_FILE)
 
 # Читаем переменные из .env
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_HOST = os.getenv("REDIS_HOST", "redis")  # Всегда используем "redis" по умолчанию
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 
 # Выводим для проверки
@@ -28,7 +28,7 @@ print(f"REDIS_HOST: {REDIS_HOST}")
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",  # Используем переменные REDIS_HOST и REDIS_PORT
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",  
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
