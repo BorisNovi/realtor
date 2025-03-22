@@ -37,6 +37,60 @@
     "SIGN_UP_BUTTON": "Зарегистрироваться",
     "BACK_TO_TEXT": "Назад к",
     "SEND_BUTTON": "Отправить",
-    "SAVE_BUTTON": "Сохранить"
+    "SAVE_BUTTON": "Сохранить",
+    "NOTIFICATION": {
+      "SESSION_EXPIRED": {
+        "SUMMARY": "Сессия истекла",
+        "DETAIL": "Войдите снова"
+      },
+      "LOGIN_SUCCESS": {
+        "SUMMARY": "Вход выполнен успешно",
+        "DETAIL": "Вы успешно вошли в систему"
+      },
+      "LOGIN_FAILED": {
+        "SUMMARY": "Ошибка входа",
+        "DETAIL": "Проверьте правильность ваших данных"
+      },
+      "SIGNUP_SUCCESS": {
+        "SUMMARY": "Ссылка для регистрации отправлена",
+        "DETAIL": "Проверьте вашу электронную почту"
+      },
+      "SIGNUP_FAILED": {
+        "SUMMARY": "Ссылка для регистрации не отправлена",
+        "DETAIL": "Проверьте правильность ваших данных"
+      },
+      "ACTIVATION_SIGNUP_SUCCESS": {
+        "SUMMARY": "Регистрация успешно завершена",
+        "DETAIL": "Приятного использования приложения"
+      },
+      "ACTIVATION_SIGNUP_FAILED": {
+        "SUMMARY": "Ошибка регистрации",
+        "DETAIL": "И я не знаю почему"
+      },
+      "RECOVER_SUCCESS": {
+        "SUMMARY": "Ссылка для восстановления отправлена",
+        "DETAIL": "Проверьте вашу электронную почту"
+      },
+      "RECOVER_FAILED": {
+        "SUMMARY": "Ссылка для восстановления не отправлена",
+        "DETAIL": "Проверьте правильность вашей электронной почты"
+      },
+      "ACTIVATION_RECOVER_SUCCESS": {
+        "SUMMARY": "Восстановление успешно",
+        "DETAIL": "Новый пароль создан"
+      },
+      "ACTIVATION_RECOVER_FAILED": {
+        "SUMMARY": "Ошибка восстановления",
+        "DETAIL": "Запросите ссылку для активации снова"
+      },
+      "TERMINATION_SUCCESS": {
+        "SUMMARY": "Завершение успешно",
+        "DETAIL": "Все сессии были завершены"
+      },
+      "TERMINATION_FAILED": {
+        "SUMMARY": "Ошибка завершения",
+        "DETAIL": "Что-то пошло не так, попробуйте снова"
+      }
+    }
   }
 }
