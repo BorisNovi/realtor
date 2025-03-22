@@ -41,10 +41,10 @@ export class AuthService {
     );
   }
 
-  public signUp(email: string, password: string, passwordConfirmation: string): Observable<void> {
+  public signUp(email: string, password: string, password_confirmation: string): Observable<void> {
     return this.fingerprint$.pipe(
       switchMap(fingerprint => {
-        const body = { email, password, passwordConfirmation, fingerprint };
+        const body = { email, password, password_confirmation, fingerprint };
         return this.http.post<void>(`${environment.apiUrl}/auth/sign-up`, body);
       }),
     );
