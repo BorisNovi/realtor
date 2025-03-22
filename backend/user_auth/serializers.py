@@ -1,8 +1,7 @@
 from django.forms import ValidationError
 from rest_framework import serializers
-# from users.models import User
-from django.contrib.auth import authenticate # Либа для аутентикации
-from rest_framework_simplejwt.tokens import RefreshToken # Работа с токенами
+from django.contrib.auth import authenticate 
+from rest_framework_simplejwt.tokens import RefreshToken 
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -19,7 +18,7 @@ class SignupSerializer(serializers.Serializer):
         if len(data['password']) < 8:
             raise ValidationError("Пароль должен быть не менее 8 символов")
         
-        # Проверка на уникальность email (если требуется)
+        # Проверка на уникальность email 
         if User.objects.filter(email=data['email']).exists():
             raise ValidationError("Пользователь с таким email уже существует")
         
@@ -50,11 +49,11 @@ class SigninSerializer(serializers.Serializer):
             "accessToken": str(refresh.access_token),
             "refreshToken": str(refresh),
                 "user": {
-                    "id": user.id,  # ID пользователя
-                    "name": user.name,  # Имя пользователя
-                    "email": user.email,  # Почта пользователя
-                    "role": user.role,  # Роль пользователя
-                    "insertedAt": user.insertedAt.isoformat(),  # Дата регистрации
-                    "bannedAt": user.banned.isoformat() if user.banned else None  # Дата бана (если есть)
+                    "id": user.id,  
+                    "name": user.name,  
+                    "email": user.email, 
+                    "role": user.role, 
+                    "insertedAt": user.insertedAt.isoformat(), 
+                    "bannedAt": user.banned.isoformat() if user.banned else None
                 }
         }
