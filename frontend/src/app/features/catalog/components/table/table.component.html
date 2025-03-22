@@ -1,3 +1,6 @@
+<p-menu #menu [popup]="true" [model]="actionItems"></p-menu>
+<p-confirm-dialog />
+
 <div class="card">
   @let tableData = tableDataS();
   <p-table
@@ -18,7 +21,7 @@
   >
     <ng-template #caption>
       <div class="flex justify-between gap-4">
-        <p-button label="Add" [outlined]="true" icon="pi pi-plus" (click)="(null)" />
+        <p-button label="Add" [outlined]="true" icon="pi pi-plus" (click)="openItemDialog()" />
         <p-button label="Filters" [outlined]="true" icon="pi pi-filter" (click)="onFiltersOpen()" />
       </div>
     </ng-template>
@@ -56,7 +59,7 @@
           <p-tag [value]="item.status" [severity]="getSeverity(item.status)" />
         </td>
         <td>
-          <p-button icon="pi pi-ellipsis-v" (click)="openActions(item)" severity="secondary" text rounded />
+          <p-button icon="pi pi-ellipsis-v" (click)="onActionClick($event, item)" severity="secondary" text rounded />
         </td>
       </tr>
     </ng-template>
