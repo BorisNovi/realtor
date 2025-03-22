@@ -37,6 +37,60 @@
     "SIGN_UP_BUTTON": "Cadastrar",
     "BACK_TO_TEXT": "Voltar para",
     "SEND_BUTTON": "Enviar",
-    "SAVE_BUTTON": "Salvar"
+    "SAVE_BUTTON": "Salvar",
+    "NOTIFICATION": {
+      "SESSION_EXPIRED": {
+        "SUMMARY": "Sessão expirada",
+        "DETAIL": "Faça login novamente"
+      },
+      "LOGIN_SUCCESS": {
+        "SUMMARY": "Login bem-sucedido",
+        "DETAIL": "Você fez login com sucesso"
+      },
+      "LOGIN_FAILED": {
+        "SUMMARY": "Falha no login",
+        "DETAIL": "Verifique a validade das suas credenciais"
+      },
+      "SIGNUP_SUCCESS": {
+        "SUMMARY": "Link de inscrição enviado",
+        "DETAIL": "Verifique seu e-mail"
+      },
+      "SIGNUP_FAILED": {
+        "SUMMARY": "O link de inscrição não foi enviado",
+        "DETAIL": "Verifique a validade das suas credenciais"
+      },
+      "ACTIVATION_SIGNUP_SUCCESS": {
+        "SUMMARY": "Inscrição bem-sucedida",
+        "DETAIL": "Aproveite o uso do aplicativo"
+      },
+      "ACTIVATION_SIGNUP_FAILED": {
+        "SUMMARY": "Falha na inscrição",
+        "DETAIL": "E eu não sei por quê"
+      },
+      "RECOVER_SUCCESS": {
+        "SUMMARY": "Link de recuperação enviado",
+        "DETAIL": "Verifique seu e-mail"
+      },
+      "RECOVER_FAILED": {
+        "SUMMARY": "O link de recuperação não foi enviado",
+        "DETAIL": "Verifique a validade do seu e-mail"
+      },
+      "ACTIVATION_RECOVER_SUCCESS": {
+        "SUMMARY": "Recuperação bem-sucedida",
+        "DETAIL": "Uma nova senha foi criada"
+      },
+      "ACTIVATION_RECOVER_FAILED": {
+        "SUMMARY": "Falha na recuperação",
+        "DETAIL": "Solicite o link de ativação novamente"
+      },
+      "TERMINATION_SUCCESS": {
+        "SUMMARY": "Término bem-sucedido",
+        "DETAIL": "Todas as sessões foram encerradas"
+      },
+      "TERMINATION_FAILED": {
+        "SUMMARY": "Falha no término",
+        "DETAIL": "Algo deu errado, tente novamente"
+      }
+    }
   }
 }

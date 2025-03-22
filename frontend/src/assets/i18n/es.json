@@ -37,6 +37,60 @@
     "SIGN_UP_BUTTON": "Registrarse",
     "BACK_TO_TEXT": "Volver a",
     "SEND_BUTTON": "Enviar",
-    "SAVE_BUTTON": "Guardar"
+    "SAVE_BUTTON": "Guardar",
+    "NOTIFICATION": {
+      "SESSION_EXPIRED": {
+        "SUMMARY": "Sesión expirada",
+        "DETAIL": "Inicia sesión de nuevo"
+      },
+      "LOGIN_SUCCESS": {
+        "SUMMARY": "Inicio de sesión exitoso",
+        "DETAIL": "Has iniciado sesión correctamente"
+      },
+      "LOGIN_FAILED": {
+        "SUMMARY": "Error al iniciar sesión",
+        "DETAIL": "Verifica la validez de tus credenciales"
+      },
+      "SIGNUP_SUCCESS": {
+        "SUMMARY": "Enlace de registro enviado",
+        "DETAIL": "Revisa tu correo electrónico"
+      },
+      "SIGNUP_FAILED": {
+        "SUMMARY": "El enlace de registro no se ha enviado",
+        "DETAIL": "Verifica la validez de tus credenciales"
+      },
+      "ACTIVATION_SIGNUP_SUCCESS": {
+        "SUMMARY": "Registro exitoso",
+        "DETAIL": "Disfruta usando la aplicación"
+      },
+      "ACTIVATION_SIGNUP_FAILED": {
+        "SUMMARY": "Error en el registro",
+        "DETAIL": "Y no sé por qué"
+      },
+      "RECOVER_SUCCESS": {
+        "SUMMARY": "Enlace de recuperación enviado",
+        "DETAIL": "Revisa tu correo electrónico"
+      },
+      "RECOVER_FAILED": {
+        "SUMMARY": "El enlace de recuperación no se ha enviado",
+        "DETAIL": "Verifica la validez de tu correo electrónico"
+      },
+      "ACTIVATION_RECOVER_SUCCESS": {
+        "SUMMARY": "Recuperación exitosa",
+        "DETAIL": "Se ha creado una nueva contraseña"
+      },
+      "ACTIVATION_RECOVER_FAILED": {
+        "SUMMARY": "Error en la recuperación",
+        "DETAIL": "Solicita el enlace de activación nuevamente"
+      },
+      "TERMINATION_SUCCESS": {
+        "SUMMARY": "Terminación exitosa",
+        "DETAIL": "Todas las sesiones han sido terminadas"
+      },
+      "TERMINATION_FAILED": {
+        "SUMMARY": "Error en la terminación",
+        "DETAIL": "Algo salió mal, intenta de nuevo"
+      }
+    }
   }
 }

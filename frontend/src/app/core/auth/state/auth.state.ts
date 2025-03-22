@@ -32,6 +32,7 @@ import { AuthService } from '..';
 import { Navigate } from '@ngxs/router-plugin';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 // Интерфейс состояния
 interface AuthStateModel {
@@ -56,6 +57,7 @@ interface AuthStateModel {
 export class AuthState {
   private readonly authService = inject(AuthService);
   public readonly messageService = inject(MessageService);
+  public readonly translateService = inject(TranslateService);
 
   // Selectors
   @Selector()
@@ -143,8 +145,8 @@ export class AuthState {
 
     this.messageService.add({
       severity: 'success',
-      summary: 'Log In Success',
-      detail: 'You successfuly logged in',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.LOGIN_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.LOGIN_SUCCESS.DETAIL'),
       life: 3000,
     });
     ctx.dispatch(new Navigate(['/']));
@@ -155,8 +157,8 @@ export class AuthState {
     // TODO: написать кейсы ошибок для объективности
     this.messageService.add({
       severity: 'error',
-      summary: 'Log In failed',
-      detail: 'Check validity of your credentials',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.LOGIN_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.LOGIN_FAILED.DETAIL'),
       life: 3000,
     });
 
@@ -182,8 +184,8 @@ export class AuthState {
   public onSignupSuccess(ctx: StateContext<AuthStateModel>) {
     this.messageService.add({
       severity: 'success',
-      summary: 'Sign Up link sent',
-      detail: 'Check your e-mail',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.SIGNUP_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.SIGNUP_SUCCESS.DETAIL'),
       life: 3000,
     });
 
@@ -194,8 +196,8 @@ export class AuthState {
   public onSignupFailed(ctx: StateContext<AuthStateModel>, { error }: SignupFailed) {
     this.messageService.add({
       severity: 'error',
-      summary: "Sign Up link hasn't been sent",
-      detail: 'Check validity of your credentials',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.SIGNUP_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.SIGNUP_FAILED.DETAIL'),
       life: 3000,
     });
 
@@ -227,8 +229,8 @@ export class AuthState {
 
     this.messageService.add({
       severity: 'success',
-      summary: 'Sign Up successful',
-      detail: 'Enjou using application',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_SIGNUP_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_SIGNUP_SUCCESS.DETAIL'),
       life: 3000,
     });
 
@@ -239,8 +241,8 @@ export class AuthState {
   public onActivationAfterSignupFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
     this.messageService.add({
       severity: 'success',
-      summary: 'Sign Up failed',
-      detail: "And I don't know why",
+      summary: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_SIGNUP_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_SIGNUP_FAILED.DETAIL'),
       life: 3000,
     });
 
@@ -263,8 +265,8 @@ export class AuthState {
   public onRecoverSuccess(ctx: StateContext<AuthStateModel>) {
     this.messageService.add({
       severity: 'success',
-      summary: 'Recovery link sent',
-      detail: 'Check your e-mail',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.RECOVER_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.RECOVER_SUCCESS.DETAIL'),
       life: 3000,
     });
 
@@ -275,8 +277,8 @@ export class AuthState {
   public onRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: RecoverFailed) {
     this.messageService.add({
       severity: 'error',
-      summary: "Recovery link hasn't been sent",
-      detail: 'Check validity of your e-mail',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.RECOVER_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.RECOVER_FAILED.DETAIL'),
       life: 3000,
     });
 
@@ -299,8 +301,8 @@ export class AuthState {
   public onActivationAfterRecoverSuccess(ctx: StateContext<AuthStateModel>) {
     this.messageService.add({
       severity: 'success',
-      summary: 'Recovery successful',
-      detail: 'New password was created',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_RECOVER_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_RECOVER_SUCCESS.DETAIL'),
       life: 3000,
     });
 
@@ -312,8 +314,8 @@ export class AuthState {
   public onActivationAfterRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
     this.messageService.add({
       severity: 'error',
-      summary: 'Recovery failed',
-      detail: 'Request activation link again',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_RECOVER_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_RECOVER_FAILED.DETAIL'),
       life: 3000,
     });
 
@@ -396,8 +398,8 @@ export class AuthState {
 
     this.messageService.add({
       severity: 'warn',
-      summary: 'Termination successful',
-      detail: 'All sessions was terminated',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.TERMINATION_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.TERMINATION_SUCCESS.DETAIL'),
       life: 3000,
     });
   }
@@ -406,8 +408,8 @@ export class AuthState {
   public onTerminationFailed(ctx: StateContext<AuthStateModel>, { error }: TerminationFailed) {
     this.messageService.add({
       severity: 'error',
-      summary: 'Termination failed',
-      detail: 'Something went wrong, try again',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.TERMINATION_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.TERMINATION_FAILED.DETAIL'),
       life: 3000,
     });
 

@@ -37,6 +37,61 @@
     "SIGN_UP_BUTTON": "Sign Up",
     "BACK_TO_TEXT": "Back to",
     "SEND_BUTTON": "Send",
-    "SAVE_BUTTON": "Save"
+    "SAVE_BUTTON": "Save",
+
+    "NOTIFICATION": {
+      "SESSION_EXPIRED": {
+        "SUMMARY": "Session expired",
+        "DETAIL": "Log In again"
+      },
+      "LOGIN_SUCCESS": {
+        "SUMMARY": "Log In Success",
+        "DETAIL": "You successfully logged in"
+      },
+      "LOGIN_FAILED": {
+        "SUMMARY": "Log In failed",
+        "DETAIL": "Check validity of your credentials"
+      },
+      "SIGNUP_SUCCESS": {
+        "SUMMARY": "Sign Up link sent",
+        "DETAIL": "Check your e-mail"
+      },
+      "SIGNUP_FAILED": {
+        "SUMMARY": "Sign Up link hasn't been sent",
+        "DETAIL": "Check validity of your credentials"
+      },
+      "ACTIVATION_SIGNUP_SUCCESS": {
+        "SUMMARY": "Sign Up successful",
+        "DETAIL": "Enjoy using application"
+      },
+      "ACTIVATION_SIGNUP_FAILED": {
+        "SUMMARY": "Sign Up failed",
+        "DETAIL": "And I don't know why"
+      },
+      "RECOVER_SUCCESS": {
+        "SUMMARY": "Recovery link sent",
+        "DETAIL": "Check your e-mail"
+      },
+      "RECOVER_FAILED": {
+        "SUMMARY": "Recovery link hasn't been sent",
+        "DETAIL": "Check validity of your e-mail"
+      },
+      "ACTIVATION_RECOVER_SUCCESS": {
+        "SUMMARY": "Recovery successful",
+        "DETAIL": "New password was created"
+      },
+      "ACTIVATION_RECOVER_FAILED": {
+        "SUMMARY": "Recovery failed",
+        "DETAIL": "Request activation link again"
+      },
+      "TERMINATION_SUCCESS": {
+        "SUMMARY": "Termination successful",
+        "DETAIL": "All sessions were terminated"
+      },
+      "TERMINATION_FAILED": {
+        "SUMMARY": "Termination failed",
+        "DETAIL": "Something went wrong, try again"
+      }
+    }
   }
 }
