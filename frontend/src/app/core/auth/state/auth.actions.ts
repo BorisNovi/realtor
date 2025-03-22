@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ISessionUser } from '@shared/interfaces';
 
 // Log in
@@ -21,7 +22,7 @@ export class LoginSuccess {
 
 export class LoginFailed {
   static readonly type = '[Auth] Login Failed';
-  constructor(public readonly error: Error) {}
+  constructor(public readonly error: HttpErrorResponse) {}
 }
 
 // Sign up
@@ -40,7 +41,7 @@ export class SignupSuccess {
 
 export class SignupFailed {
   static readonly type = '[Auth] Signup Failed';
-  constructor(public readonly error: Error) {}
+  constructor(public readonly error: HttpErrorResponse) {}
 }
 
 // Activate after signup
@@ -56,7 +57,7 @@ export class ActivationAfterSignupSuccess {
 
 export class ActivationAfterSignupFailed {
   public static readonly type = '[Auth] Activation After Signup Failed';
-  constructor(public readonly error: Error) {}
+  constructor(public readonly error: HttpErrorResponse) {}
 }
 
 // Recover
@@ -71,7 +72,7 @@ export class RecoverSuccess {
 
 export class RecoverFailed {
   static readonly type = '[Auth] Recover Failed';
-  constructor(public readonly error: Error) {}
+  constructor(public readonly error: HttpErrorResponse) {}
 }
 
 // Activate
@@ -89,7 +90,7 @@ export class ActivationAfterRecoverSuccess {
 
 export class ActivationAfterRecoverFailed {
   static readonly type = '[Auth] Activation After Recover Failed';
-  constructor(public readonly error: Error) {}
+  constructor(public readonly error: HttpErrorResponse) {}
 }
 
 // Refresh
@@ -121,5 +122,5 @@ export class TerminationSuccess {
 
 export class TerminationFailed {
   static readonly type = '[Auth] Termination Failed';
-  constructor(public readonly error: Error) {}
+  constructor(public readonly error: HttpErrorResponse) {}
 }
