@@ -1,103 +1,168 @@
 <div class="p-4">
-  <form class="grid grid-cols-1 md:grid-cols-2 gap-4" (ngSubmit)="onSubmit()">
+  <form [formGroup]="catalogForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <!-- Photos (File Upload) -->
     <div class="md:col-span-2">
       <label for="photos" class="block text-sm font-medium text-gray-700 mb-1">Photos</label>
-      <p-fileupload (onUpload)="null" [multiple]="true" [showUploadButton]="false" [showCancelButton]="false" accept="image/*" maxFileSize="1000000" mode="advanced">
+      <p-fileupload 
+        #fileUpload
+        [customUpload]="true"
+        [auto]="true"
+        (uploadHandler)="onUpload($event)"
+        [multiple]="true"
+        [showUploadButton]="false" 
+        [showCancelButton]="false" 
+        accept="image/*" 
+        maxFileSize="4000000" 
+        mode="advanced"
+      >
         <ng-template #empty>
-            <div>Drag and drop files to here to upload.</div>
+          <div>Drag and drop files to here to upload.</div>
         </ng-template>
       </p-fileupload>
     </div>
 
-    <!-- Property Type (Autocomplete) -->
+    <!-- Property Type (Select) -->
     <div>
-      <label for="propertyType" class="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
-      <p-autoComplete
+      <label for="propertyType" class="block text-sm font-medium text-gray-700 mb-1">Property Type <span class="text-red-500">*</span></label>
+      <p-select
         id="propertyType"
-        [suggestions]="propertyTypeSuggestions"
-        (completeMethod)="filterPropertyTypes($event)"
-        [fluid]="true"
+        formControlName="propertyType"
+        [options]="propertyTypes"
+        optionLabel="label"
+        optionValue="value"
         placeholder="Select Property Type"
-        field="label"
-        [dropdown]="true"
         class="w-full"
       />
     </div>
 
-    <!-- Status (Autocomplete with Severity) -->
+    <!-- Status (Select with Severity) -->
     <div>
-      <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-      <p-autoComplete
+      <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
+      <p-select
         id="status"
-        [suggestions]="statusSuggestions"
-        (completeMethod)="filterStatuses($event)"
-        [fluid]="true"
+        formControlName="status"
+        [options]="statuses"
+        optionLabel="label"
+        optionValue="value"
         placeholder="Select Status"
-        field="label"
-        [dropdown]="true"
         class="w-full"
       >
-        <ng-template let-item pTemplate="item">
+        <ng-template pTemplate="item" let-item>
           <div class="flex items-center">
             <p-tag [value]="item.label" [severity]="getSeverity(item.value)" />
           </div>
         </ng-template>
-      </p-autoComplete>
+      </p-select>
     </div>
 
     <!-- Map Link -->
     <div>
       <label for="mapLink" class="block text-sm font-medium text-gray-700 mb-1">Map Link</label>
-      <input id="mapLink" pInputText type="text" placeholder="Enter map link" class="w-full" />
+      <input 
+        id="mapLink" 
+        pInputText 
+        type="text" 
+        formControlName="mapLink"
+        placeholder="Enter map link" 
+        class="w-full" 
+      />
     </div>
 
     <!-- Price Value -->
     <div>
-      <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price</label>
-      <input id="price" pInputText type="number" placeholder="Enter price" class="w-full" />
+      <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price <span class="text-red-500">*</span></label>
+      <input 
+        id="price" 
+        pInputText
+        type="number" 
+        formControlName="price"
+        placeholder="Enter price" 
+        class="w-full" 
+      />
     </div>
 
     <!-- Price Currency -->
     <div>
-      <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
-      <input id="currency" pInputText type="text" placeholder="e.g., USD" class="w-full" />
+      <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">Currency <span class="text-red-500">*</span></label>
+      <input 
+        id="currency" 
+        pInputText 
+        type="text" 
+        formControlName="currency"
+        placeholder="e.g., USD" 
+        class="w-full" 
+      />
     </div>
 
     <!-- Area -->
     <div>
-      <label for="area" class="block text-sm font-medium text-gray-700 mb-1">Area (m²)</label>
-      <input id="area" pInputText type="number" placeholder="Enter area" class="w-full" />
+      <label for="area" class="block text-sm font-medium text-gray-700 mb-1">Area (m²) <span class="text-red-500">*</span></label>
+      <input 
+        id="area" 
+        pInputText 
+        type="number" 
+        formControlName="area"
+        placeholder="Enter area" 
+        class="w-full" 
+      />
     </div>
 
     <!-- Rooms -->
     <div>
-      <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">Rooms</label>
-      <input id="rooms" pInputText type="number" placeholder="Enter number of rooms" class="w-full" />
+      <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">Rooms <span class="text-red-500">*</span></label>
+      <input 
+        id="rooms" 
+        pInputText 
+        type="number" 
+        formControlName="rooms"
+        placeholder="Enter number of rooms" 
+        class="w-full" 
+      />
     </div>
 
     <!-- Floor Current -->
     <div>
       <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">Current Floor</label>
-      <input id="currentFloor" pInputText type="number" placeholder="Enter current floor" class="w-full" />
+      <input 
+        id="currentFloor" 
+        pInputText 
+        type="number" 
+        formControlName="currentFloor"
+        placeholder="Enter current floor" 
+        class="w-full" 
+      />
     </div>
 
     <!-- Floor Full -->
     <div>
       <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">Total Floors</label>
-      <input id="totalFloors" pInputText type="number" placeholder="Enter total floors" class="w-full" />
+      <input 
+        id="totalFloors" 
+        pInputText 
+        type="number" 
+        formControlName="totalFloors"
+        placeholder="Enter total floors" 
+        class="w-full" 
+      />
     </div>
 
     <!-- Address -->
     <div>
-      <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-      <input id="address" pInputText type="text" placeholder="Enter address" class="w-full" />
+      <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address <span class="text-red-500">*</span></label>
+      <input 
+        id="address" 
+        pInputText 
+        type="text" 
+        formControlName="address"
+        placeholder="Enter address" 
+        class="w-full" 
+      />
     </div>
 
     <!-- Buttons -->
     <div class="md:col-span-2 flex justify-end gap-2 mt-6">
       <p-button label="Cancel" (click)="onCancel()" outlined type="button" />
-      <p-button label="Save" type="submit" class="p-button-primary" />
+      <p-button label="Save" type="submit" class="p-button-primary" [disabled]="catalogForm.invalid" />
     </div>
   </form>
 </div>

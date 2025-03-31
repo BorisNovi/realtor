@@ -118,6 +118,7 @@ export class CatalogState {
   public onCatalogOperationSuccess(ctx: StateContext<CatalogStateModel>, { message }: CatalogOperationSuccess) {
     if (message) {
       // this.snackBar.open(message);
+      console.log(message);
     }
 
     return ctx.patchState({ loading: false });

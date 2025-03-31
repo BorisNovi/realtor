@@ -95,9 +95,9 @@ export class CatalogService {
     this.http.put<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
   }
 
-  public deletePropertyObject(id: number[]): Observable<void> {
+  public deletePropertyObject(id: number[]): Observable<any> {
     console.log('delete', id);
-    return of().pipe(delay(1000));
+    return of(null).pipe(delay(1000));
     this.http.delete<void>(`${environment.apiUrl}/catalog`);
   }
 }
