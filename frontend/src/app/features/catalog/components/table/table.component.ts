@@ -107,6 +107,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   }
 
   public onFiltersOpen(): void {
+    console.log(this.tableDataS(), 'd');
     this.filtersOpen.emit();
   }
 

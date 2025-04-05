@@ -1,18 +1,18 @@
 <div class="p-4">
-  <form [formGroup]="catalogForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <!-- Photos (File Upload) -->
     <div class="md:col-span-2">
       <label for="photos" class="block text-sm font-medium text-gray-700 mb-1">Photos</label>
-      <p-fileupload 
+      <p-fileupload
         #fileUpload
         [customUpload]="true"
         [auto]="true"
         (uploadHandler)="onUpload($event)"
         [multiple]="true"
-        [showUploadButton]="false" 
-        [showCancelButton]="false" 
-        accept="image/*" 
-        maxFileSize="4000000" 
+        [showUploadButton]="false"
+        [showCancelButton]="false"
+        accept="image/*"
+        maxFileSize="4000000"
         mode="advanced"
       >
         <ng-template #empty>
@@ -23,7 +23,9 @@
 
     <!-- Property Type (Select) -->
     <div>
-      <label for="propertyType" class="block text-sm font-medium text-gray-700 mb-1">Property Type <span class="text-red-500">*</span></label>
+      <label for="propertyType" class="block text-sm font-medium text-gray-700 mb-1"
+        >Property Type <span class="text-red-500">*</span></label
+      >
       <p-select
         id="propertyType"
         formControlName="propertyType"
@@ -37,7 +39,9 @@
 
     <!-- Status (Select with Severity) -->
     <div>
-      <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
+      <label for="status" class="block text-sm font-medium text-gray-700 mb-1"
+        >Status <span class="text-red-500">*</span></label
+      >
       <p-select
         id="status"
         formControlName="status"
@@ -46,6 +50,9 @@
         optionValue="value"
         placeholder="Select Status"
         class="w-full"
+        [ngStyle]="{
+          'background-color': getStatusBackground(form.controls['status'].value),
+        }"
       >
         <ng-template pTemplate="item" let-item>
           <div class="flex items-center">
@@ -55,115 +62,304 @@
       </p-select>
     </div>
 
-    <!-- Map Link -->
+    <!-- Zoning Type (Select) -->
     <div>
-      <label for="mapLink" class="block text-sm font-medium text-gray-700 mb-1">Map Link</label>
-      <input 
-        id="mapLink" 
-        pInputText 
-        type="text" 
-        formControlName="mapLink"
-        placeholder="Enter map link" 
-        class="w-full" 
-      />
-    </div>
-
-    <!-- Price Value -->
-    <div>
-      <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price<span class="text-red-500">*</span></label>
-      <input 
-        id="price" 
-        pInputText
-        type="number" 
-        formControlName="price"
-        placeholder="Enter price" 
-        class="w-full" 
-      />
-    </div>
-
-    <!-- Price Currency -->
-    <div>
-      <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">Currency <span class="text-red-500">*</span></label>
+      <label for="zoningType" class="block text-sm font-medium text-gray-700 mb-1"
+        >Zoning <span class="text-red-500">*</span></label
+      >
       <p-select
-        id="currency" 
-        [options]="currencies"
+        id="zoningType"
+        formControlName="zoningType"
+        [options]="zoningTypes"
         optionLabel="label"
         optionValue="value"
-        formControlName="currency"
-        placeholder="e.g., USD" 
+        placeholder="Select Zoning Type"
         class="w-full"
       />
     </div>
 
+    <!-- Map Link -->
+    <div>
+      <label for="mapLink" class="block text-sm font-medium text-gray-700 mb-1">Map Link</label>
+      <input id="mapLink" pInputText type="text" formControlName="mapLink" placeholder="Enter map link" class="w-full" />
+    </div>
+
     <!-- Area -->
     <div>
-      <label for="area" class="block text-sm font-medium text-gray-700 mb-1">Area (m²) <span class="text-red-500">*</span></label>
-      <input 
-        id="area" 
-        pInputText 
-        type="number" 
-        formControlName="area"
-        placeholder="Enter area" 
-        class="w-full" 
-      />
-    </div>
-
-    <!-- Rooms -->
-    <div>
-      <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">Rooms <span class="text-red-500">*</span></label>
-      <input 
-        id="rooms" 
-        pInputText 
-        type="number" 
-        formControlName="rooms"
-        placeholder="Enter number of rooms" 
-        class="w-full" 
-      />
-    </div>
-
-    <!-- Floor Current -->
-    <div>
-      <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">Current Floor</label>
-      <input 
-        id="currentFloor" 
-        pInputText 
-        type="number" 
-        formControlName="currentFloor"
-        placeholder="Enter current floor" 
-        class="w-full" 
-      />
-    </div>
-
-    <!-- Floor Full -->
-    <div>
-      <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">Total Floors</label>
-      <input 
-        id="totalFloors" 
-        pInputText 
-        type="number" 
-        formControlName="totalFloors"
-        placeholder="Enter total floors" 
-        class="w-full" 
-      />
+      <label for="area" class="block text-sm font-medium text-gray-700 mb-1"
+        >Area (m²) <span class="text-red-500">*</span></label
+      >
+      <input id="area" pInputText type="number" formControlName="area" placeholder="Enter area" class="w-full" />
     </div>
 
     <!-- Address -->
     <div>
-      <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address <span class="text-red-500">*</span></label>
-      <input 
-        id="address" 
-        pInputText 
-        type="text" 
-        formControlName="address"
-        placeholder="Enter address" 
-        class="w-full" 
-      />
+      <label for="address" class="block text-sm font-medium text-gray-700 mb-1"
+        >Address <span class="text-red-500">*</span></label
+      >
+      <input id="address" pInputText type="text" formControlName="address" placeholder="Enter address" class="w-full" />
+    </div>
+
+    <!-- Price -->
+    <ng-container formGroupName="price">
+      <!-- Price Value -->
+      <div>
+        <label for="priceVal" class="block text-sm font-medium text-gray-700 mb-1"
+          >Price<span class="text-red-500">*</span></label
+        >
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <i class="pi pi-wallet"></i>
+          </p-inputgroup-addon>
+          <input id="priceVal" pInputText type="number" formControlName="value" placeholder="Enter price" />
+          <p-inputgroup-addon>{{ getCurrencySymbol(form.controls['price'].value.currency) }}</p-inputgroup-addon>
+        </p-inputgroup>
+      </div>
+
+      <!-- Price Currency -->
+      <div>
+        <label for="currency" class="block text-sm font-medium text-gray-700 mb-1"
+          >Currency <span class="text-red-500">*</span></label
+        >
+        <p-select
+          id="currency"
+          [options]="currencies"
+          optionLabel="label"
+          optionValue="value"
+          formControlName="currency"
+          placeholder="e.g., USD"
+          class="w-full"
+        />
+      </div>
+    </ng-container>
+
+    <p-divider align="left" type="solid" class="md:col-span-2">
+      <div class="flex items-center justify-between w-full gap-2">
+        <b>Comment</b>
+        <button pButton type="button" class="p-button-text p-button-sm" (click)="toggleComment()">
+          @let icon = isCommentVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
+          <i [class]="icon"></i>
+        </button>
+      </div>
+    </p-divider>
+
+    <div class="md:col-span-2" *ngIf="isCommentVisible" [@fadeSlide]>
+      <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">Comment</label>
+      <textarea id="comment" formControlName="comment" [fluid]="true" rows="5" pTextarea [autoResize]="true"></textarea>
+    </div>
+
+    <p-divider align="left" type="solid" class="md:col-span-2">
+      <div class="flex items-center justify-between w-full gap-2">
+        <b>Additional params</b>
+        <button pButton type="button" class="p-button-text p-button-sm" (click)="toggleAdditionalParams()">
+          @let iconAdditional = isAdditionalParamsVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
+          <i [class]="iconAdditional"></i>
+        </button>
+      </div>
+    </p-divider>
+
+    <div formGroupName="specifies" *ngIf="isAdditionalParamsVisible" [@fadeSlide] class="grid md:col-span-2 gap-8">
+      <div class="grid md:grid-cols-2 gap-4">
+        <!-- Floor -->
+        <ng-container formGroupName="floor">
+          <!-- Floor Current -->
+          <div>
+            <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">Current Floor</label>
+            <input
+              id="currentFloor"
+              pInputText
+              type="number"
+              formControlName="current"
+              placeholder="Enter current floor"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Floor Full -->
+          <div>
+            <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">Total Floors</label>
+            <input
+              id="totalFloors"
+              pInputText
+              type="number"
+              formControlName="full"
+              placeholder="Enter total floors"
+              class="w-full"
+            />
+          </div>
+        </ng-container>
+
+        <!-- Rooms -->
+        <div>
+          <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">Rooms</label>
+          <input
+            id="rooms"
+            pInputText
+            type="number"
+            formControlName="rooms"
+            placeholder="Enter number of rooms"
+            class="w-full"
+          />
+        </div>
+
+        <!-- Furnished -->
+        <div>
+          <label for="furnished" class="block text-sm font-medium text-gray-700 mb-1">Furnished</label>
+          <p-select
+            id="furnished"
+            [options]="furnishedStatuses"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="furnished"
+            placeholder="Select furnished"
+            class="w-full"
+          />
+        </div>
+
+        <!-- Renovation -->
+        <div>
+          <label for="renovation" class="block text-sm font-medium text-gray-700 mb-1">Renovation</label>
+          <p-select
+            id="renovation"
+            [options]="renovationStatuses"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="renovation"
+            placeholder="Select renovation"
+            class="w-full"
+          />
+        </div>
+
+        <!-- Kitchen -->
+        <div>
+          <label for="kitchen" class="block text-sm font-medium text-gray-700 mb-1">Kitchen</label>
+          <p-select
+            id="kitchen"
+            [options]="kitchenTypes"
+            optionLabel="label"
+            optionValue="value"
+            formControlName="kitchen"
+            placeholder="Select kitchen type"
+            class="w-full"
+          />
+        </div>
+      </div>
+
+      <fieldset>
+        <legend class="block text-sm font-medium text-gray-700 mb-1">Shared Facilities</legend>
+        <div formGroupName="sharedFacilities" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div class="flex items-center">
+            <p-checkbox inputId="kitchen" formControlName="kitchen" [binary]="true" />
+            <label for="kitchen" class="ml-2">Kitchen</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="bathroom" formControlName="bathroom" [binary]="true" />
+            <label for="bathroom" class="ml-2">Bathroom</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="block text-sm font-medium text-gray-700 mb-1">Utilities</legend>
+        <div formGroupName="utilities" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+          <div class="flex items-center">
+            <p-checkbox inputId="electricity" formControlName="electricity" [binary]="true" />
+            <label for="electricity" class="ml-2">Electricity</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="waterSupply" formControlName="waterSupply" [binary]="true" />
+            <label for="waterSupply" class="ml-2">Water Supply</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="naturalGas" formControlName="naturalGas" [binary]="true" />
+            <label for="naturalGas" class="ml-2">Natural Gas</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="sewerage" formControlName="sewerage" [binary]="true" />
+            <label for="sewerage" class="ml-2">Sewerage</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="heating" formControlName="heating" [binary]="true" />
+            <label for="heating" class="ml-2">Heating</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="internet" formControlName="internet" [binary]="true" />
+            <label for="internet" class="ml-2">Internet</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="block text-sm font-medium text-gray-700 mb-1">Other</legend>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+          <div class="flex items-center">
+            <p-checkbox inputId="parking" formControlName="parking" [binary]="true" />
+            <label for="parking" class="ml-2">Parking</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="bath" formControlName="bath" [binary]="true" />
+            <label for="bath" class="ml-2">Bath</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="shower" formControlName="shower" [binary]="true" />
+            <label for="shower" class="ml-2">Shower</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="airConditioning" formControlName="airConditioning" [binary]="true" />
+            <label for="airConditioning" class="ml-2">Air Conditioning</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="fireplace" formControlName="fireplace" [binary]="true" />
+            <label for="fireplace" class="ml-2">Fireplace</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="beautifulView" formControlName="beautifulView" [binary]="true" />
+            <label for="beautifulView" class="ml-2">Beautiful View</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="newBuilding" formControlName="newBuilding" [binary]="true" />
+            <label for="newBuilding" class="ml-2">New Building</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="elevator" formControlName="elevator" [binary]="true" />
+            <label for="elevator" class="ml-2">Elevator</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="balcony" formControlName="balcony" [binary]="true" />
+            <label for="balcony" class="ml-2">Balcony</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="garden" formControlName="garden" [binary]="true" />
+            <label for="garden" class="ml-2">Garden</label>
+          </div>
+
+          <div class="flex items-center">
+            <p-checkbox inputId="garage" formControlName="garage" [binary]="true" />
+            <label for="garage" class="ml-2">Garage</label>
+          </div>
+        </div>
+      </fieldset>
     </div>
 
     <!-- Buttons -->
     <div class="md:col-span-2 flex justify-end gap-2 mt-6">
       <p-button label="Cancel" (click)="onCancel()" outlined type="button" />
-      <p-button label="Save" type="submit" class="p-button-primary" [disabled]="catalogForm.invalid" />
+      <p-button label="Save" type="submit" class="p-button-primary" [disabled]="form.invalid" />
     </div>
   </form>
 </div>

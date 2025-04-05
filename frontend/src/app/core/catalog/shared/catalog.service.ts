@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
-import { HeatingType, PropertyStatus, PropertyType } from '@shared/enums';
+import { HeatingType, PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
 import { ICatalogItem, IPagination, IPropertyObject, ITableData } from '@shared/interfaces';
 import { delay, Observable, of } from 'rxjs';
 
@@ -15,6 +15,8 @@ export class CatalogService {
     id: 2,
     photos: [''],
     propertyType: PropertyType.flat,
+    status: PropertyStatus.available,
+    zoningType: ZoningType.commercial,
     address: 'Zalupinsk',
     mapLink: 'map',
     price: {
@@ -22,25 +24,22 @@ export class CatalogService {
       currency: 'USD',
     },
     area: 78,
-    rooms: 3,
-    floor: {
-      current: 24,
-      full: 42,
-    },
     dateAdded: `2025-03-01`,
-    status: PropertyStatus.available,
     comment: 'comment',
     specifies: {
-      forCommercialUse: false,
-      electricity: true,
-      waterSupply: true,
-      naturalGas: false,
-      sewerage: true,
-      heating: HeatingType.electric,
-      internet: true,
+      rooms: 3,
+      floor: { current: 5, full: 9 },
+      utilities: {
+        electricity: true,
+        waterSupply: true,
+        naturalGas: false,
+        sewerage: true,
+        heating: HeatingType.electric,
+        internet: true,
+      },
       bath: false,
       shower: false,
-      airConditionig: false,
+      airConditioning: false,
       fireplace: false,
       beautifulView: false,
       newBuilding: false,
@@ -56,6 +55,8 @@ export class CatalogService {
       id: index,
       photos: [`https://picsum.photos/id/${index + 100}/400/300`],
       propertyType: index % 2 === 0 ? PropertyType.flat : PropertyType.house,
+      status: index % 3 === 0 ? PropertyStatus.available : index % 3 === 1 ? PropertyStatus.reserved : PropertyStatus.rented,
+      zoningType: ZoningType.mixed,
       address: `Город ${index + 1}, ул. Примерная, д. ${10 + index}`,
       mapLink: `https://maps.example.com/?lat=${55.751244 + index * 0.1}&lng=${37.618423 + index * 0.1}`,
       price: {
@@ -63,13 +64,7 @@ export class CatalogService {
         currency: index % 3 === 0 ? 'USD' : 'RUB',
       },
       area: 65 + index * 10, // Разная площадь
-      rooms: 1 + (index % 4), // 1-4 комнаты
-      floor: {
-        current: 1 + (index % 10), // Этаж от 1 до 10
-        full: index % 2 === 0 ? 24 : 9, // Разная этажность
-      },
       dateAdded: `2025-03-${10 + index}`,
-      status: index % 3 === 0 ? PropertyStatus.available : index % 3 === 1 ? PropertyStatus.reserved : PropertyStatus.rented,
     }));
 
     const params = new HttpParams({
