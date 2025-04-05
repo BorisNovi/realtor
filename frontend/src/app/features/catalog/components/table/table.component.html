@@ -30,14 +30,15 @@
         <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
         <th style="width: 6rem">Photo</th>
         <th>Type</th>
+        <th>Zoning</th>
         <th>Address</th>
         <th>Price</th>
         <th>Area</th>
-        <th>Rooms</th>
-        <th style="min-width: 6rem">Floor</th>
+        <!-- <th>Rooms</th>
+        <th style="min-width: 6rem">Floor</th> -->
         <th style="min-width: 8rem">Date</th>
         <th>Status</th>
-        <th>Actions</th>
+        <th></th>
       </tr>
     </ng-template>
     <ng-template #body let-item>
@@ -49,11 +50,12 @@
           <img [src]="item.photos[0]" [alt]="item.name" class="w-24 rounded" />
         </td>
         <td>{{ item.propertyType }}</td>
+        <td>{{ item.zoningType }}</td>
         <td>{{ item.address }}</td>
         <td>{{ item.price.value | number }} {{ item.price.currency }}</td>
         <td>{{ item.area }} m^2</td>
-        <td>{{ item.rooms }}</td>
-        <td>{{ item.floor.current }} / {{ item.floor.full }}</td>
+        <!-- <td>{{ item?.specifies?.rooms || '-' }}</td>
+        <td>{{ item?.specifies?.floor?.current || '-' }} / {{ item?.floor?.full || '-' }}</td> -->
         <td>{{ item.dateAdded }}</td>
         <td>
           <p-tag [value]="item.status" [severity]="getSeverity(item.status)" />
