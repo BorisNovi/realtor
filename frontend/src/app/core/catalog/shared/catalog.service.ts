@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
-import { PropertyStatus, PropertyType } from '@shared/enums';
+import { HeatingType, PropertyStatus, PropertyType } from '@shared/enums';
 import { ICatalogItem, IPagination, IPropertyObject, ITableData } from '@shared/interfaces';
 import { delay, Observable, of } from 'rxjs';
 
@@ -31,6 +31,13 @@ export class CatalogService {
     status: PropertyStatus.available,
     comment: 'comment',
     specifies: {
+      forCommercialUse: false,
+      electricity: true,
+      waterSupply: true,
+      naturalGas: false,
+      sewerage: true,
+      heating: HeatingType.electric,
+      internet: true,
       bath: false,
       shower: false,
       airConditionig: false,
