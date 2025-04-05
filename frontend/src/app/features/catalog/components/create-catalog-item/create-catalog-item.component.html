@@ -70,7 +70,7 @@
 
     <!-- Price Value -->
     <div>
-      <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price <span class="text-red-500">*</span></label>
+      <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price<span class="text-red-500">*</span></label>
       <input 
         id="price" 
         pInputText
@@ -84,13 +84,14 @@
     <!-- Price Currency -->
     <div>
       <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">Currency <span class="text-red-500">*</span></label>
-      <input 
+      <p-select
         id="currency" 
-        pInputText 
-        type="text" 
+        [options]="currencies"
+        optionLabel="label"
+        optionValue="value"
         formControlName="currency"
         placeholder="e.g., USD" 
-        class="w-full" 
+        class="w-full"
       />
     </div>
 

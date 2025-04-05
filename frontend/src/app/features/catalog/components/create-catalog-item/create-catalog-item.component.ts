@@ -5,7 +5,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
-import { PropertyType, PropertyStatus } from '@shared/enums';
+import { PropertyType, PropertyStatus, Currency } from '@shared/enums';
 import { getPropertyStatusSeverity, fileToBase64 } from '@shared/utils';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,7 @@ import { Store } from '@ngxs/store';
 import { CreatePropertyObject } from 'src/app/core';
 import { pipe, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CURRENCY_SYMBOLS } from '@shared/constants';
 
 @Component({
   imports: [CommonModule, FileUploadModule, ReactiveFormsModule, InputTextModule, ButtonModule, SelectModule, TagModule],
@@ -28,20 +29,23 @@ export class CreateCatalogItemComponent implements OnInit, AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
 
   public readonly getSeverity = getPropertyStatusSeverity;
-  public catalogForm!: FormGroup;
+  public catalogForm!: FormGroup<any>;
   public uploadedFiles: File[] = [];
 
-  public propertyTypes = [
-    { label: 'Flat', value: PropertyType.flat },
-    { label: 'House', value: PropertyType.house },
-    { label: 'Room', value: PropertyType.room },
-  ];
+  public propertyTypes = Object.values(PropertyType).map(value => ({
+    label: value.charAt(0).toUpperCase() + value.slice(1),
+    value,
+  }));
 
-  public statuses = [
-    { label: 'Available', value: PropertyStatus.available },
-    { label: 'Reserved', value: PropertyStatus.reserved },
-    { label: 'Rented', value: PropertyStatus.rented },
-  ];
+  public statuses = Object.values(PropertyStatus).map(value => ({
+    label: value.charAt(0).toUpperCase() + value.slice(1),
+    value,
+  }));
+
+  public currencies = Object.values(Currency).map(value => ({
+    label: `${CURRENCY_SYMBOLS[value]} (${value})`,
+    value,
+  }));
 
   public ngOnInit(): void {
     this.initForm();
