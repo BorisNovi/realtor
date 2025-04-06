@@ -78,8 +78,12 @@ class LogoutView(APIView):
 def check_session(request):
     user = request.user
     return Response({
-        "id": user.id,
-        "email": user.email,
-        "username": user.username,
-        # можно добавить "role" если хочешь
+        "user": {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "role": user.role,
+            "insertedAt": user.insertedAt.isoformat(),
+            "bannedAt": user.banned.isoformat() if user.banned else None
+        }
     })
