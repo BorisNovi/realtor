@@ -73,6 +73,7 @@ class LogoutView(APIView):
         except Exception as e:
             return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
+# Проверка сессии. Позволяет юзеру находиться в системе даже после обновления страницы. 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def check_session(request):
