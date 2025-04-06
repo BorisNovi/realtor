@@ -1,38 +1,66 @@
 services:
-  frontend:
+  frontend: #FRONTEND
     build: ./frontend
     ports:
       - '4200:80'
-    # depends_on:
-    #   - backend
+    depends_on:
+      - backend  
     networks:
       - app-network
 
-  # backend:
-  #   build: ./backend
-  #   ports:
-  #     - '3000:3000'
-  #   environment:
-  #     DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-  #   env_file:
-  #     - ./backend/.env
-  #   depends_on:
-  #     - postgres
-  #   networks:
-  #     - app-network
-    # volumes: # Uncomment for development
-    #   - ./backend:/app
-    # command: npm run start:dev
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file: ./backend/.env  # Загружаем докер-версию переменных
+    ports:
+      - '8000:8000'
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_NAME=testdb
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=admin
+      - DATABASE_PORT=5432
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - app-network
 
-  # postgres:
-  #   image: postgres:latest
-  #   env_file:
-  #     - ./backend/.env
-  #   ports:
-  #     - '5432:5432'
-  #   networks:
-  #     - app-network
+  postgres: # DATABASE
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=testdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Сохранение данных
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d testdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:latest
+    container_name: realtor_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+    env_file:
+      - ./backend/.env
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  pgdata:
