@@ -1,8 +1,9 @@
 import { PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
+import { IPhotoItem } from './photo-item.interface';
 
 export interface ICatalogItem {
   id: number;
-  photos: string[];
+  photos: IPhotoItem[];
   propertyType: PropertyType;
   zoningType: ZoningType;
   status: PropertyStatus;

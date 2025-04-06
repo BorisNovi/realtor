@@ -1,4 +1,4 @@
-import { FurnishedStatus, HeatingType, KitchenType, RenovationStatus, ZoningType } from '@shared/enums';
+import { FurnishedStatus, HeatingType, KitchenType, RenovationStatus } from '@shared/enums';
 import { ICatalogItem } from './catalog-item.interface';
 
 export interface IPropertyObject extends ICatalogItem {

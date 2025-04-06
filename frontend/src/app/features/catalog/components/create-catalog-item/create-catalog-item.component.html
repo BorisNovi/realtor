@@ -4,7 +4,6 @@
     <div class="md:col-span-2">
       <label for="photos" class="block text-sm font-medium text-gray-700 mb-1">Photos</label>
       <p-fileupload
-        #fileUpload
         [customUpload]="true"
         [auto]="true"
         (uploadHandler)="onUpload($event)"
@@ -15,8 +14,18 @@
         maxFileSize="4000000"
         mode="advanced"
       >
-        <ng-template #empty>
-          <div>Drag and drop files to here to upload.</div>
+        <ng-template #content>
+          <!-- <div>
+            <div class="block text-sm font-medium text-gray-700 mb-1">Existing photos</div>
+            <div *ngIf="form.controls['photos'].value.length > 0" class="grid grid-cols-12 gap-4" style="max-width: 20rem;">
+              <div *ngFor="let image of form.controls['photos'].value; let index = index" class="relative col-span-4" key="index">
+                <button pButton type="button" class="!absolute right-0 p-button-text p-button-sm" severity="danger" (click)="null">
+                  <i class="pi pi-trash"></i>
+                </button>
+                <img [src]="image.url" [alt]="image.alt" />
+              </div>
+            </div>
+          </div> -->
         </ng-template>
       </p-fileupload>
     </div>

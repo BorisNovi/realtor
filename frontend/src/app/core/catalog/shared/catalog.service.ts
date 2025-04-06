@@ -13,12 +13,15 @@ export class CatalogService {
 
   private mockData: IPropertyObject = {
     id: 2,
-    photos: [''],
+    photos: [
+      { url: 'https://picsum.photos/id/101/400/300', isExisting: true },
+      { url: 'https://picsum.photos/id/102/400/300', isExisting: true },
+    ],
     propertyType: PropertyType.flat,
     status: PropertyStatus.available,
     zoningType: ZoningType.commercial,
     address: 'Zalupinsk',
-    mapLink: 'map',
+    mapLink: 'https://maps.app.goo.gl/xhQ5g4NWNXUS5FFp8',
     price: {
       value: 590,
       currency: 'USD',
@@ -53,7 +56,7 @@ export class CatalogService {
 
     const mockData = Array.from({ length: 31 }, (_, index) => ({
       id: index,
-      photos: [`https://picsum.photos/id/${index + 100}/400/300`],
+      photos: [{ url: `https://picsum.photos/id/${index + 100}/400/300`, isExisting: true }],
       propertyType: index % 2 === 0 ? PropertyType.flat : PropertyType.house,
       status: index % 3 === 0 ? PropertyStatus.available : index % 3 === 1 ? PropertyStatus.reserved : PropertyStatus.rented,
       zoningType: ZoningType.mixed,
@@ -85,13 +88,13 @@ export class CatalogService {
     // this.http.get<IPropertyObject>(`${environment.apiUrl}/catalog/${id}`);
   }
 
-  public createPropertyObject(body: ICatalogItem): Observable<IPropertyObject> {
+  public createPropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
     console.log('create', body);
     return of(this.mockData).pipe(delay(1000));
     this.http.post<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
   }
 
-  public updatePropertyObject(body: ICatalogItem): Observable<IPropertyObject> {
+  public updatePropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
     console.log('update', body);
     return of(this.mockData).pipe(delay(1000));
     this.http.put<IPropertyObject>(`${environment.apiUrl}/catalog`, body);

@@ -1,15 +1,6 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  DestroyRef,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { FileUpload, FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
@@ -34,7 +25,7 @@ import { CreatePropertyObject } from 'src/app/core';
 import { pipe, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
-import { IPropertyObject } from '@shared/interfaces';
+import { IPhotoItem, IPropertyObject } from '@shared/interfaces';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -64,9 +55,9 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
     ]),
   ],
 })
-export class CreateCatalogItemComponent implements OnInit, AfterViewInit {
-  @ViewChild('fileUpload') fileUpload!: FileUpload;
+export class CreateCatalogItemComponent implements OnInit {
   private readonly ref = inject(DynamicDialogRef);
+  private readonly config = inject(DynamicDialogConfig);
   private readonly fb = inject(FormBuilder);
   private readonly store = inject(Store);
   private readonly cdr = inject(ChangeDetectorRef);
@@ -76,7 +67,7 @@ export class CreateCatalogItemComponent implements OnInit, AfterViewInit {
   public readonly getStatusBackground = getPropertyStatusBackground;
 
   public form!: FormGroup;
-  public uploadedFiles: File[] = [];
+  public photos: IPhotoItem[] = []; // Общий список фотографий
 
   public propertyTypes = mapEnumToOptions(PropertyType);
   public statuses = mapEnumToOptions(PropertyStatus);
@@ -90,105 +81,104 @@ export class CreateCatalogItemComponent implements OnInit, AfterViewInit {
     return CURRENCY_SYMBOLS[key as Currency];
   }
 
-  public isCommentVisible = false;
-  public isAdditionalParamsVisible = false;
+  public isCommentVisible = !!this.config.data?.comment || false;
+  public isAdditionalParamsVisible = !!this.config.data?.specifies || false;
 
   public ngOnInit(): void {
     this.initForm();
   }
 
-  public ngAfterViewInit(): void {
-    if (this.fileUpload) {
-      // this.fileUpload._files.push(this.file);
-      // this.fileUpload.cd.detectChanges();
-      // this.cdr.detectChanges();
-    }
-  }
-
   private initForm(): void {
+    const data = this.config.data;
+
     this.form = this.fb.group({
-      photos: [null], // string[]
-      propertyType: [null, Validators.required],
-      zoningType: [null, Validators.required],
-      status: [null, Validators.required],
-      mapLink: [''],
-      address: ['', Validators.required],
-      area: [null, [Validators.required, Validators.min(1)]],
-      dateAdded: [new Date()],
+      photos: [data?.photos || null],
+      propertyType: [data?.propertyType || null, Validators.required],
+      zoningType: [data?.zoningType || null, Validators.required],
+      status: [data?.status || null, Validators.required],
+      mapLink: [data?.mapLink || null],
+      address: [data?.address || null, Validators.required],
+      area: [data?.area || null, [Validators.required, Validators.min(1)]],
 
       price: this.fb.group({
-        value: [null, [Validators.required, Validators.min(0)]],
-        currency: ['', Validators.required],
+        value: [data?.price?.value || null, [Validators.required, Validators.min(0)]],
+        currency: [data?.price?.currency || null, Validators.required],
       }),
 
-      comment: [''],
+      comment: [data?.comment || null],
 
       specifies: this.fb.group({
-        rooms: [null, [Validators.min(1), Validators.max(200)]],
+        rooms: [data?.specifies?.rooms || null, [Validators.min(1), Validators.max(200)]],
         floor: this.fb.group({
-          current: [null, [Validators.min(-10), Validators.max(200)]],
-          full: [null, Validators.min(1)],
+          current: [data?.specifies?.floor?.current || null, [Validators.min(-10), Validators.max(200)]],
+          full: [data?.specifies?.floor?.full || null, Validators.min(1)],
         }),
-        kitchen: [null],
-        furnished: [null],
-        renovation: [null],
+        kitchen: [data?.specifies?.kitchen || null],
+        furnished: [data?.specifies?.furnished || null],
+        renovation: [data?.specifies?.renovation || null],
 
         sharedFacilities: this.fb.group({
-          kitchen: [false],
-          bathroom: [false],
+          kitchen: [data?.specifies?.sharedFacilities?.kitchen || false],
+          bathroom: [data?.specifies?.sharedFacilities?.bathroom || false],
         }),
 
         utilities: this.fb.group({
-          electricity: [false],
-          waterSupply: [false],
-          naturalGas: [false],
-          sewerage: [false],
-          heating: [null],
-          internet: [false],
+          electricity: [data?.specifies?.utilities?.electricity || false],
+          waterSupply: [data?.specifies?.utilities?.waterSupply || false],
+          naturalGas: [data?.specifies?.utilities?.naturalGas || false],
+          sewerage: [data?.specifies?.utilities?.sewerage || false],
+          heating: [data?.specifies?.utilities?.heating || null],
+          internet: [data?.specifies?.utilities?.internet || false],
         }),
 
         // Other
-        parking: [false],
-        bath: [false],
-        shower: [false],
-        airConditioning: [false],
-        fireplace: [false],
-        beautifulView: [false],
-        newBuilding: [false],
-        elevator: [false],
-        balcony: [false],
-        garden: [false],
-        garage: [false],
+        parking: [data?.specifies?.parking || false],
+        bath: [data?.specifies?.bath || false],
+        shower: [data?.specifies?.shower || false],
+        airConditioning: [data?.specifies?.airConditioning || false],
+        fireplace: [data?.specifies?.fireplace || false],
+        beautifulView: [data?.specifies?.beautifulView || false],
+        newBuilding: [data?.specifies?.newBuilding || false],
+        elevator: [data?.specifies?.elevator || false],
+        balcony: [data?.specifies?.balcony || false],
+        garden: [data?.specifies?.garden || false],
+        garage: [data?.specifies?.garage || false],
       }),
     });
   }
 
   public async onUpload(event: FileUploadHandlerEvent): Promise<void> {
     if (event && Array.isArray(event.files)) {
-      const photosBase64 = await Promise.all(
+      const uploadedPhotosBase64: IPhotoItem[] = await Promise.all(
         event.files.map((file: File) =>
           fileToBase64(file).then(base64 => ({
-            name: file.name,
-            content: base64,
+            isExisting: false,
+            file: {
+              name: file.name,
+              content: base64,
+            },
           })),
         ),
       );
 
-      this.form.patchValue({ photos: photosBase64 });
+      const existingPhotosBase64 = this.form.get('photos')?.value || [];
+      this.form.patchValue({ photos: [...existingPhotosBase64, ...uploadedPhotosBase64] });
       this.form.get('photos')?.updateValueAndValidity();
-    } else {
-      this.form.patchValue({ photos: [] });
     }
   }
 
   public onSubmit(): void {
     if (this.form.valid) {
       const formData = this.form.value;
+      const payload = {
+        ...formData,
+        existingPhotos: this.photos.filter(photo => photo.isExisting).map(photo => photo.url),
+      };
 
       this.store
-        .dispatch(new CreatePropertyObject(formData))
+        .dispatch(new CreatePropertyObject(payload))
         .pipe(
-          tap(() => this.ref.close(formData)),
+          tap(() => this.ref.close(payload)),
           takeUntilDestroyed(this.destroyRef),
         )
         .subscribe();

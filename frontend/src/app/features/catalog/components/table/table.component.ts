@@ -3,19 +3,20 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   EventEmitter,
   inject,
   OnDestroy,
   Output,
   ViewChild,
 } from '@angular/core';
-import { ICatalogItem } from '@shared/interfaces';
+import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
 import { Table, TableModule, TablePageEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ButtonGroupModule } from 'primeng/buttongroup';
 import { Store } from '@ngxs/store';
-import { CatalogState, DeletePropertyObjects, FetchCatalog, SetCatalogPagination } from 'src/app/core';
+import { CatalogState, DeletePropertyObjects, FetchCatalog, FetchPropertyObject, SetCatalogPagination } from 'src/app/core';
 import { Menu, MenuModule } from 'primeng/menu';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { PropertyStatus } from '@shared/enums';
@@ -24,6 +25,8 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { getPropertyStatusSeverity } from '@shared/utils';
+import { of, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-table',
@@ -51,6 +54,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   private readonly dialogService = inject(DialogService);
   private readonly store = inject(Store);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public readonly getSeverity = getPropertyStatusSeverity;
 
@@ -81,7 +85,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
         label: 'Edit',
         icon: 'pi pi-pencil',
         command: () => {
-          console.log(`Edit item with id: ${item.id}`);
+          this.openItemDialog(item.id);
         },
       },
       {
@@ -107,13 +111,35 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   }
 
   public onFiltersOpen(): void {
-    console.log(this.tableDataS(), 'd');
     this.filtersOpen.emit();
   }
 
-  public openItemDialog(): void {
+  public openItemDialog(id?: number): void {
+    if (id === undefined || id < 0) {
+      this.openDialog();
+      return;
+    }
+
+    this.store
+      .dispatch(new FetchPropertyObject(id))
+      .pipe(
+        tap(() => {
+          const propertyData = this.store.selectSnapshot(CatalogState.propertyObject);
+          if (propertyData) {
+            this.openDialog(propertyData);
+          } else {
+            this.openDialog();
+          }
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
+
+  public openDialog(data?: IPropertyObject): void {
     this.ref = this.dialogService.open(CreateCatalogItemComponent, {
-      header: 'Add new item',
+      data: data,
+      header: data?.id ? 'Edit Item' : 'Add New Item',
       width: '50vw',
       modal: true,
       closable: true,
@@ -126,21 +152,8 @@ export class TableComponent implements AfterViewInit, OnDestroy {
       },
     });
 
-    this.ref.onClose.subscribe((data: any) => {
-      let summary_and_detail;
-      if (data) {
-        const buttonType = data?.buttonType;
-        summary_and_detail = buttonType
-          ? { summary: 'No Product Selected', detail: `Pressed '${buttonType}' button` }
-          : { summary: 'Product Selected', detail: data?.name };
-      } else {
-        summary_and_detail = { summary: 'No Product Selected', detail: 'Pressed Close button' };
-      }
-      // this.messageService.add({ severity: 'info', ...summary_and_detail, life: 3000 });
-    });
-
-    this.ref.onMaximize.subscribe(value => {
-      // this.messageService.add({ severity: 'info', summary: 'Maximized', detail: `maximized: ${value.maximized}` });
+    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data: IPropertyObject) => {
+      console.log('data on close dialog', data);
     });
   }
 
