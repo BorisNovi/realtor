@@ -11,6 +11,8 @@ from django.core.mail import send_mail
 from rest_framework.views import APIView
 import uuid
 from django.core.cache import cache
+from rest_framework.decorators import permission_classes
+
 
 logger = logging.getLogger(__name__)
 
@@ -70,3 +72,14 @@ class LogoutView(APIView):
             return Response({"message": "Logout successful"}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_session(request):
+    user = request.user
+    return Response({
+        "id": user.id,
+        "email": user.email,
+        "username": user.username,
+        # можно добавить "role" если хочешь
+    })
