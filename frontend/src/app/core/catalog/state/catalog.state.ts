@@ -51,6 +51,11 @@ export class CatalogState {
   }
 
   @Selector()
+  public static propertyObject({ propertyObject }: CatalogStateModel) {
+    return propertyObject;
+  }
+
+  @Selector()
   public static pagination({ pagination }: CatalogStateModel) {
     return pagination;
   }
@@ -77,6 +82,7 @@ export class CatalogState {
 
   @Action(FetchPropertyObject)
   public fetchPropertyObject(ctx: StateContext<CatalogStateModel>, { id }: FetchPropertyObject) {
+    console.log('fetch action');
     ctx.patchState({ loading: true });
     return this.catalogService.fetchPropertyObject(id).pipe(
       tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
