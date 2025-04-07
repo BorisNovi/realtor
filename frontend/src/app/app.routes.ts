@@ -10,7 +10,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    canActivate: [authGuard],
+    // canActivate: [authGuard],
     loadChildren: () => import('./layouts').then(c => c.privateLayoutRoutes),
   },
   { path: '**', component: NotFoundComponent },

@@ -4,6 +4,7 @@ import { IPhotoItem } from './photo-item.interface';
 export interface ICatalogItem {
   id: number;
   photos: IPhotoItem[];
+  photosToDelete?: string[]; // Урлы фото, которые хотим удалить. Только на передачу
   propertyType: PropertyType;
   zoningType: ZoningType;
   status: PropertyStatus;

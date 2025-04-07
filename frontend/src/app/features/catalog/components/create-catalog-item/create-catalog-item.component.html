@@ -1,31 +1,61 @@
 <div class="p-4">
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <!-- Photos (File Upload) -->
+    @let photos = photosS();
+
     <div class="md:col-span-2">
       <label for="photos" class="block text-sm font-medium text-gray-700 mb-1">Photos</label>
       <p-fileupload
+        #fileUpload
         [customUpload]="true"
         [auto]="true"
         (uploadHandler)="onUpload($event)"
         [multiple]="true"
-        [showUploadButton]="false"
-        [showCancelButton]="false"
         accept="image/*"
         maxFileSize="4000000"
         mode="advanced"
       >
-        <ng-template #content>
-          <!-- <div>
-            <div class="block text-sm font-medium text-gray-700 mb-1">Existing photos</div>
-            <div *ngIf="form.controls['photos'].value.length > 0" class="grid grid-cols-12 gap-4" style="max-width: 20rem;">
-              <div *ngFor="let image of form.controls['photos'].value; let index = index" class="relative col-span-4" key="index">
-                <button pButton type="button" class="!absolute right-0 p-button-text p-button-sm" severity="danger" (click)="null">
+        <ng-template #header let-files let-chooseCallback="chooseCallback">
+          <div *ngIf="photos.length > 0" class="flex flex-wrap justify-between items-center flex-1 gap-4">
+            <div class="flex gap-2">
+              <p-button (onClick)="choose(chooseCallback)" icon="pi pi-plus" [rounded]="true" [text]="true" />
+            </div>
+          </div>
+        </ng-template>
+        <ng-template #file></ng-template>
+        <ng-template #content let-chooseCallback="chooseCallback">
+          <div *ngIf="photos.length <= 0" class="flex items-center justify-center flex-col">
+            <p-button (click)="choose(chooseCallback)" [rounded]="true" [text]="true">
+              <i class="pi pi-plus !p-8 !text-4xl !text-muted-color"></i>
+            </p-button>
+            <p class="mt-6 mb-0">Drag and drop files to here to upload</p>
+          </div>
+
+          <div *ngIf="photos.length > 0" class="mt-4">
+            <div class="block text-sm font-medium text-gray-700 mb-1">Preview</div>
+            <div class="grid grid-cols-6 gap-4">
+              <div
+                *ngFor="let photo of photos; let i = index"
+                class="relative col-span-2 overflow-hidden"
+                style="max-height: 10rem"
+              >
+                <button
+                  pButton
+                  type="button"
+                  class="!absolute right-0 p-button-text p-button-sm"
+                  severity="danger"
+                  (click)="removePhoto(i)"
+                >
                   <i class="pi pi-trash"></i>
                 </button>
-                <img [src]="image.url" [alt]="image.alt" />
+                <img
+                  [src]="photo.isExisting ? photo.url : photo.file?.content"
+                  [alt]="photo.file?.name || 'Photo'"
+                  class="w-full h-auto"
+                />
               </div>
             </div>
-          </div> -->
+          </div>
         </ng-template>
       </p-fileupload>
     </div>

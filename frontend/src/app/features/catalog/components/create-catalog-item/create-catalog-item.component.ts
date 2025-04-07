@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
+import { FileUpload, FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
@@ -22,7 +22,7 @@ import { Checkbox } from 'primeng/checkbox';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngxs/store';
 import { CreatePropertyObject } from 'src/app/core';
-import { pipe, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { IPhotoItem, IPropertyObject } from '@shared/interfaces';
@@ -56,18 +56,20 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
   ],
 })
 export class CreateCatalogItemComponent implements OnInit {
+  @ViewChild('fileUpload') fileUpload!: FileUpload;
   private readonly ref = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
   private readonly fb = inject(FormBuilder);
   private readonly store = inject(Store);
-  private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
 
   public readonly getSeverity = getPropertyStatusSeverity;
   public readonly getStatusBackground = getPropertyStatusBackground;
 
   public form!: FormGroup;
-  public photos: IPhotoItem[] = []; // Общий список фотографий
+
+  public photosS = signal<IPhotoItem[]>([]);
+  public photosToDeleteS = signal<string[]>([]);
 
   public propertyTypes = mapEnumToOptions(PropertyType);
   public statuses = mapEnumToOptions(PropertyStatus);
@@ -145,6 +147,13 @@ export class CreateCatalogItemComponent implements OnInit {
         garage: [data?.specifies?.garage || false],
       }),
     });
+
+    const initialPhotos = this.form.get('photos')?.value || [];
+    this.photosS.set(initialPhotos.map((photo: IPhotoItem) => ({ ...photo, isExisting: true })));
+  }
+
+  public choose(callback: VoidFunction): void {
+    callback();
   }
 
   public async onUpload(event: FileUploadHandlerEvent): Promise<void> {
@@ -161,10 +170,25 @@ export class CreateCatalogItemComponent implements OnInit {
         ),
       );
 
-      const existingPhotosBase64 = this.form.get('photos')?.value || [];
-      this.form.patchValue({ photos: [...existingPhotosBase64, ...uploadedPhotosBase64] });
-      this.form.get('photos')?.updateValueAndValidity();
+      this.photosS.update(currentPhotos => [...currentPhotos, ...uploadedPhotosBase64]);
+      this.form.patchValue({ photos: this.photosS() });
+
+      this.fileUpload.clear();
     }
+  }
+
+  public removePhoto(index: number): void {
+    const photo = this.photosS()[index];
+    if (photo.isExisting && photo.url) {
+      this.photosToDeleteS.update(current => [...current, photo.url || '']);
+    }
+
+    this.photosS.update(current => {
+      const updated = [...current];
+      updated.splice(index, 1);
+      return updated;
+    });
+    this.form.patchValue({ photos: this.photosS() });
   }
 
   public onSubmit(): void {
@@ -172,7 +196,8 @@ export class CreateCatalogItemComponent implements OnInit {
       const formData = this.form.value;
       const payload = {
         ...formData,
-        existingPhotos: this.photos.filter(photo => photo.isExisting).map(photo => photo.url),
+        photosToDelete: this.photosToDeleteS(),
+        photos: this.photosS(),
       };
 
       this.store
