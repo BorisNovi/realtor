@@ -21,6 +21,8 @@ services:
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=admin
       - DATABASE_PORT=5432
+      
+      - USE_REDIS=True
     depends_on:
       postgres:
         condition: service_healthy
