@@ -14,28 +14,40 @@ SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p
 
 ALLOWED_HOSTS = ['*']
 
-# Загружаем файл .env
+# Загружаем .env файл
 ENV_FILE = BASE_DIR / ".env"
 print(f"Загружаем файл: {ENV_FILE}")
 load_dotenv(ENV_FILE)
 
 # Читаем переменные из .env
-REDIS_HOST = os.getenv("REDIS_HOST", "redis")  # Всегда используем "redis" по умолчанию
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")  # Если Redis не используется, то localhost
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+USE_REDIS = os.getenv("USE_REDIS", "False") == "True"  # Проверка, используется ли Redis
 
-# Выводим для проверки
 print(f"REDIS_HOST: {REDIS_HOST}")
+print(f"USE_REDIS: {USE_REDIS}")
 
-# Redis
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",  
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+# Условное подключение Redis
+if USE_REDIS:
+    # Используем Redis
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
         }
     }
-}
+    print("Redis is enabled.")
+else:
+    # Используем локальный кэш, если Redis не используется
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
+    print("Redis is not enabled. Using local cache.")
 
 DEBUG = True
 
