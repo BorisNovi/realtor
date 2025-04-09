@@ -5,6 +5,7 @@
   @let tableData = tableDataS();
   <p-table
     #pTable
+    (onEditComplete)="onEditComplete($event)"
     [scrollable]="true"
     [scrollHeight]="'calc(100vh - 19.4rem)'"
     [value]="tableData!.items"
@@ -27,8 +28,8 @@
     </ng-template>
     <ng-template #header>
       <tr>
-        <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
-        <th style="width: 6rem">Photo</th>
+        <th style="min-width: 4rem"><p-tableHeaderCheckbox /></th>
+        <th style="min-width: 6rem">Photo</th>
         <th>Type</th>
         <th>Zoning</th>
         <th>Address</th>
@@ -37,8 +38,8 @@
         <!-- <th>Rooms</th>
         <th style="min-width: 6rem">Floor</th> -->
         <th style="min-width: 8rem">Date</th>
-        <th>Status</th>
-        <th></th>
+        <th style="min-width: 10.5rem">Status</th>
+        <th style="min-width: 4rem"></th>
       </tr>
     </ng-template>
     <ng-template #body let-item>
@@ -57,9 +58,31 @@
         <!-- <td>{{ item?.specifies?.rooms || '-' }}</td>
         <td>{{ item?.specifies?.floor?.current || '-' }} / {{ item?.floor?.full || '-' }}</td> -->
         <td>{{ item.dateAdded }}</td>
-        <td>
-          <p-tag [value]="item.status" [severity]="getSeverity(item.status)" />
+        <td [pEditableColumn]="{ id: item.id, value: item.status }" pEditableColumnField="status" class="cursor-pointer">
+          <p-cellEditor>
+            <ng-template #input>
+              <p-select
+                [options]="statuses"
+                [(ngModel)]="item.status"
+                optionLabel="label"
+                optionValue="value"
+                [ngStyle]="{
+                  'background-color': getStatusBackground(item.status),
+                }"
+              >
+                <ng-template pTemplate="item" let-item>
+                  <div class="flex items-center">
+                    <p-tag [value]="item.label" [severity]="getSeverity(item.value)" />
+                  </div>
+                </ng-template>
+              </p-select>
+            </ng-template>
+            <ng-template #output>
+              <p-tag [value]="item.status" [severity]="getSeverity(item.status)" />
+            </ng-template>
+          </p-cellEditor>
         </td>
+
         <td>
           <p-button icon="pi pi-ellipsis-v" (click)="onActionClick($event, item)" severity="secondary" text rounded />
         </td>

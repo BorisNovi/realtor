@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -12,7 +13,7 @@ import {
 } from '@angular/core';
 import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
-import { Table, TableModule, TablePageEvent } from 'primeng/table';
+import { Table, TableEditCompleteEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ButtonGroupModule } from 'primeng/buttongroup';
 import { Store } from '@ngxs/store';
@@ -24,13 +25,15 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
-import { getPropertyStatusSeverity } from '@shared/utils';
-import { of, tap } from 'rxjs';
+import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
+import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-table',
   imports: [
+    FormsModule,
     TableModule,
     TagModule,
     ButtonModule,
@@ -39,6 +42,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MenuModule,
     ConfirmDialog,
     DynamicDialogModule,
+    SelectModule,
   ],
   providers: [DialogService],
   templateUrl: './table.component.html',
@@ -57,6 +61,8 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
 
   public readonly getSeverity = getPropertyStatusSeverity;
+  public readonly getStatusBackground = getPropertyStatusBackground;
+  public statuses = mapEnumToOptions(PropertyStatus);
 
   public actionItems: MenuItem[] = [];
 
@@ -70,6 +76,12 @@ export class TableComponent implements AfterViewInit, OnDestroy {
     const pagination = this.paginationS();
     this.pTable.first = pagination.first;
     this.pTable.rows = pagination.rows;
+  }
+
+  public onEditComplete(event: TableEditCompleteEvent): void {
+    const { id, status } = event.data;
+
+    console.log('Edited item:', id, status);
   }
 
   public setActionItems(event: Event, item: ICatalogItem): void {
