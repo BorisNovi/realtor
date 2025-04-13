@@ -113,7 +113,7 @@ export class CatalogState {
   public updateStatus(ctx: StateContext<CatalogStateModel>, { id, status }: UpdateStatus) {
     ctx.patchState({ loading: true });
     return this.catalogService.updateStatus(id, status).pipe(
-      tap(() => ctx.dispatch(new CatalogOperationSuccess('status успешно обновлен'))),
+      tap(() => ctx.dispatch([new CatalogOperationSuccess('status успешно обновлен'), new FetchCatalog()])),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось обновить status'))),
     );
   }
