@@ -12,6 +12,7 @@ import {
   FetchPropertyObject,
   SetCatalogPagination,
   UpdatePropertyObject,
+  UpdateStatus,
 } from './catalog.actions';
 
 interface CatalogStateModel {
@@ -105,6 +106,15 @@ export class CatalogState {
     return this.catalogService.updatePropertyObject(propertyObject).pipe(
       tap(() => ctx.dispatch(new CatalogOperationSuccess('успешно обновлен'))),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось обновить'))),
+    );
+  }
+
+  @Action(UpdateStatus)
+  public updateStatus(ctx: StateContext<CatalogStateModel>, { id, status }: UpdateStatus) {
+    ctx.patchState({ loading: true });
+    return this.catalogService.updateStatus(id, status).pipe(
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('status успешно обновлен'))),
+      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось обновить status'))),
     );
   }
 

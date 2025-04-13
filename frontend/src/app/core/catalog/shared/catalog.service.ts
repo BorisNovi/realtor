@@ -89,15 +89,20 @@ export class CatalogService {
   }
 
   public createPropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
-    console.log('create', body);
-    return of(this.mockData).pipe(delay(1000));
-    this.http.post<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
+    // console.log('create', body);
+    // return of(this.mockData).pipe(delay(1000));
+    return this.http.post<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
   }
 
   public updatePropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
     console.log('update', body);
     return of(this.mockData).pipe(delay(1000));
     this.http.put<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
+  }
+
+  public updateStatus(id: number, status: PropertyStatus): Observable<IPropertyObject> {
+    console.log('update status', id, status);
+    return of(this.mockData).pipe(delay(1000));
   }
 
   public deletePropertyObject(id: number[]): Observable<any> {
