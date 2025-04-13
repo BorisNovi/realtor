@@ -9,6 +9,7 @@ import {
   inject,
   OnDestroy,
   Output,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
@@ -17,7 +18,14 @@ import { Table, TableEditCompleteEvent, TableModule, TablePageEvent } from 'prim
 import { TagModule } from 'primeng/tag';
 import { ButtonGroupModule } from 'primeng/buttongroup';
 import { Store } from '@ngxs/store';
-import { CatalogState, DeletePropertyObjects, FetchCatalog, FetchPropertyObject, SetCatalogPagination, UpdateStatus } from 'src/app/core';
+import {
+  CatalogState,
+  DeletePropertyObjects,
+  FetchCatalog,
+  FetchPropertyObject,
+  SetCatalogPagination,
+  UpdateStatus,
+} from 'src/app/core';
 import { Menu, MenuModule } from 'primeng/menu';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { PropertyStatus } from '@shared/enums';
@@ -80,13 +88,15 @@ export class TableComponent implements AfterViewInit, OnDestroy {
 
   public onEditComplete(event: TableEditCompleteEvent): void {
     const { id, value: status } = event.data;
-    // const tableItems = this.tableDataS().items;
+  }
 
-    // if (tableItems[id].status === status) {
-    //   console.log('the same status');
-    // }
+  public onStatusChange(newStatus: PropertyStatus, id: number): void {
+    const tableItems = this.tableDataS().items;
+    const currentItem = tableItems[id];
 
-    this.store.dispatch(new UpdateStatus(id, status));
+    if (!currentItem || currentItem.status === newStatus) return;
+
+    this.store.dispatch(new UpdateStatus(id, newStatus));
   }
 
   public setActionItems(event: Event, item: ICatalogItem): void {

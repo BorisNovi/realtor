@@ -63,7 +63,8 @@
             <ng-template #input>
               <p-select
                 [options]="statuses"
-                [(ngModel)]="item.status"
+                [ngModel]="item.status"
+                (ngModelChange)="onStatusChange($event, item.id)"
                 optionLabel="label"
                 optionValue="value"
                 [ngStyle]="{
