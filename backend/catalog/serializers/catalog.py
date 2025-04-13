@@ -12,23 +12,33 @@ PROPERTY_SERIALIZER_MAP = {
     # и т.д.
 }
 
-class CatalogCreateSerializer(serializers.Serializer):
-    # Общие обязательные поля
-    property_type = serializers.ChoiceField(choices=list(PROPERTY_SERIALIZER_MAP.keys()))
 
-    title = serializers.CharField()
-    price_value = serializers.DecimalField(max_digits=12, decimal_places=2)
-    price_currency = serializers.CharField(max_length=3)
-    area = serializers.DecimalField(max_digits=7, decimal_places=2)
+class PriceSerializer(serializers.Serializer):
+    value = serializers.DecimalField(max_digits=12, decimal_places=2)
+    currency = serializers.CharField(max_length=3)
+
+
+class CatalogCreateSerializer(serializers.Serializer):
+    # Обязательные поля
+    property_type = serializers.ChoiceField(choices=list(PROPERTY_SERIALIZER_MAP.keys()))
+    zoning_type = serializers.CharField()
+    status = serializers.CharField()
     address = serializers.CharField()
+    area = serializers.DecimalField(max_digits=7, decimal_places=2)
+    price = PriceSerializer()
+
+    # Необязательные поля
+    title = serializers.CharField(required=False, allow_blank=True)
     photos = serializers.ListField(
         child=serializers.URLField(), default=list, required=False
     )
+    photos_to_delete = serializers.ListField(
+        child=serializers.URLField(), required=False, write_only=True
+    )
     map_link = serializers.URLField(required=False, allow_blank=True, allow_null=True)
     comment = serializers.CharField(required=False, allow_blank=True)
+    date_added = serializers.DateTimeField(required=False)
 
-    # Все остальные специфические поля передаём как kwargs
-    # Это важно — чтобы поддержать динамичность
     def to_internal_value(self, data):
         base_fields = super().to_internal_value(data)
 
@@ -42,9 +52,14 @@ class CatalogCreateSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         property_type = validated_data.pop('property_type')
-        extra_fields = validated_data.pop('extra_fields')
+        extra_fields = validated_data.pop('extra_fields', {})
 
-        # Объединяем общие поля и специфические
+        # Распаковываем вложенный price
+        price_data = validated_data.pop('price', {})
+        validated_data['price_value'] = price_data.get('value')
+        validated_data['price_currency'] = price_data.get('currency')
+
+        # Объединяем все данные
         combined_data = {**validated_data, **extra_fields}
 
         serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
