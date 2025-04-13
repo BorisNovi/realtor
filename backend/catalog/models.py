@@ -27,9 +27,9 @@ class BaseProperty(models.Model):
 
 class Flat(BaseProperty):
     """ Модель для квартир """
-    rooms = models.PositiveIntegerField()
-    floor_current = models.PositiveIntegerField()
-    floor_full = models.PositiveIntegerField()
+    rooms = models.IntegerField(null=True, blank=True)
+    floor_current = models.PositiveIntegerField(null=True, blank=True)
+    floor_full = models.PositiveIntegerField(null=True, blank=True)
 
     bath = models.BooleanField(default=False)
     shower = models.BooleanField(default=False)
