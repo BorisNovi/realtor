@@ -36,7 +36,7 @@ class CatalogCreateSerializer(serializers.Serializer):
         child=serializers.URLField(), required=False, write_only=True
     )
     map_link = serializers.URLField(required=False, allow_blank=True, allow_null=True)
-    comment = serializers.CharField(required=False, allow_blank=True)
+    comment = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     date_added = serializers.DateTimeField(required=False)
 
     def to_internal_value(self, data):
