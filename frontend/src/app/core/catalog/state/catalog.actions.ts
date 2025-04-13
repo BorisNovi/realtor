@@ -1,3 +1,4 @@
+import { PropertyStatus } from '@shared/enums';
 import { IPagination, IPropertyObject } from '@shared/interfaces';
 
 export class FetchCatalog {
@@ -22,6 +23,14 @@ export class CreatePropertyObject {
 export class UpdatePropertyObject {
   static readonly type = '[Catalog] Update Property Object';
   constructor(public readonly propertyObject: IPropertyObject) {}
+}
+
+export class UpdateStatus {
+  static readonly type = '[Catalog] Update Status';
+  constructor(
+    public readonly id: number,
+    public readonly status: PropertyStatus,
+  ) {}
 }
 
 export class DeletePropertyObjects {
