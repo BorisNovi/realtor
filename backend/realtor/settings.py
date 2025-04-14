@@ -86,6 +86,12 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
 
+    'DEFAULT_PARSER_CLASSES': [
+        'realtor.utils.parsers.CamelCaseJSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ]
+
 }
 
 SIMPLE_JWT = {
