@@ -101,7 +101,7 @@ export class CatalogService {
   public createPropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
     // console.log('create', body);
     // return of(this.mockData).pipe(delay(1000));
-    return this.http.post<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
+    return this.http.post<IPropertyObject>(`${environment.apiUrl}/property_object`, body);
   }
 
   public updatePropertyObject(body: IPropertyObject): Observable<IPropertyObject> {

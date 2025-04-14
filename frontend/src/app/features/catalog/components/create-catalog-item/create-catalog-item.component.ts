@@ -29,6 +29,7 @@ import { IPhotoItem, IPropertyObject } from '@shared/interfaces';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { WorldPhoneMasksDirective } from '@shared/directives';
 
 @Component({
   imports: [
@@ -44,6 +45,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
     Checkbox,
     InputGroupModule,
     InputGroupAddonModule,
+    WorldPhoneMasksDirective,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
