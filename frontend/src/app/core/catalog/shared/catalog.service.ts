@@ -28,6 +28,11 @@ export class CatalogService {
     },
     area: 78,
     dateAdded: `2025-03-01`,
+    contact: {
+      id: 0,
+      name: 'test',
+      phone: '+99564738384',
+    },
     comment: 'comment',
     specifies: {
       rooms: 3,
@@ -68,6 +73,11 @@ export class CatalogService {
       },
       area: 65 + index * 10, // Разная площадь
       dateAdded: `2025-03-${10 + index}`,
+      contact: {
+        id: index,
+        name: 'test',
+        phone: '+99564738384',
+      },
     }));
 
     const params = new HttpParams({

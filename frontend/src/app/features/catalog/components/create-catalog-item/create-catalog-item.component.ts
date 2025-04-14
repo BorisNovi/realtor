@@ -107,6 +107,11 @@ export class CreateCatalogItemComponent implements OnInit {
         currency: [data?.price?.currency || null, Validators.required],
       }),
 
+      contact: this.fb.group({
+        name: [data?.contact?.name || null],
+        phone: [data?.contact?.phone || null],
+      }),
+
       comment: [data?.comment || null],
 
       specifies: this.fb.group({

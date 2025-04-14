@@ -1,5 +1,6 @@
 import { PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
 import { IPhotoItem } from './photo-item.interface';
+import { IContact } from './contact.interface';
 
 export interface ICatalogItem {
   id: number;
@@ -13,4 +14,5 @@ export interface ICatalogItem {
   price: { value: number; currency: string };
   area: number;
   dateAdded: string | Date;
+  contact: IContact;
 }
