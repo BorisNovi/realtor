@@ -34,10 +34,7 @@
           <div *ngIf="photos.length > 0" class="mt-4">
             <div class="block text-sm font-medium text-gray-700 mb-1">Preview</div>
             <div class="flex flex-wrap gap-4">
-              <div
-                *ngFor="let photo of photos; let i = index"
-                class="relative overflow-hidden aspect-[1/1] w-[10rem]"
-              >
+              <div *ngFor="let photo of photos; let i = index" class="relative overflow-hidden aspect-[1/1] w-[10rem]">
                 <button
                   pButton
                   type="button"
@@ -168,6 +165,26 @@
           placeholder="e.g., USD"
           class="w-full"
         />
+      </div>
+    </ng-container>
+
+    <!-- Contact -->
+    <ng-container formGroupName="contact">
+      <!-- Name -->
+      <div>
+        <label for="contactName" class="block text-sm font-medium text-gray-700 mb-1">Contact name</label>
+        <input id="contactName" pInputText type="text" formControlName="name" placeholder="Enter name" class="w-full" />
+      </div>
+
+      <!-- Phone -->
+      <div>
+        <label for="contactPhone" class="block text-sm font-medium text-gray-700 mb-1">Contact phone</label>
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <i class="pi pi-phone"></i>
+          </p-inputgroup-addon>
+          <input id="contactPhone" pInputText type="text" formControlName="phone" placeholder="Enter phone" />
+        </p-inputgroup>
       </div>
     </ng-container>
 
