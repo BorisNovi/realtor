@@ -13,10 +13,7 @@ export class CatalogService {
 
   private mockData: IPropertyObject = {
     id: 2,
-    photos: [
-      { url: 'https://picsum.photos/id/101/400/300', isExisting: true },
-      { url: 'https://picsum.photos/id/102/400/300', isExisting: true },
-    ],
+    photos: ['https://picsum.photos/id/101/400/300', 'https://picsum.photos/id/102/400/300'],
     propertyType: PropertyType.flat,
     status: PropertyStatus.available,
     zoningType: ZoningType.commercial,
@@ -61,7 +58,7 @@ export class CatalogService {
 
     const mockData = Array.from({ length: 31 }, (_, index) => ({
       id: index,
-      photos: [{ url: `https://picsum.photos/id/${index + 100}/400/300`, isExisting: true }],
+      photos: [`https://picsum.photos/id/${index + 100}/400/300`],
       propertyType: index % 2 === 0 ? PropertyType.flat : PropertyType.house,
       status: index % 3 === 0 ? PropertyStatus.available : index % 3 === 1 ? PropertyStatus.reserved : PropertyStatus.rented,
       zoningType: ZoningType.mixed,
