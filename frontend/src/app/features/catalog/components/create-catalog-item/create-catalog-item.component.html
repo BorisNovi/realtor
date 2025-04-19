@@ -4,7 +4,7 @@
     @let photos = photosS();
 
     <div class="md:col-span-2">
-      <label for="photos" class="block text-sm font-medium text-gray-700 mb-1">Photos</label>
+      <label for="photos" class="block text-sm lept-medium text-gray-700 mb-1">Photos</label>
       <p-fileupload
         #fileUpload
         [customUpload]="true"
@@ -16,42 +16,50 @@
         mode="advanced"
       >
         <ng-template #header let-files let-chooseCallback="chooseCallback">
-          <div *ngIf="photos.length > 0" class="flex flex-wrap justify-between items-center flex-1 gap-4">
-            <div class="flex gap-2">
-              <p-button (onClick)="choose(chooseCallback)" icon="pi pi-plus" [rounded]="true" [text]="true" />
+          @if (photos.length > 0) {
+            <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
+              <div class="flex gap-2">
+                <p-button (onClick)="choose(chooseCallback)" icon="pi pi-plus" [rounded]="true" [text]="true" />
+              </div>
             </div>
-          </div>
+          }
         </ng-template>
         <ng-template #file></ng-template>
         <ng-template #content let-chooseCallback="chooseCallback">
-          <div *ngIf="photos.length <= 0" class="flex items-center justify-center flex-col">
-            <p-button (click)="choose(chooseCallback)" [rounded]="true" [text]="true">
-              <i class="pi pi-plus !p-8 !text-4xl !text-muted-color"></i>
-            </p-button>
-            <p class="mt-6 mb-0">Drag and drop files to here to upload</p>
-          </div>
+          @if (uploadErrorS()) {
+            <p-message severity="error" [text]="uploadErrorS() || ''" class="w-full mb-4"></p-message>
+          }
 
-          <div *ngIf="photos.length > 0" class="mt-4">
-            <div class="block text-sm font-medium text-gray-700 mb-1">Preview</div>
-            <div class="flex flex-wrap gap-4">
-              <div *ngFor="let photo of photos; let i = index" class="relative overflow-hidden aspect-[1/1] w-[10rem]">
-                <button
-                  pButton
-                  type="button"
-                  class="!absolute right-0 p-button-text p-button-sm"
-                  severity="danger"
-                  (click)="removePhoto(i)"
-                >
-                  <i class="pi pi-trash"></i>
-                </button>
-                <img
-                  [src]="photo.isExisting ? photo.url : photo.file?.content"
-                  [alt]="photo.file?.name || 'Photo'"
-                  class="w-full h-auto"
-                />
+          @if (photos.length <= 0) {
+            <div class="flex items-center justify-center flex-col">
+              <p-button (click)="choose(chooseCallback)" [rounded]="true" [text]="true">
+                <i class="pi pi-plus !p-8 !text-4xl !text-muted-color"></i>
+              </p-button>
+              <p class="mt-6 mb-0">Drag and drop files to here to upload</p>
+            </div>
+          }
+
+          @if (photos.length > 0) {
+            <div class="mt-4">
+              <div class="block text-sm font-medium text-gray-700 mb-1">Preview</div>
+              <div class="flex flex-wrap gap-4">
+                @for (photo of photos; track photo; let i = $index) {
+                  <div class="relative overflow-hidden aspect-[1/1] w-[10rem]">
+                    <button
+                      pButton
+                      type="button"
+                      class="!absolute right-0 p-button-text p-button-sm"
+                      severity="danger"
+                      (click)="removePhoto(i)"
+                    >
+                      <i class="pi pi-trash"></i>
+                    </button>
+                    <img [src]="photo" [alt]="photo || 'Photo'" class="w-full h-auto" />
+                  </div>
+                }
               </div>
             </div>
-          </div>
+          }
         </ng-template>
       </p-fileupload>
     </div>
@@ -183,7 +191,14 @@
           <p-inputgroup-addon>
             <i class="pi pi-phone"></i>
           </p-inputgroup-addon>
-          <input id="contactPhone" pInputText type="text" formControlName="phone" placeholder="Enter phone" appWorldPhoneMasks />
+          <input
+            id="contactPhone"
+            pInputText
+            type="text"
+            formControlName="phone"
+            placeholder="Enter phone"
+            appWorldPhoneMasks
+          />
         </p-inputgroup>
       </div>
     </ng-container>
@@ -198,10 +213,12 @@
       </div>
     </p-divider>
 
-    <div class="md:col-span-2" *ngIf="isCommentVisible" [@fadeSlide]>
-      <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">Comment</label>
-      <textarea id="comment" formControlName="comment" [fluid]="true" rows="5" pTextarea [autoResize]="true"></textarea>
-    </div>
+    @if (isCommentVisible) {
+      <div class="md:col-span-2" [@fadeSlide]>
+        <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">Comment</label>
+        <textarea id="comment" formControlName="comment" [fluid]="true" rows="5" pTextarea [autoResize]="true"></textarea>
+      </div>
+    }
 
     <p-divider align="left" type="solid" class="md:col-span-2">
       <div class="flex items-center justify-between w-full gap-2">
@@ -213,203 +230,172 @@
       </div>
     </p-divider>
 
-    <div formGroupName="specifies" *ngIf="isAdditionalParamsVisible" [@fadeSlide] class="grid md:col-span-2 gap-8">
-      <div class="grid md:grid-cols-2 gap-4">
-        <!-- Floor -->
-        <ng-container formGroupName="floor">
-          <!-- Floor Current -->
+    @if (isAdditionalParamsVisible) {
+      <div formGroupName="specifies" [@fadeSlide] class="grid md:col-span-2 gap-8">
+        <div class="grid md:grid-cols-2 gap-4">
+          <!-- Floor -->
+          <ng-container formGroupName="floor">
+            <!-- Floor Current -->
+            <div>
+              <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">Current Floor</label>
+              <input
+                id="currentFloor"
+                pInputText
+                type="number"
+                formControlName="current"
+                placeholder="Enter current floor"
+                class="w-full"
+              />
+            </div>
+
+            <!-- Floor Full -->
+            <div>
+              <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">Total Floors</label>
+              <input
+                id="totalFloors"
+                pInputText
+                type="number"
+                formControlName="full"
+                placeholder="Enter total floors"
+                class="w-full"
+              />
+            </div>
+          </ng-container>
+
+          <!-- Rooms -->
           <div>
-            <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">Current Floor</label>
+            <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">Rooms</label>
             <input
-              id="currentFloor"
+              id="rooms"
               pInputText
               type="number"
-              formControlName="current"
-              placeholder="Enter current floor"
+              formControlName="rooms"
+              placeholder="Enter number of rooms"
               class="w-full"
             />
           </div>
 
-          <!-- Floor Full -->
+          <!-- Furnished -->
           <div>
-            <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">Total Floors</label>
-            <input
-              id="totalFloors"
-              pInputText
-              type="number"
-              formControlName="full"
-              placeholder="Enter total floors"
+            <label for="furnished" class="block text-sm font-medium text-gray-700 mb-1">Furnished</label>
+            <p-select
+              id="furnished"
+              [options]="furnishedStatuses"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="furnished"
+              placeholder="Select furnished"
               class="w-full"
             />
           </div>
-        </ng-container>
 
-        <!-- Rooms -->
-        <div>
-          <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">Rooms</label>
-          <input
-            id="rooms"
-            pInputText
-            type="number"
-            formControlName="rooms"
-            placeholder="Enter number of rooms"
-            class="w-full"
-          />
+          <!-- Renovation -->
+          <div>
+            <label for="renovation" class="block text-sm font-medium text-gray-700 mb-1">Renovation</label>
+            <p-select
+              id="renovation"
+              [options]="renovationStatuses"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="renovation"
+              placeholder="Select renovation"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Kitchen -->
+          <div>
+            <label for="kitchen" class="block text-sm font-medium text-gray-700 mb-1">Kitchen</label>
+            <p-select
+              id="kitchen"
+              [options]="kitchenTypes"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="kitchen"
+              placeholder="Select kitchen type"
+              class="w-full"
+            />
+          </div>
         </div>
 
-        <!-- Furnished -->
-        <div>
-          <label for="furnished" class="block text-sm font-medium text-gray-700 mb-1">Furnished</label>
-          <p-select
-            id="furnished"
-            [options]="furnishedStatuses"
-            optionLabel="label"
-            optionValue="value"
-            formControlName="furnished"
-            placeholder="Select furnished"
-            class="w-full"
-          />
-        </div>
+        <fieldset>
+          <legend class="block text-sm font-medium text-gray-700 mb-1">Shared Facilities</legend>
+          <div formGroupName="sharedFacilities" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div class="flex items-center">
+              <p-checkbox inputId="kitchen" formControlName="kitchen" [binary]="true" />
+              <label for="kitchen" class="ml-2">Kitchen</label>
+            </div>
 
-        <!-- Renovation -->
-        <div>
-          <label for="renovation" class="block text-sm font-medium text-gray-700 mb-1">Renovation</label>
-          <p-select
-            id="renovation"
-            [options]="renovationStatuses"
-            optionLabel="label"
-            optionValue="value"
-            formControlName="renovation"
-            placeholder="Select renovation"
-            class="w-full"
-          />
-        </div>
+            <div class="flex items-center">
+              <p-checkbox inputId="bathroom" formControlName="bathroom" [binary]="true" />
+              <label for="bathroom" class="ml-2">Bathroom</label>
+            </div>
+          </div>
+        </fieldset>
 
-        <!-- Kitchen -->
-        <div>
-          <label for="kitchen" class="block text-sm font-medium text-gray-700 mb-1">Kitchen</label>
-          <p-select
-            id="kitchen"
-            [options]="kitchenTypes"
-            optionLabel="label"
-            optionValue="value"
-            formControlName="kitchen"
-            placeholder="Select kitchen type"
-            class="w-full"
-          />
-        </div>
+        <fieldset>
+          <legend class="block text-sm font-medium text-gray-700 mb-1">Utilities</legend>
+          <div formGroupName="utilities" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+            <div class="flex items-center">
+              <p-checkbox inputId="electricity" formControlName="electricity" [binary]="true" />
+              <label for="electricity" class="ml-2">Electricity</label>
+            </div>
+
+            <div class="flex items-center">
+              <p-checkbox inputId="waterSupply" formControlName="waterSupply" [binary]="true" />
+              <label for="waterSupply" class="ml-2">Water Supply</label>
+            </div>
+
+            <div class="flex items-center">
+              <p-checkbox inputId="naturalGas" formControlName="naturalGas" [binary]="true" />
+              <label for="naturalGas" class="ml-2">Natural Gas</label>
+            </div>
+
+            <div class="flex items-center">
+              <p-checkbox inputId="sewerage" formControlName="sewerage" [binary]="true" />
+              <label for="sewerage" class="ml-2">Sewerage</label>
+            </div>
+
+            <div class="flex items-center">
+              <p-checkbox inputId="heating" formControlName="heating" [binary]="true" />
+              <label for="heating" class="ml-2">Heating</label>
+            </div>
+
+            <div class="flex items-center">
+              <p-checkbox inputId="internet" formControlName="internet" [binary]="true" />
+              <label for="internet" class="ml-2">Internet</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="block text-sm font-medium text-gray-700 mb-1">Other</legend>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
+            @for (
+              item of [
+                { id: 'parking', label: 'Parking' },
+                { id: 'bath', label: 'Bath' },
+                { id: 'shower', label: 'Shower' },
+                { id: 'airConditioning', label: 'Air Conditioning' },
+                { id: 'fireplace', label: 'Fireplace' },
+                { id: 'beautifulView', label: 'Beautiful View' },
+                { id: 'newBuilding', label: 'New Building' },
+                { id: 'elevator', label: 'Elevator' },
+                { id: 'balcony', label: 'Balcony' },
+                { id: 'garden', label: 'Garden' },
+                { id: 'garage', label: 'Garage' },
+              ];
+              track item.id
+            ) {
+              <div class="flex items-center">
+                <p-checkbox [inputId]="item.id" [formControlName]="item.id" [binary]="true" />
+                <label [for]="item.id" class="ml-2">{{ item.label }}</label>
+              </div>
+            }
+          </div>
+        </fieldset>
       </div>
-
-      <fieldset>
-        <legend class="block text-sm font-medium text-gray-700 mb-1">Shared Facilities</legend>
-        <div formGroupName="sharedFacilities" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          <div class="flex items-center">
-            <p-checkbox inputId="kitchen" formControlName="kitchen" [binary]="true" />
-            <label for="kitchen" class="ml-2">Kitchen</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="bathroom" formControlName="bathroom" [binary]="true" />
-            <label for="bathroom" class="ml-2">Bathroom</label>
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend class="block text-sm font-medium text-gray-700 mb-1">Utilities</legend>
-        <div formGroupName="utilities" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
-          <div class="flex items-center">
-            <p-checkbox inputId="electricity" formControlName="electricity" [binary]="true" />
-            <label for="electricity" class="ml-2">Electricity</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="waterSupply" formControlName="waterSupply" [binary]="true" />
-            <label for="waterSupply" class="ml-2">Water Supply</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="naturalGas" formControlName="naturalGas" [binary]="true" />
-            <label for="naturalGas" class="ml-2">Natural Gas</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="sewerage" formControlName="sewerage" [binary]="true" />
-            <label for="sewerage" class="ml-2">Sewerage</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="heating" formControlName="heating" [binary]="true" />
-            <label for="heating" class="ml-2">Heating</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="internet" formControlName="internet" [binary]="true" />
-            <label for="internet" class="ml-2">Internet</label>
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend class="block text-sm font-medium text-gray-700 mb-1">Other</legend>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
-          <div class="flex items-center">
-            <p-checkbox inputId="parking" formControlName="parking" [binary]="true" />
-            <label for="parking" class="ml-2">Parking</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="bath" formControlName="bath" [binary]="true" />
-            <label for="bath" class="ml-2">Bath</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="shower" formControlName="shower" [binary]="true" />
-            <label for="shower" class="ml-2">Shower</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="airConditioning" formControlName="airConditioning" [binary]="true" />
-            <label for="airConditioning" class="ml-2">Air Conditioning</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="fireplace" formControlName="fireplace" [binary]="true" />
-            <label for="fireplace" class="ml-2">Fireplace</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="beautifulView" formControlName="beautifulView" [binary]="true" />
-            <label for="beautifulView" class="ml-2">Beautiful View</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="newBuilding" formControlName="newBuilding" [binary]="true" />
-            <label for="newBuilding" class="ml-2">New Building</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="elevator" formControlName="elevator" [binary]="true" />
-            <label for="elevator" class="ml-2">Elevator</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="balcony" formControlName="balcony" [binary]="true" />
-            <label for="balcony" class="ml-2">Balcony</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="garden" formControlName="garden" [binary]="true" />
-            <label for="garden" class="ml-2">Garden</label>
-          </div>
-
-          <div class="flex items-center">
-            <p-checkbox inputId="garage" formControlName="garage" [binary]="true" />
-            <label for="garage" class="ml-2">Garage</label>
-          </div>
-        </div>
-      </fieldset>
-    </div>
+    }
 
     <!-- Buttons -->
     <div class="md:col-span-2 flex justify-end gap-2 mt-6">

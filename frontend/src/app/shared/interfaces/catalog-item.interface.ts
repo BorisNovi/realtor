@@ -1,11 +1,9 @@
 import { PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
-import { IPhotoItem } from './photo-item.interface';
 import { IContact } from './contact.interface';
 
 export interface ICatalogItem {
   id: number;
-  photos: IPhotoItem[];
-  photosToDelete?: string[]; // Урлы фото, которые хотим удалить. Только на передачу
+  photos: string[];
   propertyType: PropertyType;
   zoningType: ZoningType;
   status: PropertyStatus;

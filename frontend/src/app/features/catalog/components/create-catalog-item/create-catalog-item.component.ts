@@ -7,6 +7,7 @@ import { SelectModule } from 'primeng/select';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
+import { MessageModule } from 'primeng/message';
 import {
   PropertyType,
   PropertyStatus,
@@ -21,11 +22,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Checkbox } from 'primeng/checkbox';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngxs/store';
-import { CreatePropertyObject } from 'src/app/core';
+import { CreatePropertyObject, FileUploadService } from 'src/app/core';
 import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
-import { IPhotoItem, IPropertyObject } from '@shared/interfaces';
+import { IPropertyObject } from '@shared/interfaces';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -46,6 +47,7 @@ import { WorldPhoneMasksDirective } from '@shared/directives';
     InputGroupModule,
     InputGroupAddonModule,
     WorldPhoneMasksDirective,
+    MessageModule,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,14 +66,15 @@ export class CreateCatalogItemComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly store = inject(Store);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly fileUploadService = inject(FileUploadService);
 
   public readonly getSeverity = getPropertyStatusSeverity;
   public readonly getStatusBackground = getPropertyStatusBackground;
 
   public form!: FormGroup;
 
-  public photosS = signal<IPhotoItem[]>([]);
-  public photosToDeleteS = signal<string[]>([]);
+  public photosS = signal<string[]>([]);
+  public uploadErrorS = signal<string | null>(null);
 
   public propertyTypes = mapEnumToOptions(PropertyType);
   public statuses = mapEnumToOptions(PropertyStatus);
@@ -155,43 +158,40 @@ export class CreateCatalogItemComponent implements OnInit {
       }),
     });
 
-    const initialPhotos = this.form.get('photos')?.value || [];
-    this.photosS.set(initialPhotos.map((photo: IPhotoItem) => ({ ...photo, isExisting: true })));
+    this.photosS.set(data?.photos || []);
   }
 
   public choose(callback: VoidFunction): void {
     callback();
+    this.uploadErrorS.set(null);
   }
 
-  public async onUpload(event: FileUploadHandlerEvent): Promise<void> {
+  public onUpload(event: FileUploadHandlerEvent): void {
     if (event && Array.isArray(event.files)) {
-      const uploadedPhotosBase64: IPhotoItem[] = await Promise.all(
-        event.files.map((file: File) =>
-          fileToBase64(file).then(base64 => ({
-            isExisting: false,
-            file: {
-              name: file.name,
-              content: base64,
-            },
-          })),
-        ),
-      );
+      const files: File[] = event.files;
 
-      this.photosS.update(currentPhotos => [...currentPhotos, ...uploadedPhotosBase64]);
-      this.form.patchValue({ photos: this.photosS() });
-
-      this.fileUpload.clear();
+      this.fileUploadService
+        .upload(files)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (newUrls: string[]) => {
+            this.photosS.update(currentUrls => [...currentUrls, ...newUrls]);
+            this.form.patchValue({ photos: this.photosS() });
+            this.fileUpload.clear();
+            this.uploadErrorS.set(null);
+          },
+          error: err => {
+            const errorMessage = err?.error?.message || 'File upload failed';
+            this.uploadErrorS.set(errorMessage);
+            console.error('File upload failed:', err);
+          },
+        });
     }
   }
 
   public removePhoto(index: number): void {
-    const photo = this.photosS()[index];
-    if (photo.isExisting && photo.url) {
-      this.photosToDeleteS.update(current => [...current, photo.url || '']);
-    }
-
-    this.photosS.update(current => {
-      const updated = [...current];
+    this.photosS.update(currentUrls => {
+      const updated = [...currentUrls];
       updated.splice(index, 1);
       return updated;
     });
@@ -203,8 +203,7 @@ export class CreateCatalogItemComponent implements OnInit {
       const formData = this.form.value;
       const payload = {
         ...formData,
-        photosToDelete: this.photosToDeleteS(),
-        photos: this.photosS(),
+        contact: { name: formData.contact.name, phone: formData.contact.phone.replace(/\D/g, '') },
       };
 
       this.store
