@@ -31,6 +31,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { WorldPhoneMasksDirective } from '@shared/directives';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   imports: [
@@ -38,6 +39,7 @@ import { WorldPhoneMasksDirective } from '@shared/directives';
     FileUploadModule,
     ReactiveFormsModule,
     InputTextModule,
+    InputNumberModule,
     ButtonModule,
     SelectModule,
     TagModule,
