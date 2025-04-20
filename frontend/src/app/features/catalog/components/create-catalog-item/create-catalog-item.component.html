@@ -132,7 +132,16 @@
       <label for="area" class="block text-sm font-medium text-gray-700 mb-1"
         >Area (m²) <span class="text-red-500">*</span></label
       >
-      <input id="area" pInputText type="number" formControlName="area" placeholder="Enter area" class="w-full" />
+      <p-inputnumber
+        id="area"
+        suffix=" m²"
+        [showButtons]="true"
+        [step]="10"
+        [min]="0"
+        formControlName="area"
+        placeholder="Enter area"
+        class="w-full"
+      />
     </div>
 
     <!-- Address -->
@@ -154,8 +163,16 @@
           <p-inputgroup-addon>
             <i class="pi pi-wallet"></i>
           </p-inputgroup-addon>
-          <input id="priceVal" pInputText type="number" formControlName="value" placeholder="Enter price" />
-          <p-inputgroup-addon>{{ getCurrencySymbol(form.controls['price'].value.currency) }}</p-inputgroup-addon>
+          <p-inputnumber
+            id="priceMin"
+            formControlName="value"
+            placeholder="Enter price"
+            [suffix]="' ' + (getCurrencySymbol(form.controls['price'].value.currency) || '')"
+            [showButtons]="true"
+            [step]="10"
+            [min]="0"
+            class="w-full"
+          />
         </p-inputgroup>
       </div>
 
@@ -399,7 +416,7 @@
 
     <!-- Buttons -->
     <div class="md:col-span-2 flex justify-end gap-2 mt-6">
-      <p-button label="Cancel" (click)="onCancel()" outlined type="button" />
+      <p-button label="Cancel" type="button" (click)="onCancel()" outlined />
       <p-button label="Save" type="submit" class="p-button-primary" [disabled]="form.invalid" />
     </div>
   </form>
