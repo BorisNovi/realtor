@@ -21,7 +21,7 @@ class PriceSerializer(serializers.Serializer):
 class CatalogCreateSerializer(serializers.Serializer):
     # Обязательные поля
     property_type = serializers.ChoiceField(choices=list(PROPERTY_SERIALIZER_MAP.keys()))
-    zoning_type = serializers.CharField()
+    # zoning_type = serializers.CharField()
     status = serializers.CharField()
     address = serializers.CharField()
     area = serializers.DecimalField(max_digits=7, decimal_places=2)

@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import PropertyCreateView
+from catalog.views.property_create_view import PropertyCreateView
+from catalog.views.catalog_list_view import CatalogListView
 
 urlpatterns = [
     path('/property_object', PropertyCreateView.as_view(), name='property-create'),
-    # path('/catalog')
+    path('/catalog', CatalogListView.as_view(), name='catalog'),
 ]
