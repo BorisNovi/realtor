@@ -41,6 +41,10 @@ class Flat(BaseProperty):
 
     def __str__(self):
         return f"Квартира – {self.address} ({self.price_value} {self.price_currency})"
+    
+    @property
+    def property_type(self):
+        return "flat"
 
 class Office(BaseProperty):
     """ Модель для офисов """
@@ -50,6 +54,9 @@ class Office(BaseProperty):
 
     def __str__(self):
         return f"Офис – {self.address} ({self.price_value} {self.price_currency})"
+    @property
+    def property_type(self):
+        return "office"
 
 class LandPlot(BaseProperty):
     """ Модель для земельных участков """
@@ -58,4 +65,7 @@ class LandPlot(BaseProperty):
 
     def __str__(self):
         return f"Земельный участок – {self.address} ({self.price_value} {self.price_currency})"
+    @property
+    def property_type(self):
+        return "landplot"
 
