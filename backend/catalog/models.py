@@ -1,5 +1,11 @@
 from django.db import models
 
+class Contact(models.Model):
+    name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.name} ({self.phone})"
 
 class PropertyStatus(models.TextChoices):
     AVAILABLE = 'available', 'Доступно'
@@ -38,6 +44,7 @@ class Flat(BaseProperty):
     beautiful_view = models.BooleanField(default=False)
     new_building = models.BooleanField(default=False)
     elevator = models.BooleanField(default=False)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="flats")
 
     def __str__(self):
         return f"Квартира – {self.address} ({self.price_value} {self.price_currency})"
@@ -51,6 +58,7 @@ class Office(BaseProperty):
     floor = models.PositiveIntegerField()
     open_space = models.BooleanField(default=False)
     meeting_rooms = models.PositiveIntegerField(default=0)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="offices")
 
     def __str__(self):
         return f"Офис – {self.address} ({self.price_value} {self.price_currency})"
@@ -62,10 +70,12 @@ class LandPlot(BaseProperty):
     """ Модель для земельных участков """
     is_agricultural = models.BooleanField(default=False)
     has_communications = models.BooleanField(default=False)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="landplots")
 
     def __str__(self):
         return f"Земельный участок – {self.address} ({self.price_value} {self.price_currency})"
     @property
     def property_type(self):
         return "landplot"
+
 
