@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from catalog.serializers.catalog import ContactSerializer
 
 class CatalogItemSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -11,6 +12,8 @@ class CatalogItemSerializer(serializers.Serializer):
     price = serializers.SerializerMethodField()
     area = serializers.DecimalField(max_digits=7, decimal_places=2)
     date_added = serializers.DateTimeField()
+    contact = ContactSerializer()
+
 
     def get_price(self, obj):
         return {

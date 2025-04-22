@@ -1,15 +1,16 @@
 from rest_framework import serializers
+from rest_framework import serializers
+from ..models import Contact
 from .flat import FlatSerializer
 from .office import OfficeSerializer
 from .land import LandPlotSerializer
-# остальные потом добавим: HouseSerializer, GarageSerializer и т.п.
+from .contact import ContactSerializer
+# TODO: добавить HouseSerializer, GarageSerializer и т.п.
 
 PROPERTY_SERIALIZER_MAP = {
     'flat': FlatSerializer,
     'office': OfficeSerializer,
     'landplot': LandPlotSerializer,
-    # 'house': HouseSerializer,
-    # и т.д.
 }
 
 
@@ -29,15 +30,17 @@ class CatalogCreateSerializer(serializers.Serializer):
 
     # Необязательные поля
     title = serializers.CharField(required=False, allow_blank=True)
-    photos = serializers.ListField(
-        child=serializers.URLField(), default=list, required=False
-    )
-    photos_to_delete = serializers.ListField(
-        child=serializers.URLField(), required=False, write_only=True
-    )
+    # photos = serializers.ListField(
+    #     child=serializers.URLField(), default=list, required=False
+    # )
+    # photos_to_delete = serializers.ListField(
+    #     child=serializers.URLField(), required=False, write_only=True
+    # )
     map_link = serializers.URLField(required=False, allow_blank=True, allow_null=True)
     comment = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     date_added = serializers.DateTimeField(required=False)
+
+    contact = ContactSerializer()
 
     def to_internal_value(self, data):
         base_fields = super().to_internal_value(data)
@@ -51,6 +54,15 @@ class CatalogCreateSerializer(serializers.Serializer):
         return base_fields
 
     def create(self, validated_data):
+        # Извлекаем данные о контакте
+        contact_data = validated_data.pop('contact')
+
+        # Создаем контакт или получаем существующий
+        contact_serializer = ContactSerializer(data=contact_data)
+        contact_serializer.is_valid(raise_exception=True)
+        contact = contact_serializer.save()  # Сохраняем контакт
+
+
         property_type = validated_data.pop('property_type')
         extra_fields = validated_data.pop('extra_fields', {})
 
@@ -60,7 +72,7 @@ class CatalogCreateSerializer(serializers.Serializer):
         validated_data['price_currency'] = price_data.get('currency')
 
         # Объединяем все данные
-        combined_data = {**validated_data, **extra_fields}
+        combined_data = {**validated_data, **extra_fields, 'contact': contact.id}
 
         serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
         if not serializer_class:
@@ -76,3 +88,4 @@ class CatalogCreateSerializer(serializers.Serializer):
             if isinstance(instance, serializer_class.Meta.model):
                 return serializer_class(instance).data
         return super().to_representation(instance)
+
