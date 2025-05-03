@@ -6,28 +6,6 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-class SignupSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True)
-    password_confirmation = serializers.CharField(write_only=True)
-
-    def validate(self, data):
-        # Проверка совпадения паролей
-        if data['password'] != data['password_confirmation']:
-            raise ValidationError("Пароли не совпадают")
-        if len(data['password']) < 8:
-            raise ValidationError("Пароль должен быть не менее 8 символов")
-        
-        # Проверка на уникальность email 
-        if User.objects.filter(email=data['email']).exists():
-            raise ValidationError("Пользователь с таким email уже существует")
-        
-        return data
-
-    def create(self, validated_data):
-        # Здесь больше не создаём пользователя, так как это будет сделано в `sign-up-activate`
-        return validated_data
-
 class SigninSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)

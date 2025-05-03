@@ -1,11 +1,10 @@
 from django.urls import path
 from user_auth import views
-from .views.activation import PasswordResetActivateView
-from .views.auth import LogoutView
-from .views.auth import check_session
-from .views.password import PasswordRecoveryView
-from .views.refresh import RefreshTokenView
-
+from .views.activation_view import PasswordResetActivateView
+from .views.session_check_view import check_session
+from .views.password_view import PasswordRecoveryView
+from .views.refresh_view import RefreshTokenView
+from .views.signin_view import SigninView
 
 urlpatterns = [
     path('sign-up', views.signup, name='signup'),
