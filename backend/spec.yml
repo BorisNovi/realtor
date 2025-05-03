@@ -1,0 +1,439 @@
+openapi: 3.0.4
+
+info:
+  title: Realtor-X REST API
+  description: API for managing listings for sale and rent of real estate. Supports authorization, filtering, searching and user management. 
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Test server
+
+paths:
+  /sign-up:
+    post:
+      tags: 
+        - Authentication
+      summary: Registration page.
+      description: This is where the user begins to get acquainted with the service.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - passwordConfirmation
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                passwordConfirmation:
+                  type: string
+      responses:
+        "202":
+          description: Registration request accepted; confirmation link sent to user's specified email (caching - django of run locally, Redis if prod).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Confirmation link has been sent to your email."
+        "400":
+          description: Invalid email.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: Enter a valid email address
+        "409":
+          description: User already exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: A user with this email already exists.
+        "422":
+          description: Invalid password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: Invalid password format.
+        "500":
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: Internal server error. Please try again later.
+  /sign-up-activate:
+    post:
+      tags:
+        - Authentication
+      summary: Registration confirmation page.
+      description: The registration confirmation page that the user gets to when they click on the link in the email. At this point, their data is transferred from the redis cache to the DB.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+      responses:
+        "201":
+          description: User has been created!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    accessToken: 
+                      type: string
+                    refreshToken: 
+                      type: string
+                    user:
+                      type: object
+                      properties:
+                        id: 
+                          type: integer
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        role:
+                          type: string
+                        insertedAt:
+                          type: string
+                        bannedAt:
+                          type: string
+        "400":
+          description: Invalid activation token or missing data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Invalid or expired activation token."
+        "404":
+          description: Activation data not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Activation link has expired or is invalid."
+        "409":
+          description: User already exists or is already activated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "User already activated."
+        "500":
+          description: Server error while creating user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Unexpected error occurred. Please try again later."
+  /sign-in:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticates a user and returns access and refresh tokens, along with user information.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                        nullable: true
+                      email:
+                        type: string
+                      role:
+                        type: string
+                      insertedAt:
+                        type: string
+                        format: date-time
+                      bannedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+        "400":
+          description: Missing or invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+  
+        "401":
+          description: Incorrect email or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+  
+        "403":
+          description: User is banned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+  
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+  /recover:
+    post:
+      tags:
+        - Authentication
+      summary: Password recovery request
+      description: Accepts an email and sends a password reset link if the user exists. Always returns 200 to avoid exposing user data.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Reset link sent (even if user does not exist)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "If an account with this email exists, a password reset link has been sent."
+        "400":
+          description: Missing or invalid email field
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Email is required"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Something went wrong. Please try again later."
+  /recover-activate:
+    post:
+      tags:
+        - Authentication
+      summary: Activate password reset
+      description: Accepts a password reset token (from email) and a new password to activate the reset process.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - password
+              properties:
+                token:
+                  type: string
+                  description: The password reset token received via email.
+                password:
+                  type: string
+                  description: The new password that the user wants to set.
+      responses:
+        "200":
+          description: Password has been reset successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Password has been reset successfully"
+  
+        "400":
+          description: Bad request (token issues or invalid password format)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid or expired token"
+                  error_detail:
+                    type: string
+                    example: "Password does not meet the required criteria (e.g., length, complexity)."
+  
+        "401":
+          description: Unauthorized - token does not belong to the user or is incorrect
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "The token does not belong to the user or is incorrect."
+  
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An error occurred. Please try again later."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
