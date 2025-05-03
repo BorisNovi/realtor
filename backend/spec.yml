@@ -44,9 +44,9 @@ paths:
                 properties:
                   detail:
                     type: string
-                    example: "Confirmation link has been sent to your email."
+                    example: "If this email is registered, you will receive a confirmation email."
         "400":
-          description: Invalid email.
+          description: Invalid email (forbidden domain or characters, or missing data).
           content:
             application/json:
               schema:
@@ -56,19 +56,8 @@ paths:
                     type: string
                 example:
                   error: Enter a valid email address
-        "409":
-          description: User already exists.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                example:
-                  error: A user with this email already exists.
         "422":
-          description: Invalid password.
+          description: Invalid password (not enough characters, no special characters, missmat, no data, etc)
           content:
             application/json:
               schema:

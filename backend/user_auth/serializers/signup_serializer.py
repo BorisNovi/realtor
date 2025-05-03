@@ -1,9 +1,21 @@
-from django.forms import ValidationError
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 import re
+import logging
 
 User = get_user_model()
+
+# Validation constants
+MIN_PASSWORD_LENGTH = 8
+EMAIL_REGEX = r'^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+PASSWORD_SPECIAL_CHARS = r'[!@#$%^&*(),.?":{}|<>]'
+FORBIDDEN_DOMAINS = {'example.com'}
+
+logger = logging.getLogger(__name__)
+
+def raise_error(message, code):
+    return ValidationError({'message': message, 'code': code})
 
 class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -11,41 +23,70 @@ class SignupSerializer(serializers.Serializer):
     password_confirmation = serializers.CharField(write_only=True)
 
     def validate_email(self, value):
-        # Проверка на уникальность email
+        if not re.match(EMAIL_REGEX, value):
+            raise raise_error("Invalid email format", 
+                              "invalid_email_format")
+        
+        domain = value.split('@')[1].lower()
+        if domain in FORBIDDEN_DOMAINS:
+            raise raise_error("Registration with this domain is forbidden", 
+                              "forbidden_domain")
+        
+        # Не сообщаем пользователю, если email уже зарегистрирован
         if User.objects.filter(email=value).exists():
-            raise ValidationError("Пользователь с таким email уже существует")
-
-        # Дополнительная проверка формата (если нужно ограничить допустимые email)
-        # Пример: только буквы, цифры, точки и дефисы в имени email
-        if not re.match(r'^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
-            raise ValidationError("Недопустимый формат email")
-
+            logger.info(f"Signup attempt with existing email: {value}")
+        
         return value
 
     def validate_password(self, value):
-        # Проверка длины пароля
-        if len(value) < 8:
-            raise ValidationError("Пароль должен быть не менее 8 символов")
-        # Проверка на наличие заглавной буквы
+        if len(value) < MIN_PASSWORD_LENGTH:
+            raise raise_error(f"Password must be at least {MIN_PASSWORD_LENGTH} characters", 
+                              "password_too_short")
         if not re.search(r'[A-Z]', value):
-            raise ValidationError("Пароль должен содержать хотя бы одну заглавную букву")
-        # Проверка на наличие цифры
+            raise raise_error("Password must contain at least one uppercase letter", 
+                              "password_no_uppercase")
         if not re.search(r'\d', value):
-            raise ValidationError("Пароль должен содержать хотя бы одну цифру")
-        # Проверка на наличие специального символа
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
-            raise ValidationError("Пароль должен содержать хотя бы один специальный символ")
+            raise raise_error("Password must contain at least one digit", 
+                              "password_no_digit")
+        if not re.search(PASSWORD_SPECIAL_CHARS, value):
+            raise raise_error("Password must contain at least one special character", 
+                              "password_no_special_char")
         return value
 
     def validate(self, data):
-        # Проверка совпадения паролей
-        if data['password'] != data['password_confirmation']:
-            raise ValidationError({
-                'password': 'Пароли не совпадают',
-                'password_confirmation': 'Пароли не совпадают'
-            })
+        password = data['password']
+        password_confirmation = data['password_confirmation']
+        email = data.get('email', '').lower()
+        password_lower = password.lower()
+
+        errors = {}
+
+        if password != password_confirmation:
+            msg = "Passwords do not match"
+            code = "password_mismatch"
+            errors['password'] = {'message': msg, 'code': code}
+            errors['password_confirmation'] = {'message': msg, 'code': code}
+
+        if email in password_lower:
+            errors['password'] = {'message': 'Password must not contain email', 
+                                  'code': 'password_contains_email'}
+
+        email_parts = email.split('@')
+        if len(email_parts) > 1:
+            username = email_parts[0]
+            domain = email_parts[1]
+            if (len(username) >= 3 and username in password_lower) or \
+               (len(domain) >= 3 and domain in password_lower):
+                errors['password'] = {
+                    'message': 'Password must not contain email parts (username or domain)',
+                    'code': 'password_contains_email_parts'
+                }
+
+        if errors:
+            raise ValidationError(errors)
+
         return data
 
     def create(self, validated_data):
-        # Здесь больше не создаём пользователя, так как это будет сделано в `sign-up-activate`
+        """Returns validated data for further processing (not creating a real user)."""
         return validated_data
