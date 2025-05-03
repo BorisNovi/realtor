@@ -5,14 +5,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  EventEmitter,
   inject,
   OnDestroy,
-  Output,
-  signal,
+  output,
   ViewChild,
 } from '@angular/core';
-import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
+import { ICatalogItem, IPagination, IPropertyObject } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
 import { Table, TableEditCompleteEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -60,52 +58,53 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   @ViewChild('pTable') pTable!: Table;
   @ViewChild('menu') menu!: Menu;
 
-  @Output() filtersOpen = new EventEmitter<void>();
+  readonly filtersOpen = output();
+  readonly paginationChange = output<IPagination>();
 
-  private ref: DynamicDialogRef | undefined;
-  private readonly dialogService = inject(DialogService);
-  private readonly store = inject(Store);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly destroyRef = inject(DestroyRef);
+  #ref: DynamicDialogRef | undefined;
+  readonly #dialogService = inject(DialogService);
+  readonly #store = inject(Store);
+  readonly #confirmationService = inject(ConfirmationService);
+  readonly #destroyRef = inject(DestroyRef);
 
-  public readonly getSeverity = getPropertyStatusSeverity;
-  public readonly getStatusBackground = getPropertyStatusBackground;
-  public statuses = mapEnumToOptions(PropertyStatus);
+  readonly getSeverity = getPropertyStatusSeverity;
+  readonly getStatusBackground = getPropertyStatusBackground;
+  statuses = mapEnumToOptions(PropertyStatus);
 
-  public actionItems: MenuItem[] = [];
+  actionItems: MenuItem[] = [];
 
-  public selectedItems: ICatalogItem[] = [];
+  selectedItems: ICatalogItem[] = [];
 
-  public tableDataS = this.store.selectSignal(CatalogState.catalog);
-  public paginationS = this.store.selectSignal(CatalogState.pagination);
-  public loadingS = this.store.selectSignal(CatalogState.loading);
+  readonly tableDataS = this.#store.selectSignal(CatalogState.catalog);
+  readonly paginationS = this.#store.selectSignal(CatalogState.pagination);
+  readonly loadingS = this.#store.selectSignal(CatalogState.loading);
 
-  public ngAfterViewInit(): void {
+  ngAfterViewInit(): void {
     const pagination = this.paginationS();
     this.pTable.first = pagination.first;
     this.pTable.rows = pagination.rows;
   }
 
-  public onEditComplete(event: TableEditCompleteEvent): void {
+  onEditComplete(event: TableEditCompleteEvent): void {
     const { id, value: status } = event.data;
   }
 
-  public onStatusChange(newStatus: PropertyStatus, id: number): void {
+  onStatusChange(newStatus: PropertyStatus, id: number): void {
     const tableItems = this.tableDataS().items;
     const currentItem = tableItems[id];
 
     if (!currentItem || currentItem.status === newStatus) return;
 
-    this.store.dispatch(new UpdateStatus(id, newStatus));
+    this.#store.dispatch(new UpdateStatus(id, newStatus));
   }
 
-  public setActionItems(event: Event, item: ICatalogItem): void {
+  setActionItems(event: Event, item: ICatalogItem): void {
     this.actionItems = [
       {
         label: 'Add to listing',
         icon: 'pi pi-list-check',
         command: () => {
-          console.log(`Add to listing item with id: ${item.id}`);
+          console.debug(`Add to listing item with id: ${item.id}`);
         },
       },
       {
@@ -128,43 +127,43 @@ export class TableComponent implements AfterViewInit, OnDestroy {
     ];
   }
 
-  public onActionClick(event: Event, item: ICatalogItem): void {
+  onActionClick(event: Event, item: ICatalogItem): void {
     this.setActionItems(event, item);
     this.menu.toggle(event);
   }
 
-  public pageChange(event: TablePageEvent): void {
-    this.store.dispatch([new SetCatalogPagination(event), new FetchCatalog()]);
+  pageChange(event: TablePageEvent): void {
+    this.paginationChange.emit(event);
   }
 
-  public onFiltersOpen(): void {
+  onFiltersOpen(): void {
     this.filtersOpen.emit();
   }
 
-  public openItemDialog(id?: number): void {
+  openItemDialog(id?: number): void {
     if (id === undefined || id < 0) {
       this.openDialog();
       return;
     }
 
-    this.store
+    this.#store
       .dispatch(new FetchPropertyObject(id))
       .pipe(
         tap(() => {
-          const propertyData = this.store.selectSnapshot(CatalogState.propertyObject);
+          const propertyData = this.#store.selectSnapshot(CatalogState.propertyObject);
           if (propertyData) {
             this.openDialog(propertyData);
           } else {
             this.openDialog();
           }
         }),
-        takeUntilDestroyed(this.destroyRef),
+        takeUntilDestroyed(this.#destroyRef),
       )
       .subscribe();
   }
 
-  public openDialog(data?: IPropertyObject): void {
-    this.ref = this.dialogService.open(CreateCatalogItemComponent, {
+  openDialog(data?: IPropertyObject): void {
+    this.#ref = this.#dialogService.open(CreateCatalogItemComponent, {
       data: data,
       header: data?.id ? 'Edit Item' : 'Add New Item',
       width: '50vw',
@@ -179,13 +178,13 @@ export class TableComponent implements AfterViewInit, OnDestroy {
       },
     });
 
-    this.ref.onClose.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data: IPropertyObject) => {
-      console.log('data on close dialog', data);
+    this.#ref.onClose.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((data: IPropertyObject) => {
+      console.debug('data on close dialog', data);
     });
   }
 
-  public confirmDeletion(event: Event, item: ICatalogItem): void {
-    this.confirmationService.confirm({
+  confirmDeletion(event: Event, item: ICatalogItem): void {
+    this.#confirmationService.confirm({
       target: event.target as EventTarget,
       message: "Attention! You won't restore it!",
       header: 'Delete item?',
@@ -202,14 +201,14 @@ export class TableComponent implements AfterViewInit, OnDestroy {
       },
 
       accept: () => {
-        this.store.dispatch(new DeletePropertyObjects([item.id]));
+        this.#store.dispatch(new DeletePropertyObjects([item.id]));
       },
     });
   }
 
-  public ngOnDestroy(): void {
-    if (this.ref) {
-      this.ref.close();
+  ngOnDestroy(): void {
+    if (this.#ref) {
+      this.#ref.close();
     }
   }
 }

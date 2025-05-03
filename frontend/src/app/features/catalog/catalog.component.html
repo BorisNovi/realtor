@@ -1,4 +1,4 @@
 <p-drawer header="Filters" [(visible)]="isFiltersOpen" position="right">
-  <app-filters></app-filters>
+  <app-filters (filtersChange)="onFiltersChange($event)"></app-filters>
 </p-drawer>
-<app-table (filtersOpen)="isFiltersOpen = true"></app-table>
+<app-table (filtersOpen)="isFiltersOpen = true" (paginationChange)="onPaginationChange($event)"></app-table>

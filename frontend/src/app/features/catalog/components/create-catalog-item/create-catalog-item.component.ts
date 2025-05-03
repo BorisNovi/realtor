@@ -63,44 +63,44 @@ import { InputNumberModule } from 'primeng/inputnumber';
 })
 export class CreateCatalogItemComponent implements OnInit {
   @ViewChild('fileUpload') fileUpload!: FileUpload;
-  private readonly ref = inject(DynamicDialogRef);
-  private readonly config = inject(DynamicDialogConfig);
-  private readonly fb = inject(FormBuilder);
-  private readonly store = inject(Store);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly fileUploadService = inject(FileUploadService);
+  readonly #ref = inject(DynamicDialogRef);
+  readonly #config = inject(DynamicDialogConfig);
+  readonly #fb = inject(FormBuilder);
+  readonly #store = inject(Store);
+  readonly #destroyRef = inject(DestroyRef);
+  readonly #fileUploadService = inject(FileUploadService);
 
-  public readonly getSeverity = getPropertyStatusSeverity;
-  public readonly getStatusBackground = getPropertyStatusBackground;
+  readonly getSeverity = getPropertyStatusSeverity;
+  readonly getStatusBackground = getPropertyStatusBackground;
 
-  public form!: FormGroup;
+  form!: FormGroup;
 
-  public photosS = signal<string[]>([]);
-  public uploadErrorS = signal<string | null>(null);
+  readonly photosS = signal<string[]>([]);
+  readonly uploadErrorS = signal<string | null>(null);
 
-  public propertyTypes = mapEnumToOptions(PropertyType);
-  public statuses = mapEnumToOptions(PropertyStatus);
-  public zoningTypes = mapEnumToOptions(ZoningType);
-  public furnishedStatuses = mapEnumToOptions(FurnishedStatus);
-  public renovationStatuses = mapEnumToOptions(RenovationStatus);
-  public kitchenTypes = mapEnumToOptions(KitchenType);
-  public currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
+  propertyTypes = mapEnumToOptions(PropertyType);
+  statuses = mapEnumToOptions(PropertyStatus);
+  zoningTypes = mapEnumToOptions(ZoningType);
+  furnishedStatuses = mapEnumToOptions(FurnishedStatus);
+  renovationStatuses = mapEnumToOptions(RenovationStatus);
+  kitchenTypes = mapEnumToOptions(KitchenType);
+  currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
 
-  public getCurrencySymbol(key: string): string {
+  getCurrencySymbol(key: string): string {
     return CURRENCY_SYMBOLS[key as Currency];
   }
 
-  public isCommentVisible = !!this.config.data?.comment || false;
-  public isAdditionalParamsVisible = !!this.config.data?.specifies || false;
+  isCommentVisible = !!this.#config.data?.comment || false;
+  isAdditionalParamsVisible = !!this.#config.data?.specifies || false;
 
-  public ngOnInit(): void {
-    this.initForm();
+  ngOnInit(): void {
+    this.#initForm();
   }
 
-  private initForm(): void {
-    const data = this.config.data;
+  #initForm(): void {
+    const data = this.#config.data;
 
-    this.form = this.fb.group({
+    this.form = this.#fb.group({
       photos: [data?.photos || null],
       propertyType: [data?.propertyType || null, Validators.required],
       zoningType: [data?.zoningType || null, Validators.required],
@@ -109,21 +109,21 @@ export class CreateCatalogItemComponent implements OnInit {
       address: [data?.address || null, Validators.required],
       area: [data?.area || null, [Validators.required, Validators.min(1)]],
 
-      price: this.fb.group({
+      price: this.#fb.group({
         value: [data?.price?.value || null, [Validators.required, Validators.min(0)]],
         currency: [data?.price?.currency || null, Validators.required],
       }),
 
-      contact: this.fb.group({
+      contact: this.#fb.group({
         name: [data?.contact?.name || null],
         phone: [data?.contact?.phone || null],
       }),
 
       comment: [data?.comment || null],
 
-      specifies: this.fb.group({
+      specifies: this.#fb.group({
         rooms: [data?.specifies?.rooms || null, [Validators.min(1), Validators.max(200)]],
-        floor: this.fb.group({
+        floor: this.#fb.group({
           current: [data?.specifies?.floor?.current || null, [Validators.min(-10), Validators.max(200)]],
           full: [data?.specifies?.floor?.full || null, Validators.min(1)],
         }),
@@ -131,12 +131,12 @@ export class CreateCatalogItemComponent implements OnInit {
         furnished: [data?.specifies?.furnished || null],
         renovation: [data?.specifies?.renovation || null],
 
-        sharedFacilities: this.fb.group({
+        sharedFacilities: this.#fb.group({
           kitchen: [data?.specifies?.sharedFacilities?.kitchen || false],
           bathroom: [data?.specifies?.sharedFacilities?.bathroom || false],
         }),
 
-        utilities: this.fb.group({
+        utilities: this.#fb.group({
           electricity: [data?.specifies?.utilities?.electricity || false],
           waterSupply: [data?.specifies?.utilities?.waterSupply || false],
           naturalGas: [data?.specifies?.utilities?.naturalGas || false],
@@ -163,18 +163,18 @@ export class CreateCatalogItemComponent implements OnInit {
     this.photosS.set(data?.photos || []);
   }
 
-  public choose(callback: VoidFunction): void {
+  choose(callback: VoidFunction): void {
     callback();
     this.uploadErrorS.set(null);
   }
 
-  public onUpload(event: FileUploadHandlerEvent): void {
+  onUpload(event: FileUploadHandlerEvent): void {
     if (event && Array.isArray(event.files)) {
       const files: File[] = event.files;
 
-      this.fileUploadService
+      this.#fileUploadService
         .upload(files)
-        .pipe(takeUntilDestroyed(this.destroyRef))
+        .pipe(takeUntilDestroyed(this.#destroyRef))
         .subscribe({
           next: (newUrls: string[]) => {
             this.photosS.update(currentUrls => [...currentUrls, ...newUrls]);
@@ -191,7 +191,7 @@ export class CreateCatalogItemComponent implements OnInit {
     }
   }
 
-  public removePhoto(index: number): void {
+  removePhoto(index: number): void {
     this.photosS.update(currentUrls => {
       const updated = [...currentUrls];
       updated.splice(index, 1);
@@ -200,7 +200,7 @@ export class CreateCatalogItemComponent implements OnInit {
     this.form.patchValue({ photos: this.photosS() });
   }
 
-  public onSubmit(): void {
+  onSubmit(): void {
     if (this.form.valid) {
       const formData = this.form.value;
       const payload = {
@@ -208,11 +208,11 @@ export class CreateCatalogItemComponent implements OnInit {
         contact: { name: formData.contact.name, phone: formData.contact.phone.replace(/\D/g, '') },
       };
 
-      this.store
+      this.#store
         .dispatch(new CreatePropertyObject(payload))
         .pipe(
-          tap(() => this.ref.close(payload)),
-          takeUntilDestroyed(this.destroyRef),
+          tap(() => this.#ref.close(payload)),
+          takeUntilDestroyed(this.#destroyRef),
         )
         .subscribe();
     } else {
@@ -220,15 +220,15 @@ export class CreateCatalogItemComponent implements OnInit {
     }
   }
 
-  public onCancel(): void {
-    this.ref.close();
+  onCancel(): void {
+    this.#ref.close();
   }
 
-  public toggleComment(): void {
+  toggleComment(): void {
     this.isCommentVisible = !this.isCommentVisible;
   }
 
-  public toggleAdditionalParams(): void {
+  toggleAdditionalParams(): void {
     this.isAdditionalParamsVisible = !this.isAdditionalParamsVisible;
   }
 }

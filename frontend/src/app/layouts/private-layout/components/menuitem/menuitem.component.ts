@@ -32,8 +32,8 @@ import { RippleModule } from 'primeng/ripple';
   ],
 })
 export class MenuitemComponent implements OnInit, OnDestroy {
-  private readonly router = inject(Router);
-  private readonly layoutService = inject(PrivateLayoutService);
+  readonly #router = inject(Router);
+  readonly #layoutService = inject(PrivateLayoutService);
 
   @Input() item!: MenuItem;
 
@@ -52,7 +52,7 @@ export class MenuitemComponent implements OnInit, OnDestroy {
   key = '';
 
   constructor() {
-    this.menuSourceSubscription = this.layoutService.menuSource$.subscribe(value => {
+    this.menuSourceSubscription = this.#layoutService.menuSource$.subscribe(value => {
       Promise.resolve(null).then(() => {
         if (value.routeEvent) {
           this.active = value.key === this.key || value.key.startsWith(this.key + '-') ? true : false;
@@ -64,11 +64,11 @@ export class MenuitemComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.menuResetSubscription = this.layoutService.resetSource$.subscribe(() => {
+    this.menuResetSubscription = this.#layoutService.resetSource$.subscribe(() => {
       this.active = false;
     });
 
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(params => {
+    this.#router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(params => {
       if (this.item.routerLink) {
         this.updateActiveStateFromRoute();
       }
@@ -84,7 +84,7 @@ export class MenuitemComponent implements OnInit, OnDestroy {
   }
 
   updateActiveStateFromRoute() {
-    const activeRoute = this.router.isActive(this.item.routerLink[0], {
+    const activeRoute = this.#router.isActive(this.item.routerLink[0], {
       paths: 'exact',
       queryParams: 'ignored',
       matrixParams: 'ignored',
@@ -92,7 +92,7 @@ export class MenuitemComponent implements OnInit, OnDestroy {
     });
 
     if (activeRoute) {
-      this.layoutService.onMenuStateChange({ key: this.key, routeEvent: true });
+      this.#layoutService.onMenuStateChange({ key: this.key, routeEvent: true });
     }
   }
 
@@ -113,7 +113,7 @@ export class MenuitemComponent implements OnInit, OnDestroy {
       this.active = !this.active;
     }
 
-    this.layoutService.onMenuStateChange({ key: this.key });
+    this.#layoutService.onMenuStateChange({ key: this.key });
   }
 
   get submenuAnimation() {

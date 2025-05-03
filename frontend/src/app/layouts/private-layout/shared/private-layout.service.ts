@@ -20,13 +20,13 @@ interface IMenuChangeEvent {
   providedIn: 'root',
 })
 export class PrivateLayoutService {
-  private readonly storageService = inject(StorageService);
+  readonly #storageService = inject(StorageService);
 
   _config: ILayoutConfig = {
     preset: 'Aura',
     primary: 'emerald',
     surface: null,
-    darkTheme: this.getStoredTheme() === 'dark',
+    darkTheme: this.#getStoredTheme() === 'dark',
     menuMode: 'static',
   };
 
@@ -42,43 +42,43 @@ export class PrivateLayoutService {
 
   layoutState = signal<ILayoutState>(this._state);
 
-  private configUpdate = new Subject<ILayoutConfig>();
+  #configUpdate = new Subject<ILayoutConfig>();
 
-  private overlayOpen = new Subject<null>();
+  #overlayOpen = new Subject<null>();
 
-  private menuSource = new Subject<IMenuChangeEvent>();
+  #menuSource = new Subject<IMenuChangeEvent>();
 
-  private resetSource = new Subject();
+  #resetSource = new Subject();
 
-  menuSource$ = this.menuSource.asObservable();
+  menuSource$ = this.#menuSource.asObservable();
 
-  resetSource$ = this.resetSource.asObservable();
+  resetSource$ = this.#resetSource.asObservable();
 
-  configUpdate$ = this.configUpdate.asObservable();
+  configUpdate$ = this.#configUpdate.asObservable();
 
-  overlayOpen$ = this.overlayOpen.asObservable();
+  overlayOpen$ = this.#overlayOpen.asObservable();
 
-  theme = computed(() => (this.layoutConfig().darkTheme ? 'light' : 'dark'));
+  readonly theme = computed(() => (this.layoutConfig().darkTheme ? 'light' : 'dark'));
 
-  isSidebarActive = computed(() => this.layoutState().overlayMenuActive || this.layoutState().staticMenuMobileActive);
+  readonly isSidebarActive = computed(() => this.layoutState().overlayMenuActive || this.layoutState().staticMenuMobileActive);
 
-  isDarkTheme = computed(() => this.layoutConfig().darkTheme);
+  readonly isDarkTheme = computed(() => this.layoutConfig().darkTheme);
 
-  getPrimary = computed(() => this.layoutConfig().primary);
+  readonly getPrimary = computed(() => this.layoutConfig().primary);
 
-  getSurface = computed(() => this.layoutConfig().surface);
+  readonly getSurface = computed(() => this.layoutConfig().surface);
 
-  isOverlay = computed(() => this.layoutConfig().menuMode === 'overlay');
+  readonly isOverlay = computed(() => this.layoutConfig().menuMode === 'overlay');
 
-  transitionComplete = signal<boolean>(false);
+  readonly transitionComplete = signal<boolean>(false);
 
-  private initialized = false;
+  #initialized = false;
 
   constructor() {
     effect(() => {
       const config = this.layoutConfig();
       if (config) {
-        this.handleDarkModeTransition(config);
+        this.#handleDarkModeTransition(config);
         this.onConfigUpdate();
       }
     });
@@ -86,15 +86,15 @@ export class PrivateLayoutService {
     effect(() => {
       const config = this.layoutConfig();
 
-      if (!this.initialized || !config) {
-        this.initialized = true;
+      if (!this.#initialized || !config) {
+        this.#initialized = true;
         return;
       }
 
-      this.handleDarkModeTransition(config);
+      this.#handleDarkModeTransition(config);
     });
 
-    this.initSystemThemeListener();
+    this.#initSystemThemeListener();
   }
 
   toggleTheme() {
@@ -104,40 +104,40 @@ export class PrivateLayoutService {
     }));
   }
 
-  private handleDarkModeTransition(config: ILayoutConfig): void {
+  #handleDarkModeTransition(config: ILayoutConfig): void {
     if ((document as Document).startViewTransition) {
-      this.startViewTransition(config);
+      this.#startViewTransition(config);
     } else {
-      this.toggleDarkMode(config);
-      this.onTransitionEnd();
+      this.#toggleDarkMode(config);
+      this.#onTransitionEnd();
     }
   }
 
-  private startViewTransition(config: ILayoutConfig): void {
+  #startViewTransition(config: ILayoutConfig): void {
     const transition = (document as Document).startViewTransition(() => {
-      this.toggleDarkMode(config);
+      this.#toggleDarkMode(config);
     });
 
     transition.ready
       .then(() => {
-        this.onTransitionEnd();
+        this.#onTransitionEnd();
       })
       .catch(() => {});
   }
 
-  private toggleDarkMode(config: ILayoutConfig): void {
+  #toggleDarkMode(config: ILayoutConfig): void {
     document.documentElement.classList.toggle('app-dark', config.darkTheme);
-    this.storageService.setItem<string>('theme', config.darkTheme ? 'dark' : 'light');
+    this.#storageService.setItem<string>('theme', config.darkTheme ? 'dark' : 'light');
   }
 
-  private onTransitionEnd(): void {
+  #onTransitionEnd(): void {
     this.transitionComplete.set(true);
     setTimeout(() => {
       this.transitionComplete.set(false);
     });
   }
 
-  private initSystemThemeListener(): void {
+  #initSystemThemeListener(): void {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
       this.layoutConfig.update(config => ({
         ...config,
@@ -146,8 +146,8 @@ export class PrivateLayoutService {
     });
   }
 
-  private getStoredTheme(): 'dark' | 'light' {
-    const stored = this.storageService.getItem<string>('theme');
+  #getStoredTheme(): 'dark' | 'light' {
+    const stored = this.#storageService.getItem<string>('theme');
     return stored === 'dark' || stored === 'light' ? stored : 'light';
   }
 
@@ -156,7 +156,7 @@ export class PrivateLayoutService {
       this.layoutState.update(prev => ({ ...prev, overlayMenuActive: !this.layoutState().overlayMenuActive }));
 
       if (this.layoutState().overlayMenuActive) {
-        this.overlayOpen.next(null);
+        this.#overlayOpen.next(null);
       }
     }
 
@@ -169,7 +169,7 @@ export class PrivateLayoutService {
       this.layoutState.update(prev => ({ ...prev, staticMenuMobileActive: !this.layoutState().staticMenuMobileActive }));
 
       if (this.layoutState().staticMenuMobileActive) {
-        this.overlayOpen.next(null);
+        this.#overlayOpen.next(null);
       }
     }
   }
@@ -184,14 +184,14 @@ export class PrivateLayoutService {
 
   onConfigUpdate() {
     this._config = { ...this.layoutConfig() };
-    this.configUpdate.next(this.layoutConfig());
+    this.#configUpdate.next(this.layoutConfig());
   }
 
   onMenuStateChange(event: IMenuChangeEvent) {
-    this.menuSource.next(event);
+    this.#menuSource.next(event);
   }
 
   reset() {
-    this.resetSource.next(true);
+    this.#resetSource.next(true);
   }
 }

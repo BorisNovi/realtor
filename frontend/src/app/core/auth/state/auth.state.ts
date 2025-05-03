@@ -55,9 +55,9 @@ interface AuthStateModel {
 })
 @Injectable()
 export class AuthState {
-  private readonly authService = inject(AuthService);
-  public readonly messageService = inject(MessageService);
-  public readonly translateService = inject(TranslateService);
+  readonly #authService = inject(AuthService);
+  readonly messageService = inject(MessageService);
+  readonly translateService = inject(TranslateService);
 
   // Selectors
   @Selector()
@@ -86,19 +86,19 @@ export class AuthState {
   }
 
   // Dispatch CheckSession on start
-  public ngxsOnInit(ctx: StateContext<AuthStateModel>) {
+  ngxsOnInit(ctx: StateContext<AuthStateModel>) {
     ctx.dispatch(new CheckSession());
   }
 
   @Action(CheckSession)
-  public checkSession(ctx: StateContext<AuthStateModel>) {
+  checkSession(ctx: StateContext<AuthStateModel>) {
     const { accessToken } = ctx.getState();
     if (!accessToken) {
       ctx.dispatch(new LoginRedirect());
       return;
     }
 
-    return this.authService.checkSession().pipe(
+    return this.#authService.checkSession().pipe(
       tap(res => {
         // const { user } = ctx.getState();
         // if (!this.socketService.socket && user) {
@@ -121,10 +121,10 @@ export class AuthState {
 
   // Log in
   @Action(Login)
-  public onLogin(ctx: StateContext<AuthStateModel>, { email, password }: Login) {
+  onLogin(ctx: StateContext<AuthStateModel>, { email, password }: Login) {
     ctx.patchState({ loading: true });
 
-    return this.authService.login(email, password).pipe(
+    return this.#authService.login(email, password).pipe(
       tap((session: ISessionUser) => {
         ctx.dispatch(new LoginSuccess(session));
         // this.socketService.connect(session.user, session.token);
@@ -134,7 +134,7 @@ export class AuthState {
   }
 
   @Action(LoginSuccess)
-  public onLoginSuccess(ctx: StateContext<AuthStateModel>, { session }: LoginSuccess) {
+  onLoginSuccess(ctx: StateContext<AuthStateModel>, { session }: LoginSuccess) {
     ctx.patchState({
       user: session.user,
       loading: false,
@@ -153,7 +153,7 @@ export class AuthState {
   }
 
   @Action(LoginFailed)
-  public onLoginFailed(ctx: StateContext<AuthStateModel>, { error }: LoginFailed) {
+  onLoginFailed(ctx: StateContext<AuthStateModel>, { error }: LoginFailed) {
     // TODO: написать кейсы ошибок для объективности
     this.messageService.add({
       severity: 'error',
@@ -168,10 +168,10 @@ export class AuthState {
   }
 
   @Action(Signup)
-  public onSignup(ctx: StateContext<AuthStateModel>, { email, password, passwordConfirmation }: Signup) {
+  onSignup(ctx: StateContext<AuthStateModel>, { email, password, passwordConfirmation }: Signup) {
     ctx.patchState({ loading: true });
 
-    return this.authService.signUp(email, password, passwordConfirmation).pipe(
+    return this.#authService.signUp(email, password, passwordConfirmation).pipe(
       tap(() => {
         ctx.dispatch(new SignupSuccess());
         // this.socketService.connect(session.user, session.token);
@@ -181,7 +181,7 @@ export class AuthState {
   }
 
   @Action(SignupSuccess)
-  public onSignupSuccess(ctx: StateContext<AuthStateModel>) {
+  onSignupSuccess(ctx: StateContext<AuthStateModel>) {
     this.messageService.add({
       severity: 'success',
       summary: this.translateService.instant('AUTH.NOTIFICATION.SIGNUP_SUCCESS.SUMMARY'),
@@ -193,7 +193,7 @@ export class AuthState {
   }
 
   @Action(SignupFailed)
-  public onSignupFailed(ctx: StateContext<AuthStateModel>, { error }: SignupFailed) {
+  onSignupFailed(ctx: StateContext<AuthStateModel>, { error }: SignupFailed) {
     this.messageService.add({
       severity: 'error',
       summary: this.translateService.instant('AUTH.NOTIFICATION.SIGNUP_FAILED.SUMMARY'),
@@ -207,18 +207,17 @@ export class AuthState {
 
   // Activate after signup
   @Action(ActivateAfterSignup)
-  public onActivateAfterSignup(ctx: StateContext<AuthStateModel>, { token }: ActivateAfterSignup) {
+  onActivateAfterSignup(ctx: StateContext<AuthStateModel>, { token }: ActivateAfterSignup) {
     ctx.patchState({ loading: true });
 
-    return this.authService.activateAfterSignup(token).pipe(
+    return this.#authService.activateAfterSignup(token).pipe(
       tap((session: ISessionUser) => ctx.dispatch(new ActivationAfterSignupSuccess(session))),
       catchError((error: HttpErrorResponse) => ctx.dispatch(new ActivationAfterSignupFailed(error))),
     );
   }
 
   @Action(ActivationAfterSignupSuccess)
-  public onActivationAfterSignupSuccess(ctx: StateContext<AuthStateModel>, { session }: ActivationAfterSignupSuccess) {
-    console.log('onActivationAfterSignupSuccess');
+  onActivationAfterSignupSuccess(ctx: StateContext<AuthStateModel>, { session }: ActivationAfterSignupSuccess) {
     ctx.patchState({
       user: session.user,
       loading: false,
@@ -238,7 +237,7 @@ export class AuthState {
   }
 
   @Action(ActivationAfterSignupFailed)
-  public onActivationAfterSignupFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
+  onActivationAfterSignupFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
     this.messageService.add({
       severity: 'success',
       summary: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_SIGNUP_FAILED.SUMMARY'),
@@ -252,17 +251,17 @@ export class AuthState {
 
   // Recover
   @Action(RecoverPassword)
-  public onRecoverPassword(ctx: StateContext<AuthStateModel>, { email }: RecoverPassword) {
+  onRecoverPassword(ctx: StateContext<AuthStateModel>, { email }: RecoverPassword) {
     ctx.patchState({ loading: true });
 
-    return this.authService.recoverPassword(email).pipe(
+    return this.#authService.recoverPassword(email).pipe(
       tap(() => ctx.dispatch(new RecoverSuccess())),
       catchError((error: HttpErrorResponse) => ctx.dispatch(new RecoverFailed(error))),
     );
   }
 
   @Action(RecoverSuccess)
-  public onRecoverSuccess(ctx: StateContext<AuthStateModel>) {
+  onRecoverSuccess(ctx: StateContext<AuthStateModel>) {
     this.messageService.add({
       severity: 'success',
       summary: this.translateService.instant('AUTH.NOTIFICATION.RECOVER_SUCCESS.SUMMARY'),
@@ -274,7 +273,7 @@ export class AuthState {
   }
 
   @Action(RecoverFailed)
-  public onRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: RecoverFailed) {
+  onRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: RecoverFailed) {
     this.messageService.add({
       severity: 'error',
       summary: this.translateService.instant('AUTH.NOTIFICATION.RECOVER_FAILED.SUMMARY'),
@@ -288,17 +287,17 @@ export class AuthState {
 
   // Activate after recover
   @Action(ActivateAfterRecover)
-  public onActivateAfterRecover(ctx: StateContext<AuthStateModel>, { token, password }: ActivateAfterRecover) {
+  onActivateAfterRecover(ctx: StateContext<AuthStateModel>, { token, password }: ActivateAfterRecover) {
     ctx.patchState({ loading: true });
 
-    return this.authService.activateAfterRecover(token, password).pipe(
+    return this.#authService.activateAfterRecover(token, password).pipe(
       tap(() => ctx.dispatch(new ActivationAfterRecoverSuccess())),
       catchError((error: HttpErrorResponse) => ctx.dispatch(new ActivationAfterSignupFailed(error))),
     );
   }
 
   @Action(ActivationAfterRecoverSuccess)
-  public onActivationAfterRecoverSuccess(ctx: StateContext<AuthStateModel>) {
+  onActivationAfterRecoverSuccess(ctx: StateContext<AuthStateModel>) {
     this.messageService.add({
       severity: 'success',
       summary: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_RECOVER_SUCCESS.SUMMARY'),
@@ -311,7 +310,7 @@ export class AuthState {
   }
 
   @Action(ActivationAfterSignupFailed)
-  public onActivationAfterRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
+  onActivationAfterRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
     this.messageService.add({
       severity: 'error',
       summary: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_RECOVER_FAILED.SUMMARY'),
@@ -325,10 +324,10 @@ export class AuthState {
 
   // Refresh
   @Action(RefreshToken)
-  public onRefreshToken(ctx: StateContext<AuthStateModel>) {
+  onRefreshToken(ctx: StateContext<AuthStateModel>) {
     const { user } = ctx.getState();
 
-    return this.authService.refreshToken(user?.id || 0).pipe(
+    return this.#authService.refreshToken(user?.id || 0).pipe(
       tap((result: ISessionUser) => {
         ctx.patchState({
           accessToken: result.accessToken,
@@ -355,12 +354,12 @@ export class AuthState {
 
   // Logout
   @Action(Logout)
-  public onLogout(ctx: StateContext<AuthStateModel>) {
+  onLogout(ctx: StateContext<AuthStateModel>) {
     ctx.dispatch([new RemoveUser(), new LoginRedirect()]);
   }
 
   @Action(RemoveUser)
-  public onRemoveUser(ctx: StateContext<AuthStateModel>) {
+  onRemoveUser(ctx: StateContext<AuthStateModel>) {
     ctx.patchState({
       user: null,
       loading: false,
@@ -372,16 +371,16 @@ export class AuthState {
   }
 
   @Action(LoginRedirect)
-  public onLoginRedirect(ctx: StateContext<AuthStateModel>) {
+  onLoginRedirect(ctx: StateContext<AuthStateModel>) {
     ctx.dispatch(new Navigate(['/auth/sign-in']));
   }
 
   // Terminate
   @Action(Terminate)
-  public onTerminate(ctx: StateContext<AuthStateModel>) {
+  onTerminate(ctx: StateContext<AuthStateModel>) {
     ctx.patchState({ loading: true });
 
-    return this.authService.terminateSessions().pipe(
+    return this.#authService.terminateSessions().pipe(
       tap(() => {
         ctx.dispatch(new TerminationSuccess());
       }),
@@ -390,7 +389,7 @@ export class AuthState {
   }
 
   @Action(TerminationSuccess)
-  public onTerminationSuccess(ctx: StateContext<AuthStateModel>) {
+  onTerminationSuccess(ctx: StateContext<AuthStateModel>) {
     ctx.patchState({
       loading: false,
       error: null,
@@ -405,7 +404,7 @@ export class AuthState {
   }
 
   @Action(TerminationFailed)
-  public onTerminationFailed(ctx: StateContext<AuthStateModel>, { error }: TerminationFailed) {
+  onTerminationFailed(ctx: StateContext<AuthStateModel>, { error }: TerminationFailed) {
     this.messageService.add({
       severity: 'error',
       summary: this.translateService.instant('AUTH.NOTIFICATION.TERMINATION_FAILED.SUMMARY'),
