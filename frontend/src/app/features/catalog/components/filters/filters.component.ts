@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PropertyType, ZoningType, PropertyStatus, Currency } from '@shared/enums';
-import { ICatalogItem } from '@shared/interfaces';
+import { ICatalogFilters } from '@shared/interfaces';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
@@ -13,6 +13,9 @@ import { TagModule } from 'primeng/tag';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { Store } from '@ngxs/store';
+import { CatalogState } from 'src/app/core';
 
 @Component({
   selector: 'app-filters',
@@ -31,54 +34,63 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FiltersComponent implements OnInit {
-  @Output() filtersChange = new EventEmitter<Partial<ICatalogItem>>();
-  private readonly fb = inject(FormBuilder);
-  private readonly destroyRef = inject(DestroyRef);
+  readonly filtersChange = output<ICatalogFilters>();
 
-  public readonly getSeverity = getPropertyStatusSeverity;
-  public readonly getStatusBackground = getPropertyStatusBackground;
+  readonly #fb = inject(FormBuilder);
+  readonly #destroyRef = inject(DestroyRef);
+  readonly #store = inject(Store);
 
-  public form!: FormGroup;
-  public propertyTypes = mapEnumToOptions(PropertyType);
-  public statuses = mapEnumToOptions(PropertyStatus);
-  public zoningTypes = mapEnumToOptions(ZoningType);
+  readonly getSeverity = getPropertyStatusSeverity;
+  readonly getStatusBackground = getPropertyStatusBackground;
 
-  public currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
-  public getCurrencySymbol(key: string): string {
+  form!: FormGroup;
+  propertyTypes = mapEnumToOptions(PropertyType);
+  statuses = mapEnumToOptions(PropertyStatus);
+  zoningTypes = mapEnumToOptions(ZoningType);
+
+  currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
+  getCurrencySymbol(key: string): string {
     return CURRENCY_SYMBOLS[key as Currency];
   }
 
-  public ngOnInit(): void {
-    this.initForm();
-    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(filters => {
-      console.log(filters);
-      // this.filtersChange.emit(filters);
-    });
+  ngOnInit(): void {
+    const storedFilters = this.#store.selectSnapshot(CatalogState.filters);
+
+    this.#initForm(storedFilters);
+    this.form.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
+        takeUntilDestroyed(this.#destroyRef),
+      )
+      .subscribe(filters => {
+        this.filtersChange.emit(filters as ICatalogFilters);
+      });
   }
 
-  private initForm(): void {
-    this.form = this.fb.group({
-      dateAdded: this.fb.group({
-        from: [null],
-        to: [null],
+  #initForm(filters?: ICatalogFilters): void {
+    this.form = this.#fb.group({
+      dateAdded: this.#fb.group({
+        from: [filters?.dateAdded?.from || null],
+        to: [filters?.dateAdded?.to || null],
       }),
-      status: [null],
-      propertyType: [[]],
-      zoningType: [[]],
-      area: this.fb.group({
-        min: [null],
-        max: [null],
+      status: [filters?.status || null],
+      propertyType: [filters?.propertyType || []],
+      zoningType: [filters?.zoningType || []],
+      area: this.#fb.group({
+        min: [filters?.area?.min || null],
+        max: [filters?.area?.max || null],
       }),
-      price: this.fb.group({
-        currency: [null],
-        min: [null],
-        max: [null],
+      price: this.#fb.group({
+        currency: [filters?.price?.currency || null],
+        min: [filters?.price?.min || null],
+        max: [filters?.price?.max || null],
       }),
     });
   }
 
   // Сброс формы
-  public resetFilters(): void {
+  resetFilters(): void {
     this.form.reset();
   }
 }

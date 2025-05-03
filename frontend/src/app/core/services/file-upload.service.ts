@@ -7,14 +7,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class FileUploadService {
-  private readonly http = inject(HttpClient);
+  readonly #http = inject(HttpClient);
 
-  public upload(files: File[]): Observable<string[]> {
+  upload(files: File[]): Observable<string[]> {
     const formData = new FormData();
     files.forEach((file, index) => {
       formData.append(`file${index}`, file, file.name);
     });
 
-    return this.http.post<string[]>(`${environment.apiUrl}/file`, formData);
+    return this.#http.post<string[]>(`${environment.apiUrl}/file`, formData);
   }
 }

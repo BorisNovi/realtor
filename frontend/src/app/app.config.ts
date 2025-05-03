@@ -62,7 +62,7 @@ export const appConfig: ApplicationConfig = {
       withNgxsRouterPlugin(),
       withNgxsStoragePlugin({
         namespace: 'realtor',
-        keys: ['auth.accessToken', 'auth.refreshToken', 'auth.user', 'catalog.pagination'],
+        keys: ['auth.accessToken', 'auth.refreshToken', 'auth.user'],
         afterDeserialize: (obj, key) => {
           if (key === 'auth.accessToken' && obj?.expires < Date.now()) {
             return null; // Очистка просроченного токена

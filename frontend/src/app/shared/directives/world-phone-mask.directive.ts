@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, HostListener, Output, forwardRef } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, Output, forwardRef, inject, output } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 interface CountryConfig {
@@ -20,31 +20,31 @@ interface CountryConfig {
 })
 export class WorldPhoneMasksDirective implements ControlValueAccessor {
   @HostListener('input', ['$event'])
-  public onInput(event: Event): void {
+  onInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     const value = input.value;
-    const formattedValue = this.addPhoneMask(value);
+    const formattedValue = this.#addPhoneMask(value);
 
     input.value = formattedValue;
-    this.onChange(formattedValue);
+    this.#onChange(formattedValue);
   }
 
   @HostListener('blur')
-  public onBlur(): void {
-    this.onTouched();
+  onBlur(): void {
+    this.#onTouched();
   }
 
-  @Output() public countryIsoCode = new EventEmitter<string>();
+  readonly countryIsoCode = output<string>();
 
-  constructor(private _elementRef: ElementRef) {}
+  #elementRef = inject(ElementRef);
 
-  private onChange: (value: string) => void = () => {};
-  private onTouched: () => void = () => {};
+  #onChange: (value: string) => void = () => {};
+  #onTouched: () => void = () => {};
 
-  private determinedCountryCode: string | null = null;
+  #determinedCountryCode: string | null = null;
 
   // Конфигурационный объект: телефонный код страны -> { длина, форматирование, ISO код страны }
-  private countryConfigs: Record<string, CountryConfig> = {
+  #countryConfigs: Record<string, CountryConfig> = {
     '+1': { maxLength: 10, formatGroups: [3, 3, 4], countryIsoCode: 'US' }, // США: +X(XXX)XXX-XXXX
     '+7': { maxLength: 10, formatGroups: [3, 3, 2, 2], countryIsoCode: 'RU' }, // Россия: +X(XXX)XXX-XX-XX
     '+90': { maxLength: 10, formatGroups: [3, 3, 2, 2], countryIsoCode: 'TR' }, // Турция: +XX(XXX)XXX-XX-XX
@@ -61,26 +61,26 @@ export class WorldPhoneMasksDirective implements ControlValueAccessor {
     '+996': { maxLength: 9, formatGroups: [3, 3, 3], countryIsoCode: 'KG' }, // Кыргызстан: +XXX(XXX)XXX-XXX
     '+998': { maxLength: 9, formatGroups: [2, 3, 4], countryIsoCode: 'UZ' }, // Узбекистан: +XXX(XX)XXX-XXXX
   };
-  private countryCodes: string[] = Object.keys(this.countryConfigs);
+  #countryCodes: string[] = Object.keys(this.#countryConfigs);
 
-  private addPhoneMask(phone: string): string {
+  #addPhoneMask(phone: string): string {
     const original = phone;
-    const digits = this.cleanInput(phone);
-    const { countryCode, number } = this.determineCountryCode(original, digits);
-    const limitedNumber = this.limitNumberLength(number, countryCode);
-    return this.formatNumber(countryCode, limitedNumber);
+    const digits = this.#cleanInput(phone);
+    const { countryCode, number } = this.#determineCountryCode(original, digits);
+    const limitedNumber = this.#limitNumberLength(number, countryCode);
+    return this.#formatNumber(countryCode, limitedNumber);
   }
 
-  private cleanInput(phone: string): string {
+  #cleanInput(phone: string): string {
     return phone.replace(/\D/g, '');
   }
 
-  private determineCountryCode(original: string, phone: string): { countryCode: string | null; number: string } {
-    let countryCode = this.determinedCountryCode;
+  #determineCountryCode(original: string, phone: string): { countryCode: string | null; number: string } {
+    let countryCode = this.#determinedCountryCode;
     let number = phone;
 
-    if (this.determinedCountryCode && original.length <= this.determinedCountryCode.length) {
-      this.determinedCountryCode = null;
+    if (this.#determinedCountryCode && original.length <= this.#determinedCountryCode.length) {
+      this.#determinedCountryCode = null;
       countryCode = null;
     }
 
@@ -88,20 +88,20 @@ export class WorldPhoneMasksDirective implements ControlValueAccessor {
       if (phone.startsWith('8') && phone.length >= 1) {
         // Защита от вставки номера с 8 в начале (RU)
         countryCode = '+7';
-        this.determinedCountryCode = '+7';
+        this.#determinedCountryCode = '+7';
         number = phone.slice(1);
 
-        this.countryIsoCode.emit(this.countryConfigs['7'].countryIsoCode);
+        this.countryIsoCode.emit(this.#countryConfigs['7'].countryIsoCode);
       } else {
-        for (const code of this.countryCodes) {
+        for (const code of this.#countryCodes) {
           const codeWithoutPlus = code.replace('+', '');
           const minLength = codeWithoutPlus.length; // Минимальная длина = длина кода без '+'
           if (original.startsWith(code) || (phone.startsWith(codeWithoutPlus) && phone.length >= minLength)) {
             countryCode = code;
-            this.determinedCountryCode = code;
+            this.#determinedCountryCode = code;
             number = phone.startsWith(codeWithoutPlus) ? phone.slice(codeWithoutPlus.length) : phone.slice(code.length);
 
-            this.countryIsoCode.emit(this.countryConfigs[code].countryIsoCode);
+            this.countryIsoCode.emit(this.#countryConfigs[code].countryIsoCode);
             break;
           }
         }
@@ -117,25 +117,25 @@ export class WorldPhoneMasksDirective implements ControlValueAccessor {
     return { countryCode, number };
   }
 
-  private limitNumberLength(number: string, countryCode: string | null): string {
-    const maxLength = countryCode && this.countryConfigs[countryCode] ? this.countryConfigs[countryCode].maxLength : 12;
+  #limitNumberLength(number: string, countryCode: string | null): string {
+    const maxLength = countryCode && this.#countryConfigs[countryCode] ? this.#countryConfigs[countryCode].maxLength : 12;
     return number.length > maxLength ? number.slice(0, maxLength) : number;
   }
 
-  private formatNumber(countryCode: string | null, number: string): string {
-    if (!countryCode || !this.countryConfigs[countryCode]) {
+  #formatNumber(countryCode: string | null, number: string): string {
+    if (!countryCode || !this.#countryConfigs[countryCode]) {
       return number;
     }
 
-    const config = this.countryConfigs[countryCode];
+    const config = this.#countryConfigs[countryCode];
     if (config.formatGroups.length === 0) {
       return countryCode + number; // Без форматирования, просто код + номер
     }
 
-    return this.formatPhoneNumber(countryCode, number, config.formatGroups);
+    return this.#formatPhoneNumber(countryCode, number, config.formatGroups);
   }
 
-  private formatPhoneNumber(countryCode: string, number: string, groups: number[]): string {
+  #formatPhoneNumber(countryCode: string, number: string, groups: number[]): string {
     let formatted = countryCode;
     let startIndex = 0;
 
@@ -160,20 +160,20 @@ export class WorldPhoneMasksDirective implements ControlValueAccessor {
   }
 
   // Реализация ControlValueAccessor
-  public writeValue(value: string): void {
-    const formattedValue = value ? this.addPhoneMask(value) : '+';
-    this._elementRef.nativeElement.value = formattedValue;
+  writeValue(value: string): void {
+    const formattedValue = value ? this.#addPhoneMask(value) : '+';
+    this.#elementRef.nativeElement.value = formattedValue;
   }
 
-  public registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
+  registerOnChange(fn: (value: string) => void): void {
+    this.#onChange = fn;
   }
 
-  public registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
+  registerOnTouched(fn: () => void): void {
+    this.#onTouched = fn;
   }
 
-  public setDisabledState?(isDisabled: boolean): void {
-    this._elementRef.nativeElement.disabled = isDisabled;
+  setDisabledState?(isDisabled: boolean): void {
+    this.#elementRef.nativeElement.disabled = isDisabled;
   }
 }

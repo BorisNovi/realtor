@@ -2,16 +2,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { HeatingType, PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
-import { ICatalogItem, IPagination, IPropertyObject, ITableData } from '@shared/interfaces';
+import { ICatalogFilters, ICatalogItem, IPagination, IPropertyObject, ITableData } from '@shared/interfaces';
 import { delay, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CatalogService {
-  private readonly http = inject(HttpClient);
+  readonly #http = inject(HttpClient);
 
-  private mockData: IPropertyObject = {
+  #mockData: IPropertyObject = {
     id: 2,
     photos: ['https://picsum.photos/id/101/400/300', 'https://picsum.photos/id/102/400/300'],
     propertyType: PropertyType.flat,
@@ -52,9 +52,9 @@ export class CatalogService {
     },
   };
 
-  public fetchCatalog(filters: any, pagination: IPagination): Observable<ITableData<ICatalogItem>> {
-    console.log('fetch', filters, pagination);
-    const { search } = filters;
+  fetchCatalog(filters: ICatalogFilters, pagination: IPagination): Observable<ITableData<ICatalogItem>> {
+    console.debug('fetch', filters, pagination);
+    // const { search } = filters;
 
     const mockData = Array.from({ length: 31 }, (_, index) => ({
       id: index,
@@ -81,40 +81,40 @@ export class CatalogService {
       fromObject: {
         ...(pagination && { page: String(pagination.first) }),
         ...(pagination && { page_size: String(pagination.rows) }),
-        ...(search && { search }),
+        // ...(search && { search }),
       },
     });
 
     return of({ items: mockData, total: 31 }).pipe(delay(1000)); // Задержка в 1 секунду
-    this.http.get<ITableData<ICatalogItem>>(`${environment.apiUrl}/catalog`, { params });
+    this.#http.get<ITableData<ICatalogItem>>(`${environment.apiUrl}/catalog`, { params });
   }
 
-  public fetchPropertyObject(id: number): Observable<IPropertyObject> {
-    console.log('get', id);
-    return of(this.mockData).pipe(delay(1000));
+  fetchPropertyObject(id: number): Observable<IPropertyObject> {
+    console.debug('get', id);
+    return of(this.#mockData).pipe(delay(1000));
     // this.http.get<IPropertyObject>(`${environment.apiUrl}/catalog/${id}`);
   }
 
-  public createPropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
-    // console.log('create', body);
+  createPropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
+    // console.debug('create', body);
     // return of(this.mockData).pipe(delay(1000));
-    return this.http.post<IPropertyObject>(`${environment.apiUrl}/property_object`, body);
+    return this.#http.post<IPropertyObject>(`${environment.apiUrl}/property_object`, body);
   }
 
-  public updatePropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
-    console.log('update', body);
-    return of(this.mockData).pipe(delay(1000));
-    this.http.put<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
+  updatePropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
+    console.debug('update', body);
+    return of(this.#mockData).pipe(delay(1000));
+    this.#http.put<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
   }
 
-  public updateStatus(id: number, status: PropertyStatus): Observable<IPropertyObject> {
-    console.log('update status', id, status);
-    return of(this.mockData).pipe(delay(1000));
+  updateStatus(id: number, status: PropertyStatus): Observable<IPropertyObject> {
+    console.debug('update status', id, status);
+    return of(this.#mockData).pipe(delay(1000));
   }
 
-  public deletePropertyObject(id: number[]): Observable<any> {
-    console.log('delete', id);
+  deletePropertyObject(id: number[]): Observable<any> {
+    console.debug('delete', id);
     return of(null).pipe(delay(1000));
-    this.http.delete<void>(`${environment.apiUrl}/catalog`);
+    this.#http.delete<void>(`${environment.apiUrl}/catalog`);
   }
 }

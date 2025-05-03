@@ -26,23 +26,23 @@ import { TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignInComponent {
-  private readonly fb = inject(FormBuilder);
-  private readonly store = inject(Store);
+  readonly #fb = inject(FormBuilder);
+  readonly #store = inject(Store);
 
-  public isLoading = this.store.selectSignal(AuthState.loading);
+  readonly isLoading = this.#store.selectSignal(AuthState.loading);
 
-  public form = this.fb.group({
+  form = this.#fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
-  public onSubmit(): void {
+  onSubmit(): void {
     const { email, password } = this.form.value;
 
     if (this.form.invalid || !email || !password) {
       return;
     }
 
-    this.store.dispatch(new Login(email, password));
+    this.#store.dispatch(new Login(email, password));
   }
 }
