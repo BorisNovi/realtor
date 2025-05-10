@@ -90,8 +90,11 @@ REST_FRAMEWORK = {
         'realtor.utils.parsers.CamelCaseJSONParser',
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
-    ]
+    ],
 
+    'DEFAULT_PAGINATION_CLASS': 'catalog.pagination.FrontendPagination',
+    'PAGE_SIZE': 10,
+    
 }
 
 SIMPLE_JWT = {
