@@ -92,7 +92,7 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
     ],
 
-    'DEFAULT_PAGINATION_CLASS': 'catalog.pagination.FrontendPagination',
+    'DEFAULT_PAGINATION_CLASS': 'catalog.utils.pagination.FrontendPagination',
     'PAGE_SIZE': 10,
     
 }

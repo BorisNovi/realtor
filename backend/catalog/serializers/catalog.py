@@ -13,11 +13,9 @@ PROPERTY_SERIALIZER_MAP = {
     'landplot': LandPlotSerializer,
 }
 
-
 class PriceSerializer(serializers.Serializer):
     value = serializers.DecimalField(max_digits=12, decimal_places=2)
     currency = serializers.CharField(max_length=3)
-
 
 class CatalogCreateSerializer(serializers.Serializer):
     # Обязательные поля
