@@ -82,8 +82,8 @@ export class CatalogService {
       },
     });
 
-    return of({ items: mockData, total: 31 }).pipe(delay(500)); // Задержка в 1 секунду
-    this.#http.get<ITableData<ICatalogItem>>(`${environment.apiUrl}/catalog`, { params });
+    // return of({ items: mockData, total: 31 }).pipe(delay(500)); // Задержка в 1 секунду
+    return this.#http.get<ITableData<ICatalogItem>>(`${environment.apiUrl}/catalog`, { params });
   }
 
   fetchPropertyObject(id: number): Observable<IPropertyObject> {

@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { TableComponent } from './components/table/table.component';
+import { Store } from '@ngxs/store';
+import { CATALOG_FILTERS_KEY, CATALOG_PAGINATION_KEY } from '@shared/constants';
 import { ICatalogFilters, IPagination } from '@shared/interfaces';
 import { DrawerModule } from 'primeng/drawer';
-import { FiltersComponent } from './components/filters/filters.component';
-import { Store } from '@ngxs/store';
 import { FetchCatalog, QueryParamsService, SetCatalogFilters, SetCatalogPagination } from 'src/app/core';
-import { CATALOG_FILTERS_KEY, CATALOG_PAGINATION_KEY } from '@shared/constants';
+import { FiltersComponent } from './components/filters/filters.component';
+import { TableComponent } from './components/table/table.component';
 
 @Component({
   selector: 'app-catalog',

@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { NotFoundComponent } from './features';
 import { authGuard, loggedInGuard } from './core';
+import { NotFoundComponent } from './features';
 
 export const routes: Routes = [
   {
     path: '',
-    // canActivate: [authGuard],
+    canActivate: [authGuard],
     loadChildren: () => import('./layouts').then(c => c.privateLayoutRoutes),
   },
   {

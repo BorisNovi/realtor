@@ -197,13 +197,13 @@
     <ng-container formGroupName="contact">
       <!-- Name -->
       <div>
-        <label for="contactName" class="block text-sm font-medium text-gray-700 mb-1">Contact name</label>
+        <label for="contactName" class="block text-sm font-medium text-gray-700 mb-1">Contact name <span class="text-red-500">*</span></label>
         <input id="contactName" pInputText type="text" formControlName="name" placeholder="Enter name" class="w-full" />
       </div>
 
       <!-- Phone -->
       <div>
-        <label for="contactPhone" class="block text-sm font-medium text-gray-700 mb-1">Contact phone</label>
+        <label for="contactPhone" class="block text-sm font-medium text-gray-700 mb-1">Contact phone <span class="text-red-500">*</span></label>
         <p-inputgroup>
           <p-inputgroup-addon>
             <i class="pi pi-phone"></i>
