@@ -53,9 +53,6 @@ export class CatalogService {
   };
 
   fetchCatalog(filters: ICatalogFilters, pagination: IPagination): Observable<ITableData<ICatalogItem>> {
-    console.debug('fetch', filters, pagination);
-    // const { search } = filters;
-
     const mockData = Array.from({ length: 31 }, (_, index) => ({
       id: index,
       photos: [`https://picsum.photos/id/${index + 100}/400/300`],
@@ -79,13 +76,13 @@ export class CatalogService {
 
     const params = new HttpParams({
       fromObject: {
-        ...(pagination && { page: String(pagination.first) }),
-        ...(pagination && { page_size: String(pagination.rows) }),
+        ...(pagination && { first: String(pagination.first) }),
+        ...(pagination && { rows: String(pagination.rows) }),
         // ...(search && { search }),
       },
     });
 
-    return of({ items: mockData, total: 31 }).pipe(delay(1000)); // Задержка в 1 секунду
+    return of({ items: mockData, total: 31 }).pipe(delay(500)); // Задержка в 1 секунду
     this.#http.get<ITableData<ICatalogItem>>(`${environment.apiUrl}/catalog`, { params });
   }
 

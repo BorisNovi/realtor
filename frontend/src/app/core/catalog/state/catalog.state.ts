@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { ICatalogFilters, ICatalogItem, IPagination, IPropertyObject, ITableData } from '@shared/interfaces';
+import { catchError, of, tap } from 'rxjs';
 import { CatalogService } from '../shared';
-import { tap, catchError, of } from 'rxjs';
 import {
   CatalogOperationFailed,
   CatalogOperationSuccess,
@@ -15,8 +15,6 @@ import {
   UpdatePropertyObject,
   UpdateStatus,
 } from './catalog.actions';
-import { QueryParamsService } from '../../services';
-import { CATALOG_FILTERS_KEY, CATALOG_PAGINATION_KEY } from '@shared/constants';
 
 interface CatalogStateModel {
   catalog: ITableData<ICatalogItem>;
@@ -42,7 +40,6 @@ interface CatalogStateModel {
 @Injectable()
 export class CatalogState {
   readonly #catalogService = inject(CatalogService);
-  readonly #queryParamsService = inject(QueryParamsService);
 
   // Selectors
   @Selector()
@@ -72,37 +69,17 @@ export class CatalogState {
 
   @Action(FetchCatalog)
   FetchCatalog(ctx: StateContext<CatalogStateModel>) {
-    let { filters, pagination } = ctx.getState();
-
-    // TODO: возможно, стоит вынести эту логику в резолвер.
-    // Также, если мы сменили маршрут, данные останутся в стейте, но их не будет в квери строке
-    // Надо добавлять их в квери строку, если они есть в стейте, но квери строка пуста
-    const filtersFromQuery = this.#queryParamsService.getQueryParamsByKeySync(CATALOG_FILTERS_KEY) as ICatalogFilters;
-    if (!Object.keys(filters).length) {
-      filters = filtersFromQuery;
-      ctx.patchState({ filters });
-    }
-
-    const paginationFromQuery = this.#queryParamsService.getQueryParamsByKeySync(CATALOG_PAGINATION_KEY) as IPagination;
-    if (
-      (pagination.first !== paginationFromQuery.first && paginationFromQuery.first) ||
-      (pagination.rows !== paginationFromQuery.rows && paginationFromQuery.rows)
-    ) {
-      pagination = paginationFromQuery;
-      ctx.patchState({ pagination });
-    }
-
+    const { filters, pagination } = ctx.getState();
     ctx.patchState({ loading: true });
 
     return this.#catalogService.fetchCatalog(filters, pagination).pipe(
-      tap((catalog: ITableData<ICatalogItem>) => ctx.patchState({ catalog, loading: false, pagination })),
+      tap((catalog: ITableData<ICatalogItem>) => ctx.patchState({ catalog, loading: false })),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error))),
     );
   }
 
   @Action(SetCatalogPagination)
   setCatalogPagination(ctx: StateContext<CatalogStateModel>, { pagination }: SetCatalogPagination) {
-    this.#queryParamsService.updateQueryParams(pagination, CATALOG_PAGINATION_KEY);
     ctx.patchState({
       pagination: {
         first: pagination.first,
@@ -113,7 +90,6 @@ export class CatalogState {
 
   @Action(SetCatalogFilters)
   setCatalogFilters(ctx: StateContext<CatalogStateModel>, { filters }: SetCatalogFilters) {
-    this.#queryParamsService.updateQueryParams(filters, CATALOG_FILTERS_KEY);
     ctx.patchState({
       filters,
     });
