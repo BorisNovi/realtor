@@ -53,36 +53,40 @@ export class CatalogService {
   };
 
   fetchCatalog(filters: ICatalogFilters, pagination: IPagination): Observable<ITableData<ICatalogItem>> {
-    const mockData = Array.from({ length: 31 }, (_, index) => ({
-      id: index,
-      photos: [`https://picsum.photos/id/${index + 100}/400/300`],
-      propertyType: index % 2 === 0 ? PropertyType.flat : PropertyType.house,
-      status: index % 3 === 0 ? PropertyStatus.available : index % 3 === 1 ? PropertyStatus.reserved : PropertyStatus.rented,
-      zoningType: ZoningType.mixed,
-      address: `Город ${index + 1}, ул. Примерная, д. ${10 + index}`,
-      mapLink: `https://maps.example.com/?lat=${55.751244 + index * 0.1}&lng=${37.618423 + index * 0.1}`,
-      price: {
-        value: 12000000 + index * 1000000, // Разные цены
-        currency: index % 3 === 0 ? 'USD' : 'RUB',
-      },
-      area: 65 + index * 10, // Разная площадь
-      dateAdded: `2025-03-${10 + index}`,
-      contact: {
-        id: index,
-        name: 'test',
-        phone: '+99564738384',
-      },
-    }));
+    let params = new HttpParams();
 
-    const params = new HttpParams({
-      fromObject: {
-        ...(pagination && { first: String(pagination.first) }),
-        ...(pagination && { rows: String(pagination.rows) }),
-        // ...(search && { search }),
-      },
-    });
+    if (pagination) {
+      params = params.set('first', String(pagination.first));
+      params = params.set('rows', String(pagination.rows));
+    }
 
-    // return of({ items: mockData, total: 31 }).pipe(delay(500)); // Задержка в 1 секунду
+    // TODO: вынести в хелпер
+    const appendParams = (obj: any, prefix = ''): void => {
+      Object.entries(obj).forEach(([key, value]) => {
+        const paramKey = prefix ? `${prefix}.${key}` : key;
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+              if (typeof item === 'object' && item !== null) {
+                appendParams(item, `${paramKey}[${index}]`);
+              } else {
+                params = params.append(`${paramKey}[${index}]`, String(item));
+              }
+            });
+          } else if (typeof value === 'object' && !(value instanceof Date)) {
+            appendParams(value, paramKey);
+          } else {
+            const paramValue = value instanceof Date ? value.toISOString() : String(value);
+            params = params.set(paramKey, paramValue);
+          }
+        }
+      });
+    };
+
+    if (filters) {
+      appendParams(filters);
+    }
+
     return this.#http.get<ITableData<ICatalogItem>>(`${environment.apiUrl}/catalog`, { params });
   }
 
