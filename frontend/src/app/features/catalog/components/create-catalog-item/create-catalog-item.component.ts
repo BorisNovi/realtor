@@ -1,37 +1,36 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Store } from '@ngxs/store';
+import { CURRENCY_SYMBOLS } from '@shared/constants';
+import { WorldPhoneMasksDirective } from '@shared/directives';
+import {
+  Currency,
+  FurnishedStatus,
+  KitchenType,
+  PropertyStatus,
+  PropertyType,
+  RenovationStatus,
+  ZoningType,
+} from '@shared/enums';
+import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
+import { ButtonModule } from 'primeng/button';
+import { Checkbox } from 'primeng/checkbox';
+import { DividerModule } from 'primeng/divider';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FileUpload, FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
-import { DividerModule } from 'primeng/divider';
-import { TagModule } from 'primeng/tag';
-import { TextareaModule } from 'primeng/textarea';
-import { MessageModule } from 'primeng/message';
-import {
-  PropertyType,
-  PropertyStatus,
-  Currency,
-  ZoningType,
-  FurnishedStatus,
-  RenovationStatus,
-  KitchenType,
-} from '@shared/enums';
-import { getPropertyStatusSeverity, getPropertyStatusBackground, fileToBase64, mapEnumToOptions } from '@shared/utils';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Checkbox } from 'primeng/checkbox';
-import { CommonModule } from '@angular/common';
-import { Store } from '@ngxs/store';
-import { CreatePropertyObject, FileUploadService } from 'src/app/core';
-import { tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CURRENCY_SYMBOLS } from '@shared/constants';
-import { IPropertyObject } from '@shared/interfaces';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { WorldPhoneMasksDirective } from '@shared/directives';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
+import { SelectModule } from 'primeng/select';
+import { TagModule } from 'primeng/tag';
+import { TextareaModule } from 'primeng/textarea';
+import { tap } from 'rxjs';
+import { CreatePropertyObject, FileUploadService } from 'src/app/core';
 
 @Component({
   imports: [
@@ -101,7 +100,7 @@ export class CreateCatalogItemComponent implements OnInit {
     const data = this.#config.data;
 
     this.form = this.#fb.group({
-      photos: [data?.photos || null],
+      photos: [data?.photos || []],
       propertyType: [data?.propertyType || null, Validators.required],
       zoningType: [data?.zoningType || null, Validators.required],
       status: [data?.status || null, Validators.required],
@@ -115,8 +114,8 @@ export class CreateCatalogItemComponent implements OnInit {
       }),
 
       contact: this.#fb.group({
-        name: [data?.contact?.name || null],
-        phone: [data?.contact?.phone || null],
+        name: [data?.contact?.name || null, [Validators.required]],
+        phone: [data?.contact?.phone || null, [Validators.required]],
       }),
 
       comment: [data?.comment || null],
@@ -205,7 +204,7 @@ export class CreateCatalogItemComponent implements OnInit {
       const formData = this.form.value;
       const payload = {
         ...formData,
-        contact: { name: formData.contact.name, phone: formData.contact.phone.replace(/\D/g, '') },
+        contact: { name: formData.contact.name, phone: formData.contact.phone?.replace(/\D/g, '') },
       };
 
       this.#store
