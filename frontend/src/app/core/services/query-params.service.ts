@@ -75,6 +75,18 @@ export class QueryParamsService {
   }
 
   /**
+   * Synchronously parses query parameters from a provided query params object (e.g., from ActivatedRouteSnapshot).
+   * Suitable for use in resolvers to extract query parameters before the route is fully activated.
+   * @param queryParams Flat query parameters object (e.g., route.queryParams)
+   * @param key Optional key to extract specific parameters (e.g., 'filters', 'pagination')
+   * @returns Nested object for the specified key or entire params if no key provided
+   */
+  parseQueryParams(queryParams: Record<string, string | string[]>, key?: string): any {
+    const parsedParams = this.#unflattenParams(queryParams);
+    return key ? parsedParams[key] || {} : parsedParams;
+  }
+
+  /**
    * Flattens nested parameter object, sets non-null/undefined values, and marks null/undefined values for removal.
    * @param params Object to flatten
    * @returns Flattened object with non-null/undefined values and null for parameters to remove
@@ -142,12 +154,15 @@ export class QueryParamsService {
       let finalValue: any = value;
 
       // Handle arrays (e.g., 'flat,house' -> ['flat', 'house'])
-      if (typeof value === 'string') {
-        const items = value.split(',').filter(v => v);
-        if (items.length > 0) {
-          finalValue = items;
-        }
+      if (typeof value === 'string' && value.includes(',')) {
+        finalValue = value.split(',').filter(v => v);
       }
+      // if (typeof value === 'string') {
+      //   const items = value.split(',').filter(v => v);
+      //   if (items.length > 0) {
+      //     finalValue = items;
+      //   }
+      // }
 
       // Handle dates (e.g., '2023-01-01T00:00:00.000Z' -> Date)
       if (typeof value === 'string' && /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*Z/.test(value)) {
