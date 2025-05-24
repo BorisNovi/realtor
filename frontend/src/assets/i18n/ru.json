@@ -1,5 +1,25 @@
 {
   "CHECK": "ПРОВЕРКА (РУ)",
+  "FORM": {
+    "LABELS": {
+      "PROPERTY_TYPE": "Тип недвижимости",
+      "STATUS": "Статус",
+      "ZONING": "Зонирование",
+      "MAP_LINK": "Ссылка на карту",
+      "AREA": "Площадь (м²)",
+      "ADDRESS": "Адрес",
+      "PRICE": "Цена",
+      "CURRENCY": "Валюта",
+      "CONTACT_NAME": "Имя контакта",
+      "CONTACT_PHONE": "Телефон контакта"
+    },
+    "ERRORS": {
+      "REQUIRED": "{{label}} обязательное",
+      "MIN": "Значение {{label}} должно быть не менее {{min}}",
+      "MAX": "Значение {{label}} не должно превышать {{max}}",
+      "INVALID": "{{label}} некорректно"
+    }
+  },
 
   "AUTH": {
     "WELCOME": "Добро пожаловать в Realtor!",

@@ -1,5 +1,25 @@
 {
   "CHECK": "CHECK (EN)",
+  "FORM": {
+    "LABELS": {
+      "PROPERTY_TYPE": "Property Type",
+      "STATUS": "Status",
+      "ZONING": "Zoning",
+      "MAP_LINK": "Map Link",
+      "AREA": "Area (m²)",
+      "ADDRESS": "Address",
+      "PRICE": "Price",
+      "CURRENCY": "Currency",
+      "CONTACT_NAME": "Contact name",
+      "CONTACT_PHONE": "Contact phone"
+    },
+    "ERRORS": {
+      "REQUIRED": "{{label}} is required",
+      "MIN": "{{label}} must be at least {{min}}",
+      "MAX": "{{label}} must not exceed {{max}}",
+      "INVALID": "{{label}} is invalid"
+    }
+  },
 
   "AUTH": {
     "WELCOME": "Welcome to Realtor!",

@@ -1,6 +1,25 @@
 {
   "CHECK": "CHECK (ES)",
-
+  "FORM": {
+    "LABELS": {
+      "PROPERTY_TYPE": "Tipo de propiedad",
+      "STATUS": "Estado",
+      "ZONING": "Zonificación",
+      "MAP_LINK": "Enlace del mapa",
+      "AREA": "Área (m²)",
+      "ADDRESS": "Dirección",
+      "PRICE": "Precio",
+      "CURRENCY": "Moneda",
+      "CONTACT_NAME": "Nombre de contacto",
+      "CONTACT_PHONE": "Teléfono de contacto"
+    },
+    "ERRORS": {
+      "REQUIRED": "{{label}} es obligatorio",
+      "MIN": "{{label}} debe ser al menos {{min}}",
+      "MAX": "{{label}} no debe exceder {{max}}",
+      "INVALID": "{{label}} no es válido"
+    }
+  },
   "AUTH": {
     "WELCOME": "¡Bienvenido a Realtor!",
     "SIGN_IN_TO_CONTINUE": "Inicia sesión para continuar",
