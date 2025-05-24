@@ -25,15 +25,15 @@ export class QueryParamsService {
     if (key) {
       const currentParams = this.#unflattenParams(this.#route.snapshot.queryParams);
       currentParams[key] = { ...currentParams[key], ...params };
-      queryParams = this.#flattenAndCleanParams(currentParams);
+      queryParams = this.buildQueryParams(currentParams);
     } else {
-      queryParams = this.#flattenAndCleanParams(params);
+      queryParams = this.buildQueryParams(params);
     }
 
-    this.#router.navigate([], {
+    this.#router.navigate([''], {
       queryParams,
       queryParamsHandling: 'merge',
-      replaceUrl: true,
+      replaceUrl: false,
     });
   }
 
@@ -56,25 +56,6 @@ export class QueryParamsService {
   }
 
   /**
-   * Synchronously retrieves current query parameters from the URL snapshot as a structured object.
-   * Suitable for one-time initialization during app startup.
-   * @returns Nested object representing the query parameters
-   */
-  getQueryParamsSync(): Record<string, any> {
-    return this.#unflattenParams(this.#route.snapshot.queryParams);
-  }
-
-  /**
-   * Synchronously retrieves a subset of query parameters for a specific key from the current snapshot.
-   * Suitable for one-time initialization during app startup.
-   * @param key The key to extract (e.g., 'filters', 'pagination')
-   * @returns Nested object for the specified key
-   */
-  getQueryParamsByKeySync(key: string): any {
-    return this.getQueryParamsSync()[key] || {};
-  }
-
-  /**
    * Synchronously parses query parameters from a provided query params object (e.g., from ActivatedRouteSnapshot).
    * Suitable for use in resolvers to extract query parameters before the route is fully activated.
    * @param queryParams Flat query parameters object (e.g., route.queryParams)
@@ -87,40 +68,43 @@ export class QueryParamsService {
   }
 
   /**
-   * Flattens nested parameter object, sets non-null/undefined values, and marks null/undefined values for removal.
-   * @param params Object to flatten
-   * @returns Flattened object with non-null/undefined values and null for parameters to remove
+   * Flattens a nested object into a flat key-value map with dot notation.
+   * Converts arrays to comma-separated strings, Dates to ISO strings, and marks null/undefined as null for removal.
+   * @param obj Object to flatten
+   * @param prefix Optional key prefix (default: '')
+   * @returns Flattened object with string values or null
    */
-  #flattenAndCleanParams(params: Record<string, any>): Record<string, any> {
+  buildQueryParams(obj: any, prefix = ''): Record<string, any> {
     const result: Record<string, any> = {};
 
-    const flatten = (obj: any, prefix = ''): void => {
-      for (const [key, value] of Object.entries(obj)) {
-        const newKey = prefix ? `${prefix}.${key}` : key;
+    const appendParams = (obj: any, currentPrefix: string): void => {
+      Object.entries(obj).forEach(([key, value]) => {
+        const paramKey = currentPrefix ? `${currentPrefix}.${key}` : key;
 
         if (value === null || value === undefined) {
-          result[newKey] = null; // Mark parameter for removal
-          continue;
+          result[paramKey] = null; // Помечаем null/undefined для удаления, как в #flattenAndCleanParams
+          return;
         }
 
         if (Array.isArray(value)) {
           if (value.length > 0) {
-            result[newKey] = value.join(','); // Convert array to comma-separated string
+            result[paramKey] = value.map(item => String(item)).join(','); // Преобразуем массив в строку
           } else {
-            result[newKey] = null; // Mark empty array for removal
+            result[paramKey] = null; // Пустой массив помечаем как null
           }
-          continue;
+          return;
         }
 
         if (typeof value === 'object' && !(value instanceof Date)) {
-          flatten(value, newKey); // Recursively flatten nested objects
+          appendParams(value, paramKey); // Рекурсивно обрабатываем вложенные объекты
         } else {
-          result[newKey] = value instanceof Date ? value.toISOString() : value; // Convert Date to ISO string
+          const paramValue = value instanceof Date ? value.toISOString() : String(value);
+          result[paramKey] = paramValue;
         }
-      }
+      });
     };
 
-    flatten(params);
+    appendParams(obj, prefix);
     return result;
   }
 

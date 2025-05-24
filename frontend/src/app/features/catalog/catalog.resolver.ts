@@ -1,30 +1,29 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { CatalogState, FetchCatalog, QueryParamsService, SetCatalogPagination } from 'src/app/core';
+import { CatalogState, FetchCatalog, QueryParamsService, SetCatalogFilters, SetCatalogPagination } from 'src/app/core';
 import { map, switchMap, take } from 'rxjs/operators';
-import { CATALOG_PAGINATION_KEY } from '@shared/constants';
+import { CATALOG_FILTERS_KEY, CATALOG_PAGINATION_KEY } from '@shared/constants';
+import { combineLatest } from 'rxjs';
 
 export const catalogResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapshot) => {
   const queryParamsService = inject(QueryParamsService);
   const store = inject(Store);
   const router = inject(Router);
 
-  return store.select(CatalogState.pagination).pipe(
+  return combineLatest([store.select(CatalogState.pagination), store.select(CatalogState.filters)]).pipe(
     take(1),
-    switchMap(pagination => {
+    switchMap(([pagination, filters]) => {
       const currentQueryParams = route.queryParams;
       const paginationFromQuery = queryParamsService.parseQueryParams(currentQueryParams, CATALOG_PAGINATION_KEY);
+      const filtersFromQuery = queryParamsService.parseQueryParams(currentQueryParams, CATALOG_FILTERS_KEY);
 
       const newQueryParams = {
-        // ...currentQueryParams,
-        [CATALOG_PAGINATION_KEY + '.first']: pagination.first,
-        [CATALOG_PAGINATION_KEY + '.rows']: pagination.rows,
+        ...queryParamsService.buildQueryParams(pagination, CATALOG_PAGINATION_KEY),
+        ...queryParamsService.buildQueryParams(filters, CATALOG_FILTERS_KEY),
       };
 
       if (!Object.keys(paginationFromQuery).length) {
-        console.log('query doesnt have pagination', pagination);
-
         router.navigate([''], {
           queryParams: newQueryParams,
           queryParamsHandling: 'merge',
@@ -32,8 +31,11 @@ export const catalogResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapsho
         });
       }
 
-      // TODO: то же, что ты написал для пагинации, напиши и для фильтров
-      return store.dispatch([new SetCatalogPagination(paginationFromQuery), new FetchCatalog()]);
+      return store.dispatch([
+        new SetCatalogPagination(paginationFromQuery),
+        new SetCatalogFilters(filtersFromQuery),
+        new FetchCatalog(),
+      ]);
     }),
     map(() => true),
   );
