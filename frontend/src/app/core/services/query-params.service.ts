@@ -69,7 +69,7 @@ export class QueryParamsService {
 
   /**
    * Flattens a nested object into a flat key-value map with dot notation.
-   * Converts arrays to comma-separated strings, Dates to ISO strings, and marks null/undefined as null for removal.
+   * Converts arrays to comma-separated strings with '[]' suffix, Dates to ISO strings, and marks null/undefined as null.
    * @param obj Object to flatten
    * @param prefix Optional key prefix (default: '')
    * @returns Flattened object with string values or null
@@ -79,24 +79,28 @@ export class QueryParamsService {
 
     const appendParams = (obj: any, currentPrefix: string): void => {
       Object.entries(obj).forEach(([key, value]) => {
-        const paramKey = currentPrefix ? `${currentPrefix}.${key}` : key;
+        // Add suffix '[]' for arrays
+        const isArray = Array.isArray(value);
+        const paramKey = currentPrefix ? `${currentPrefix}.${key}${isArray ? '[]' : ''}` : `${key}${isArray ? '[]' : ''}`;
 
         if (value === null || value === undefined) {
-          result[paramKey] = null; // Помечаем null/undefined для удаления, как в #flattenAndCleanParams
+          result[paramKey] = null;
           return;
         }
 
-        if (Array.isArray(value)) {
+        if (isArray) {
           if (value.length > 0) {
-            result[paramKey] = value.map(item => String(item)).join(','); // Преобразуем массив в строку
+            // For arrays of objects use JSON.stringify
+            const isObjectArray = value.every(item => typeof item === 'object' && item !== null && !(item instanceof Date));
+            result[paramKey] = isObjectArray ? JSON.stringify(value) : value.map(item => String(item)).join(',');
           } else {
-            result[paramKey] = null; // Пустой массив помечаем как null
+            result[paramKey] = null;
           }
           return;
         }
 
         if (typeof value === 'object' && !(value instanceof Date)) {
-          appendParams(value, paramKey); // Рекурсивно обрабатываем вложенные объекты
+          appendParams(value, paramKey);
         } else {
           const paramValue = value instanceof Date ? value.toISOString() : String(value);
           result[paramKey] = paramValue;
@@ -110,7 +114,8 @@ export class QueryParamsService {
 
   /**
    * Transforms flat query parameters into a nested object structure.
-   * Converts comma-separated strings to arrays and ISO strings to Dates where applicable.
+   * Converts comma-separated strings to arrays for keys marked as arrays (e.g., ending with '[]') and ISO strings to Dates.
+   * Attempts to parse JSON strings for arrays of objects.
    * @param flatParams Flat query parameters from URL
    * @returns Nested object representing the query parameters
    */
@@ -123,8 +128,8 @@ export class QueryParamsService {
         continue;
       }
 
-      // Split key into parts (e.g., 'filters.status' -> ['filters', 'status'])
-      const keys = key.split('.');
+      // Split key into parts, handling array notation (e.g., 'filters.types[]' -> ['filters', 'types'])
+      const keys = key.replace(/\[\]$/, '').split('.'); // Удаляем '[]' если есть
       let current = result;
 
       // Build nested structure
@@ -137,23 +142,40 @@ export class QueryParamsService {
       const finalKey = keys[keys.length - 1];
       let finalValue: any = value;
 
-      // Handle arrays (e.g., 'flat,house' -> ['flat', 'house'])
-      if (typeof value === 'string' && value.includes(',')) {
-        finalValue = value.split(',').filter(v => v);
-      }
-      // if (typeof value === 'string') {
-      //   const items = value.split(',').filter(v => v);
-      //   if (items.length > 0) {
-      //     finalValue = items;
-      //   }
-      // }
+      // Check if the key indicates an array (e.g., ends with '[]' in original key)
+      const isArrayKey = key.endsWith('[]');
 
-      // Handle dates (e.g., '2023-01-01T00:00:00.000Z' -> Date)
-      if (typeof value === 'string' && /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*Z/.test(value)) {
+      if (isArrayKey && typeof value === 'string') {
+        // Handle arrays (e.g., 'flat,house' -> ['flat', 'house'])
+        if (value.includes(',')) {
+          finalValue = value.split(',').filter(v => v);
+        } else {
+          // Single value for array key (e.g., 'flat' -> ['flat'])
+          finalValue = [value];
+        }
+      } else if (typeof value === 'string' && value.startsWith('[') && value.endsWith(']')) {
+        // Try to parse JSON array of objects (e.g., '[{"id":1},{"id":2}]')
+        try {
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) {
+            finalValue = parsed;
+          }
+        } catch (e) {
+          // If JSON parsing fails, keep as string
+          console.error('JSON parsing failed!', e);
+          finalValue = value;
+        }
+      } else if (typeof value === 'string' && /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*Z/.test(value)) {
+        // Handle dates (e.g., '2023-01-01T00:00:00.000Z' -> Date)
         const date = new Date(value);
         if (!isNaN(date.getTime())) {
           finalValue = date;
         }
+      }
+
+      // For array keys, ensure the value is always an array
+      if (isArrayKey && !Array.isArray(finalValue)) {
+        finalValue = [finalValue];
       }
 
       current[finalKey] = finalValue;
