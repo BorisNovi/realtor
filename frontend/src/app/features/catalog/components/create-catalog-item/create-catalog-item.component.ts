@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { InputWrapperComponent } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { WorldPhoneMasksDirective } from '@shared/directives';
 import {
@@ -49,6 +51,8 @@ import { CreatePropertyObject, FileUploadService } from 'src/app/core';
     InputGroupAddonModule,
     WorldPhoneMasksDirective,
     MessageModule,
+    InputWrapperComponent,
+    TranslatePipe,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
