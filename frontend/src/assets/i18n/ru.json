@@ -1,7 +1,8 @@
 {
-  "CHECK": "ПРОВЕРКА (РУ)",
   "FORM": {
     "LABELS": {
+      "PHOTOS": "Фото",
+      "PREVIEW": "Превью",
       "PROPERTY_TYPE": "Тип недвижимости",
       "STATUS": "Статус",
       "ZONING": "Зонирование",
@@ -11,13 +12,66 @@
       "PRICE": "Цена",
       "CURRENCY": "Валюта",
       "CONTACT_NAME": "Имя контакта",
-      "CONTACT_PHONE": "Телефон контакта"
+      "CONTACT_PHONE": "Телефон контакта",
+      "COMMENT": "Комментарий",
+      "ADDITIONAL_PARAMS": "Дополнительные параметры",
+      "CURRENT_FLOOR": "Текущий этаж",
+      "TOTAL_FLOORS": "Всего этажей",
+      "ROOMS": "Комнаты",
+      "FURNISHED": "Меблировка",
+      "RENOVATION": "Ремонт",
+      "KITCHEN": "Кухня",
+      "SHARED_FACILITIES": "Общие удобства",
+      "SHARED_KITCHEN": "Кухня",
+      "SHARED_BATHROOM": "Ванная",
+      "UTILITIES": "Коммунальные услуги",
+      "ELECTRICITY": "Электричество",
+      "WATER_SUPPLY": "Водоснабжение",
+      "NATURAL_GAS": "Природный газ",
+      "SEWERAGE": "Канализация",
+      "HEATING": "Отопление",
+      "INTERNET": "Интернет",
+      "OTHER": "Прочее",
+      "PARKING": "Парковка",
+      "BATH": "Ванна",
+      "SHOWER": "Душ",
+      "AIR_CONDITIONING": "Кондиционер",
+      "FIREPLACE": "Камин",
+      "BEAUTIFUL_VIEW": "Красивый вид",
+      "NEW_BUILDING": "Новостройка",
+      "ELEVATOR": "Лифт",
+      "BALCONY": "Балкон",
+      "GARDEN": "Сад",
+      "GARAGE": "Гараж"
+    },
+    "PLACEHOLDERS": {
+      "PROPERTY_TYPE": "Выберите тип недвижимости",
+      "STATUS": "Выберите статус",
+      "ZONING": "Выберите зонирование",
+      "MAP_LINK": "Введите ссылку на карту",
+      "AREA": "Введите площадь",
+      "ADDRESS": "Введите адрес",
+      "PRICE": "Введите цену",
+      "CURRENCY": "Напр., USD",
+      "CONTACT_NAME": "Введите имя",
+      "CONTACT_PHONE": "Введите телефон",
+      "UPLOAD_PHOTOS": "Перетащите файлы сюда для загрузки",
+      "CURRENT_FLOOR": "Введите текущий этаж",
+      "TOTAL_FLOORS": "Введите общее количество этажей",
+      "ROOMS": "Введите количество комнат",
+      "FURNISHED": "Выберите меблировку",
+      "RENOVATION": "Выберите тип ремонта",
+      "KITCHEN": "Выберите тип кухни"
     },
     "ERRORS": {
       "REQUIRED": "{{label}} обязательное",
       "MIN": "Значение {{label}} должно быть не менее {{min}}",
       "MAX": "Значение {{label}} не должно превышать {{max}}",
       "INVALID": "{{label}} некорректно"
+    },
+    "BUTTONS": {
+      "CANCEL": "Отмена",
+      "SAVE": "Сохранить"
     }
   },
 
@@ -112,5 +166,6 @@
         "DETAIL": "Что-то пошло не так, попробуйте снова"
       }
     }
-  }
+  },
+  "CATALOG": {}
 }

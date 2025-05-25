@@ -4,7 +4,7 @@
     @let photos = photosS();
 
     <div class="md:col-span-2">
-      <label for="photos" class="block text-sm lept-medium text-gray-700 mb-1">Photos</label>
+      <label for="photos" class="block text-sm lept-medium text-gray-700 mb-1">{{ 'FORM.LABELS.PHOTOS' | translate }}</label>
       <p-fileupload
         #fileUpload
         [customUpload]="true"
@@ -35,13 +35,13 @@
               <p-button (click)="choose(chooseCallback)" [rounded]="true" [text]="true">
                 <i class="pi pi-plus !p-8 !text-4xl !text-muted-color"></i>
               </p-button>
-              <p class="mt-6 mb-0">Drag and drop files to here to upload</p>
+              <p class="mt-6 mb-0">{{'FORM.PLACEHOLDERS.UPLOAD_PHOTOS' | translate }}</p>
             </div>
           }
 
           @if (photos.length > 0) {
             <div class="mt-4">
-              <div class="block text-sm font-medium text-gray-700 mb-1">Preview</div>
+              <div class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.PLACEHOLDERS.PREVIEW' | translate }}</div>
               <div class="flex flex-wrap gap-4">
                 @for (photo of photos; track photo; let i = $index) {
                   <div class="relative overflow-hidden aspect-[1/1] w-[10rem]">
@@ -72,7 +72,7 @@
         [options]="propertyTypes"
         optionLabel="label"
         optionValue="value"
-        placeholder="Select Property Type"
+        [placeholder]="'FORM.PLACEHOLDERS.PROPERTY_TYPE' | translate"
         class="w-full"
       />
     </app-input-wrapper>
@@ -85,7 +85,7 @@
         [options]="statuses"
         optionLabel="label"
         optionValue="value"
-        placeholder="Select Status"
+        [placeholder]="'FORM.PLACEHOLDERS.STATUS' | translate"
         class="w-full"
         [ngStyle]="{
           'background-color': getStatusBackground(form.controls['status'].value),
@@ -107,14 +107,14 @@
         [options]="zoningTypes"
         optionLabel="label"
         optionValue="value"
-        placeholder="Select Zoning Type"
+        [placeholder]="'FORM.PLACEHOLDERS.ZONING' | translate"
         class="w-full"
       />
     </app-input-wrapper>
 
     <!-- Map Link -->
     <app-input-wrapper [control]="form.get('mapLink')!" [label]="'FORM.LABELS.MAP_LINK' | translate" id="mapLink">
-      <input id="mapLink" pInputText type="text" formControlName="mapLink" placeholder="Enter map link" class="w-full" />
+      <input id="mapLink" pInputText type="text" formControlName="mapLink" [placeholder]="'FORM.PLACEHOLDERS.MAP_LINK' | translate" class="w-full" />
     </app-input-wrapper>
 
     <!-- Area -->
@@ -126,14 +126,14 @@
         [step]="10"
         [min]="0"
         formControlName="area"
-        placeholder="Enter area"
+        [placeholder]="'FORM.PLACEHOLDERS.AREA' | translate"
         class="w-full"
       />
     </app-input-wrapper>
 
     <!-- Address -->
     <app-input-wrapper [control]="form.get('address')!" [label]="'FORM.LABELS.ADDRESS' | translate" id="address">
-      <input id="address" pInputText type="text" formControlName="address" placeholder="Enter address" class="w-full" />
+      <input id="address" pInputText type="text" formControlName="address" [placeholder]="'FORM.PLACEHOLDERS.ADDRESS' | translate" class="w-full" />
     </app-input-wrapper>
 
     <!-- Price -->
@@ -148,7 +148,7 @@
           <p-inputnumber
             id="price"
             formControlName="value"
-            placeholder="Enter price"
+            [placeholder]="'FORM.PLACEHOLDERS.PRICE' | translate"
             [suffix]="' ' + (getCurrencySymbol(form.controls['price'].value.currency) || '')"
             [showButtons]="true"
             [step]="10"
@@ -165,7 +165,7 @@
           [options]="currencies"
           optionLabel="label"
           optionValue="value"
-          formControlName="currency"
+          [placeholder]="'FORM.PLACEHOLDERS.CURRENCY' | translate"
           placeholder="e.g., USD"
           class="w-full"
         />
@@ -176,7 +176,7 @@
     <ng-container formGroupName="contact">
       <!-- Name -->
       <app-input-wrapper [control]="form.get('contact')?.get('name')!" [label]="'FORM.LABELS.CONTACT_NAME' | translate" id="contactName">
-        <input id="contactName" pInputText type="text" formControlName="name" placeholder="Enter name" class="w-full" />
+        <input id="contactName" pInputText type="text" formControlName="name" [placeholder]="'FORM.PLACEHOLDERS.CONTACT_NAME' | translate" class="w-full" />
       </app-input-wrapper>
 
       <!-- Phone -->
@@ -190,7 +190,7 @@
             pInputText
             type="text"
             formControlName="phone"
-            placeholder="Enter phone"
+            [placeholder]="'FORM.PLACEHOLDERS.CONTACT_PHONE' | translate"
             appWorldPhoneMasks
           />
         </p-inputgroup>
@@ -199,7 +199,7 @@
 
     <p-divider align="left" type="solid" class="md:col-span-2">
       <div class="flex items-center justify-between w-full gap-2">
-        <b>Comment</b>
+        <b>{{ 'FORM.LABELS.COMMENT' | translate }}</b>
         <button pButton type="button" class="p-button-text p-button-sm" (click)="toggleComment()">
           @let icon = isCommentVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
           <i [class]="icon"></i>
@@ -209,14 +209,14 @@
 
     @if (isCommentVisible) {
       <div class="md:col-span-2" [@fadeSlide]>
-        <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">Comment</label>
+        <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.COMMENT' | translate }}</label>
         <textarea id="comment" formControlName="comment" [fluid]="true" rows="5" pTextarea [autoResize]="true"></textarea>
       </div>
     }
 
     <p-divider align="left" type="solid" class="md:col-span-2">
       <div class="flex items-center justify-between w-full gap-2">
-        <b>Additional params</b>
+        <b>{{ 'FORM.LABELS.ADDITIONAL_PARAMS' | translate }}</b>
         <button pButton type="button" class="p-button-text p-button-sm" (click)="toggleAdditionalParams()">
           @let iconAdditional = isAdditionalParamsVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
           <i [class]="iconAdditional"></i>

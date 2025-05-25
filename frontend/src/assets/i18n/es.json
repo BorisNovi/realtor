@@ -1,5 +1,4 @@
 {
-  "CHECK": "CHECK (ES)",
   "FORM": {
     "LABELS": {
       "PROPERTY_TYPE": "Tipo de propiedad",
@@ -12,6 +11,18 @@
       "CURRENCY": "Moneda",
       "CONTACT_NAME": "Nombre de contacto",
       "CONTACT_PHONE": "Teléfono de contacto"
+    },
+    "PLACEHOLDERS": {
+      "PROPERTY_TYPE": "Seleccionar tipo de propiedad",
+      "STATUS": "Seleccionar estado",
+      "ZONING": "Seleccionar zonificación",
+      "MAP_LINK": "Ingresar enlace del mapa",
+      "AREA": "Ingresar área",
+      "ADDRESS": "Ingresar dirección",
+      "PRICE": "Ingresar precio",
+      "CURRENCY": "Ej., USD",
+      "CONTACT_NAME": "Ingresar nombre",
+      "CONTACT_PHONE": "Ingresar teléfono"
     },
     "ERRORS": {
       "REQUIRED": "{{label}} es obligatorio",
