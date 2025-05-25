@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { CATALOG_FILTERS_KEY, CATALOG_PAGINATION_KEY } from '@shared/constants';
 import { ICatalogFilters, IPagination } from '@shared/interfaces';
@@ -10,7 +9,7 @@ import { TableComponent } from './components/table/table.component';
 
 @Component({
   selector: 'app-catalog',
-  imports: [TranslatePipe, TableComponent, FiltersComponent, DrawerModule],
+  imports: [TableComponent, FiltersComponent, DrawerModule],
   templateUrl: './catalog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

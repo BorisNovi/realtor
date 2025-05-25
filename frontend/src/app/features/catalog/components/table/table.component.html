@@ -15,30 +15,28 @@
     [lazy]="true"
     [rowsPerPageOptions]="[10, 20, 50]"
     [showCurrentPageReport]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [currentPageReportTemplate]="'CATALOG.TABLE.PAGINATOR.CURRENT_PAGE_REPORT' | translate: {first: '{first}', last: '{last}', totalRecords: '{totalRecords}'}"
     (onPage)="pageChange($event)"
     [(selection)]="selectedItems"
     [tableStyle]="{ 'min-width': '40rem' }"
   >
     <ng-template #caption>
       <div class="flex justify-between gap-4">
-        <p-button label="Add" [outlined]="true" icon="pi pi-plus" (click)="openItemDialog()" />
-        <p-button label="Filters" [outlined]="true" icon="pi pi-filter" (click)="onFiltersOpen()" />
+        <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" [outlined]="true" icon="pi pi-plus" (click)="openItemDialog()" />
+        <p-button [label]="'CATALOG.TABLE.BUTTONS.FILTERS' | translate" [outlined]="true" icon="pi pi-filter" (click)="onFiltersOpen()" />
       </div>
     </ng-template>
     <ng-template #header>
       <tr>
         <th style="min-width: 4rem"><p-tableHeaderCheckbox /></th>
-        <th style="min-width: 6rem">Photo</th>
-        <th>Type</th>
-        <th>Zoning</th>
-        <th>Address</th>
-        <th>Price</th>
-        <th>Area</th>
-        <!-- <th>Rooms</th>
-        <th style="min-width: 6rem">Floor</th> -->
-        <th style="min-width: 8rem">Date</th>
-        <th style="min-width: 10.5rem">Status</th>
+        <th style="min-width: 6rem">{{ 'CATALOG.TABLE.HEADERS.PHOTO' | translate }}</th>
+        <th>{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}</th>
+        <th>{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}</th>
+        <th>{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}</th>
+        <th>{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }}</th>
+        <th>{{ 'CATALOG.TABLE.HEADERS.AREA' | translate }}</th>
+        <th style="min-width: 8rem">{{ 'CATALOG.TABLE.HEADERS.DATE' | translate }}</th>
+        <th style="min-width: 10.5rem">{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}</th>
         <th style="min-width: 4rem"></th>
       </tr>
     </ng-template>
@@ -50,13 +48,11 @@
         <td>
           <img [src]="item.photos[0]" [alt]="item.name" class="w-24 rounded" />
         </td>
-        <td>{{ item.propertyType }}</td>
-        <td>{{ item.zoningType }}</td>
+        <td>{{ item.propertyType | translate }}</td>
+        <td>{{ item.zoningType | translate }}</td>
         <td>{{ item.address }}</td>
         <td>{{ item.price.value | number }} {{ item.price.currency }}</td>
-        <td>{{ item.area }} m^2</td>
-        <!-- <td>{{ item?.specifies?.rooms || '-' }}</td>
-        <td>{{ item?.specifies?.floor?.current || '-' }} / {{ item?.floor?.full || '-' }}</td> -->
+        <td>{{ item.area }} m²</td>
         <td>{{ item.dateAdded }}</td>
         <td [pEditableColumn]="{ id: item.id, value: item.status }" pEditableColumnField="status" class="cursor-pointer">
           <p-cellEditor>
@@ -73,13 +69,13 @@
               >
                 <ng-template pTemplate="item" let-item>
                   <div class="flex items-center">
-                    <p-tag [value]="item.label" [severity]="getSeverity(item.value)" />
+                    <p-tag [value]="item.label | translate" [severity]="getSeverity(item.value)" />
                   </div>
                 </ng-template>
               </p-select>
             </ng-template>
             <ng-template #output>
-              <p-tag [value]="item.status" [severity]="getSeverity(item.status)" />
+              <p-tag [value]="item.status | translate" [severity]="getSeverity(item.status)" />
             </ng-template>
           </p-cellEditor>
         </td>
@@ -92,11 +88,11 @@
     @if (selectedItems.length) {
       <ng-template #footer>
         <tr>
-          <td colspan="8" class="text-right font-bold">Selected {{ selectedItems.length }}</td>
+          <td colspan="8" class="text-right font-bold">{{ 'CATALOG.TABLE.FOOTER.SELECTED' | translate: { count: selectedItems.length } }}</td>
           <td colspan="3">
             <p-buttongroup class="flex justify-end">
-              <p-button label="Add to listing" icon="pi pi-plus" class="text-nowrap" outlined (onClick)="(null)" />
-              <p-button severity="danger" label="Delete" icon="pi pi-trash" outlined (onClick)="(null)" />
+              <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate" icon="pi pi-plus" class="text-nowrap" outlined (onClick)="(null)" />
+              <p-button severity="danger" [label]="'CATALOG.TABLE.BUTTONS.DELETE' | translate" icon="pi pi-trash" outlined (onClick)="(null)" />
             </p-buttongroup>
           </td>
         </tr>

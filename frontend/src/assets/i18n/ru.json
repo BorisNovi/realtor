@@ -64,9 +64,9 @@
       "KITCHEN": "Выберите тип кухни"
     },
     "ERRORS": {
-      "REQUIRED": "{{label}} обязательное",
-      "MIN": "Значение {{label}} должно быть не менее {{min}}",
-      "MAX": "Значение {{label}} не должно превышать {{max}}",
+      "REQUIRED": "{{label}} - обязательное поле",
+      "MIN": "{{label}} должно быть не менее {{min}}",
+      "MAX": "{{label}} не должно превышать {{max}}",
       "INVALID": "{{label}} некорректно"
     },
     "BUTTONS": {
@@ -74,7 +74,6 @@
       "SAVE": "Сохранить"
     }
   },
-
   "AUTH": {
     "WELCOME": "Добро пожаловать в Realtor!",
     "SIGN_IN_TO_CONTINUE": "Войдите, чтобы продолжить",
@@ -167,5 +166,38 @@
       }
     }
   },
-  "CATALOG": {}
+  "CATALOG": {
+    "TABLE": {
+      "HEADERS": {
+        "PHOTO": "Фото",
+        "TYPE": "Тип",
+        "ZONING": "Зонирование",
+        "ADDRESS": "Адрес",
+        "PRICE": "Цена",
+        "AREA": "Площадь",
+        "DATE": "Дата",
+        "STATUS": "Статус"
+      },
+      "PAGINATOR": {
+        "CURRENT_PAGE_REPORT": "Показано с {first} по {last} из {totalRecords} записей"
+      },
+      "BUTTONS": {
+        "ADD": "Добавить",
+        "FILTERS": "Фильтры",
+        "ADD_TO_LISTING": "Добавить в список",
+        "DELETE": "Удалить"
+      },
+      "FOOTER": {
+        "SELECTED": "Выбрано {count}"
+      },
+      "ACTIONS": {
+        "EDIT": "Редактировать",
+        "DELETE": "Удалить"
+      },
+      "CONFIRM_DIALOG": {
+        "YES": "Да",
+        "NO": "Нет"
+      }
+    }
+  }
 }
