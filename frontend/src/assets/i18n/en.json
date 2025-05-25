@@ -1,7 +1,8 @@
 {
-  "CHECK": "CHECK (EN)",
   "FORM": {
     "LABELS": {
+      "PHOTOS": "Photos",
+      "PREVIEW": "Preview",
       "PROPERTY_TYPE": "Property Type",
       "STATUS": "Status",
       "ZONING": "Zoning",
@@ -11,13 +12,66 @@
       "PRICE": "Price",
       "CURRENCY": "Currency",
       "CONTACT_NAME": "Contact name",
-      "CONTACT_PHONE": "Contact phone"
+      "CONTACT_PHONE": "Contact phone",
+      "COMMENT": "Comment",
+      "ADDITIONAL_PARAMS": "Additional params",
+      "CURRENT_FLOOR": "Current Floor",
+      "TOTAL_FLOORS": "Total Floors",
+      "ROOMS": "Rooms",
+      "FURNISHED": "Furnished",
+      "RENOVATION": "Renovation",
+      "KITCHEN": "Kitchen",
+      "SHARED_FACILITIES": "Shared Facilities",
+      "SHARED_KITCHEN": "Kitchen",
+      "SHARED_BATHROOM": "Bathroom",
+      "UTILITIES": "Utilities",
+      "ELECTRICITY": "Electricity",
+      "WATER_SUPPLY": "Water Supply",
+      "NATURAL_GAS": "Natural Gas",
+      "SEWERAGE": "Sewerage",
+      "HEATING": "Heating",
+      "INTERNET": "Internet",
+      "OTHER": "Other",
+      "PARKING": "Parking",
+      "BATH": "Bath",
+      "SHOWER": "Shower",
+      "AIR_CONDITIONING": "Air Conditioning",
+      "FIREPLACE": "Fireplace",
+      "BEAUTIFUL_VIEW": "Beautiful View",
+      "NEW_BUILDING": "New Building",
+      "ELEVATOR": "Elevator",
+      "BALCONY": "Balcony",
+      "GARDEN": "Garden",
+      "GARAGE": "Garage"
+    },
+    "PLACEHOLDERS": {
+      "PROPERTY_TYPE": "Select Property Type",
+      "STATUS": "Select Status",
+      "ZONING": "Select Zoning Type",
+      "MAP_LINK": "Enter map link",
+      "AREA": "Enter area",
+      "ADDRESS": "Enter address",
+      "PRICE": "Enter price",
+      "CURRENCY": "e.g., USD",
+      "CONTACT_NAME": "Enter name",
+      "CONTACT_PHONE": "Enter phone",
+      "UPLOAD_PHOTOS": "Drag and drop files to here to upload",
+      "CURRENT_FLOOR": "Enter current floor",
+      "TOTAL_FLOORS": "Enter total floors",
+      "ROOMS": "Enter number of rooms",
+      "FURNISHED": "Select furnished",
+      "RENOVATION": "Select renovation",
+      "KITCHEN": "Select kitchen type"
     },
     "ERRORS": {
       "REQUIRED": "{{label}} is required",
       "MIN": "{{label}} must be at least {{min}}",
       "MAX": "{{label}} must not exceed {{max}}",
       "INVALID": "{{label}} is invalid"
+    },
+    "BUTTONS": {
+      "CANCEL": "Cancel",
+      "SAVE": "Save"
     }
   },
 
@@ -58,7 +112,6 @@
     "BACK_TO_TEXT": "Back to",
     "SEND_BUTTON": "Send",
     "SAVE_BUTTON": "Save",
-
     "NOTIFICATION": {
       "SESSION_EXPIRED": {
         "SUMMARY": "Session expired",
@@ -113,5 +166,7 @@
         "DETAIL": "Something went wrong, try again"
       }
     }
-  }
+  },
+
+  "CATALOG": {}
 }
