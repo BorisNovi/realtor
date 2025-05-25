@@ -224,6 +224,7 @@
       </div>
     </p-divider>
 
+    <!-- Additional Params Section -->
     @if (isAdditionalParamsVisible) {
       <div formGroupName="specifies" [@fadeSlide] class="grid md:col-span-2 gap-8">
         <div class="grid md:grid-cols-2 gap-4">
@@ -231,26 +232,26 @@
           <ng-container formGroupName="floor">
             <!-- Floor Current -->
             <div>
-              <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">Current Floor</label>
+              <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.CURRENT_FLOOR' | translate }}</label>
               <input
                 id="currentFloor"
                 pInputText
                 type="number"
                 formControlName="current"
-                placeholder="Enter current floor"
+                [placeholder]="'FORM.PLACEHOLDERS.CURRENT_FLOOR' | translate"
                 class="w-full"
               />
             </div>
 
             <!-- Floor Full -->
             <div>
-              <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">Total Floors</label>
+              <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.TOTAL_FLOORS' | translate }}</label>
               <input
                 id="totalFloors"
                 pInputText
                 type="number"
                 formControlName="full"
-                placeholder="Enter total floors"
+                [placeholder]="'FORM.PLACEHOLDERS.TOTAL_FLOORS' | translate"
                 class="w-full"
               />
             </div>
@@ -258,132 +259,132 @@
 
           <!-- Rooms -->
           <div>
-            <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">Rooms</label>
+            <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.ROOMS' | translate }}</label>
             <input
               id="rooms"
               pInputText
               type="number"
               formControlName="rooms"
-              placeholder="Enter number of rooms"
+              [placeholder]="'FORM.PLACEHOLDERS.ROOMS' | translate"
               class="w-full"
             />
           </div>
 
           <!-- Furnished -->
           <div>
-            <label for="furnished" class="block text-sm font-medium text-gray-700 mb-1">Furnished</label>
+            <label for="furnished" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.FURNISHED' | translate }}</label>
             <p-select
               id="furnished"
               [options]="furnishedStatuses"
               optionLabel="label"
               optionValue="value"
               formControlName="furnished"
-              placeholder="Select furnished"
+              [placeholder]="'FORM.PLACEHOLDERS.FURNISHED' | translate"
               class="w-full"
             />
           </div>
 
           <!-- Renovation -->
           <div>
-            <label for="renovation" class="block text-sm font-medium text-gray-700 mb-1">Renovation</label>
+            <label for="renovation" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.RENOVATION' | translate }}</label>
             <p-select
               id="renovation"
               [options]="renovationStatuses"
               optionLabel="label"
               optionValue="value"
               formControlName="renovation"
-              placeholder="Select renovation"
+              [placeholder]="'FORM.PLACEHOLDERS.RENOVATION' | translate"
               class="w-full"
             />
           </div>
 
           <!-- Kitchen -->
           <div>
-            <label for="kitchen" class="block text-sm font-medium text-gray-700 mb-1">Kitchen</label>
+            <label for="kitchen" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.KITCHEN' | translate }}</label>
             <p-select
               id="kitchen"
               [options]="kitchenTypes"
               optionLabel="label"
               optionValue="value"
               formControlName="kitchen"
-              placeholder="Select kitchen type"
+              [placeholder]="'FORM.PLACEHOLDERS.KITCHEN' | translate"
               class="w-full"
             />
           </div>
         </div>
 
         <fieldset>
-          <legend class="block text-sm font-medium text-gray-700 mb-1">Shared Facilities</legend>
+          <legend class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.SHARED_FACILITIES' | translate }}</legend>
           <div formGroupName="sharedFacilities" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div class="flex items-center">
               <p-checkbox inputId="kitchen" formControlName="kitchen" [binary]="true" />
-              <label for="kitchen" class="ml-2">Kitchen</label>
+              <label for="kitchen" class="ml-2">{{ 'FORM.LABELS.SHARED_KITCHEN' | translate }}</label>
             </div>
 
             <div class="flex items-center">
               <p-checkbox inputId="bathroom" formControlName="bathroom" [binary]="true" />
-              <label for="bathroom" class="ml-2">Bathroom</label>
+              <label for="bathroom" class="ml-2">{{ 'FORM.LABELS.SHARED_BATHROOM' | translate }}</label>
             </div>
           </div>
         </fieldset>
 
         <fieldset>
-          <legend class="block text-sm font-medium text-gray-700 mb-1">Utilities</legend>
+          <legend class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.UTILITIES' | translate }}</legend>
           <div formGroupName="utilities" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
             <div class="flex items-center">
               <p-checkbox inputId="electricity" formControlName="electricity" [binary]="true" />
-              <label for="electricity" class="ml-2">Electricity</label>
+              <label for="electricity" class="ml-2">{{ 'FORM.LABELS.ELECTRICITY' | translate }}</label>
             </div>
 
             <div class="flex items-center">
               <p-checkbox inputId="waterSupply" formControlName="waterSupply" [binary]="true" />
-              <label for="waterSupply" class="ml-2">Water Supply</label>
+              <label for="waterSupply" class="ml-2">{{ 'FORM.LABELS.WATER_SUPPLY' | translate }}</label>
             </div>
 
             <div class="flex items-center">
               <p-checkbox inputId="naturalGas" formControlName="naturalGas" [binary]="true" />
-              <label for="naturalGas" class="ml-2">Natural Gas</label>
+              <label for="naturalGas" class="ml-2">{{ 'FORM.LABELS.NATURAL_GAS' | translate }}</label>
             </div>
 
             <div class="flex items-center">
               <p-checkbox inputId="sewerage" formControlName="sewerage" [binary]="true" />
-              <label for="sewerage" class="ml-2">Sewerage</label>
+              <label for="sewerage" class="ml-2">{{ 'FORM.LABELS.SEWERAGE' | translate }}</label>
             </div>
 
             <div class="flex items-center">
               <p-checkbox inputId="heating" formControlName="heating" [binary]="true" />
-              <label for="heating" class="ml-2">Heating</label>
+              <label for="heating" class="ml-2">{{ 'FORM.LABELS.HEATING' | translate }}</label>
             </div>
 
             <div class="flex items-center">
               <p-checkbox inputId="internet" formControlName="internet" [binary]="true" />
-              <label for="internet" class="ml-2">Internet</label>
+              <label for="internet" class="ml-2">{{ 'FORM.LABELS.INTERNET' | translate }}</label>
             </div>
           </div>
         </fieldset>
 
         <fieldset>
-          <legend class="block text-sm font-medium text-gray-700 mb-1">Other</legend>
+          <legend class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.OTHER' | translate }}</legend>
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
             @for (
               item of [
-                { id: 'parking', label: 'Parking' },
-                { id: 'bath', label: 'Bath' },
-                { id: 'shower', label: 'Shower' },
-                { id: 'airConditioning', label: 'Air Conditioning' },
-                { id: 'fireplace', label: 'Fireplace' },
-                { id: 'beautifulView', label: 'Beautiful View' },
-                { id: 'newBuilding', label: 'New Building' },
-                { id: 'elevator', label: 'Elevator' },
-                { id: 'balcony', label: 'Balcony' },
-                { id: 'garden', label: 'Garden' },
-                { id: 'garage', label: 'Garage' },
+                { id: 'parking', label: 'FORM.LABELS.PARKING' },
+                { id: 'bath', label: 'FORM.LABELS.BATH' },
+                { id: 'shower', label: 'FORM.LABELS.SHOWER' },
+                { id: 'airConditioning', label: 'FORM.LABELS.AIR_CONDITIONING' },
+                { id: 'fireplace', label: 'FORM.LABELS.FIREPLACE' },
+                { id: 'beautifulView', label: 'FORM.LABELS.BEAUTIFUL_VIEW' },
+                { id: 'newBuilding', label: 'FORM.LABELS.NEW_BUILDING' },
+                { id: 'elevator', label: 'FORM.LABELS.ELEVATOR' },
+                { id: 'balcony', label: 'FORM.LABELS.BALCONY' },
+                { id: 'garden', label: 'FORM.LABELS.GARDEN' },
+                { id: 'garage', label: 'FORM.LABELS.GARAGE' },
               ];
               track item.id
             ) {
               <div class="flex items-center">
                 <p-checkbox [inputId]="item.id" [formControlName]="item.id" [binary]="true" />
-                <label [for]="item.id" class="ml-2">{{ item.label }}</label>
+                <label [for]="item.id" class="ml-2">{{ item.label | translate }}</label>
               </div>
             }
           </div>
@@ -393,8 +394,8 @@
 
     <!-- Buttons -->
     <div class="md:col-span-2 flex justify-end gap-2 mt-6">
-      <p-button label="Cancel" type="button" (click)="onCancel()" outlined />
-      <p-button label="Save" type="submit" class="p-button-primary" [disabled]="form.invalid" />
+      <p-button [label]="'FORM.BUTTONS.CANCEL' | translate" type="button" (click)="onCancel()" outlined />
+      <p-button [label]="'FORM.BUTTONS.SAVE' | translate" type="submit" class="p-button-primary" [disabled]="form.invalid" />
     </div>
   </form>
 </div>

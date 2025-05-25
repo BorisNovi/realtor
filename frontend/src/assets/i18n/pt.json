@@ -1,6 +1,8 @@
 {
   "FORM": {
     "LABELS": {
+      "PHOTOS": "Fotos",
+      "PREVIEW": "Visualização",
       "PROPERTY_TYPE": "Tipo de propriedade",
       "STATUS": "Estado",
       "ZONING": "Zoneamento",
@@ -10,7 +12,37 @@
       "PRICE": "Preço",
       "CURRENCY": "Moeda",
       "CONTACT_NAME": "Nome de contato",
-      "CONTACT_PHONE": "Telefone de contato"
+      "CONTACT_PHONE": "Telefone de contato",
+      "COMMENT": "Comentário",
+      "ADDITIONAL_PARAMS": "Parâmetros adicionais",
+      "CURRENT_FLOOR": "Andar atual",
+      "TOTAL_FLOORS": "Total de andares",
+      "ROOMS": "Quartos",
+      "FURNISHED": "Mobiliado",
+      "RENOVATION": "Reforma",
+      "KITCHEN": "Cozinha",
+      "SHARED_FACILITIES": "Instalações compartilhadas",
+      "SHARED_KITCHEN": "Cozinha compartilhada",
+      "SHARED_BATHROOM": "Banheiro compartilhado",
+      "UTILITIES": "Serviços públicos",
+      "ELECTRICITY": "Eletricidade",
+      "WATER_SUPPLY": "Abastecimento de água",
+      "NATURAL_GAS": "Gás natural",
+      "SEWERAGE": "Esgoto",
+      "HEATING": "Aquecimento",
+      "INTERNET": "Internet",
+      "OTHER": "Outros",
+      "PARKING": "Estacionamento",
+      "BATH": "Banheira",
+      "SHOWER": "Chuveiro",
+      "AIR_CONDITIONING": "Ar condicionado",
+      "FIREPLACE": "Lareira",
+      "BEAUTIFUL_VIEW": "Vista bonita",
+      "NEW_BUILDING": "Construção nova",
+      "ELEVATOR": "Elevador",
+      "BALCONY": "Varanda",
+      "GARDEN": "Jardim",
+      "GARAGE": "Garagem"
     },
     "PLACEHOLDERS": {
       "PROPERTY_TYPE": "Selecionar tipo de propriedade",
@@ -22,13 +54,24 @@
       "PRICE": "Inserir preço",
       "CURRENCY": "Ex., USD",
       "CONTACT_NAME": "Inserir nome",
-      "CONTACT_PHONE": "Inserir telefone"
+      "CONTACT_PHONE": "Inserir telefone",
+      "UPLOAD_PHOTOS": "Arraste e solte arquivos aqui para fazer upload",
+      "CURRENT_FLOOR": "Inserir andar atual",
+      "TOTAL_FLOORS": "Inserir total de andares",
+      "ROOMS": "Inserir número de quartos",
+      "FURNISHED": "Selecionar mobiliado",
+      "RENOVATION": "Selecionar reforma",
+      "KITCHEN": "Selecionar tipo de cozinha"
     },
     "ERRORS": {
       "REQUIRED": "{{label}} é obrigatório",
       "MIN": "{{label}} deve ser pelo menos {{min}}",
       "MAX": "{{label}} não deve exceder {{max}}",
       "INVALID": "{{label}} é inválido"
+    },
+    "BUTTONS": {
+      "CANCEL": "Cancelar",
+      "SAVE": "Salvar"
     }
   },
   "AUTH": {
@@ -122,5 +165,6 @@
         "DETAIL": "Algo deu errado, tente novamente"
       }
     }
-  }
+  },
+  "CATALOG": {}
 }
