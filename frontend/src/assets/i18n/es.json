@@ -166,5 +166,38 @@
       }
     }
   },
-  "CATALOG": {}
+  "CATALOG": {
+    "TABLE": {
+      "HEADERS": {
+        "PHOTO": "Foto",
+        "TYPE": "Tipo",
+        "ZONING": "Zonificación",
+        "ADDRESS": "Dirección",
+        "PRICE": "Precio",
+        "AREA": "Área",
+        "DATE": "Fecha",
+        "STATUS": "Estado"
+      },
+      "PAGINATOR": {
+        "CURRENT_PAGE_REPORT": "Mostrando {first} a {last} de {totalRecords} entradas"
+      },
+      "BUTTONS": {
+        "ADD": "Agregar",
+        "FILTERS": "Filtros",
+        "ADD_TO_LISTING": "Agregar a la lista",
+        "DELETE": "Eliminar"
+      },
+      "FOOTER": {
+        "SELECTED": "Seleccionado {count}"
+      },
+      "ACTIONS": {
+        "EDIT": "Editar",
+        "DELETE": "Eliminar"
+      },
+      "CONFIRM_DIALOG": {
+        "YES": "Sí",
+        "NO": "No"
+      }
+    }
+  }
 }

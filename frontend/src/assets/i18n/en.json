@@ -74,7 +74,6 @@
       "SAVE": "Save"
     }
   },
-
   "AUTH": {
     "WELCOME": "Welcome to Realtor!",
     "SIGN_IN_TO_CONTINUE": "Sign in to continue",
@@ -167,6 +166,38 @@
       }
     }
   },
-
-  "CATALOG": {}
+  "CATALOG": {
+    "TABLE": {
+      "HEADERS": {
+        "PHOTO": "Photo",
+        "TYPE": "Type",
+        "ZONING": "Zoning",
+        "ADDRESS": "Address",
+        "PRICE": "Price",
+        "AREA": "Area",
+        "DATE": "Date",
+        "STATUS": "Status"
+      },
+      "PAGINATOR": {
+        "CURRENT_PAGE_REPORT": "Showing {first} to {last} of {totalRecords} entries"
+      },
+      "BUTTONS": {
+        "ADD": "Add",
+        "FILTERS": "Filters",
+        "ADD_TO_LISTING": "Add to listing",
+        "DELETE": "Delete"
+      },
+      "FOOTER": {
+        "SELECTED": "Selected {count}"
+      },
+      "ACTIONS": {
+        "EDIT": "Edit",
+        "DELETE": "Delete"
+      },
+      "CONFIRM_DIALOG": {
+        "YES": "Yes",
+        "NO": "No"
+      }
+    }
+  }
 }

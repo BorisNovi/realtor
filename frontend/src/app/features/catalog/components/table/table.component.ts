@@ -16,14 +16,7 @@ import { Table, TableEditCompleteEvent, TableModule, TablePageEvent } from 'prim
 import { TagModule } from 'primeng/tag';
 import { ButtonGroupModule } from 'primeng/buttongroup';
 import { Store } from '@ngxs/store';
-import {
-  CatalogState,
-  DeletePropertyObjects,
-  FetchCatalog,
-  FetchPropertyObject,
-  SetCatalogPagination,
-  UpdateStatus,
-} from 'src/app/core';
+import { CatalogState, DeletePropertyObjects, FetchPropertyObject, UpdateStatus } from 'src/app/core';
 import { Menu, MenuModule } from 'primeng/menu';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { PropertyStatus } from '@shared/enums';
@@ -35,6 +28,7 @@ import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOption
 import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SelectModule } from 'primeng/select';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-table',
@@ -49,6 +43,7 @@ import { SelectModule } from 'primeng/select';
     ConfirmDialog,
     DynamicDialogModule,
     SelectModule,
+    TranslatePipe,
   ],
   providers: [DialogService],
   templateUrl: './table.component.html',
