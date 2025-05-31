@@ -72,7 +72,7 @@ export class FiltersComponent implements OnInit {
     this.form = this.#fb.group({
       dateAdded: this.#fb.group({
         from: [filters?.dateAdded?.from || null],
-        to: [filters?.dateAdded?.to || null],
+        to: [filters?.dateAdded?.to || new Date()],
       }),
       status: [filters?.status || null],
       propertyType: [filters?.propertyType || []],
@@ -91,6 +91,6 @@ export class FiltersComponent implements OnInit {
 
   // Сброс формы
   resetFilters(): void {
-    this.form.reset();
+    this.#initForm();
   }
 }

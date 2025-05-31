@@ -15,15 +15,28 @@
     [lazy]="true"
     [rowsPerPageOptions]="[10, 20, 50]"
     [showCurrentPageReport]="true"
-    [currentPageReportTemplate]="'CATALOG.TABLE.PAGINATOR.CURRENT_PAGE_REPORT' | translate: {first: '{first}', last: '{last}', totalRecords: '{totalRecords}'}"
+    [currentPageReportTemplate]="
+      'CATALOG.TABLE.PAGINATOR.CURRENT_PAGE_REPORT'
+        | translate: { first: '{first}', last: '{last}', totalRecords: '{totalRecords}' }
+    "
     (onPage)="pageChange($event)"
     [(selection)]="selectedItems"
     [tableStyle]="{ 'min-width': '40rem' }"
   >
     <ng-template #caption>
       <div class="flex justify-between gap-4">
-        <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" [outlined]="true" icon="pi pi-plus" (click)="openItemDialog()" />
-        <p-button [label]="'CATALOG.TABLE.BUTTONS.FILTERS' | translate" [outlined]="true" icon="pi pi-filter" (click)="onFiltersOpen()" />
+        <p-button
+          [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+          [outlined]="true"
+          icon="pi pi-plus"
+          (click)="openItemDialog()"
+        />
+        <p-button
+          [label]="'CATALOG.TABLE.BUTTONS.FILTERS' | translate"
+          [outlined]="true"
+          icon="pi pi-filter"
+          (click)="onFiltersOpen()"
+        />
       </div>
     </ng-template>
     <ng-template #header>
@@ -88,11 +101,25 @@
     @if (selectedItems.length) {
       <ng-template #footer>
         <tr>
-          <td colspan="8" class="text-right font-bold">{{ 'CATALOG.TABLE.FOOTER.SELECTED' | translate: { count: selectedItems.length } }}</td>
+          <td colspan="8" class="text-right font-bold">
+            {{ 'CATALOG.TABLE.FOOTER.SELECTED' | translate: { count: selectedItems.length } }}
+          </td>
           <td colspan="3">
             <p-buttongroup class="flex justify-end">
-              <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate" icon="pi pi-plus" class="text-nowrap" outlined (onClick)="(null)" />
-              <p-button severity="danger" [label]="'CATALOG.TABLE.BUTTONS.DELETE' | translate" icon="pi pi-trash" outlined (onClick)="(null)" />
+              <p-button
+                [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate"
+                icon="pi pi-plus"
+                class="text-nowrap"
+                outlined
+                (onClick)="(null)"
+              />
+              <p-button
+                severity="danger"
+                [label]="'CATALOG.TABLE.BUTTONS.DELETE' | translate"
+                icon="pi pi-trash"
+                outlined
+                (onClick)="(null)"
+              />
             </p-buttongroup>
           </td>
         </tr>
