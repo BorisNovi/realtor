@@ -1,12 +1,13 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { InputWrapperComponent } from '@shared/components';
+import { FieldsetCheckboxGroupComponent, InputWrapperComponent } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
+import { createItemsFieldsetConfig } from '@shared/constants/fieldset.configs';
 import { WorldPhoneMasksDirective } from '@shared/directives';
 import {
   Currency,
@@ -19,7 +20,6 @@ import {
 } from '@shared/enums';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
-import { Checkbox } from 'primeng/checkbox';
 import { DividerModule } from 'primeng/divider';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FileUpload, FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
@@ -46,13 +46,13 @@ import { CreatePropertyObject, FileUploadService } from 'src/app/core';
     TagModule,
     DividerModule,
     TextareaModule,
-    Checkbox,
     InputGroupModule,
     InputGroupAddonModule,
     WorldPhoneMasksDirective,
     MessageModule,
     InputWrapperComponent,
     TranslatePipe,
+    FieldsetCheckboxGroupComponent,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,7 +65,8 @@ import { CreatePropertyObject, FileUploadService } from 'src/app/core';
   ],
 })
 export class CreateCatalogItemComponent implements OnInit {
-  @ViewChild('fileUpload') fileUpload!: FileUpload;
+  readonly fileUpload = viewChild.required<FileUpload>('fileUpload');
+
   readonly #ref = inject(DynamicDialogRef);
   readonly #config = inject(DynamicDialogConfig);
   readonly #fb = inject(FormBuilder);
@@ -75,6 +76,7 @@ export class CreateCatalogItemComponent implements OnInit {
 
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
+  readonly fieldsetConfig = createItemsFieldsetConfig;
 
   form!: FormGroup;
 
@@ -134,32 +136,7 @@ export class CreateCatalogItemComponent implements OnInit {
         furnished: [data?.specifies?.furnished || null],
         renovation: [data?.specifies?.renovation || null],
 
-        sharedFacilities: this.#fb.group({
-          kitchen: [data?.specifies?.sharedFacilities?.kitchen || false],
-          bathroom: [data?.specifies?.sharedFacilities?.bathroom || false],
-        }),
-
-        utilities: this.#fb.group({
-          electricity: [data?.specifies?.utilities?.electricity || false],
-          waterSupply: [data?.specifies?.utilities?.waterSupply || false],
-          naturalGas: [data?.specifies?.utilities?.naturalGas || false],
-          sewerage: [data?.specifies?.utilities?.sewerage || false],
-          heating: [data?.specifies?.utilities?.heating || null],
-          internet: [data?.specifies?.utilities?.internet || false],
-        }),
-
-        // Other
-        parking: [data?.specifies?.parking || false],
-        bath: [data?.specifies?.bath || false],
-        shower: [data?.specifies?.shower || false],
-        airConditioning: [data?.specifies?.airConditioning || false],
-        fireplace: [data?.specifies?.fireplace || false],
-        beautifulView: [data?.specifies?.beautifulView || false],
-        newBuilding: [data?.specifies?.newBuilding || false],
-        elevator: [data?.specifies?.elevator || false],
-        balcony: [data?.specifies?.balcony || false],
-        garden: [data?.specifies?.garden || false],
-        garage: [data?.specifies?.garage || false],
+        options: [data?.specifies?.options || null],
       }),
     });
 
@@ -182,11 +159,11 @@ export class CreateCatalogItemComponent implements OnInit {
           next: (newUrls: string[]) => {
             this.photosS.update(currentUrls => [...currentUrls, ...newUrls]);
             this.form.patchValue({ photos: this.photosS() });
-            this.fileUpload.clear();
+            this.fileUpload().clear();
             this.uploadErrorS.set(null);
           },
           error: err => {
-            const errorMessage = err?.error?.message || 'File upload failed';
+            const errorMessage = err?.message || 'File upload failed';
             this.uploadErrorS.set(errorMessage);
             console.error('File upload failed:', err);
           },
@@ -201,6 +178,16 @@ export class CreateCatalogItemComponent implements OnInit {
       return updated;
     });
     this.form.patchValue({ photos: this.photosS() });
+  }
+
+  validPhone(valid: boolean): void {
+    const phoneControl = this.form?.get('contact.phone');
+    if (valid) {
+      phoneControl?.setErrors(null);
+    } else {
+      phoneControl?.setErrors({ invalidPhone: true });
+    }
+    console.log(this.form?.get('contact')?.get('phone')?.errors);
   }
 
   onSubmit(): void {

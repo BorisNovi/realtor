@@ -35,13 +35,13 @@
               <p-button (click)="choose(chooseCallback)" [rounded]="true" [text]="true">
                 <i class="pi pi-plus !p-8 !text-4xl !text-muted-color"></i>
               </p-button>
-              <p class="mt-6 mb-0">{{'FORM.PLACEHOLDERS.UPLOAD_PHOTOS' | translate }}</p>
+              <p class="mt-6 mb-0">{{ 'FORM.PLACEHOLDERS.UPLOAD_PHOTOS' | translate }}</p>
             </div>
           }
 
           @if (photos.length > 0) {
             <div class="mt-4">
-              <div class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.PLACEHOLDERS.PREVIEW' | translate }}</div>
+              <div class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.PREVIEW' | translate }}</div>
               <div class="flex flex-wrap gap-4">
                 @for (photo of photos; track photo; let i = $index) {
                   <div class="relative overflow-hidden aspect-[1/1] w-[10rem]">
@@ -65,7 +65,11 @@
     </div>
 
     <!-- Property Type (Select) -->
-    <app-input-wrapper [control]="form.get('propertyType')!" [label]="'FORM.LABELS.PROPERTY_TYPE' | translate" id="propertyType">
+    <app-input-wrapper
+      [control]="form.get('propertyType')!"
+      [label]="'FORM.LABELS.PROPERTY_TYPE' | translate"
+      id="propertyType"
+    >
       <p-select
         id="propertyType"
         formControlName="propertyType"
@@ -114,7 +118,14 @@
 
     <!-- Map Link -->
     <app-input-wrapper [control]="form.get('mapLink')!" [label]="'FORM.LABELS.MAP_LINK' | translate" id="mapLink">
-      <input id="mapLink" pInputText type="text" formControlName="mapLink" [placeholder]="'FORM.PLACEHOLDERS.MAP_LINK' | translate" class="w-full" />
+      <input
+        id="mapLink"
+        pInputText
+        type="text"
+        formControlName="mapLink"
+        [placeholder]="'FORM.PLACEHOLDERS.MAP_LINK' | translate"
+        class="w-full"
+      />
     </app-input-wrapper>
 
     <!-- Area -->
@@ -133,7 +144,14 @@
 
     <!-- Address -->
     <app-input-wrapper [control]="form.get('address')!" [label]="'FORM.LABELS.ADDRESS' | translate" id="address">
-      <input id="address" pInputText type="text" formControlName="address" [placeholder]="'FORM.PLACEHOLDERS.ADDRESS' | translate" class="w-full" />
+      <input
+        id="address"
+        pInputText
+        type="text"
+        formControlName="address"
+        [placeholder]="'FORM.PLACEHOLDERS.ADDRESS' | translate"
+        class="w-full"
+      />
     </app-input-wrapper>
 
     <!-- Price -->
@@ -159,10 +177,17 @@
       </app-input-wrapper>
 
       <!-- Price Currency -->
-      <app-input-wrapper [control]="form.get('price')?.get('currency')!" [label]="'FORM.LABELS.CURRENCY' | translate" id="currency">
+      <app-input-wrapper
+        [control]="form.get('price')?.get('currency')!"
+        [label]="'FORM.LABELS.CURRENCY' | translate"
+        id="currency"
+      >
         <p-select
           id="currency"
+          formControlName="currency"
           [options]="currencies"
+          [filter]="true"
+          filterBy="value"
           optionLabel="label"
           optionValue="value"
           [placeholder]="'FORM.PLACEHOLDERS.CURRENCY' | translate"
@@ -175,12 +200,27 @@
     <!-- Contact -->
     <ng-container formGroupName="contact">
       <!-- Name -->
-      <app-input-wrapper [control]="form.get('contact')?.get('name')!" [label]="'FORM.LABELS.CONTACT_NAME' | translate" id="contactName">
-        <input id="contactName" pInputText type="text" formControlName="name" [placeholder]="'FORM.PLACEHOLDERS.CONTACT_NAME' | translate" class="w-full" />
+      <app-input-wrapper
+        [control]="form.get('contact')?.get('name')!"
+        [label]="'FORM.LABELS.CONTACT_NAME' | translate"
+        id="contactName"
+      >
+        <input
+          id="contactName"
+          pInputText
+          type="text"
+          formControlName="name"
+          [placeholder]="'FORM.PLACEHOLDERS.CONTACT_NAME' | translate"
+          class="w-full"
+        />
       </app-input-wrapper>
 
       <!-- Phone -->
-      <app-input-wrapper [control]="form.get('contact')?.get('phone')!" [label]="'FORM.LABELS.CONTACT_PHONE' | translate" id="contactPhone">
+      <app-input-wrapper
+        [control]="form.get('contact')?.get('phone')!"
+        [label]="'FORM.LABELS.CONTACT_PHONE' | translate"
+        id="contactPhone"
+      >
         <p-inputgroup>
           <p-inputgroup-addon>
             <i class="pi pi-phone"></i>
@@ -192,6 +232,7 @@
             formControlName="phone"
             [placeholder]="'FORM.PLACEHOLDERS.CONTACT_PHONE' | translate"
             appWorldPhoneMasks
+            (valid)="validPhone($event)"
           />
         </p-inputgroup>
       </app-input-wrapper>
@@ -209,7 +250,9 @@
 
     @if (isCommentVisible) {
       <div class="md:col-span-2" [@fadeSlide]>
-        <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.COMMENT' | translate }}</label>
+        <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">{{
+          'FORM.LABELS.COMMENT' | translate
+        }}</label>
         <textarea id="comment" formControlName="comment" [fluid]="true" rows="5" pTextarea [autoResize]="true"></textarea>
       </div>
     }
@@ -232,7 +275,9 @@
           <ng-container formGroupName="floor">
             <!-- Floor Current -->
             <div>
-              <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.CURRENT_FLOOR' | translate }}</label>
+              <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">{{
+                'FORM.LABELS.CURRENT_FLOOR' | translate
+              }}</label>
               <input
                 id="currentFloor"
                 pInputText
@@ -245,7 +290,9 @@
 
             <!-- Floor Full -->
             <div>
-              <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.TOTAL_FLOORS' | translate }}</label>
+              <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">{{
+                'FORM.LABELS.TOTAL_FLOORS' | translate
+              }}</label>
               <input
                 id="totalFloors"
                 pInputText
@@ -259,7 +306,9 @@
 
           <!-- Rooms -->
           <div>
-            <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.ROOMS' | translate }}</label>
+            <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'FORM.LABELS.ROOMS' | translate
+            }}</label>
             <input
               id="rooms"
               pInputText
@@ -272,7 +321,9 @@
 
           <!-- Furnished -->
           <div>
-            <label for="furnished" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.FURNISHED' | translate }}</label>
+            <label for="furnished" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'FORM.LABELS.FURNISHED' | translate
+            }}</label>
             <p-select
               id="furnished"
               [options]="furnishedStatuses"
@@ -286,7 +337,9 @@
 
           <!-- Renovation -->
           <div>
-            <label for="renovation" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.RENOVATION' | translate }}</label>
+            <label for="renovation" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'FORM.LABELS.RENOVATION' | translate
+            }}</label>
             <p-select
               id="renovation"
               [options]="renovationStatuses"
@@ -300,7 +353,9 @@
 
           <!-- Kitchen -->
           <div>
-            <label for="kitchen" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.KITCHEN' | translate }}</label>
+            <label for="kitchen" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'FORM.LABELS.KITCHEN' | translate
+            }}</label>
             <p-select
               id="kitchen"
               [options]="kitchenTypes"
@@ -313,82 +368,7 @@
           </div>
         </div>
 
-        <fieldset>
-          <legend class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.SHARED_FACILITIES' | translate }}</legend>
-          <div formGroupName="sharedFacilities" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <div class="flex items-center">
-              <p-checkbox inputId="kitchen" formControlName="kitchen" [binary]="true" />
-              <label for="kitchen" class="ml-2">{{ 'FORM.LABELS.SHARED_KITCHEN' | translate }}</label>
-            </div>
-
-            <div class="flex items-center">
-              <p-checkbox inputId="bathroom" formControlName="bathroom" [binary]="true" />
-              <label for="bathroom" class="ml-2">{{ 'FORM.LABELS.SHARED_BATHROOM' | translate }}</label>
-            </div>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.UTILITIES' | translate }}</legend>
-          <div formGroupName="utilities" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
-            <div class="flex items-center">
-              <p-checkbox inputId="electricity" formControlName="electricity" [binary]="true" />
-              <label for="electricity" class="ml-2">{{ 'FORM.LABELS.ELECTRICITY' | translate }}</label>
-            </div>
-
-            <div class="flex items-center">
-              <p-checkbox inputId="waterSupply" formControlName="waterSupply" [binary]="true" />
-              <label for="waterSupply" class="ml-2">{{ 'FORM.LABELS.WATER_SUPPLY' | translate }}</label>
-            </div>
-
-            <div class="flex items-center">
-              <p-checkbox inputId="naturalGas" formControlName="naturalGas" [binary]="true" />
-              <label for="naturalGas" class="ml-2">{{ 'FORM.LABELS.NATURAL_GAS' | translate }}</label>
-            </div>
-
-            <div class="flex items-center">
-              <p-checkbox inputId="sewerage" formControlName="sewerage" [binary]="true" />
-              <label for="sewerage" class="ml-2">{{ 'FORM.LABELS.SEWERAGE' | translate }}</label>
-            </div>
-
-            <div class="flex items-center">
-              <p-checkbox inputId="heating" formControlName="heating" [binary]="true" />
-              <label for="heating" class="ml-2">{{ 'FORM.LABELS.HEATING' | translate }}</label>
-            </div>
-
-            <div class="flex items-center">
-              <p-checkbox inputId="internet" formControlName="internet" [binary]="true" />
-              <label for="internet" class="ml-2">{{ 'FORM.LABELS.INTERNET' | translate }}</label>
-            </div>
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.OTHER' | translate }}</legend>
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
-            @for (
-              item of [
-                { id: 'parking', label: 'FORM.LABELS.PARKING' },
-                { id: 'bath', label: 'FORM.LABELS.BATH' },
-                { id: 'shower', label: 'FORM.LABELS.SHOWER' },
-                { id: 'airConditioning', label: 'FORM.LABELS.AIR_CONDITIONING' },
-                { id: 'fireplace', label: 'FORM.LABELS.FIREPLACE' },
-                { id: 'beautifulView', label: 'FORM.LABELS.BEAUTIFUL_VIEW' },
-                { id: 'newBuilding', label: 'FORM.LABELS.NEW_BUILDING' },
-                { id: 'elevator', label: 'FORM.LABELS.ELEVATOR' },
-                { id: 'balcony', label: 'FORM.LABELS.BALCONY' },
-                { id: 'garden', label: 'FORM.LABELS.GARDEN' },
-                { id: 'garage', label: 'FORM.LABELS.GARAGE' },
-              ];
-              track item.id
-            ) {
-              <div class="flex items-center">
-                <p-checkbox [inputId]="item.id" [formControlName]="item.id" [binary]="true" />
-                <label [for]="item.id" class="ml-2">{{ item.label | translate }}</label>
-              </div>
-            }
-          </div>
-        </fieldset>
+        <app-fieldset-checkbox-group [fieldsetConfig]="fieldsetConfig" formControlName="options"></app-fieldset-checkbox-group>
       </div>
     }
 

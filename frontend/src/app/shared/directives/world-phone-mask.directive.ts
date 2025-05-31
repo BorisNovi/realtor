@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, HostListener, Output, forwardRef, inject, output } from '@angular/core';
+import { Directive, ElementRef, forwardRef, HostListener, inject, output } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 interface CountryConfig {
@@ -23,10 +23,11 @@ export class WorldPhoneMasksDirective implements ControlValueAccessor {
   onInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     const value = input.value;
-    const formattedValue = this.#addPhoneMask(value);
+    const { formattedValue, isValid } = this.#addPhoneMask(value);
 
     input.value = formattedValue;
     this.#onChange(formattedValue);
+    this.valid.emit(isValid);
   }
 
   @HostListener('blur')
@@ -35,6 +36,7 @@ export class WorldPhoneMasksDirective implements ControlValueAccessor {
   }
 
   readonly countryIsoCode = output<string>();
+  readonly valid = output<boolean>();
 
   #elementRef = inject(ElementRef);
 
@@ -63,12 +65,16 @@ export class WorldPhoneMasksDirective implements ControlValueAccessor {
   };
   #countryCodes: string[] = Object.keys(this.#countryConfigs);
 
-  #addPhoneMask(phone: string): string {
+  #addPhoneMask(phone: string): { formattedValue: string; isValid: boolean } {
     const original = phone;
     const digits = this.#cleanInput(phone);
     const { countryCode, number } = this.#determineCountryCode(original, digits);
     const limitedNumber = this.#limitNumberLength(number, countryCode);
-    return this.#formatNumber(countryCode, limitedNumber);
+    const formattedValue = this.#formatNumber(countryCode, limitedNumber);
+
+    const isValid = countryCode ? limitedNumber.length === this.#countryConfigs[countryCode].maxLength : false;
+
+    return { formattedValue, isValid };
   }
 
   #cleanInput(phone: string): string {
@@ -163,6 +169,7 @@ export class WorldPhoneMasksDirective implements ControlValueAccessor {
   writeValue(value: string): void {
     const formattedValue = value ? this.#addPhoneMask(value) : '+';
     this.#elementRef.nativeElement.value = formattedValue;
+    this.valid.emit(value ? this.#addPhoneMask(value).isValid : false);
   }
 
   registerOnChange(fn: (value: string) => void): void {
