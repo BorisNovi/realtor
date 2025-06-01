@@ -4,12 +4,12 @@ import { PrivateLayoutService } from '../../shared';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { StyleClassModule } from 'primeng/styleclass';
-import { TooltipModule } from 'primeng/tooltip';
 import { LanguageSelectService } from 'src/app/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-topbar',
-  imports: [RouterModule, CommonModule, StyleClassModule, TooltipModule],
+  imports: [RouterModule, CommonModule, StyleClassModule, TranslatePipe],
   templateUrl: './topbar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

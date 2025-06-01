@@ -2,7 +2,7 @@
   <form [formGroup]="form" class="grid grid-cols-1 gap-4">
     <!-- Date Added -->
     <p-divider align="left" type="solid">
-      <b>Date</b>
+      <b>{{ 'CATALOG.FILTERS.DATE' | translate }}</b>
     </p-divider>
     <ng-container formGroupName="dateAdded">
       <div>
@@ -37,7 +37,7 @@
 
     <!-- Property -->
     <p-divider align="left" type="solid">
-      <b>Property</b>
+      <b>{{ 'CATALOG.FILTERS.PROPERTIES' | translate }}</b>
     </p-divider>
 
     <!-- Status (Select with Severity) -->
@@ -100,7 +100,7 @@
 
     <!-- Area -->
     <p-divider align="left" type="solid">
-      <b>Area</b>
+      <b>{{ 'CATALOG.FILTERS.AREA' | translate }}</b>
     </p-divider>
     <ng-container formGroupName="area">
       <div>
@@ -139,7 +139,7 @@
 
     <!-- Price -->
     <p-divider align="left" type="solid">
-      <b>Price</b>
+      <b>{{ 'CATALOG.FILTERS.PRICE' | translate }}</b>
     </p-divider>
     <ng-container formGroupName="price">
       <div>

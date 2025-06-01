@@ -1,20 +1,21 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { PropertyType, ZoningType, PropertyStatus, Currency } from '@shared/enums';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, output } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Store } from '@ngxs/store';
+import { CURRENCY_SYMBOLS } from '@shared/constants';
+import { Currency, PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
 import { ICatalogFilters } from '@shared/interfaces';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
-import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
+import { DatePickerModule } from 'primeng/datepicker';
 import { DividerModule } from 'primeng/divider';
-import { SelectModule } from 'primeng/select';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { TagModule } from 'primeng/tag';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { CURRENCY_SYMBOLS } from '@shared/constants';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { SelectModule } from 'primeng/select';
+import { TagModule } from 'primeng/tag';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { Store } from '@ngxs/store';
 import { CatalogState } from 'src/app/core';
 
 @Component({
@@ -29,6 +30,7 @@ import { CatalogState } from 'src/app/core';
     MultiSelectModule,
     TagModule,
     InputNumberModule,
+    TranslatePipe,
   ],
   templateUrl: './filters.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

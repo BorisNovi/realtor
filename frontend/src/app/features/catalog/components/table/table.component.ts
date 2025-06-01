@@ -28,7 +28,7 @@ import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOption
 import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SelectModule } from 'primeng/select';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-table',
@@ -60,6 +60,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   readonly #dialogService = inject(DialogService);
   readonly #store = inject(Store);
   readonly #confirmationService = inject(ConfirmationService);
+  readonly #translateService = inject(TranslateService);
   readonly #destroyRef = inject(DestroyRef);
 
   readonly getSeverity = getPropertyStatusSeverity;
@@ -96,14 +97,14 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   setActionItems(event: Event, item: ICatalogItem): void {
     this.actionItems = [
       {
-        label: 'Add to listing',
+        label: this.#translateService.instant('CATALOG.TABLE.BUTTONS.ADD_TO_LISTING'),
         icon: 'pi pi-list-check',
         command: () => {
           console.debug(`Add to listing item with id: ${item.id}`);
         },
       },
       {
-        label: 'Edit',
+        label: this.#translateService.instant('CATALOG.TABLE.ACTIONS.EDIT'),
         icon: 'pi pi-pencil',
         command: () => {
           this.openItemDialog(item.id);
@@ -113,7 +114,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
         separator: true,
       },
       {
-        label: 'Delete',
+        label: this.#translateService.instant('CATALOG.TABLE.ACTIONS.DELETE'),
         icon: 'pi pi-trash',
         command: () => {
           this.confirmDeletion(event, item);
@@ -160,7 +161,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   openDialog(data?: IPropertyObject): void {
     this.#ref = this.#dialogService.open(CreateCatalogItemComponent, {
       data: data,
-      header: data?.id ? 'Edit Item' : 'Add New Item',
+      header: this.#translateService.instant(data?.id ? 'CATALOG.TABLE.DIALOG.EDIT' : 'CATALOG.TABLE.DIALOG.ADD'),
       width: '50vw',
       modal: true,
       closable: true,
@@ -181,17 +182,16 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   confirmDeletion(event: Event, item: ICatalogItem): void {
     this.#confirmationService.confirm({
       target: event.target as EventTarget,
-      message: "Attention! You won't restore it!",
-      header: 'Delete item?',
+      message: this.#translateService.instant('CATALOG.TABLE.DIALOG.DELETE_HINT'),
+      header: this.#translateService.instant('CATALOG.TABLE.DIALOG.DELETE_REQUEST'),
       icon: 'pi pi-info-circle',
-      rejectLabel: 'Cancel',
       rejectButtonProps: {
-        label: 'Cancel',
+        label: this.#translateService.instant('CATALOG.TABLE.DIALOG.CANCEL'),
         severity: 'secondary',
         outlined: true,
       },
       acceptButtonProps: {
-        label: 'Delete',
+        label: this.#translateService.instant('CATALOG.TABLE.ACTIONS.DELETE'),
         severity: 'danger',
       },
 

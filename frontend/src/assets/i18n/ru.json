@@ -1,4 +1,7 @@
 {
+  "TOPBAR": {
+    "LANGUAGE": "Русский"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Фото",
@@ -184,20 +187,34 @@
       "BUTTONS": {
         "ADD": "Добавить",
         "FILTERS": "Фильтры",
-        "ADD_TO_LISTING": "Добавить в список",
+        "ADD_TO_LISTING": "Добавить в подборку",
         "DELETE": "Удалить"
       },
       "FOOTER": {
-        "SELECTED": "Выбрано {count}"
+        "SELECTED": "Выбрано {{count}}"
       },
       "ACTIONS": {
         "EDIT": "Редактировать",
         "DELETE": "Удалить"
       },
+      "DIALOG": {
+        "ADD": "Добавить новый объект",
+        "EDIT": "Редактировать объект",
+        "CANCEL": "Отмена",
+        "DELETE_REQUEST": "Удалить объект?",
+        "DELETE_HINT": "Внимание! Вы не сможете его восстановить!"
+      },
       "CONFIRM_DIALOG": {
         "YES": "Да",
         "NO": "Нет"
       }
+    },
+    "FILTERS": {
+      "LABEL": "Фильтры",
+      "DATE": "Дата",
+      "PROPERTIES": "Объекты",
+      "AREA": "Площадь",
+      "PRICE": "Цена"
     }
   }
 }

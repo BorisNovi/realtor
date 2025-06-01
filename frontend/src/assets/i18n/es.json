@@ -1,4 +1,7 @@
 {
+  "TOPBAR": {
+    "LANGUAGE": "Español"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Fotos",
@@ -188,16 +191,30 @@
         "DELETE": "Eliminar"
       },
       "FOOTER": {
-        "SELECTED": "Seleccionado {count}"
+        "SELECTED": "Seleccionado {{count}}"
       },
       "ACTIONS": {
         "EDIT": "Editar",
         "DELETE": "Eliminar"
       },
+      "DIALOG": {
+        "ADD": "Añadir nuevo objeto",
+        "EDIT": "Editar objeto",
+        "CANCEL": "Cancelar",
+        "DELETE_REQUEST": "¿Eliminar un objeto?",
+        "DELETE_HINT": "¡Atención! ¡No podrás restaurarlo!"
+      },
       "CONFIRM_DIALOG": {
         "YES": "Sí",
         "NO": "No"
       }
+    },
+    "FILTERS": {
+      "LABEL": "Filtros",
+      "DATE": "Fecha",
+      "PROPERTIES": "Propiedades",
+      "AREA": "Superficie",
+      "PRICE": "Precio"
     }
   }
 }
