@@ -66,6 +66,15 @@
       "RENOVATION": "Select renovation",
       "KITCHEN": "Select kitchen type"
     },
+    "PROPERTIES": {
+      "PROPERTY_TYPES": {
+        "flat": "Flat",
+        "house": "House",
+        "room": "Room",
+        "office": "Office",
+        "land": "Land"
+      }
+    },
     "ERRORS": {
       "REQUIRED": "{{label}} is required",
       "MIN": "{{label}} must be at least {{min}}",
@@ -211,10 +220,24 @@
     },
     "FILTERS": {
       "LABEL": "Filters",
-      "DATE": "Date",
+      "RESET": "Reset",
+      "DATE": {
+        "LABEL": "Date",
+        "FROM": "Date from",
+        "TO": "Date to",
+        "PLACEHOLDER": "not selected"
+      },
       "PROPERTIES": "Properties",
-      "AREA": "Area",
-      "PRICE": "Price"
+      "AREA": {
+        "LABEL": "Area",
+        "MIN": "Area min",
+        "MAX": "Area max"
+      },
+      "PRICE": {
+        "LABEL": "Price",
+        "MIN": "Price min",
+        "MAX": "Price max"
+      }
     }
   }
 }

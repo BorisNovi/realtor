@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { FieldsetCheckboxGroupComponent, InputWrapperComponent } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
@@ -73,6 +73,7 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly #store = inject(Store);
   readonly #destroyRef = inject(DestroyRef);
   readonly #fileUploadService = inject(FileUploadService);
+  readonly #translateService = inject(TranslateService);
 
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
@@ -83,13 +84,15 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly photosS = signal<string[]>([]);
   readonly uploadErrorS = signal<string | null>(null);
 
-  propertyTypes = mapEnumToOptions(PropertyType);
-  statuses = mapEnumToOptions(PropertyStatus);
-  zoningTypes = mapEnumToOptions(ZoningType);
-  furnishedStatuses = mapEnumToOptions(FurnishedStatus);
-  renovationStatuses = mapEnumToOptions(RenovationStatus);
-  kitchenTypes = mapEnumToOptions(KitchenType);
-  currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
+  readonly propertyTypes = mapEnumToOptions(PropertyType, value =>
+    this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_TYPES.${value}`),
+  );
+  readonly statuses = mapEnumToOptions(PropertyStatus);
+  readonly zoningTypes = mapEnumToOptions(ZoningType);
+  readonly furnishedStatuses = mapEnumToOptions(FurnishedStatus);
+  readonly renovationStatuses = mapEnumToOptions(RenovationStatus);
+  readonly kitchenTypes = mapEnumToOptions(KitchenType);
+  readonly currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
 
   getCurrencySymbol(key: string): string {
     return CURRENCY_SYMBOLS[key as Currency];
@@ -182,12 +185,7 @@ export class CreateCatalogItemComponent implements OnInit {
 
   validPhone(valid: boolean): void {
     const phoneControl = this.form?.get('contact.phone');
-    if (valid) {
-      phoneControl?.setErrors(null);
-    } else {
-      phoneControl?.setErrors({ invalidPhone: true });
-    }
-    console.log(this.form?.get('contact')?.get('phone')?.errors);
+    phoneControl?.setErrors(valid ? null : { invalidPhone: true });
   }
 
   onSubmit(): void {

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency, PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
@@ -15,7 +15,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, pipe, startWith, take } from 'rxjs';
 import { CatalogState } from 'src/app/core';
 
 @Component({
@@ -41,14 +41,16 @@ export class FiltersComponent implements OnInit {
   readonly #fb = inject(FormBuilder);
   readonly #destroyRef = inject(DestroyRef);
   readonly #store = inject(Store);
+  readonly #translateService = inject(TranslateService);
 
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
 
   form!: FormGroup;
-  propertyTypes = mapEnumToOptions(PropertyType);
-  statuses = mapEnumToOptions(PropertyStatus);
-  zoningTypes = mapEnumToOptions(ZoningType);
+
+  propertyTypes: { label: string; value: string }[] = [];
+  readonly statuses = mapEnumToOptions(PropertyStatus);
+  readonly zoningTypes = mapEnumToOptions(ZoningType);
 
   currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
   getCurrencySymbol(key: string): string {
@@ -59,6 +61,8 @@ export class FiltersComponent implements OnInit {
     const storedFilters = this.#store.selectSnapshot(CatalogState.filters);
 
     this.#initForm(storedFilters);
+    this.#initPropsTranlstes();
+
     this.form.valueChanges
       .pipe(
         debounceTime(300),
@@ -88,6 +92,14 @@ export class FiltersComponent implements OnInit {
         min: [filters?.price?.min || null],
         max: [filters?.price?.max || null],
       }),
+    });
+  }
+
+  #initPropsTranlstes(): void {
+    this.#translateService.onLangChange.pipe(startWith(null), takeUntilDestroyed(this.#destroyRef)).subscribe(() => {
+      this.propertyTypes = mapEnumToOptions(PropertyType, value =>
+        this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_TYPES.${value}`),
+      );
     });
   }
 

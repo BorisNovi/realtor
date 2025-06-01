@@ -6,10 +6,11 @@ import { RouterModule } from '@angular/router';
 import { StyleClassModule } from 'primeng/styleclass';
 import { LanguageSelectService } from 'src/app/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IconDirective } from '@shared/directives';
 
 @Component({
   selector: 'app-topbar',
-  imports: [RouterModule, CommonModule, StyleClassModule, TranslatePipe],
+  imports: [RouterModule, CommonModule, StyleClassModule, TranslatePipe, IconDirective],
   templateUrl: './topbar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
