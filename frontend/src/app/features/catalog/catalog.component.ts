@@ -6,10 +6,11 @@ import { DrawerModule } from 'primeng/drawer';
 import { FetchCatalog, QueryParamsService, SetCatalogFilters, SetCatalogPagination } from 'src/app/core';
 import { FiltersComponent } from './components/filters/filters.component';
 import { TableComponent } from './components/table/table.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-catalog',
-  imports: [TableComponent, FiltersComponent, DrawerModule],
+  imports: [TableComponent, FiltersComponent, DrawerModule, TranslatePipe],
   templateUrl: './catalog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

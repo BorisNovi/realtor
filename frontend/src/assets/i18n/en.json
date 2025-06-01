@@ -1,4 +1,7 @@
 {
+  "TOPBAR": {
+    "LANGUAGE": "English"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Photos",
@@ -188,16 +191,30 @@
         "DELETE": "Delete"
       },
       "FOOTER": {
-        "SELECTED": "Selected {count}"
+        "SELECTED": "Selected {{count}}"
       },
       "ACTIONS": {
         "EDIT": "Edit",
         "DELETE": "Delete"
       },
+      "DIALOG": {
+        "ADD": "Add new item",
+        "EDIT": "Edit item",
+        "CANCEL": "Cancel",
+        "DELETE_REQUEST": "Delete item?",
+        "DELETE_HINT": "Attention! You won't restore it!"
+      },
       "CONFIRM_DIALOG": {
         "YES": "Yes",
         "NO": "No"
       }
+    },
+    "FILTERS": {
+      "LABEL": "Filters",
+      "DATE": "Date",
+      "PROPERTIES": "Properties",
+      "AREA": "Area",
+      "PRICE": "Price"
     }
   }
 }

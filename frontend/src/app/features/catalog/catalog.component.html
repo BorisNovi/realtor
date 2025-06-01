@@ -1,4 +1,4 @@
-<p-drawer header="Filters" [(visible)]="isFiltersOpen" position="right">
+<p-drawer [header]="'CATALOG.FILTERS.LABEL' | translate" [(visible)]="isFiltersOpen" position="right">
   <app-filters (filtersChange)="onFiltersChange($event)"></app-filters>
 </p-drawer>
 <app-table (filtersOpen)="isFiltersOpen = true" (paginationChange)="onPaginationChange($event)"></app-table>
