@@ -2,32 +2,36 @@
   <form [formGroup]="form" class="grid grid-cols-1 gap-4">
     <!-- Date Added -->
     <p-divider align="left" type="solid">
-      <b>{{ 'CATALOG.FILTERS.DATE' | translate }}</b>
+      <b>{{ 'CATALOG.FILTERS.DATE.LABEL' | translate }}</b>
     </p-divider>
     <ng-container formGroupName="dateAdded">
       <div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Date From -->
           <div>
-            <label for="dateFrom" class="block text-sm font-medium text-gray-700 mb-1">Date from</label>
+            <label for="dateFrom" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'CATALOG.FILTERS.DATE.FROM' | translate
+            }}</label>
             <p-datepicker
               id="dateFrom"
               formControlName="from"
               [readonlyInput]="true"
               dateFormat="dd mm yy"
-              placeholder="not selected"
+              [placeholder]="'CATALOG.FILTERS.DATE.PLACEHOLDER' | translate"
               class="w-full"
             />
           </div>
           <!-- Date To -->
           <div>
-            <label for="dateTo" class="block text-sm font-medium text-gray-700 mb-1">Date to</label>
+            <label for="dateTo" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'CATALOG.FILTERS.DATE.TO' | translate
+            }}</label>
             <p-datepicker
               id="dateTo"
               formControlName="to"
               [readonlyInput]="true"
               dateFormat="dd mm yy"
-              placeholder="not selected"
+              [placeholder]="'CATALOG.FILTERS.DATE.PLACEHOLDER' | translate"
               class="w-full"
             />
           </div>
@@ -42,14 +46,14 @@
 
     <!-- Status (Select with Severity) -->
     <div>
-      <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+      <label for="status" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.STATUS' | translate }}</label>
       <p-select
         id="status"
         formControlName="status"
         [options]="statuses"
         optionLabel="label"
         optionValue="value"
-        placeholder="Select Status"
+        [placeholder]="'FORM.PLACEHOLDERS.STATUS' | translate"
         [showClear]="true"
         class="w-full"
         [ngStyle]="{
@@ -66,7 +70,9 @@
 
     <!-- Property Type (MultiSelect) -->
     <div>
-      <label for="propertyType" class="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
+      <label for="propertyType" class="block text-sm font-medium text-gray-700 mb-1">{{
+        'FORM.LABELS.PROPERTY_TYPE' | translate
+      }}</label>
       <p-multiselect
         id="propertyType"
         formControlName="propertyType"
@@ -76,14 +82,16 @@
         [showToggleAll]="false"
         optionLabel="label"
         optionValue="value"
-        placeholder="Select Property Type"
+        [placeholder]="'FORM.PLACEHOLDERS.PROPERTY_TYPE' | translate"
         class="w-full"
       />
     </div>
 
     <!-- Zoning Type (MultiSelect) -->
     <div>
-      <label for="zoningType" class="block text-sm font-medium text-gray-700 mb-1">Zoning</label>
+      <label for="zoningType" class="block text-sm font-medium text-gray-700 mb-1">{{
+        'FORM.LABELS.ZONING' | translate
+      }}</label>
       <p-multiselect
         id="zoningType"
         formControlName="zoningType"
@@ -93,21 +101,23 @@
         [showToggleAll]="false"
         optionLabel="label"
         optionValue="value"
-        placeholder="Select Zoning Type"
+        [placeholder]="'FORM.PLACEHOLDERS.ZONING' | translate"
         class="w-full"
       />
     </div>
 
     <!-- Area -->
     <p-divider align="left" type="solid">
-      <b>{{ 'CATALOG.FILTERS.AREA' | translate }}</b>
+      <b>{{ 'CATALOG.FILTERS.AREA.LABEL' | translate }}</b>
     </p-divider>
     <ng-container formGroupName="area">
       <div>
         <div class="grid grid-cols-1 gap-4">
           <!-- Area Min -->
           <div>
-            <label for="areaMin" class="block text-sm font-medium text-gray-700 mb-1">Area min</label>
+            <label for="areaMin" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'CATALOG.FILTERS.AREA.MIN' | translate
+            }}</label>
             <p-inputnumber
               id="areaMin"
               suffix=" m²"
@@ -115,13 +125,15 @@
               [step]="10"
               [min]="0"
               formControlName="min"
-              placeholder="Area min"
+              [placeholder]="'CATALOG.FILTERS.AREA.MIN' | translate"
               class="w-full"
             />
           </div>
           <!-- Area Max -->
           <div>
-            <label for="areaMax" class="block text-sm font-medium text-gray-700 mb-1">Area max</label>
+            <label for="areaMax" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'CATALOG.FILTERS.AREA.MAX' | translate
+            }}</label>
             <p-inputnumber
               id="areaMax"
               suffix=" m²"
@@ -129,7 +141,7 @@
               [step]="10"
               [min]="0"
               formControlName="max"
-              placeholder="Area max"
+              [placeholder]="'CATALOG.FILTERS.AREA.MAX' | translate"
               class="w-full"
             />
           </div>
@@ -139,27 +151,33 @@
 
     <!-- Price -->
     <p-divider align="left" type="solid">
-      <b>{{ 'CATALOG.FILTERS.PRICE' | translate }}</b>
+      <b>{{ 'CATALOG.FILTERS.PRICE.LABEL' | translate }}</b>
     </p-divider>
     <ng-container formGroupName="price">
       <div>
         <div class="grid grid-cols-1 gap-4">
           <!-- Currency -->
           <div>
-            <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+            <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'FORM.LABELS.CURRENCY' | translate
+            }}</label>
             <p-select
               id="currency"
               [options]="currencies"
+              [filter]="true"
+              filterBy="value"
               optionLabel="label"
               optionValue="value"
               formControlName="currency"
-              placeholder="e.g., USD"
+              [placeholder]="'FORM.PLACEHOLDERS.CURRENCY' | translate"
               class="w-full"
             />
           </div>
           <!-- Price Min -->
           <div>
-            <label for="priceMin" class="block text-sm font-medium text-gray-700 mb-1">Price min</label>
+            <label for="priceMin" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'CATALOG.FILTERS.PRICE.MIN' | translate
+            }}</label>
             <p-inputnumber
               id="priceMin"
               [suffix]="' ' + (getCurrencySymbol(form.controls['price'].value.currency) || '')"
@@ -167,13 +185,15 @@
               [step]="10"
               [min]="0"
               formControlName="min"
-              placeholder="Price min"
+              [placeholder]="'CATALOG.FILTERS.PRICE.MIN' | translate"
               class="w-full"
             />
           </div>
           <!-- Price Max -->
           <div>
-            <label for="priceMax" class="block text-sm font-medium text-gray-700 mb-1">Price max</label>
+            <label for="priceMax" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'CATALOG.FILTERS.PRICE.MAX' | translate
+            }}</label>
             <p-inputnumber
               id="priceMax"
               [suffix]="' ' + (getCurrencySymbol(form.controls['price'].value.currency) || '')"
@@ -181,7 +201,7 @@
               [step]="10"
               [min]="0"
               formControlName="max"
-              placeholder="Price max"
+              [placeholder]="'CATALOG.FILTERS.PRICE.MAX' | translate"
               class="w-full"
             />
           </div>
@@ -191,7 +211,13 @@
 
     <!-- Buttons -->
     <div class="mt-8 sticky bottom-0 z-10">
-      <p-button label="Reset" type="button" (onClick)="resetFilters()" [fluid]="true" [disabled]="form.untouched" />
+      <p-button
+        [label]="'CATALOG.FILTERS.RESET' | translate"
+        type="button"
+        (onClick)="resetFilters()"
+        [fluid]="true"
+        [disabled]="form.untouched"
+      />
     </div>
   </form>
 </div>

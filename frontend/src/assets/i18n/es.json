@@ -66,6 +66,15 @@
       "RENOVATION": "Seleccionar renovación",
       "KITCHEN": "Seleccionar tipo de cocina"
     },
+    "PROPERTIES": {
+      "PROPERTY_TYPES": {
+        "flat": "Piso",
+        "house": "Casa",
+        "room": "Habitación",
+        "office": "Oficina",
+        "land": "Terreno"
+      }
+    },
     "ERRORS": {
       "REQUIRED": "{{label}} es obligatorio",
       "MIN": "{{label}} debe ser al menos {{min}}",
@@ -211,10 +220,24 @@
     },
     "FILTERS": {
       "LABEL": "Filtros",
-      "DATE": "Fecha",
+      "RESET": "Restablecer",
+      "DATE": {
+        "LABEL": "Fecha",
+        "FROM": "Desde la fecha",
+        "TO": "Hasta la fecha",
+        "PLACEHOLDER": "no seleccionado"
+      },
       "PROPERTIES": "Propiedades",
-      "AREA": "Superficie",
-      "PRICE": "Precio"
+      "AREA": {
+        "LABEL": "Área",
+        "MIN": "Área mínima",
+        "MAX": "Área máxima"
+      },
+      "PRICE": {
+        "LABEL": "Precio",
+        "MIN": "Precio mínimo",
+        "MAX": "Precio máximo"
+      }
     }
   }
 }

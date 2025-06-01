@@ -51,8 +51,8 @@
           <span>Theme</span>
         </button>
 
-        <button tooltipPosition="left" class="layout-topbar-action" (click)="toggleLanguage()">
-          <i class="pi pi-globe"></i>
+        <button class="layout-topbar-action" (click)="toggleLanguage()">
+          <i [appIcon]="currentLanguage().value" class="w-4"></i>
           <span>{{ 'TOPBAR.LANGUAGE' | translate }}</span>
         </button>
       </div>
