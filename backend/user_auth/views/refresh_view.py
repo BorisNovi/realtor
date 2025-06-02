@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny  # Для отключения �
 class RefreshTokenView(APIView):
     authentication_classes = []  # Отключаем JWTAuthentication
     permission_classes = [AllowAny]  # Разрешаем доступ без аутентификации
-    def put(self, request):
+    def post(self, request):
         user_id = request.data.get('userId')
         auth_header = request.headers.get('Authorization')
 
