@@ -62,17 +62,50 @@
       "CURRENT_FLOOR": "Введите текущий этаж",
       "TOTAL_FLOORS": "Введите общее количество этажей",
       "ROOMS": "Введите количество комнат",
+      "HEATING": "Выберите тип отопления",
       "FURNISHED": "Выберите меблировку",
       "RENOVATION": "Выберите тип ремонта",
       "KITCHEN": "Выберите тип кухни"
     },
     "PROPERTIES": {
-      "PROPERTY_TYPES": {
+      "PROPERTY_TYPE": {
         "flat": "Квартира",
         "house": "Дом",
         "room": "Комната",
         "office": "Офис",
         "land": "Участок"
+      },
+      "PROPERTY_STATUS": {
+        "available": "Доступно",
+        "reserved": "Забронировано",
+        "rented": "Арендовано"
+      },
+      "ZONING_TYPE": {
+        "residential": "Жилая",
+        "commercial": "Коммерческая",
+        "agricultural": "Сельскохозяйственная",
+        "mixed": "Смешанная"
+      },
+      "FURNISHED_STATUS": {
+        "fully": "Полностью меблирована",
+        "partially": "Частично меблирована",
+        "unfurnished": "Без мебели"
+      },
+      "RENOVATION_STATUS": {
+        "recent": "Недавно отремонтировано",
+        "needs": "Требует ремонта",
+        "none": "Без ремонта"
+      },
+      "KITCHEN_TYPE": {
+        "separated": "Отдельная",
+        "combined": "Совмещённая",
+        "none": "Без кухни"
+      },
+      "HEATING_TYPE": {
+        "gas": "Газовое",
+        "electric": "Электрическое",
+        "central": "Центральное",
+        "none": "Без отопления"
       }
     },
     "ERRORS": {

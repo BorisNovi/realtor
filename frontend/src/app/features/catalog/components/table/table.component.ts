@@ -25,7 +25,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
-import { tap } from 'rxjs';
+import { startWith, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SelectModule } from 'primeng/select';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -65,7 +65,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
 
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
-  statuses = mapEnumToOptions(PropertyStatus);
+  statuses: { label: string; value: string }[] = [];
 
   actionItems: MenuItem[] = [];
 
@@ -79,6 +79,8 @@ export class TableComponent implements AfterViewInit, OnDestroy {
     const pagination = this.paginationS();
     this.pTable.first = pagination.first;
     this.pTable.rows = pagination.rows;
+
+    this.#initPropsTranlstes();
   }
 
   onEditComplete(event: TableEditCompleteEvent): void {
@@ -198,6 +200,14 @@ export class TableComponent implements AfterViewInit, OnDestroy {
       accept: () => {
         this.#store.dispatch(new DeletePropertyObjects([item.id]));
       },
+    });
+  }
+
+  #initPropsTranlstes(): void {
+    this.#translateService.onLangChange.pipe(startWith(null), takeUntilDestroyed(this.#destroyRef)).subscribe(() => {
+      this.statuses = mapEnumToOptions(PropertyStatus, value =>
+        this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_STATUS.${value}`),
+      );
     });
   }
 

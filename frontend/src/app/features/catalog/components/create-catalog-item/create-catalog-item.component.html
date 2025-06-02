@@ -319,6 +319,22 @@
             />
           </div>
 
+          <!-- Heating -->
+          <div>
+            <label for="heating" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'FORM.LABELS.HEATING' | translate
+            }}</label>
+            <p-select
+              id="heating"
+              [options]="heatingTypes"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="heating"
+              [placeholder]="'FORM.PLACEHOLDERS.HEATING' | translate"
+              class="w-full"
+            />
+          </div>
+
           <!-- Furnished -->
           <div>
             <label for="furnished" class="block text-sm font-medium text-gray-700 mb-1">{{

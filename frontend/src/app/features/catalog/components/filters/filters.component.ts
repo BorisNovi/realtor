@@ -15,7 +15,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
-import { debounceTime, distinctUntilChanged, pipe, startWith, take } from 'rxjs';
+import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
 import { CatalogState } from 'src/app/core';
 
 @Component({
@@ -49,8 +49,8 @@ export class FiltersComponent implements OnInit {
   form!: FormGroup;
 
   propertyTypes: { label: string; value: string }[] = [];
-  readonly statuses = mapEnumToOptions(PropertyStatus);
-  readonly zoningTypes = mapEnumToOptions(ZoningType);
+  statuses: { label: string; value: string }[] = [];
+  zoningTypes: { label: string; value: string }[] = [];
 
   currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
   getCurrencySymbol(key: string): string {
@@ -98,7 +98,13 @@ export class FiltersComponent implements OnInit {
   #initPropsTranlstes(): void {
     this.#translateService.onLangChange.pipe(startWith(null), takeUntilDestroyed(this.#destroyRef)).subscribe(() => {
       this.propertyTypes = mapEnumToOptions(PropertyType, value =>
-        this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_TYPES.${value}`),
+        this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_TYPE.${value}`),
+      );
+      this.statuses = mapEnumToOptions(PropertyStatus, value =>
+        this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_STATUS.${value}`),
+      );
+      this.zoningTypes = mapEnumToOptions(ZoningType, value =>
+        this.#translateService.instant(`FORM.PROPERTIES.ZONING_TYPE.${value}`),
       );
     });
   }
