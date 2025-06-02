@@ -34,12 +34,12 @@ export class CatalogService {
     specifies: {
       rooms: 3,
       floor: { current: 5, full: 9 },
+      heating: HeatingType.electric,
       utilities: {
         electricity: true,
         waterSupply: true,
         naturalGas: false,
         sewerage: true,
-        heating: HeatingType.electric,
         internet: true,
       },
       bath: false,

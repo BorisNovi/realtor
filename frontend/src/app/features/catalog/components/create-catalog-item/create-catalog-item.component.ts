@@ -12,12 +12,14 @@ import { WorldPhoneMasksDirective } from '@shared/directives';
 import {
   Currency,
   FurnishedStatus,
+  HeatingType,
   KitchenType,
   PropertyStatus,
   PropertyType,
   RenovationStatus,
   ZoningType,
 } from '@shared/enums';
+import { IPropertyObject } from '@shared/interfaces';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -85,13 +87,26 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly uploadErrorS = signal<string | null>(null);
 
   readonly propertyTypes = mapEnumToOptions(PropertyType, value =>
-    this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_TYPES.${value}`),
+    this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_TYPE.${value}`),
   );
-  readonly statuses = mapEnumToOptions(PropertyStatus);
-  readonly zoningTypes = mapEnumToOptions(ZoningType);
-  readonly furnishedStatuses = mapEnumToOptions(FurnishedStatus);
-  readonly renovationStatuses = mapEnumToOptions(RenovationStatus);
-  readonly kitchenTypes = mapEnumToOptions(KitchenType);
+  readonly statuses = mapEnumToOptions(PropertyStatus, value =>
+    this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_STATUS.${value}`),
+  );
+  readonly zoningTypes = mapEnumToOptions(ZoningType, value =>
+    this.#translateService.instant(`FORM.PROPERTIES.ZONING_TYPE.${value}`),
+  );
+  readonly heatingTypes = mapEnumToOptions(HeatingType, value =>
+    this.#translateService.instant(`FORM.PROPERTIES.HEATING_TYPE.${value}`),
+  );
+  readonly furnishedStatuses = mapEnumToOptions(FurnishedStatus, value =>
+    this.#translateService.instant(`FORM.PROPERTIES.FURNISHED_STATUS.${value}`),
+  );
+  readonly renovationStatuses = mapEnumToOptions(RenovationStatus, value =>
+    this.#translateService.instant(`FORM.PROPERTIES.RENOVATION_STATUS.${value}`),
+  );
+  readonly kitchenTypes = mapEnumToOptions(KitchenType, value =>
+    this.#translateService.instant(`FORM.PROPERTIES.KITCHEN_TYPE.${value}`),
+  );
   readonly currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
 
   getCurrencySymbol(key: string): string {
@@ -108,6 +123,7 @@ export class CreateCatalogItemComponent implements OnInit {
   #initForm(): void {
     const data = this.#config.data;
 
+    // TODO: Нужно проверит соответствие интерфейсу IPropertyObject
     this.form = this.#fb.group({
       photos: [data?.photos || []],
       propertyType: [data?.propertyType || null, Validators.required],
@@ -136,6 +152,7 @@ export class CreateCatalogItemComponent implements OnInit {
           full: [data?.specifies?.floor?.full || null, Validators.min(1)],
         }),
         kitchen: [data?.specifies?.kitchen || null],
+        heating: [data?.specifies?.utilities?.heating || null],
         furnished: [data?.specifies?.furnished || null],
         renovation: [data?.specifies?.renovation || null],
 

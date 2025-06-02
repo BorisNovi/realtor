@@ -1,5 +1,5 @@
 export enum KitchenType {
-  separate = 'separate',
+  separated = 'separated',
   combined = 'combined',
   none = 'none',
 }

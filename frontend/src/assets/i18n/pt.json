@@ -62,17 +62,50 @@
       "CURRENT_FLOOR": "Inserir andar atual",
       "TOTAL_FLOORS": "Inserir total de andares",
       "ROOMS": "Inserir número de quartos",
+      "HEATING": "Selecione o tipo de aquecimento",
       "FURNISHED": "Selecionar mobiliado",
       "RENOVATION": "Selecionar reforma",
       "KITCHEN": "Selecionar tipo de cozinha"
     },
     "PROPERTIES": {
-      "PROPERTY_TYPES": {
+      "PROPERTY_TYPE": {
         "flat": "Apartamento",
         "house": "Casa",
         "room": "Quarto",
         "office": "Escritório",
         "land": "Terreno"
+      },
+      "PROPERTY_STATUS": {
+        "available": "Disponível",
+        "reserved": "Reservado",
+        "rented": "Alugado"
+      },
+      "ZONING_TYPE": {
+        "residential": "Residencial",
+        "commercial": "Comercial",
+        "agricultural": "Agrícola",
+        "mixed": "Misto"
+      },
+      "FURNISHED_STATUS": {
+        "fully": "Totalmente mobiliado",
+        "partially": "Parcialmente mobiliado",
+        "unfurnished": "Sem mobília"
+      },
+      "RENOVATION_STATUS": {
+        "recent": "Reformado recentemente",
+        "needs": "Precisa de reforma",
+        "none": "Sem reforma"
+      },
+      "KITCHEN_TYPE": {
+        "separated": "Separada",
+        "combined": "Combinada",
+        "none": "Sem cozinha"
+      },
+      "HEATING_TYPE": {
+        "gas": "Gás",
+        "electric": "Elétrico",
+        "central": "Central",
+        "none": "Sem aquecimento"
       }
     },
     "ERRORS": {

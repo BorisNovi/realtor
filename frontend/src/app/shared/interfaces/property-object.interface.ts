@@ -9,6 +9,7 @@ export interface IPropertyObject extends ICatalogItem {
 export interface IPropertyObjectSpecifics {
   rooms?: number;
   floor?: { current?: number; full?: number };
+  heating?: HeatingType;
   sharedFacilities?: { kitchen: boolean; bathroom: boolean };
 
   utilities?: {
@@ -16,10 +17,10 @@ export interface IPropertyObjectSpecifics {
     waterSupply?: boolean;
     naturalGas?: boolean;
     sewerage?: boolean;
-    heating?: HeatingType;
     internet?: boolean;
   };
 
+  // TODO: убарать опции, замениь на универсальный тип
   parking?: boolean;
   bath?: boolean;
   shower?: boolean;

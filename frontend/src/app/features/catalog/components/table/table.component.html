@@ -61,12 +61,12 @@
         <td>
           <img [src]="item.photos[0]" [alt]="item.name" class="w-24 rounded" />
         </td>
-        <td>{{ item.propertyType | translate }}</td>
-        <td>{{ item.zoningType | translate }}</td>
+        <td>{{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + item.propertyType | translate }}</td>
+        <td>{{ item.zoningType ? ('FORM.PROPERTIES.ZONING_TYPE.' +  item.zoningType | translate) : '—' }}</td>
         <td>{{ item.address }}</td>
         <td>{{ item.price.value | number }} {{ item.price.currency }}</td>
         <td>{{ item.area }} m²</td>
-        <td>{{ item.dateAdded }}</td>
+        <td>{{ item.dateAdded | date: 'd MM y' }}</td>
         <td [pEditableColumn]="{ id: item.id, value: item.status }" pEditableColumnField="status" class="cursor-pointer">
           <p-cellEditor>
             <ng-template #input>
@@ -82,13 +82,13 @@
               >
                 <ng-template pTemplate="item" let-item>
                   <div class="flex items-center">
-                    <p-tag [value]="item.label | translate" [severity]="getSeverity(item.value)" />
+                    <p-tag [value]="item.label" [severity]="getSeverity(item.value)" />
                   </div>
                 </ng-template>
               </p-select>
             </ng-template>
             <ng-template #output>
-              <p-tag [value]="item.status | translate" [severity]="getSeverity(item.status)" />
+              <p-tag [value]="'FORM.PROPERTIES.PROPERTY_STATUS.' + item.status | translate" [severity]="getSeverity(item.status)" />
             </ng-template>
           </p-cellEditor>
         </td>

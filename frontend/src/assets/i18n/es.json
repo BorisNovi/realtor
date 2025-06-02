@@ -62,17 +62,50 @@
       "CURRENT_FLOOR": "Ingresar piso actual",
       "TOTAL_FLOORS": "Ingresar total de pisos",
       "ROOMS": "Ingresar número de habitaciones",
+      "HEATING": "Seleccione el tipo de calefacción",
       "FURNISHED": "Seleccionar amueblado",
       "RENOVATION": "Seleccionar renovación",
       "KITCHEN": "Seleccionar tipo de cocina"
     },
     "PROPERTIES": {
-      "PROPERTY_TYPES": {
+      "PROPERTY_TYPE": {
         "flat": "Piso",
         "house": "Casa",
         "room": "Habitación",
         "office": "Oficina",
         "land": "Terreno"
+      },
+      "PROPERTY_STATUS": {
+        "available": "Disponible",
+        "reserved": "Reservado",
+        "rented": "Alquilado"
+      },
+      "ZONING_TYPE": {
+        "residential": "Residencial",
+        "commercial": "Comercial",
+        "agricultural": "Agrícola",
+        "mixed": "Mixto"
+      },
+      "FURNISHED_STATUS": {
+        "fully": "Totalmente amueblado",
+        "partially": "Parcialmente amueblado",
+        "unfurnished": "Sin amueblar"
+      },
+      "RENOVATION_STATUS": {
+        "recent": "Reformado recientemente",
+        "needs": "Necesita reforma",
+        "none": "Sin reforma"
+      },
+      "KITCHEN_TYPE": {
+        "separated": "Separada",
+        "combined": "Combinada",
+        "none": "Sin cocina"
+      },
+      "HEATING_TYPE": {
+        "gas": "Gas",
+        "electric": "Eléctrica",
+        "central": "Central",
+        "none": "Sin calefacción"
       }
     },
     "ERRORS": {

@@ -50,7 +50,7 @@
     "PLACEHOLDERS": {
       "PROPERTY_TYPE": "Select Property Type",
       "STATUS": "Select Status",
-      "ZONING": "Select Zoning Type",
+      "ZONING": "Select zoning type",
       "MAP_LINK": "Enter map link",
       "AREA": "Enter area",
       "ADDRESS": "Enter address",
@@ -62,17 +62,50 @@
       "CURRENT_FLOOR": "Enter current floor",
       "TOTAL_FLOORS": "Enter total floors",
       "ROOMS": "Enter number of rooms",
+      "HEATING": "Select heating type",
       "FURNISHED": "Select furnished",
       "RENOVATION": "Select renovation",
       "KITCHEN": "Select kitchen type"
     },
     "PROPERTIES": {
-      "PROPERTY_TYPES": {
+      "PROPERTY_TYPE": {
         "flat": "Flat",
         "house": "House",
         "room": "Room",
         "office": "Office",
         "land": "Land"
+      },
+      "PROPERTY_STATUS": {
+        "available": "Available",
+        "reserved": "Reserved",
+        "rented": "Rented"
+      },
+      "ZONING_TYPE": {
+        "residential": "Residential",
+        "commercial": "Commercial",
+        "agricultural": "Agricultural",
+        "mixed": "Mixed"
+      },
+      "FURNISHED_STATUS": {
+        "fully": "Fully furnished",
+        "partially": "Partially furnished",
+        "unfurnished": "Unfurnished"
+      },
+      "RENOVATION_STATUS": {
+        "recent": "Recently renovated",
+        "needs": "Needs renovation",
+        "none": "No renovation"
+      },
+      "KITCHEN_TYPE": {
+        "separated": "Separated",
+        "combined": "Combined",
+        "none": "No kitchen"
+      },
+      "HEATING_TYPE": {
+        "gas": "Gas",
+        "electric": "Electric",
+        "central": "Central",
+        "none": "No heating"
       }
     },
     "ERRORS": {
