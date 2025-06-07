@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -10,25 +9,25 @@ import {
   output,
   ViewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Store } from '@ngxs/store';
+import { PropertyStatus } from '@shared/enums';
 import { ICatalogItem, IPagination, IPropertyObject } from '@shared/interfaces';
+import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
+import { ConfirmationService, MenuItem, SortEvent } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { ButtonGroupModule } from 'primeng/buttongroup';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Menu, MenuModule } from 'primeng/menu';
+import { SelectModule } from 'primeng/select';
 import { Table, TableEditCompleteEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
-import { ButtonGroupModule } from 'primeng/buttongroup';
-import { Store } from '@ngxs/store';
-import { CatalogState, DeletePropertyObjects, FetchPropertyObject, UpdateStatus } from 'src/app/core';
-import { Menu, MenuModule } from 'primeng/menu';
-import { ConfirmationService, MenuItem } from 'primeng/api';
-import { PropertyStatus } from '@shared/enums';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
-import { DynamicDialogModule } from 'primeng/dynamicdialog';
-import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { startWith, tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { SelectModule } from 'primeng/select';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { CatalogState, DeletePropertyObjects, FetchPropertyObject, UpdateStatus } from 'src/app/core';
+import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
 @Component({
   selector: 'app-table',
@@ -89,14 +88,14 @@ export class TableComponent implements AfterViewInit, OnDestroy {
 
   onStatusChange(newStatus: PropertyStatus, id: number): void {
     const tableItems = this.tableDataS().items;
-    const currentItem = tableItems[id];
+    const currentItem = tableItems.find(item => item.id === id);
 
     if (!currentItem || currentItem.status === newStatus) return;
 
     this.#store.dispatch(new UpdateStatus(id, newStatus));
   }
 
-  setActionItems(event: Event, item: ICatalogItem): void {
+  #setActionItems(event: Event, item: ICatalogItem): void {
     this.actionItems = [
       {
         label: this.#translateService.instant('CATALOG.TABLE.BUTTONS.ADD_TO_LISTING'),
@@ -119,14 +118,14 @@ export class TableComponent implements AfterViewInit, OnDestroy {
         label: this.#translateService.instant('CATALOG.TABLE.ACTIONS.DELETE'),
         icon: 'pi pi-trash',
         command: () => {
-          this.confirmDeletion(event, item);
+          this.confirmDeletion(event, [item]);
         },
       },
     ];
   }
 
   onActionClick(event: Event, item: ICatalogItem): void {
-    this.setActionItems(event, item);
+    this.#setActionItems(event, item);
     this.menu.toggle(event);
   }
 
@@ -181,11 +180,11 @@ export class TableComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  confirmDeletion(event: Event, item: ICatalogItem): void {
+  confirmDeletion(event: Event, items: ICatalogItem[]): void {
     this.#confirmationService.confirm({
       target: event.target as EventTarget,
       message: this.#translateService.instant('CATALOG.TABLE.DIALOG.DELETE_HINT'),
-      header: this.#translateService.instant('CATALOG.TABLE.DIALOG.DELETE_REQUEST'),
+      header: this.#translateService.instant(`CATALOG.TABLE.DIALOG.DELETE_REQUEST_${items.length > 1 ? 'MANY' : 'SINGLE'}`),
       icon: 'pi pi-info-circle',
       rejectButtonProps: {
         label: this.#translateService.instant('CATALOG.TABLE.DIALOG.CANCEL'),
@@ -198,9 +197,13 @@ export class TableComponent implements AfterViewInit, OnDestroy {
       },
 
       accept: () => {
-        this.#store.dispatch(new DeletePropertyObjects([item.id]));
+        this.#store.dispatch(new DeletePropertyObjects(items.map(item => item.id)));
       },
     });
+  }
+
+  onSort(event: SortEvent): void {
+    console.log(event, 'sort');
   }
 
   #initPropsTranlstes(): void {

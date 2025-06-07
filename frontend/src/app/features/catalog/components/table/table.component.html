@@ -21,6 +21,8 @@
     "
     (onPage)="pageChange($event)"
     [(selection)]="selectedItems"
+    [customSort]="true"
+    (sortFunction)="onSort($event)"
     [tableStyle]="{ 'min-width': '40rem' }"
   >
     <ng-template #caption>
@@ -46,8 +48,8 @@
         <th>{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}</th>
         <th>{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}</th>
         <th>{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}</th>
-        <th>{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }}</th>
-        <th>{{ 'CATALOG.TABLE.HEADERS.AREA' | translate }}</th>
+        <th pSortableColumn="price">{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }} <p-sortIcon field="price" /></th>
+        <th pSortableColumn="area">{{ 'CATALOG.TABLE.HEADERS.AREA' | translate }} <p-sortIcon field="area" /></th>
         <th style="min-width: 8rem">{{ 'CATALOG.TABLE.HEADERS.DATE' | translate }}</th>
         <th style="min-width: 10.5rem">{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}</th>
         <th style="min-width: 4rem"></th>
@@ -62,7 +64,7 @@
           <img [src]="item.photos[0]" [alt]="item.name" class="w-24 rounded" />
         </td>
         <td>{{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + item.propertyType | translate }}</td>
-        <td>{{ item.zoningType ? ('FORM.PROPERTIES.ZONING_TYPE.' +  item.zoningType | translate) : '—' }}</td>
+        <td>{{ item.zoningType ? ('FORM.PROPERTIES.ZONING_TYPE.' + item.zoningType | translate) : '—' }}</td>
         <td>{{ item.address }}</td>
         <td>{{ item.price.value | number }} {{ item.price.currency }}</td>
         <td>{{ item.area }} m²</td>
@@ -76,8 +78,10 @@
                 (ngModelChange)="onStatusChange($event, item.id)"
                 optionLabel="label"
                 optionValue="value"
+                appendTo="body"
                 [ngStyle]="{
                   'background-color': getStatusBackground(item.status),
+                  'z-index': '5000',
                 }"
               >
                 <ng-template pTemplate="item" let-item>
@@ -88,7 +92,10 @@
               </p-select>
             </ng-template>
             <ng-template #output>
-              <p-tag [value]="'FORM.PROPERTIES.PROPERTY_STATUS.' + item.status | translate" [severity]="getSeverity(item.status)" />
+              <p-tag
+                [value]="'FORM.PROPERTIES.PROPERTY_STATUS.' + item.status | translate"
+                [severity]="getSeverity(item.status)"
+              />
             </ng-template>
           </p-cellEditor>
         </td>
@@ -118,7 +125,7 @@
                 [label]="'CATALOG.TABLE.BUTTONS.DELETE' | translate"
                 icon="pi pi-trash"
                 outlined
-                (onClick)="(null)"
+                (onClick)="confirmDeletion($event, selectedItems)"
               />
             </p-buttongroup>
           </td>
