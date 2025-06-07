@@ -243,7 +243,8 @@
         "ADD": "Añadir nuevo objeto",
         "EDIT": "Editar objeto",
         "CANCEL": "Cancelar",
-        "DELETE_REQUEST": "¿Eliminar un objeto?",
+        "DELETE_REQUEST_SINGLE": "¿Eliminar un objeto?",
+        "DELETE_REQUEST_MANY": "¿Eliminar un objeto?",
         "DELETE_HINT": "¡Atención! ¡No podrás restaurarlo!"
       },
       "CONFIRM_DIALOG": {

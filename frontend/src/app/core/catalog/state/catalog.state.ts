@@ -1,6 +1,8 @@
 import { inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { ICatalogFilters, ICatalogItem, IPagination, IPropertyObject, ITableData } from '@shared/interfaces';
+import { MessageService } from 'primeng/api';
 import { catchError, of, tap } from 'rxjs';
 import { CatalogService } from '../shared';
 import {
@@ -40,6 +42,8 @@ interface CatalogStateModel {
 @Injectable()
 export class CatalogState {
   readonly #catalogService = inject(CatalogService);
+  readonly messageService = inject(MessageService);
+  readonly translateService = inject(TranslateService);
 
   // Selectors
   @Selector()
@@ -146,19 +150,28 @@ export class CatalogState {
   @Action(CatalogOperationSuccess)
   onCatalogOperationSuccess(ctx: StateContext<CatalogStateModel>, { message }: CatalogOperationSuccess) {
     if (message) {
-      // this.snackBar.open(message);
-      console.debug(message);
+      this.messageService.add({
+        severity: 'success',
+        summary: this.translateService.instant('Success'),
+        detail: this.translateService.instant(message),
+        life: 3000,
+      });
     }
 
+    ctx.dispatch(new FetchCatalog());
     return ctx.patchState({ loading: false });
   }
 
   @Action(CatalogOperationFailed)
   onCatalogOperationFailed(ctx: StateContext<CatalogStateModel>, { error, message }: CatalogOperationFailed) {
     if (message) {
-      // this.errorSnackBarService.showError(message);
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translateService.instant('Error'),
+        detail: this.translateService.instant(message),
+        life: 3000,
+      });
     }
-
     ctx.patchState({ loading: false });
     return of(error);
   }

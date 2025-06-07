@@ -243,8 +243,9 @@
         "ADD": "Add new item",
         "EDIT": "Edit item",
         "CANCEL": "Cancel",
-        "DELETE_REQUEST": "Delete item?",
-        "DELETE_HINT": "Attention! You won't restore it!"
+        "DELETE_REQUEST_SINGLE": "Delete item?",
+        "DELETE_REQUEST_MANY": "Delete items?",
+        "DELETE_HINT": "Attention! This action is irreversible!"
       },
       "CONFIRM_DIALOG": {
         "YES": "Yes",
