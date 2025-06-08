@@ -44,16 +44,20 @@
     </ng-template>
     <ng-template #header>
       <tr>
-        <th style="min-width: 4rem"><p-tableHeaderCheckbox /></th>
-        <th style="min-width: 6rem">{{ 'CATALOG.TABLE.HEADERS.PHOTO' | translate }}</th>
+        <th><p-tableHeaderCheckbox /></th>
+        <th class="min-w-24">{{ 'CATALOG.TABLE.HEADERS.PHOTO' | translate }}</th>
         <th>{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}</th>
         <th>{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}</th>
         <th>{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}</th>
-        <th pSortableColumn="price">{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }} <p-sortIcon field="price" /></th>
-        <th pSortableColumn="area">{{ 'CATALOG.TABLE.HEADERS.AREA' | translate }} <p-sortIcon field="area" /></th>
-        <th style="min-width: 8rem">{{ 'CATALOG.TABLE.HEADERS.DATE' | translate }}</th>
-        <th style="min-width: 10.5rem">{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}</th>
-        <th style="min-width: 4rem"></th>
+        <th class="min-w-32" pSortableColumn="price">
+          {{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }} <p-sortIcon field="price" />
+        </th>
+        <th class="min-w-32" pSortableColumn="area">
+          {{ 'CATALOG.TABLE.HEADERS.AREA' | translate }} <p-sortIcon field="area" />
+        </th>
+        <th class="min-w-32">{{ 'CATALOG.TABLE.HEADERS.DATE' | translate }}</th>
+        <th class="min-w-42">{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}</th>
+        <th class="min-w-16"></th>
       </tr>
     </ng-template>
     <ng-template #body let-item>
