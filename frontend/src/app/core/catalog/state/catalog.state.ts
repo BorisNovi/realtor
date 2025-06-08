@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { ICatalogFilters, ICatalogItem, IPagination, IPropertyObject, ITableData } from '@shared/interfaces';
+import { ICatalogFilters, ICatalogItem, IPagination, IPropertyObject, ISort, ITableData } from '@shared/interfaces';
 import { MessageService } from 'primeng/api';
 import { catchError, of, tap } from 'rxjs';
 import { CatalogService } from '../shared';
@@ -14,6 +14,7 @@ import {
   FetchPropertyObject,
   SetCatalogFilters,
   SetCatalogPagination,
+  SetCatalogSort,
   UpdatePropertyObject,
   UpdateStatus,
 } from './catalog.actions';
@@ -21,6 +22,7 @@ import {
 interface CatalogStateModel {
   catalog: ITableData<ICatalogItem>;
   filters: ICatalogFilters;
+  sort: ISort | null;
   propertyObject: IPropertyObject | null;
   loading: boolean;
   pagination: IPagination;
@@ -31,6 +33,7 @@ interface CatalogStateModel {
   defaults: {
     catalog: { items: [], total: 0 },
     filters: {},
+    sort: null,
     propertyObject: null,
     pagination: {
       first: 0,
@@ -73,10 +76,10 @@ export class CatalogState {
 
   @Action(FetchCatalog)
   FetchCatalog(ctx: StateContext<CatalogStateModel>) {
-    const { filters, pagination } = ctx.getState();
+    const { filters, pagination, sort } = ctx.getState();
     ctx.patchState({ loading: true });
 
-    return this.#catalogService.fetchCatalog(filters, pagination).pipe(
+    return this.#catalogService.fetchCatalog(filters, pagination, sort).pipe(
       tap((catalog: ITableData<ICatalogItem>) => ctx.patchState({ catalog, loading: false })),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error))),
     );
@@ -96,6 +99,14 @@ export class CatalogState {
   setCatalogFilters(ctx: StateContext<CatalogStateModel>, { filters }: SetCatalogFilters) {
     ctx.patchState({
       filters,
+    });
+  }
+
+  @Action(SetCatalogSort)
+  setCatalogSort(ctx: StateContext<CatalogStateModel>, { sort }: SetCatalogSort) {
+    console.log(sort);
+    ctx.patchState({
+      sort,
     });
   }
 

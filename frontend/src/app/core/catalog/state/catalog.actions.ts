@@ -1,5 +1,5 @@
 import { PropertyStatus } from '@shared/enums';
-import { ICatalogFilters, IPagination, IPropertyObject } from '@shared/interfaces';
+import { ICatalogFilters, IPagination, IPropertyObject, ISort } from '@shared/interfaces';
 
 export class FetchCatalog {
   static readonly type = '[Catalog] Fetch Catalog';
@@ -14,6 +14,12 @@ export class SetCatalogFilters {
   public static readonly type = '[Catalog] Set Catalog Filters';
   constructor(public readonly filters: ICatalogFilters) {}
 }
+
+export class SetCatalogSort {
+  public static readonly type = '[Catalog] Set Catalog Sort';
+  constructor(public readonly sort: ISort) {}
+}
+
 export class FetchPropertyObject {
   static readonly type = '[Catalog] Fetch Property Object';
   constructor(public readonly id: number) {}

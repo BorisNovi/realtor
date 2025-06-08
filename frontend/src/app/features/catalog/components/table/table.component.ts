@@ -7,6 +7,7 @@ import {
   inject,
   OnDestroy,
   output,
+  viewChild,
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -16,14 +17,14 @@ import { Store } from '@ngxs/store';
 import { Currency, PropertyStatus } from '@shared/enums';
 import { ICatalogItem, IPagination, IPropertyObject } from '@shared/interfaces';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
-import { ConfirmationService, MenuItem, SortEvent } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Menu, MenuModule } from 'primeng/menu';
 import { SelectModule } from 'primeng/select';
-import { Table, TableEditCompleteEvent, TableModule, TablePageEvent } from 'primeng/table';
+import { Table, TableEditCompleteEvent, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { startWith, tap } from 'rxjs';
 import { CatalogState, DeletePropertyObjects, FetchPropertyObject, UpdateStatus } from 'src/app/core';
@@ -50,11 +51,12 @@ import { CURRENCY_SYMBOLS } from '@shared/constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('pTable') pTable!: Table;
-  @ViewChild('menu') menu!: Menu;
+  readonly pTable = viewChild.required<Table>('pTable');
+  readonly menu = viewChild.required<Menu>('menu');
 
   readonly filtersOpen = output();
   readonly paginationChange = output<IPagination>();
+  readonly sortChange = output<{ sortField: string; sortOrder: string }>();
 
   #ref: DynamicDialogRef | undefined;
   readonly #dialogService = inject(DialogService);
@@ -76,9 +78,10 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   readonly loadingS = this.#store.selectSignal(CatalogState.loading);
 
   ngAfterViewInit(): void {
+    console.log('view init');
     const pagination = this.paginationS();
-    this.pTable.first = pagination.first;
-    this.pTable.rows = pagination.rows;
+    this.pTable().first = pagination.first;
+    this.pTable().rows = pagination.rows;
 
     this.#initPropsTranlstes();
   }
@@ -131,7 +134,20 @@ export class TableComponent implements AfterViewInit, OnDestroy {
 
   onActionClick(event: Event, item: ICatalogItem): void {
     this.#setActionItems(event, item);
-    this.menu.toggle(event);
+    this.menu().toggle(event);
+  }
+
+  onLazyLoad(event: TableLazyLoadEvent): void {
+    if (typeof event.sortField === 'string' && typeof event.sortOrder === 'number') {
+      this.sortChange.emit({ sortField: event.sortField, sortOrder: event.sortOrder === 1 ? 'asc' : 'desc' });
+    }
+
+    // Используется, чтобы перебить переключение пагинации при сортировке
+    if (this.pTable) {
+      const pagination = this.paginationS();
+      this.pTable().first = pagination.first;
+      this.pTable().rows = pagination.rows;
+    }
   }
 
   pageChange(event: TablePageEvent): void {
@@ -205,10 +221,6 @@ export class TableComponent implements AfterViewInit, OnDestroy {
         this.#store.dispatch(new DeletePropertyObjects(items.map(item => item.id)));
       },
     });
-  }
-
-  onSort(event: SortEvent): void {
-    console.log(event, 'sort');
   }
 
   #initPropsTranlstes(): void {

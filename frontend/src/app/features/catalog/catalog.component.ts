@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { CATALOG_FILTERS_KEY, CATALOG_PAGINATION_KEY } from '@shared/constants';
-import { ICatalogFilters, IPagination } from '@shared/interfaces';
+import { ICatalogFilters, IPagination, ISort } from '@shared/interfaces';
 import { DrawerModule } from 'primeng/drawer';
-import { FetchCatalog, QueryParamsService, SetCatalogFilters, SetCatalogPagination } from 'src/app/core';
+import { FetchCatalog, QueryParamsService, SetCatalogFilters, SetCatalogPagination, SetCatalogSort } from 'src/app/core';
 import { FiltersComponent } from './components/filters/filters.component';
 import { TableComponent } from './components/table/table.component';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-catalog',
@@ -28,5 +28,9 @@ export class CatalogComponent {
   onFiltersChange(event: ICatalogFilters): void {
     this.#queryParamsService.updateQueryParams(event, CATALOG_FILTERS_KEY);
     this.#store.dispatch([new SetCatalogFilters(event), new FetchCatalog()]);
+  }
+
+  onSortChange(event: ISort): void {
+    this.#store.dispatch([new SetCatalogSort(event), new FetchCatalog()]);
   }
 }
