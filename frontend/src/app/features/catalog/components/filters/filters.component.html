@@ -222,7 +222,7 @@
         type="button"
         (onClick)="resetFilters()"
         [fluid]="true"
-        [disabled]="form.untouched"
+        [disabled]="isResetDisabled()"
       />
     </div>
   </form>

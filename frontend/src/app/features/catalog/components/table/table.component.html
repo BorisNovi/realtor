@@ -38,6 +38,7 @@
           [outlined]="true"
           icon="pi pi-filter"
           (click)="onFiltersOpen()"
+          [badge]="filtersCount()?.toString()"
         />
       </div>
     </ng-template>

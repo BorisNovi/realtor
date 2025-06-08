@@ -5,10 +5,10 @@ import {
   Component,
   DestroyRef,
   inject,
+  input,
   OnDestroy,
   output,
   viewChild,
-  ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -53,6 +53,7 @@ import { CURRENCY_SYMBOLS } from '@shared/constants';
 export class TableComponent implements AfterViewInit, OnDestroy {
   readonly pTable = viewChild.required<Table>('pTable');
   readonly menu = viewChild.required<Menu>('menu');
+  readonly filtersCount = input<number>();
 
   readonly filtersOpen = output();
   readonly paginationChange = output<IPagination>();

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -7,7 +7,7 @@ import { Store } from '@ngxs/store';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency, PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
 import { ICatalogFilters } from '@shared/interfaces';
-import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
+import { countTruthyFields, getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DividerModule } from 'primeng/divider';
@@ -37,6 +37,7 @@ import { CatalogState } from 'src/app/core';
 })
 export class FiltersComponent implements OnInit {
   readonly filtersChange = output<ICatalogFilters>();
+  readonly filtersCount = output<number>();
 
   readonly #fb = inject(FormBuilder);
   readonly #destroyRef = inject(DestroyRef);
@@ -54,6 +55,8 @@ export class FiltersComponent implements OnInit {
 
   currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
 
+  readonly isResetDisabled = signal(true);
+
   ngOnInit(): void {
     const storedFilters = this.#store.selectSnapshot(CatalogState.filters);
 
@@ -69,13 +72,19 @@ export class FiltersComponent implements OnInit {
       .subscribe(filters => {
         this.filtersChange.emit(filters as ICatalogFilters);
       });
+
+    this.form.valueChanges.pipe(startWith(this.form.value), takeUntilDestroyed(this.#destroyRef)).subscribe(filters => {
+      const count = countTruthyFields(filters);
+      this.filtersCount.emit(count);
+      this.isResetDisabled.set(!count);
+    });
   }
 
   #initForm(filters?: ICatalogFilters): void {
     this.form = this.#fb.group({
       dateAdded: this.#fb.group({
         from: [filters?.dateAdded?.from || null],
-        to: [filters?.dateAdded?.to || new Date()],
+        to: [filters?.dateAdded?.to || null],
       }),
       status: [filters?.status || null],
       propertyType: [filters?.propertyType || []],
@@ -89,20 +98,6 @@ export class FiltersComponent implements OnInit {
         min: [filters?.price?.min || null],
         max: [filters?.price?.max || null],
       }),
-    });
-
-    const priceGroup = this.form.get('price') as FormGroup;
-    const currencyCtrl = priceGroup.get('currency');
-    const min = priceGroup.get('min');
-    const max = priceGroup.get('max');
-    currencyCtrl?.valueChanges.pipe(startWith(currencyCtrl.value), takeUntilDestroyed(this.#destroyRef)).subscribe(currency => {
-      if (currency) {
-        min!.enable({ emitEvent: false });
-        max!.enable({ emitEvent: false });
-      } else {
-        min!.disable({ emitEvent: false });
-        max!.disable({ emitEvent: false });
-      }
     });
   }
 
@@ -122,6 +117,7 @@ export class FiltersComponent implements OnInit {
 
   // Сброс формы
   resetFilters(): void {
-    this.#initForm();
+    this.form.reset();
+    this.filtersChange.emit({ ...this.form.value, propertyType: [], zoningType: [] });
   }
 }

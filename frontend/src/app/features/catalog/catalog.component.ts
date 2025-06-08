@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { CATALOG_FILTERS_KEY, CATALOG_PAGINATION_KEY } from '@shared/constants';
@@ -18,6 +18,7 @@ export class CatalogComponent {
   readonly #store = inject(Store);
   readonly #queryParamsService = inject(QueryParamsService);
 
+  readonly filtersCount = signal<number>(0);
   isFiltersOpen = false;
 
   onPaginationChange(event: IPagination): void {
