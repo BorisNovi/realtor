@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { PropertyStatus } from '@shared/enums';
+import { Currency, PropertyStatus } from '@shared/enums';
 import { ICatalogItem, IPagination, IPropertyObject } from '@shared/interfaces';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { ConfirmationService, MenuItem, SortEvent } from 'primeng/api';
@@ -28,6 +28,7 @@ import { TagModule } from 'primeng/tag';
 import { startWith, tap } from 'rxjs';
 import { CatalogState, DeletePropertyObjects, FetchPropertyObject, UpdateStatus } from 'src/app/core';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
+import { CURRENCY_SYMBOLS } from '@shared/constants';
 
 @Component({
   selector: 'app-table',
@@ -80,6 +81,10 @@ export class TableComponent implements AfterViewInit, OnDestroy {
     this.pTable.rows = pagination.rows;
 
     this.#initPropsTranlstes();
+  }
+
+  getCurrencySymbol(key: string): string {
+    return CURRENCY_SYMBOLS[key as Currency];
   }
 
   onEditComplete(event: TableEditCompleteEvent): void {

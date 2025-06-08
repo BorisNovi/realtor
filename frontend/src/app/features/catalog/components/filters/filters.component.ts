@@ -53,9 +53,6 @@ export class FiltersComponent implements OnInit {
   zoningTypes: { label: string; value: string }[] = [];
 
   currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
-  getCurrencySymbol(key: string): string {
-    return CURRENCY_SYMBOLS[key as Currency];
-  }
 
   ngOnInit(): void {
     const storedFilters = this.#store.selectSnapshot(CatalogState.filters);
@@ -92,6 +89,20 @@ export class FiltersComponent implements OnInit {
         min: [filters?.price?.min || null],
         max: [filters?.price?.max || null],
       }),
+    });
+
+    const priceGroup = this.form.get('price') as FormGroup;
+    const currencyCtrl = priceGroup.get('currency');
+    const min = priceGroup.get('min');
+    const max = priceGroup.get('max');
+    currencyCtrl?.valueChanges.pipe(startWith(currencyCtrl.value), takeUntilDestroyed(this.#destroyRef)).subscribe(currency => {
+      if (currency) {
+        min!.enable({ emitEvent: false });
+        max!.enable({ emitEvent: false });
+      } else {
+        min!.disable({ emitEvent: false });
+        max!.disable({ emitEvent: false });
+      }
     });
   }
 

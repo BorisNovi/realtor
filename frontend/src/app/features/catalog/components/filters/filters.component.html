@@ -115,15 +115,15 @@
         <div class="grid grid-cols-1 gap-4">
           <!-- Area Min -->
           <div>
-            <label for="areaMin" class="block text-sm font-medium text-gray-700 mb-1">{{
-              'CATALOG.FILTERS.AREA.MIN' | translate
-            }}</label>
+            <label for="areaMin" class="block text-sm font-medium text-gray-700 mb-1"
+              >{{ 'CATALOG.FILTERS.AREA.MIN' | translate }} m²</label
+            >
             <p-inputnumber
               id="areaMin"
-              suffix=" m²"
               [showButtons]="true"
               [step]="10"
               [min]="0"
+              [max]="100_000_000_000"
               formControlName="min"
               [placeholder]="'CATALOG.FILTERS.AREA.MIN' | translate"
               class="w-full"
@@ -131,15 +131,15 @@
           </div>
           <!-- Area Max -->
           <div>
-            <label for="areaMax" class="block text-sm font-medium text-gray-700 mb-1">{{
-              'CATALOG.FILTERS.AREA.MAX' | translate
-            }}</label>
+            <label for="areaMax" class="block text-sm font-medium text-gray-700 mb-1"
+              >{{ 'CATALOG.FILTERS.AREA.MAX' | translate }} m²</label
+            >
             <p-inputnumber
               id="areaMax"
-              suffix=" m²"
               [showButtons]="true"
               [step]="10"
               [min]="0"
+              [max]="100_000_000_000"
               formControlName="max"
               [placeholder]="'CATALOG.FILTERS.AREA.MAX' | translate"
               class="w-full"
@@ -179,13 +179,16 @@
               'CATALOG.FILTERS.PRICE.MIN' | translate
             }}</label>
             <p-inputnumber
-              id="priceMin"
-              [suffix]="' ' + (getCurrencySymbol(form.controls['price'].value.currency) || '')"
+              inputId="priceMin"
               [showButtons]="true"
               [step]="10"
               [min]="0"
+              [max]="100_000_000_000"
+              mode="currency"
+              [currency]="form.controls['price'].value.currency || 'EUR'"
               formControlName="min"
               [placeholder]="'CATALOG.FILTERS.PRICE.MIN' | translate"
+              locale="de-DE"
               class="w-full"
             />
           </div>
@@ -195,13 +198,16 @@
               'CATALOG.FILTERS.PRICE.MAX' | translate
             }}</label>
             <p-inputnumber
-              id="priceMax"
-              [suffix]="' ' + (getCurrencySymbol(form.controls['price'].value.currency) || '')"
+              inputId="priceMax"
               [showButtons]="true"
               [step]="10"
               [min]="0"
+              [max]="100_000_000_000"
+              mode="currency"
+              [currency]="form.controls['price'].value.currency || 'EUR'"
               formControlName="max"
               [placeholder]="'CATALOG.FILTERS.PRICE.MAX' | translate"
+              locale="de-DE"
               class="w-full"
             />
           </div>
