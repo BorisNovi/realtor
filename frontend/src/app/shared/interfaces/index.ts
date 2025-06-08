@@ -6,5 +6,6 @@ export type { IFingerprintData } from './fingerprint-data.interface';
 export type { ILanguageOption } from './language-option.interface';
 export type { IPagination } from './pagination.interface';
 export type { IPropertyObject, IPropertyObjectSpecifics } from './property-object.interface';
+export type { ISort } from './sort.interface';
 export type { ITableData } from './table-data.interface';
 export type { ISessionUser, IUser } from './user.interface';

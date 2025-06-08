@@ -22,7 +22,7 @@
     (onPage)="pageChange($event)"
     [(selection)]="selectedItems"
     [customSort]="true"
-    (sortFunction)="onSort($event)"
+    (onLazyLoad)="onLazyLoad($event)"
     [tableStyle]="{ 'min-width': '40rem' }"
   >
     <ng-template #caption>

@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { PropertyStatus } from '@shared/enums';
-import { ICatalogFilters, ICatalogItem, IPagination, IPropertyObject, ITableData } from '@shared/interfaces';
+import { ICatalogFilters, ICatalogItem, IPagination, IPropertyObject, ISort, ITableData } from '@shared/interfaces';
 import { buildHttpParams } from '@shared/utils';
 import { Observable } from 'rxjs';
 
@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 export class CatalogService {
   readonly #http = inject(HttpClient);
 
-  fetchCatalog(filters: ICatalogFilters, pagination: IPagination): Observable<ITableData<ICatalogItem>> {
+  fetchCatalog(filters: ICatalogFilters, pagination: IPagination, sort: ISort | null): Observable<ITableData<ICatalogItem>> {
     let params = new HttpParams();
 
     if (pagination) {
@@ -22,6 +22,10 @@ export class CatalogService {
 
     if (filters) {
       params = buildHttpParams(filters, params);
+    }
+
+    if (sort) {
+      params = buildHttpParams(sort, params);
     }
 
     return this.#http.get<ITableData<ICatalogItem>>(`${environment.apiUrl}/catalog`, { params });
