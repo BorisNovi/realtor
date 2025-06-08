@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 
 class Contact(models.Model):
@@ -15,6 +16,11 @@ class PropertyStatus(models.TextChoices):
 
 class BaseProperty(models.Model):
     """ Базовая модель недвижимости с общими полями """
+    def soft_delete(self):
+        self.is_deleted = True
+        self.deleted_at = timezone.now()
+        self.save()
+    
     photos = models.JSONField(default=list)
     address = models.CharField(max_length=255)
     map_link = models.URLField(blank=True, null=True)
@@ -27,6 +33,9 @@ class BaseProperty(models.Model):
     status = models.CharField(max_length=10, choices=PropertyStatus.choices, default=PropertyStatus.AVAILABLE)
 
     comment = models.TextField(blank=True, null=True)
+
+    is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         abstract = True  # Это базовая модель, она не создаёт таблицу в БД
