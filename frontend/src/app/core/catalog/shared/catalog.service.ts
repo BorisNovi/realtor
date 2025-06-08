@@ -53,6 +53,6 @@ export class CatalogService {
     if (ids.length) {
       params = params.set('ids', JSON.stringify(ids));
     }
-    return this.#http.delete<void>(`${environment.apiUrl}/catalog`, { params });
+    return this.#http.delete<void>(`${environment.apiUrl}/catalog/delete`, { params });
   }
 }

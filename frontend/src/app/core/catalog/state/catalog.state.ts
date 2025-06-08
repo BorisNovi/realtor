@@ -151,7 +151,6 @@ export class CatalogState {
     ctx.patchState({ loading: true });
     return this.#catalogService.deletePropertyObject(idList).pipe(
       tap(() => {
-        ctx.dispatch(new FetchCatalog());
         ctx.dispatch(new CatalogOperationSuccess('успешно удален'));
       }),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось удалить'))),
