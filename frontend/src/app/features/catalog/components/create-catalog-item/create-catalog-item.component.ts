@@ -19,7 +19,6 @@ import {
   RenovationStatus,
   ZoningType,
 } from '@shared/enums';
-import { IPropertyObject } from '@shared/interfaces';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -33,7 +32,7 @@ import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
-import { tap } from 'rxjs';
+import { startWith, tap } from 'rxjs';
 import { CreatePropertyObject, FileUploadService } from 'src/app/core';
 
 @Component({
@@ -109,10 +108,6 @@ export class CreateCatalogItemComponent implements OnInit {
   );
   readonly currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
 
-  getCurrencySymbol(key: string): string {
-    return CURRENCY_SYMBOLS[key as Currency];
-  }
-
   isCommentVisible = !!this.#config.data?.comment || false;
   isAdditionalParamsVisible = !!this.#config.data?.specifies || false;
 
@@ -134,8 +129,8 @@ export class CreateCatalogItemComponent implements OnInit {
       area: [data?.area || null, [Validators.required, Validators.min(1)]],
 
       price: this.#fb.group({
-        value: [data?.price?.value || null, [Validators.required, Validators.min(0)]],
         currency: [data?.price?.currency || null, Validators.required],
+        value: [data?.price?.value || null, [Validators.required, Validators.min(0)]],
       }),
 
       contact: this.#fb.group({
@@ -161,6 +156,13 @@ export class CreateCatalogItemComponent implements OnInit {
     });
 
     this.photosS.set(data?.photos || []);
+
+    const priceGroup = this.form.get('price') as FormGroup;
+    const currencyCtrl = priceGroup.get('currency');
+    const valueCtrl = priceGroup.get('value');
+    currencyCtrl?.valueChanges
+      .pipe(startWith(currencyCtrl.value), takeUntilDestroyed(this.#destroyRef))
+      .subscribe(currency => (currency ? valueCtrl!.enable({ emitEvent: false }) : valueCtrl!.disable({ emitEvent: false })));
   }
 
   choose(callback: VoidFunction): void {

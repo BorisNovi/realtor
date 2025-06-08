@@ -131,11 +131,11 @@
     <!-- Area -->
     <app-input-wrapper [control]="form.get('area')!" [label]="'FORM.LABELS.AREA' | translate" id="area">
       <p-inputnumber
-        id="area"
-        suffix=" m²"
+        inputId="area"
         [showButtons]="true"
         [step]="10"
         [min]="0"
+        [max]="100_000_000_000"
         formControlName="area"
         [placeholder]="'FORM.PLACEHOLDERS.AREA' | translate"
         class="w-full"
@@ -156,26 +156,6 @@
 
     <!-- Price -->
     <ng-container formGroupName="price">
-      <!-- Price Value -->
-
-      <app-input-wrapper [control]="form.get('price')?.get('value')!" [label]="'FORM.LABELS.PRICE' | translate" id="price">
-        <p-inputgroup>
-          <p-inputgroup-addon>
-            <i class="pi pi-wallet"></i>
-          </p-inputgroup-addon>
-          <p-inputnumber
-            id="price"
-            formControlName="value"
-            [placeholder]="'FORM.PLACEHOLDERS.PRICE' | translate"
-            [suffix]="' ' + (getCurrencySymbol(form.controls['price'].value.currency) || '')"
-            [showButtons]="true"
-            [step]="10"
-            [min]="0"
-            class="w-full"
-          />
-        </p-inputgroup>
-      </app-input-wrapper>
-
       <!-- Price Currency -->
       <app-input-wrapper
         [control]="form.get('price')?.get('currency')!"
@@ -194,6 +174,28 @@
           placeholder="e.g., USD"
           class="w-full"
         />
+      </app-input-wrapper>
+
+      <!-- Price Value -->
+      <app-input-wrapper [control]="form.get('price')?.get('value')!" [label]="'FORM.LABELS.PRICE' | translate" id="price">
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <i class="pi pi-wallet"></i>
+          </p-inputgroup-addon>
+          <p-inputnumber
+            inputId="price"
+            formControlName="value"
+            [placeholder]="'FORM.PLACEHOLDERS.PRICE' | translate"
+            [showButtons]="true"
+            [step]="10"
+            [min]="0"
+            [max]="100_000_000_000"
+            mode="currency"
+            [currency]="form.controls['price'].value.currency || 'EUR'"
+            locale="de-DE"
+            class="w-full"
+          />
+        </p-inputgroup>
       </app-input-wrapper>
     </ng-container>
 
@@ -278,11 +280,12 @@
               <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">{{
                 'FORM.LABELS.CURRENT_FLOOR' | translate
               }}</label>
-              <input
-                id="currentFloor"
-                pInputText
-                type="number"
+              <p-inputnumber
+                inputId="currentFloor"
                 formControlName="current"
+                [min]="0"
+                [max]="200"
+                [useGrouping]="false"
                 [placeholder]="'FORM.PLACEHOLDERS.CURRENT_FLOOR' | translate"
                 class="w-full"
               />
@@ -293,11 +296,12 @@
               <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">{{
                 'FORM.LABELS.TOTAL_FLOORS' | translate
               }}</label>
-              <input
-                id="totalFloors"
-                pInputText
-                type="number"
+              <p-inputnumber
+                inputId="totalFloors"
                 formControlName="full"
+                [min]="0"
+                [max]="200"
+                [useGrouping]="false"
                 [placeholder]="'FORM.PLACEHOLDERS.TOTAL_FLOORS' | translate"
                 class="w-full"
               />
@@ -309,11 +313,12 @@
             <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">{{
               'FORM.LABELS.ROOMS' | translate
             }}</label>
-            <input
-              id="rooms"
-              pInputText
-              type="number"
+            <p-inputnumber
+              inputId="rooms"
               formControlName="rooms"
+              [min]="0"
+              [max]="200"
+              [useGrouping]="false"
               [placeholder]="'FORM.PLACEHOLDERS.ROOMS' | translate"
               class="w-full"
             />
