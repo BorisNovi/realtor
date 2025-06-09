@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
-from ..serializers.catalog import CatalogCreateSerializer
+from ..serializers.catalog_serializer import CatalogCreateSerializer
 
 class PropertyCreateView(generics.CreateAPIView):
     serializer_class = CatalogCreateSerializer

@@ -7,4 +7,5 @@ urlpatterns = [
     path('/property_object', PropertyCreateView.as_view(), name='property-create'),
     path('/catalog', CatalogListView.as_view(), name='catalog'),
     path('/catalog/delete', CatalogBulkDeleteView.as_view(), name="catalog-bulk-delete"),
+
 ]

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from catalog.serializers.catalog import ContactSerializer
+from catalog.serializers.catalog_serializer import ContactSerializer
 
 class CatalogItemSerializer(serializers.Serializer):
     id = serializers.IntegerField()
