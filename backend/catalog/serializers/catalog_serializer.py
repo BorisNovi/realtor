@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from rest_framework import serializers
 from ..models import Contact
-from .flat import FlatSerializer
-from .office import OfficeSerializer
-from .land import LandPlotSerializer
-from .contact import ContactSerializer
+from .flat_serializer import FlatSerializer
+from .office_serializer import OfficeSerializer
+from .land_serializer import LandPlotSerializer
+from .contact_serializer import ContactSerializer
 # TODO: добавить HouseSerializer, GarageSerializer и т.п.
 
 PROPERTY_SERIALIZER_MAP = {
@@ -28,12 +28,6 @@ class CatalogCreateSerializer(serializers.Serializer):
 
     # Необязательные поля
     title = serializers.CharField(required=False, allow_blank=True)
-    # photos = serializers.ListField(
-    #     child=serializers.URLField(), default=list, required=False
-    # )
-    # photos_to_delete = serializers.ListField(
-    #     child=serializers.URLField(), required=False, write_only=True
-    # )
     map_link = serializers.URLField(required=False, allow_blank=True, allow_null=True)
     comment = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     date_added = serializers.DateTimeField(required=False)
@@ -79,6 +73,31 @@ class CatalogCreateSerializer(serializers.Serializer):
         serializer = serializer_class(data=combined_data)
         serializer.is_valid(raise_exception=True)
         return serializer.save()
+
+    def update(self, instance, validated_data):
+        contact_data = validated_data.pop('contact', None)
+        if contact_data:
+            contact_serializer = ContactSerializer(instance.contact, data=contact_data)
+            contact_serializer.is_valid(raise_exception=True)
+            contact_serializer.save()
+
+        price_data = validated_data.pop('price', {})
+        validated_data['price_value'] = price_data.get('value', instance.price_value)
+        validated_data['price_currency'] = price_data.get('currency', instance.price_currency)
+
+        extra_fields = validated_data.pop('extra_fields', {})
+
+        # Список запрещенных для прямого изменения атрибутов
+        forbidden_fields = ['property_type', 'id']
+
+        for attr, value in {**validated_data, **extra_fields}.items():
+            if attr in forbidden_fields:
+                continue  # пропускаем поля, которые нельзя менять напрямую
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
+
 
     def to_representation(self, instance):
         # возвращаем, как сериализует конкретный сериализатор
