@@ -9,9 +9,9 @@ from catalog.utils.filters import apply_catalog_filters
 
 class CatalogListView(APIView):
     def get(self, request):
-        flats = Flat.objects.all()
-        offices = Office.objects.all()
-        lands = LandPlot.objects.all()
+        flats = Flat.objects.filter(deleted_at__isnull=True)
+        offices = Office.objects.filter(deleted_at__isnull=True)
+        lands = LandPlot.objects.filter(deleted_at__isnull=True)
 
         combined = sorted(chain(flats, offices, lands), key=lambda obj: obj.date_added, reverse=True)
 
