@@ -1,12 +1,10 @@
 @let pObject = propertyObject();
-<div class="flex flex-row gap-8 w-full">
-  <div class="card w-[50%]">
-    <p-galleria
-      [value]="images"
-      [responsiveOptions]="galleriaResponsiveOptions"
-      [containerStyle]="{ 'max-width': '640px' }"
-      [numVisible]="5"
-    >
+<div class="flex flex-col md:flex-row md:gap-8 w-full">
+  <div class="block md:hidden">
+    <ng-container [ngTemplateOutlet]="header"></ng-container>
+  </div>
+  <div class="md:w-[50%] h-fit mb-4">
+    <p-galleria class="border-transparent!" [value]="images" [responsiveOptions]="galleriaResponsiveOptions" [numVisible]="5">
       <ng-template #item let-item>
         <img [src]="item.image" style="width: 100%" alt="image" />
       </ng-template>
@@ -15,37 +13,74 @@
       </ng-template>
     </p-galleria>
   </div>
-  <div class="w-[60%]">
-    <h2 class="font-semibold text-xxs mb-4">
-      {{ pObject?.propertyType || '' }} {{ pObject?.area || 0 }} m² - {{ pObject?.price?.value || 0 }}
-      {{ pObject?.price?.currency || 'G' }}
-    </h2>
+  <div class="md:w-[50%] xl:w-[60%]">
+    <div class="hidden md:block">
+      <ng-container [ngTemplateOutlet]="header"></ng-container>
+    </div>
     <div class="card">
       <ul class="text-lg">
-        <li><strong>Type: </strong><span>{{ pObject?.propertyType || '-' }}</span></li>
-        <li><strong>Status: </strong><span>{{ pObject?.status || '-' }}</span></li>
-        <li><strong>Zoning: </strong><span>{{ pObject?.zoningType || '-' }}</span></li>
+        <!-- TODO: переводы отделить -->
+        <li>
+          <strong>{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}: </strong><span>{{ pObject?.propertyType || '—' }}</span>
+        </li>
+        <li>
+          <strong>{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}: </strong
+          ><p-tag
+            class="h-6"
+            [value]="'FORM.PROPERTIES.PROPERTY_STATUS.' + pObject?.status | translate"
+            [severity]="getSeverity(pObject?.status || '')"
+          ></p-tag>
+        </li>
+        <li>
+          <strong>{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}: </strong><span>{{ pObject?.zoningType || '—' }}</span>
+        </li>
         <!-- {{pObject?.mapLink}} как роутерлинк у ссылки адреса -->
         <!-- Тут или кнопку, которая пошлет на карту, или откроет модалку с картой или сошлет на внешние краты. Или все три -->
-        <li><strong>Address: </strong><a>{{ pObject?.address || '-' }}</a></li>
-        <li><strong>Price: </strong><a>{{ pObject?.price?.value || '-' }} {{ pObject?.price?.currency }}</a></li>
+        <li>
+          <strong>{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </strong><a>{{ pObject?.address || '—' }}</a>
+        </li>
+        <li>
+          <strong>{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }}: </strong
+          ><a>{{ pObject?.price?.value || '—' }} {{ pObject?.price?.currency }}</a>
+        </li>
       </ul>
+      <ng-content></ng-content>
     </div>
     <div class="card">
       <ul>
-        <li><strong>Area: </strong><span>{{ pObject?.area || '-' }}</span></li>
+        <li>
+          <strong>Area: </strong><span>{{ pObject?.area || '—' }} m²</span>
+        </li>
         <!-- особенности лучше перебрать циклом -->
-        <li><strong>Floor: </strong><span>{{ pObject?.specifies?.floor?.current || '-'}} / {{ pObject?.specifies?.floor?.full || '-' }}</span></li>
-        <li><strong>Rooms: </strong><span>{{ pObject?.specifies?.rooms || '-' }}</span></li>
-        <li><strong>Heating: </strong><span>{{ pObject?.specifies?.heating || '-' }}</span></li>
+        <li>
+          <strong>Floor: </strong
+          ><span>{{ pObject?.specifies?.floor?.current || '—' }} / {{ pObject?.specifies?.floor?.full || '—' }}</span>
+        </li>
+        <li>
+          <strong>Rooms: </strong><span>{{ pObject?.specifies?.rooms || '—' }}</span>
+        </li>
+        <li>
+          <strong>Heating: </strong><span>{{ pObject?.specifies?.heating || '—' }}</span>
+        </li>
       </ul>
     </div>
     <div class="card">
       <h5>Contact</h5>
       <ul>
-        <li><strong>Contact person: </strong><span>{{ pObject?.contact?.name || '-' }}</span></li>
-        <li><strong>Contact phone: </strong><span>{{ pObject?.contact?.phone || '-' }}</span></li>
+        <li>
+          <strong>Contact person: </strong><span>{{ pObject?.contact?.name || '—' }}</span>
+        </li>
+        <li>
+          <strong>Contact phone: </strong><span>{{ pObject?.contact?.phone || '—' }}</span>
+        </li>
       </ul>
     </div>
   </div>
 </div>
+
+<ng-template #header>
+  <h1 class="font-semibold text-xxs mb-4">
+    {{ pObject?.propertyType || '' }} {{ pObject?.area || 0 }} m² — {{ pObject?.price?.value || 0 }}
+    {{ pObject?.price?.currency || 'G' }}
+  </h1>
+</ng-template>
