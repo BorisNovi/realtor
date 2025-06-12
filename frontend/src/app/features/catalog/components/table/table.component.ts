@@ -30,6 +30,7 @@ import { startWith, tap } from 'rxjs';
 import { CatalogState, DeletePropertyObjects, FetchPropertyObject, UpdateStatus } from 'src/app/core';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-table',
@@ -64,6 +65,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   readonly #store = inject(Store);
   readonly #confirmationService = inject(ConfirmationService);
   readonly #translateService = inject(TranslateService);
+  readonly #router = inject(Router);
   readonly #destroyRef = inject(DestroyRef);
 
   readonly getSeverity = getPropertyStatusSeverity;
@@ -136,6 +138,10 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   onActionClick(event: Event, item: ICatalogItem): void {
     this.#setActionItems(event, item);
     this.menu().toggle(event);
+  }
+
+  onRowClick(item: ICatalogItem): void {
+    this.#router.navigate(['catalog', item.id]);
   }
 
   onLazyLoad(event: TableLazyLoadEvent): void {

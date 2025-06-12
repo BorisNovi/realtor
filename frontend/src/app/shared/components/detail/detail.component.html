@@ -18,14 +18,34 @@
   <div class="w-[60%]">
     <h2 class="font-semibold text-xxs mb-4">
       {{ pObject?.propertyType || '' }} {{ pObject?.area || 0 }} m² - {{ pObject?.price?.value || 0 }}
-      {{ pObject?.price?.currency || '$' }}
+      {{ pObject?.price?.currency || 'G' }}
     </h2>
     <div class="card">
-      <h5>Main info h</h5>
-      <div>main info</div>
+      <ul class="text-lg">
+        <li><strong>Type: </strong><span>{{ pObject?.propertyType || '-' }}</span></li>
+        <li><strong>Status: </strong><span>{{ pObject?.status || '-' }}</span></li>
+        <li><strong>Zoning: </strong><span>{{ pObject?.zoningType || '-' }}</span></li>
+        <!-- {{pObject?.mapLink}} как роутерлинк у ссылки адреса -->
+        <!-- Тут или кнопку, которая пошлет на карту, или откроет модалку с картой или сошлет на внешние краты. Или все три -->
+        <li><strong>Address: </strong><a>{{ pObject?.address || '-' }}</a></li>
+        <li><strong>Price: </strong><a>{{ pObject?.price?.value || '-' }} {{ pObject?.price?.currency }}</a></li>
+      </ul>
     </div>
     <div class="card">
-      <div>sub info</div>
+      <ul>
+        <li><strong>Area: </strong><span>{{ pObject?.area || '-' }}</span></li>
+        <!-- особенности лучше перебрать циклом -->
+        <li><strong>Floor: </strong><span>{{ pObject?.specifies?.floor?.current || '-'}} / {{ pObject?.specifies?.floor?.full || '-' }}</span></li>
+        <li><strong>Rooms: </strong><span>{{ pObject?.specifies?.rooms || '-' }}</span></li>
+        <li><strong>Heating: </strong><span>{{ pObject?.specifies?.heating || '-' }}</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h5>Contact</h5>
+      <ul>
+        <li><strong>Contact person: </strong><span>{{ pObject?.contact?.name || '-' }}</span></li>
+        <li><strong>Contact phone: </strong><span>{{ pObject?.contact?.phone || '-' }}</span></li>
+      </ul>
     </div>
   </div>
 </div>
