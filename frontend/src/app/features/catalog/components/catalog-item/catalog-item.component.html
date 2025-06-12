@@ -1,3 +1,18 @@
-<div>кнопки добавления в подборку, открытия диалога редактирования, удаления</div>
-
-<app-detail></app-detail>
+@let pObject = item();
+@if (pObject) {
+  <p-breadcrumb
+    class="max-w-full bg-transparent"
+    [model]="[{ label: 'Property № ' + pObject?.id }]"
+    [home]="{ icon: 'pi pi-home', routerLink: '/' }"
+  />
+  <app-detail [propertyObject]="pObject">
+    <p-divider align="left" type="solid" class="md:col-span-2"></p-divider>
+    <div class="flex gap-4 justify-between">
+      <div class="flex gap-2">
+        <p-button icon="pi pi-trash" severity="danger" />
+        <p-button icon="pi pi-pencil" />
+      </div>
+      <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate" icon="pi pi-list-check" />
+    </div>
+  </app-detail>
+}

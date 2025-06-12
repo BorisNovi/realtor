@@ -1,19 +1,34 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { IPropertyObject } from '@shared/interfaces';
+import { getPropertyStatusSeverity } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
-import { GalleriaModule } from 'primeng/galleria';
+import { GalleriaModule, GalleriaResponsiveOptions } from 'primeng/galleria';
 import { ImageModule } from 'primeng/image';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-detail',
-  imports: [ButtonModule, GalleriaModule, ImageModule],
+  imports: [ButtonModule, GalleriaModule, ImageModule, TagModule, TranslatePipe],
+  styles: `
+    ::ng-deep {
+      p-galleria .p-galleria {
+        border-color: transparent !important;
+      }
+    }
+    .card {
+      margin-bottom: 1rem;
+    }
+  `,
   templateUrl: './detail.component.html',
 })
 export class DetailComponent {
   readonly propertyObject = input<IPropertyObject>();
 
-  images: any[] = [
+  readonly getSeverity = getPropertyStatusSeverity;
+
+  images: Record<string, string>[] = [
     { image: 'https://picsum.photos/id/238/1200/1000', thumbnail: 'https://picsum.photos/id/238/100/100' },
     { image: 'https://picsum.photos/id/237/1200/1000', thumbnail: 'https://picsum.photos/id/237/100/100' },
     { image: 'https://picsum.photos/id/239/1200/1000', thumbnail: 'https://picsum.photos/id/239/100/100' },
@@ -22,7 +37,7 @@ export class DetailComponent {
     { image: 'https://picsum.photos/id/242/1200/1000', thumbnail: 'https://picsum.photos/id/242/100/100' },
   ];
 
-  galleriaResponsiveOptions: any[] = [
+  galleriaResponsiveOptions: GalleriaResponsiveOptions[] = [
     {
       breakpoint: '1024px',
       numVisible: 5,
@@ -30,14 +45,6 @@ export class DetailComponent {
     {
       breakpoint: '960px',
       numVisible: 4,
-    },
-    {
-      breakpoint: '768px',
-      numVisible: 3,
-    },
-    {
-      breakpoint: '560px',
-      numVisible: 2,
     },
   ];
 }

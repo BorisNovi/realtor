@@ -74,7 +74,11 @@
         <td>{{ item.price.value | number }} {{ getCurrencySymbol(item.price.currency) }}</td>
         <td>{{ item.area }} m²</td>
         <td>{{ item.dateAdded | date: 'd MM y' }}</td>
-        <td [pEditableColumn]="{ id: item.id, value: item.status }" pEditableColumnField="status" (click)="$event.stopPropagation()">
+        <td
+          [pEditableColumn]="{ id: item.id, value: item.status }"
+          pEditableColumnField="status"
+          (click)="$event.stopPropagation()"
+        >
           <p-cellEditor>
             <ng-template #input>
               <p-select
@@ -106,7 +110,13 @@
         </td>
 
         <td>
-          <p-button icon="pi pi-ellipsis-v" (click)="onActionClick($event, item); $event.stopPropagation()" severity="secondary" text rounded />
+          <p-button
+            icon="pi pi-ellipsis-v"
+            (click)="onActionClick($event, item); $event.stopPropagation()"
+            severity="secondary"
+            text
+            rounded
+          />
         </td>
       </tr>
     </ng-template>
