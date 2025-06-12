@@ -10,11 +10,14 @@ class RefreshTokenView(APIView):
     authentication_classes = []  # Отключаем JWTAuthentication
     permission_classes = [AllowAny]  # Разрешаем доступ без аутентификации
     def post(self, request):
-        user_id = request.data.get('userId')
+        user_id = request.data.get('id')
         auth_header = request.headers.get('Authorization')
 
-        if not user_id or not auth_header:
-            return Response({'error': 'userId and Authorization header are required'}, status=status.HTTP_400_BAD_REQUEST)
+        if not user_id:
+            return Response({'error': 'Missing userId in request body'}, status=400)
+        if not auth_header:
+            return Response({'error': 'Missing Authorization header'}, status=400)
+
 
         if not auth_header.startswith('Bearer '):
             return Response({'error': 'Invalid Authorization header'}, status=status.HTTP_400_BAD_REQUEST)
