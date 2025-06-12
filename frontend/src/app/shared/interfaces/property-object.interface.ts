@@ -10,6 +10,9 @@ export interface IPropertyObjectSpecifics {
   rooms?: number;
   floor?: { current?: number; full?: number };
   heating?: HeatingType;
+  renovation?: RenovationStatus;
+  furnished?: FurnishedStatus;
+  kitchen?: KitchenType;
   sharedFacilities?: { kitchen: boolean; bathroom: boolean };
 
   utilities?: {
@@ -20,19 +23,5 @@ export interface IPropertyObjectSpecifics {
     internet?: boolean;
   };
 
-  // TODO: убарать опции, замениь на универсальный тип
-  parking?: boolean;
-  bath?: boolean;
-  shower?: boolean;
-  airConditioning?: boolean;
-  fireplace?: boolean;
-  beautifulView?: boolean;
-  newBuilding?: boolean;
-  elevator?: boolean;
-  furnished?: FurnishedStatus;
-  renovation?: RenovationStatus;
-  balcony?: boolean;
-  kitchen?: KitchenType;
-  garden?: boolean;
-  garage?: boolean;
+  options: Record<string, object | boolean>;
 }

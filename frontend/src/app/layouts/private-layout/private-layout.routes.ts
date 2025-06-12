@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
-import { catalogResolver } from 'src/app/features/catalog';
-import { CatalogComponent } from '../../features';
+import { catalogRoutes } from 'src/app/features';
 import { PrivateLayoutComponent } from './private-layout.component';
 
 export const privateLayoutRoutes: Routes = [
@@ -13,7 +12,7 @@ export const privateLayoutRoutes: Routes = [
         pathMatch: 'full',
         redirectTo: 'catalog',
       },
-      { path: 'catalog', component: CatalogComponent, resolve: { data: catalogResolver } },
+      { path: 'catalog', children: catalogRoutes },
       { path: 'listings', loadComponent: () => import('../../features').then(c => c.ListingsComponent) },
       { path: 'map', loadComponent: () => import('../../features').then(c => c.MapComponent) },
       {

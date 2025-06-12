@@ -1,2 +1,1 @@
-export { CatalogComponent } from './catalog.component';
-export { catalogResolver } from './catalog.resolver';
+export { catalogRoutes } from './catalog.routes';
