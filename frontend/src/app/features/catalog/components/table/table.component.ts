@@ -12,8 +12,10 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency, PropertyStatus } from '@shared/enums';
 import { ICatalogItem, IPagination, IPropertyObject } from '@shared/interfaces';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
@@ -29,8 +31,6 @@ import { TagModule } from 'primeng/tag';
 import { startWith, tap } from 'rxjs';
 import { CatalogState, DeletePropertyObjects, FetchPropertyObject, UpdateStatus } from 'src/app/core';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
-import { CURRENCY_SYMBOLS } from '@shared/constants';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-table',
@@ -112,6 +112,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
         label: this.#translateService.instant('CATALOG.TABLE.BUTTONS.ADD_TO_LISTING'),
         icon: 'pi pi-list-check',
         command: () => {
+          // TODO: на этапе подборок это реализуется
           console.debug(`Add to listing item with id: ${item.id}`);
         },
       },
@@ -201,10 +202,6 @@ export class TableComponent implements AfterViewInit, OnDestroy {
         '768px': '90vw',
         '640px': '95vw',
       },
-    });
-
-    this.#ref.onClose.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((data: IPropertyObject) => {
-      console.debug('data on close dialog', data);
     });
   }
 

@@ -33,7 +33,7 @@ import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
 import { startWith, tap } from 'rxjs';
-import { CreatePropertyObject, FileUploadService } from 'src/app/core';
+import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
 
 @Component({
   imports: [
@@ -118,7 +118,6 @@ export class CreateCatalogItemComponent implements OnInit {
   #initForm(): void {
     const data = this.#config.data;
 
-    // TODO: Нужно проверит соответствие интерфейсу IPropertyObject
     this.form = this.#fb.group({
       photos: [data?.photos || []],
       propertyType: [data?.propertyType || null, Validators.required],
@@ -216,7 +215,7 @@ export class CreateCatalogItemComponent implements OnInit {
       };
 
       this.#store
-        .dispatch(new CreatePropertyObject(payload))
+        .dispatch(this.#config?.data?.id ? new UpdatePropertyObject(payload) : new CreatePropertyObject(payload))
         .pipe(
           tap(() => this.#ref.close(payload)),
           takeUntilDestroyed(this.#destroyRef),
