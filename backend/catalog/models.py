@@ -9,9 +9,9 @@ class Contact(models.Model):
         return f"{self.name} ({self.phone})"
 
 class PropertyStatus(models.TextChoices):
-    AVAILABLE = 'available', 'Доступно'
-    RESERVED = 'reserved', 'Забронировано'
-    RENTED = 'rented', 'Сдано'
+    AVAILABLE = 'available', 
+    RESERVED = 'reserved', 
+    RENTED = 'rented', 
 
 
 class BaseProperty(models.Model):
