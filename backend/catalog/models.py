@@ -38,7 +38,7 @@ class BaseProperty(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        abstract = True  # Это базовая модель, она не создаёт таблицу в БД
+        abstract = True 
 
 class Flat(BaseProperty):
     """ Модель для квартир """
@@ -49,11 +49,26 @@ class Flat(BaseProperty):
     bath = models.BooleanField(default=False)
     shower = models.BooleanField(default=False)
     air_conditioning = models.BooleanField(default=False)
+    heating = models.BooleanField(default=False)
     fireplace = models.BooleanField(default=False)
     beautiful_view = models.BooleanField(default=False)
     new_building = models.BooleanField(default=False)
     elevator = models.BooleanField(default=False)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="flats")
+
+    # Дополнительно для соответствия интерфейсу
+    kitchen_type = models.CharField(max_length=50, null=True, blank=True)
+    renovation = models.CharField(max_length=50, null=True, blank=True)
+    furnished = models.CharField(max_length=50, null=True, blank=True)
+
+    shared_kitchen = models.BooleanField(default=False)
+    shared_bathroom = models.BooleanField(default=False)
+
+    has_electricity = models.BooleanField(default=False)
+    has_water = models.BooleanField(default=False)
+    has_gas = models.BooleanField(default=False)
+    has_sewerage = models.BooleanField(default=False)
+    has_internet = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Квартира – {self.address} ({self.price_value} {self.price_currency})"

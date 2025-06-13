@@ -2,12 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from catalog.serializers.catalog_serializer import PROPERTY_SERIALIZER_MAP
-from catalog.models import Flat, Office, LandPlot  # или откуда у тебя модели
+from catalog.serializers.flat_details_serializer import FlatDetailSerializer
+from catalog.views.catalog_list_view import PROPERTY_MODEL_MAP
 
-PROPERTY_MODEL_MAP = {
-    'flat': Flat,
-    'office': Office,
-    'landplot': LandPlot,
+PROPERTY_SERIALIZER_MAP = {
+    'flat': FlatDetailSerializer,  # выдача в интерфейсном формате
+    # 'office': OfficeDetailSerializer,
+    # 'landplot': LandPlotDetailSerializer,
 }
 
 class CatalogDetailView(APIView):
