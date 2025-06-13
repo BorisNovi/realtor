@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IPropertyObject } from '@shared/interfaces';
+import { WorldPhoneMaskPipe } from '@shared/pipes';
 import { getPropertyStatusSeverity } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
 import { GalleriaModule, GalleriaResponsiveOptions } from 'primeng/galleria';
@@ -10,7 +10,7 @@ import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-detail',
-  imports: [ButtonModule, GalleriaModule, ImageModule, TagModule, TranslatePipe],
+  imports: [ButtonModule, GalleriaModule, ImageModule, TagModule, TranslatePipe, WorldPhoneMaskPipe],
   styles: `
     ::ng-deep {
       p-galleria .p-galleria {

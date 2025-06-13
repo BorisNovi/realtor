@@ -3,7 +3,7 @@ import { ICatalogItem } from './catalog-item.interface';
 
 export interface IPropertyObject extends ICatalogItem {
   comment?: string;
-  specifies: IPropertyObjectSpecifics;
+  specifics: IPropertyObjectSpecifics;
 }
 
 export interface IPropertyObjectSpecifics {

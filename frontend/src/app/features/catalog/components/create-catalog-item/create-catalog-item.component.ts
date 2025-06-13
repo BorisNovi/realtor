@@ -109,7 +109,7 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
 
   isCommentVisible = !!this.#config.data?.comment || false;
-  isAdditionalParamsVisible = !!this.#config.data?.specifies || false;
+  isAdditionalParamsVisible = !!this.#config.data?.specifics || false;
 
   ngOnInit(): void {
     this.#initForm();
@@ -139,18 +139,18 @@ export class CreateCatalogItemComponent implements OnInit {
 
       comment: [data?.comment || null],
 
-      specifies: this.#fb.group({
-        rooms: [data?.specifies?.rooms || null, [Validators.min(1), Validators.max(200)]],
+      specifics: this.#fb.group({
+        rooms: [data?.specifics?.rooms || null, [Validators.min(1), Validators.max(200)]],
         floor: this.#fb.group({
-          current: [data?.specifies?.floor?.current || null, [Validators.min(-10), Validators.max(200)]],
-          full: [data?.specifies?.floor?.full || null, Validators.min(1)],
+          current: [data?.specifics?.floor?.current || null, [Validators.min(-10), Validators.max(200)]],
+          full: [data?.specifics?.floor?.full || null, Validators.min(1)],
         }),
-        kitchen: [data?.specifies?.kitchen || null],
-        heating: [data?.specifies?.utilities?.heating || null],
-        furnished: [data?.specifies?.furnished || null],
-        renovation: [data?.specifies?.renovation || null],
+        kitchen: [data?.specifics?.kitchen || null],
+        heating: [data?.specifics?.utilities?.heating || null],
+        furnished: [data?.specifics?.furnished || null],
+        renovation: [data?.specifics?.renovation || null],
 
-        options: [data?.specifies?.options || null],
+        options: [data?.specifics?.options || null],
       }),
     });
 
@@ -207,23 +207,39 @@ export class CreateCatalogItemComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.valid) {
-      const formData = this.form.value;
-      const payload = {
-        ...formData,
-        contact: { name: formData.contact.name, phone: formData.contact.phone?.replace(/\D/g, '') },
-      };
-
-      this.#store
-        .dispatch(this.#config?.data?.id ? new UpdatePropertyObject(payload) : new CreatePropertyObject(payload))
-        .pipe(
-          tap(() => this.#ref.close(payload)),
-          takeUntilDestroyed(this.#destroyRef),
-        )
-        .subscribe();
-    } else {
+    if (!this.form.valid) {
       this.form.markAllAsTouched();
+      return;
     }
+
+    const formData = this.form.value;
+    const cleanPhone = formData.contact.phone?.replace(/\D/g, '') ?? null;
+    const hasId = Boolean(this.#config.data?.id);
+
+    const payload = hasId
+      ? {
+          ...this.#config.data,
+          ...formData,
+          price: { ...this.#config.data!.price, ...formData.price },
+          contact: { ...this.#config.data!.contact, name: formData.contact.name, phone: cleanPhone },
+          specifics: { ...this.#config.data!.specifics, ...formData.specifics },
+          photos: this.photosS(),
+        }
+      : {
+          ...formData,
+          contact: { name: formData.contact.name, phone: cleanPhone },
+          photos: this.photosS(),
+        };
+
+    const action = hasId ? new UpdatePropertyObject(payload) : new CreatePropertyObject(payload);
+
+    this.#store
+      .dispatch(action)
+      .pipe(
+        tap(() => this.#ref.close(payload)),
+        takeUntilDestroyed(this.#destroyRef),
+      )
+      .subscribe();
   }
 
   onCancel(): void {

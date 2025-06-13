@@ -4,7 +4,7 @@
 @if (pObject) {
   <p-breadcrumb
     class="max-w-full bg-transparent"
-    [model]="[{ label: 'Property № ' + pObject?.id }]"
+    [model]="[{ label: '№ ' + pObject?.id }]"
     [home]="{ icon: 'pi pi-home', routerLink: '/' }"
   />
   <app-detail [propertyObject]="pObject">
