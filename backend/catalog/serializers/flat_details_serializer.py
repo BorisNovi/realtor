@@ -8,7 +8,6 @@ class FlatDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Flat
-        # Только нужные поля + specifics
         fields = [
             'id', 
             'property_type', 
