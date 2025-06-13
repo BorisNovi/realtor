@@ -81,7 +81,6 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   readonly loadingS = this.#store.selectSignal(CatalogState.loading);
 
   ngAfterViewInit(): void {
-    console.log('view init');
     const pagination = this.paginationS();
     this.pTable().first = pagination.first;
     this.pTable().rows = pagination.rows;
