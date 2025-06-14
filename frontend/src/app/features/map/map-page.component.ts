@@ -11,7 +11,7 @@ import { LngLatLike } from 'maplibre-gl';
 export class MapPageComponent {
   readonly mapComponent = viewChild(MapComponent);
 
-  readonly c = signal<LngLatLike>([41, 41]);
+  readonly c = signal<LngLatLike>([41.6, 41.6]);
 
   // XXX: Здесь пока все тестовое, оно не пойдет в прод
   on1(): void {
