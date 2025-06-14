@@ -1,6 +1,10 @@
 <p>map-page works!</p>
 
-<app-map class="flex w-full h-[40rem]" [center]="c()"></app-map>
+<app-map class="flex w-full h-[40rem]" [center]="c()">
+  <app-map-marker [position]="[41.649008, 41.641028]" (dragEnd)="on3($event)" draggable></app-map-marker>
+  <app-map-marker [position]="[41.642414, 41.635242]" (markerClick)="on3($event)"></app-map-marker>
+  <app-map-marker [position]="[41.637621, 41.614018]"></app-map-marker>
+</app-map>
 <div>
   <button (click)="on1()">pan batumi</button>
   <button (click)="on2()">set center</button>
