@@ -51,14 +51,9 @@
           <span>Theme</span>
         </button>
 
-        <button
-          [pTooltip]="currentLanguage().label"
-          tooltipPosition="left"
-          class="layout-topbar-action"
-          (click)="toggleLanguage()"
-        >
-          <i class="pi pi-globe"></i>
-          <span>Language</span>
+        <button class="layout-topbar-action" (click)="toggleLanguage()">
+          <i [appIcon]="currentLanguage().value" class="w-4"></i>
+          <span>{{ 'TOPBAR.LANGUAGE' | translate }}</span>
         </button>
       </div>
     </div>

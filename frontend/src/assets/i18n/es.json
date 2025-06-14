@@ -1,6 +1,128 @@
 {
-  "CHECK": "CHECK (ES)",
-
+  "TOPBAR": {
+    "LANGUAGE": "Español"
+  },
+  "NOTIFICATIONS": {
+    "SUCCESS": "Éxito",
+    "ERROR": "Error"
+  },
+  "FORM": {
+    "LABELS": {
+      "PHOTOS": "Fotos",
+      "PREVIEW": "Vista previa",
+      "PROPERTY_TYPE": "Tipo de propiedad",
+      "STATUS": "Estado",
+      "ZONING": "Zonificación",
+      "MAP_LINK": "Enlace del mapa",
+      "AREA": "Área (m²)",
+      "ADDRESS": "Dirección",
+      "PRICE": "Precio",
+      "CURRENCY": "Moneda",
+      "CONTACT_NAME": "Nombre de contacto",
+      "CONTACT_PHONE": "Teléfono de contacto",
+      "COMMENT": "Comentario",
+      "ADDITIONAL_PARAMS": "Parámetros adicionales",
+      "CURRENT_FLOOR": "Piso actual",
+      "TOTAL_FLOORS": "Total de pisos",
+      "ROOMS": "Habitaciones",
+      "FURNISHED": "Amueblado",
+      "RENOVATION": "Renovación",
+      "KITCHEN": "Cocina",
+      "SHARED_FACILITIES": "Instalaciones compartidas",
+      "SHARED_KITCHEN": "Cocina compartida",
+      "SHARED_BATHROOM": "Baño compartido",
+      "UTILITIES": "Servicios públicos",
+      "ELECTRICITY": "Electricidad",
+      "WATER_SUPPLY": "Suministro de agua",
+      "NATURAL_GAS": "Gas natural",
+      "SEWERAGE": "Alcantarillado",
+      "HEATING": "Calefacción",
+      "INTERNET": "Internet",
+      "OTHER": "Otros",
+      "PARKING": "Estacionamiento",
+      "BATH": "Bañera",
+      "SHOWER": "Ducha",
+      "AIR_CONDITIONING": "Aire acondicionado",
+      "FIREPLACE": "Chimenea",
+      "BEAUTIFUL_VIEW": "Vista hermosa",
+      "NEW_BUILDING": "Edificio nuevo",
+      "ELEVATOR": "Ascensor",
+      "BALCONY": "Balcón",
+      "GARDEN": "Jardín",
+      "GARAGE": "Garaje"
+    },
+    "PLACEHOLDERS": {
+      "PROPERTY_TYPE": "Seleccionar tipo de propiedad",
+      "STATUS": "Seleccionar estado",
+      "ZONING": "Seleccionar zonificación",
+      "MAP_LINK": "Ingresar enlace del mapa",
+      "AREA": "Ingresar área",
+      "ADDRESS": "Ingresar dirección",
+      "PRICE": "Ingresar precio",
+      "CURRENCY": "Ej., USD",
+      "CONTACT_NAME": "Ingresar nombre",
+      "CONTACT_PHONE": "Ingresar teléfono",
+      "UPLOAD_PHOTOS": "Arrastra y suelta archivos aquí para subir",
+      "CURRENT_FLOOR": "Ingresar piso actual",
+      "TOTAL_FLOORS": "Ingresar total de pisos",
+      "ROOMS": "Ingresar número de habitaciones",
+      "HEATING": "Seleccione el tipo de calefacción",
+      "FURNISHED": "Seleccionar amueblado",
+      "RENOVATION": "Seleccionar renovación",
+      "KITCHEN": "Seleccionar tipo de cocina"
+    },
+    "PROPERTIES": {
+      "PROPERTY_TYPE": {
+        "flat": "Piso",
+        "house": "Casa",
+        "room": "Habitación",
+        "office": "Oficina",
+        "land": "Terreno"
+      },
+      "PROPERTY_STATUS": {
+        "available": "Disponible",
+        "reserved": "Reservado",
+        "rented": "Alquilado"
+      },
+      "ZONING_TYPE": {
+        "residential": "Residencial",
+        "commercial": "Comercial",
+        "agricultural": "Agrícola",
+        "mixed": "Mixto"
+      },
+      "FURNISHED_STATUS": {
+        "fully": "Totalmente amueblado",
+        "partially": "Parcialmente amueblado",
+        "unfurnished": "Sin amueblar"
+      },
+      "RENOVATION_STATUS": {
+        "recent": "Reformado recientemente",
+        "needs": "Necesita reforma",
+        "none": "Sin reforma"
+      },
+      "KITCHEN_TYPE": {
+        "separated": "Separada",
+        "combined": "Combinada",
+        "none": "Sin cocina"
+      },
+      "HEATING_TYPE": {
+        "gas": "Gas",
+        "electric": "Eléctrica",
+        "central": "Central",
+        "none": "Sin calefacción"
+      }
+    },
+    "ERRORS": {
+      "REQUIRED": "{{label}} es obligatorio",
+      "MIN": "{{label}} debe ser al menos {{min}}",
+      "MAX": "{{label}} no debe exceder {{max}}",
+      "INVALID": "{{label}} no es válido"
+    },
+    "BUTTONS": {
+      "CANCEL": "Cancelar",
+      "SAVE": "Guardar"
+    }
+  },
   "AUTH": {
     "WELCOME": "¡Bienvenido a Realtor!",
     "SIGN_IN_TO_CONTINUE": "Inicia sesión para continuar",
@@ -37,6 +159,133 @@
     "SIGN_UP_BUTTON": "Registrarse",
     "BACK_TO_TEXT": "Volver a",
     "SEND_BUTTON": "Enviar",
-    "SAVE_BUTTON": "Guardar"
+    "SAVE_BUTTON": "Guardar",
+    "NOTIFICATION": {
+      "SESSION_EXPIRED": {
+        "SUMMARY": "Sesión expirada",
+        "DETAIL": "Inicia sesión de nuevo"
+      },
+      "LOGIN_SUCCESS": {
+        "SUMMARY": "Inicio de sesión exitoso",
+        "DETAIL": "Has iniciado sesión correctamente"
+      },
+      "LOGIN_FAILED": {
+        "SUMMARY": "Error al iniciar sesión",
+        "DETAIL": "Verifica la validez de tus credenciales"
+      },
+      "SIGNUP_SUCCESS": {
+        "SUMMARY": "Enlace de registro enviado",
+        "DETAIL": "Revisa tu correo electrónico"
+      },
+      "SIGNUP_FAILED": {
+        "SUMMARY": "El enlace de registro no se ha enviado",
+        "DETAIL": "Verifica la validez de tus credenciales"
+      },
+      "ACTIVATION_SIGNUP_SUCCESS": {
+        "SUMMARY": "Registro exitoso",
+        "DETAIL": "Disfruta usando la aplicación"
+      },
+      "ACTIVATION_SIGNUP_FAILED": {
+        "SUMMARY": "Error en el registro",
+        "DETAIL": "Y no sé por qué"
+      },
+      "RECOVER_SUCCESS": {
+        "SUMMARY": "Enlace de recuperación enviado",
+        "DETAIL": "Revisa tu correo electrónico"
+      },
+      "RECOVER_FAILED": {
+        "SUMMARY": "El enlace de recuperación no se ha enviado",
+        "DETAIL": "Verifica la validez de tu correo electrónico"
+      },
+      "ACTIVATION_RECOVER_SUCCESS": {
+        "SUMMARY": "Recuperación exitosa",
+        "DETAIL": "Se ha creado una nueva contraseña"
+      },
+      "ACTIVATION_RECOVER_FAILED": {
+        "SUMMARY": "Error en la recuperación",
+        "DETAIL": "Solicita el enlace de activación nuevamente"
+      },
+      "TERMINATION_SUCCESS": {
+        "SUMMARY": "Terminación exitosa",
+        "DETAIL": "Todas las sesiones han sido terminadas"
+      },
+      "TERMINATION_FAILED": {
+        "SUMMARY": "Error en la terminación",
+        "DETAIL": "Algo salió mal, intenta de nuevo"
+      }
+    }
+  },
+  "CATALOG": {
+    "TABLE": {
+      "HEADERS": {
+        "PHOTO": "Foto",
+        "TYPE": "Tipo",
+        "ZONING": "Zonificación",
+        "ADDRESS": "Dirección",
+        "PRICE": "Precio",
+        "AREA": "Área",
+        "DATE": "Fecha",
+        "STATUS": "Estado"
+      },
+      "PAGINATOR": {
+        "CURRENT_PAGE_REPORT": "Mostrando {first} a {last} de {totalRecords} entradas"
+      },
+      "BUTTONS": {
+        "ADD": "Agregar",
+        "FILTERS": "Filtros",
+        "ADD_TO_LISTING": "Agregar a la lista",
+        "DELETE": "Eliminar"
+      },
+      "FOOTER": {
+        "SELECTED": "Seleccionado {{count}}"
+      },
+      "ACTIONS": {
+        "EDIT": "Editar",
+        "DELETE": "Eliminar"
+      },
+      "DIALOG": {
+        "ADD": "Añadir nuevo objeto",
+        "EDIT": "Editar objeto",
+        "CANCEL": "Cancelar",
+        "DELETE_REQUEST_SINGLE": "¿Eliminar un objeto?",
+        "DELETE_REQUEST_MANY": "¿Eliminar un objeto?",
+        "DELETE_HINT": "¡Atención! ¡No podrás restaurarlo!"
+      },
+      "CONFIRM_DIALOG": {
+        "YES": "Sí",
+        "NO": "No"
+      }
+    },
+    "FILTERS": {
+      "LABEL": "Filtros",
+      "RESET": "Restablecer",
+      "DATE": {
+        "LABEL": "Fecha",
+        "FROM": "Desde la fecha",
+        "TO": "Hasta la fecha",
+        "PLACEHOLDER": "no seleccionado"
+      },
+      "PROPERTIES": "Propiedades",
+      "AREA": {
+        "LABEL": "Área",
+        "MIN": "Área mínima",
+        "MAX": "Área máxima"
+      },
+      "PRICE": {
+        "LABEL": "Precio",
+        "MIN": "Precio mínimo",
+        "MAX": "Precio máximo"
+      }
+    },
+    "NOTIFICATION": {
+      "OBJECT_CREATED": "El objeto inmobiliario se ha creado correctamente",
+      "CREATION_FAILED": "No se pudo crear el objeto inmobiliario",
+      "OBJECT_UPDATED": "El objeto inmobiliario se ha actualizado correctamente",
+      "UPDATE_FAILED": "No se pudo actualizar el objeto inmobiliario",
+      "STATUS_UPDATED": "Estado actualizado correctamente",
+      "STATUS_UPDATE_FAILED": "No se pudo actualizar el estado",
+      "OBJECT_DELETED": "El objeto inmobiliario se ha eliminado correctamente",
+      "DELETEION_FAILED": "No se pudo eliminar el objeto inmobiliario"
+    }
   }
 }
