@@ -14,7 +14,7 @@ export const privateLayoutRoutes: Routes = [
       },
       { path: 'catalog', children: catalogRoutes },
       { path: 'listings', loadComponent: () => import('../../features').then(c => c.ListingsComponent) },
-      { path: 'map', loadComponent: () => import('../../features').then(c => c.MapComponent) },
+      { path: 'map', loadComponent: () => import('../../features').then(c => c.MapPageComponent) },
       {
         path: 'profile',
         loadComponent: () => import('../../features').then(c => c.ProfileComponent),
