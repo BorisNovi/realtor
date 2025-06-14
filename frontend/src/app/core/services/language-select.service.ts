@@ -5,19 +5,19 @@ import { StorageService } from './storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageSelectService {
-  private readonly translateService = inject(TranslateService);
-  private readonly storageService = inject(StorageService);
+  readonly #translateService = inject(TranslateService);
+  readonly #storageService = inject(StorageService);
 
   // Доступные языки
-  public readonly availableLanguages = ['en', 'ru', 'es', 'pt'];
+  readonly availableLanguages = ['en', 'ru', 'es', 'pt'];
 
   // Сигнал для текущего языка
-  private currentLangSignal = signal<string>(
-    this.storageService.getItem('language') || this.translateService.getBrowserLang() || this.availableLanguages[0],
+  readonly #currentLangSignal = signal<string>(
+    this.#storageService.getItem('language') || this.#translateService.getBrowserLang() || this.availableLanguages[0],
   );
 
   // Вычисляемый сигнал для языковых опций
-  public languageOptions = computed<ILanguageOption[]>(() => [
+  readonly languageOptions = computed<ILanguageOption[]>(() => [
     { value: 'en', label: 'English' },
     { value: 'ru', label: 'Русский' },
     { value: 'es', label: 'Español' },
@@ -25,21 +25,21 @@ export class LanguageSelectService {
   ]);
 
   // Вычисляемый сигнал для текущей опции
-  public currentLanguageOption = computed<ILanguageOption>(() => {
+  readonly currentLanguageOption = computed<ILanguageOption>(() => {
     const options = this.languageOptions();
-    return options.find(option => option.value === this.currentLangSignal()) || options[0];
+    return options.find(option => option.value === this.#currentLangSignal()) || options[0];
   });
 
   constructor() {
-    this.translateService.addLangs(this.availableLanguages);
-    this.translateService.setDefaultLang(this.currentLangSignal());
-    this.translateService.use(this.currentLangSignal());
+    this.#translateService.addLangs(this.availableLanguages);
+    this.#translateService.setDefaultLang(this.#currentLangSignal());
+    this.#translateService.use(this.#currentLangSignal());
   }
 
   // Смена языка
-  public changeLanguage(value: string): void {
-    this.currentLangSignal.set(value);
-    this.storageService.setItem('language', value);
-    this.translateService.use(value);
+  changeLanguage(value: string): void {
+    this.#currentLangSignal.set(value);
+    this.#storageService.setItem('language', value);
+    this.#translateService.use(value);
   }
 }

@@ -30,6 +30,9 @@ import {
 import { ISessionUser, IUser } from '@shared/interfaces';
 import { AuthService } from '..';
 import { Navigate } from '@ngxs/router-plugin';
+import { MessageService } from 'primeng/api';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 // Интерфейс состояния
 interface AuthStateModel {
@@ -37,7 +40,7 @@ interface AuthStateModel {
   loading: boolean;
   accessToken: string | null;
   refreshToken: string | null;
-  error: Error | null;
+  error: HttpErrorResponse | null;
 }
 
 @State<AuthStateModel>({
@@ -52,7 +55,9 @@ interface AuthStateModel {
 })
 @Injectable()
 export class AuthState {
-  private readonly authService = inject(AuthService);
+  readonly #authService = inject(AuthService);
+  readonly messageService = inject(MessageService);
+  readonly translateService = inject(TranslateService);
 
   // Selectors
   @Selector()
@@ -81,19 +86,19 @@ export class AuthState {
   }
 
   // Dispatch CheckSession on start
-  public ngxsOnInit(ctx: StateContext<AuthStateModel>) {
+  ngxsOnInit(ctx: StateContext<AuthStateModel>) {
     ctx.dispatch(new CheckSession());
   }
 
   @Action(CheckSession)
-  public checkSession(ctx: StateContext<AuthStateModel>) {
+  checkSession(ctx: StateContext<AuthStateModel>) {
     const { accessToken } = ctx.getState();
     if (!accessToken) {
       ctx.dispatch(new LoginRedirect());
       return;
     }
 
-    return this.authService.checkSession().pipe(
+    return this.#authService.checkSession().pipe(
       tap(res => {
         // const { user } = ctx.getState();
         // if (!this.socketService.socket && user) {
@@ -101,6 +106,13 @@ export class AuthState {
         // }
       }),
       catchError(error => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Session expired',
+          detail: 'Log In again',
+          life: 3000,
+        });
+
         ctx.dispatch(new Logout());
         return of(error);
       }),
@@ -109,20 +121,20 @@ export class AuthState {
 
   // Log in
   @Action(Login)
-  public onLogin(ctx: StateContext<AuthStateModel>, { email, password }: Login) {
+  onLogin(ctx: StateContext<AuthStateModel>, { email, password }: Login) {
     ctx.patchState({ loading: true });
 
-    return this.authService.login(email, password).pipe(
+    return this.#authService.login(email, password).pipe(
       tap((session: ISessionUser) => {
         ctx.dispatch(new LoginSuccess(session));
         // this.socketService.connect(session.user, session.token);
       }),
-      catchError((error: Error) => ctx.dispatch(new LoginFailed(error))),
+      catchError((error: HttpErrorResponse) => ctx.dispatch(new LoginFailed(error))),
     );
   }
 
   @Action(LoginSuccess)
-  public onLoginSuccess(ctx: StateContext<AuthStateModel>, { session }: LoginSuccess) {
+  onLoginSuccess(ctx: StateContext<AuthStateModel>, { session }: LoginSuccess) {
     ctx.patchState({
       user: session.user,
       loading: false,
@@ -131,64 +143,81 @@ export class AuthState {
       error: null,
     });
 
-    console.log('login success');
-    // this.snackBar.open('Login Success');
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.LOGIN_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.LOGIN_SUCCESS.DETAIL'),
+      life: 3000,
+    });
     ctx.dispatch(new Navigate(['/']));
   }
 
   @Action(LoginFailed)
-  public onLoginFailed(ctx: StateContext<AuthStateModel>, { error }: LoginFailed) {
-    // if (isuserBannedError) {
-    //   this.errorSnackBarService.showError('Ваша учетная запись заблокирована', 10000);
-    // } else {
-    //   this.errorSnackBarService.showError('Не удалось войти в систему');
-    // }
+  onLoginFailed(ctx: StateContext<AuthStateModel>, { error }: LoginFailed) {
+    // TODO: написать кейсы ошибок для объективности
+    this.messageService.add({
+      severity: 'error',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.LOGIN_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.LOGIN_FAILED.DETAIL'),
+      life: 3000,
+    });
+
     ctx.patchState({ loading: false });
     ctx.dispatch(new RemoveUser());
     return of(error);
   }
 
   @Action(Signup)
-  public onSignup(ctx: StateContext<AuthStateModel>, { email, password, passwordConfirmation }: Signup) {
+  onSignup(ctx: StateContext<AuthStateModel>, { email, password, passwordConfirmation }: Signup) {
     ctx.patchState({ loading: true });
 
-    return this.authService.signUp(email, password, passwordConfirmation).pipe(
+    return this.#authService.signUp(email, password, passwordConfirmation).pipe(
       tap(() => {
         ctx.dispatch(new SignupSuccess());
         // this.socketService.connect(session.user, session.token);
       }),
-      catchError((error: Error) => ctx.dispatch(new SignupFailed(error))),
+      catchError((error: HttpErrorResponse) => ctx.dispatch(new SignupFailed(error))),
     );
   }
 
   @Action(SignupSuccess)
-  public onSignupSuccess(ctx: StateContext<AuthStateModel>) {
-    console.log('signup success');
+  onSignupSuccess(ctx: StateContext<AuthStateModel>) {
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.SIGNUP_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.SIGNUP_SUCCESS.DETAIL'),
+      life: 3000,
+    });
+
     ctx.patchState({ loading: false, error: null });
   }
 
   @Action(SignupFailed)
-  public onSignupFailed(ctx: StateContext<AuthStateModel>, { error }: SignupFailed) {
-    // this.errorSnackBarService.showError('Signup error');
+  onSignupFailed(ctx: StateContext<AuthStateModel>, { error }: SignupFailed) {
+    this.messageService.add({
+      severity: 'error',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.SIGNUP_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.SIGNUP_FAILED.DETAIL'),
+      life: 3000,
+    });
+
     ctx.patchState({ loading: false, error });
     return of(error);
   }
 
   // Activate after signup
   @Action(ActivateAfterSignup)
-  public onActivateAfterSignup(ctx: StateContext<AuthStateModel>, { token }: ActivateAfterSignup) {
+  onActivateAfterSignup(ctx: StateContext<AuthStateModel>, { token }: ActivateAfterSignup) {
     ctx.patchState({ loading: true });
-    console.log('activation after signup');
 
-    return this.authService.activateAfterSignup(token).pipe(
+    return this.#authService.activateAfterSignup(token).pipe(
       tap((session: ISessionUser) => ctx.dispatch(new ActivationAfterSignupSuccess(session))),
-      catchError((error: Error) => ctx.dispatch(new ActivationAfterSignupFailed(error))),
+      catchError((error: HttpErrorResponse) => ctx.dispatch(new ActivationAfterSignupFailed(error))),
     );
   }
 
   @Action(ActivationAfterSignupSuccess)
-  public onActivationAfterSignupSuccess(ctx: StateContext<AuthStateModel>, { session }: ActivationAfterSignupSuccess) {
-    console.log('onActivationAfterSignupSuccess');
+  onActivationAfterSignupSuccess(ctx: StateContext<AuthStateModel>, { session }: ActivationAfterSignupSuccess) {
     ctx.patchState({
       user: session.user,
       loading: false,
@@ -197,12 +226,24 @@ export class AuthState {
       error: null,
     });
 
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_SIGNUP_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_SIGNUP_SUCCESS.DETAIL'),
+      life: 3000,
+    });
+
     ctx.dispatch(new Navigate(['/']));
   }
 
   @Action(ActivationAfterSignupFailed)
-  public onActivationAfterSignupFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
-    // this.errorSnackBarService.showError('Activation error');
+  onActivationAfterSignupFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_SIGNUP_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_SIGNUP_FAILED.DETAIL'),
+      life: 3000,
+    });
 
     ctx.patchState({ loading: false });
     return of(error);
@@ -210,60 +251,83 @@ export class AuthState {
 
   // Recover
   @Action(RecoverPassword)
-  public onRecoverPassword(ctx: StateContext<AuthStateModel>, { email }: RecoverPassword) {
+  onRecoverPassword(ctx: StateContext<AuthStateModel>, { email }: RecoverPassword) {
     ctx.patchState({ loading: true });
 
-    return this.authService.recoverPassword(email).pipe(
+    return this.#authService.recoverPassword(email).pipe(
       tap(() => ctx.dispatch(new RecoverSuccess())),
-      catchError((error: Error) => ctx.dispatch(new RecoverFailed(error))),
+      catchError((error: HttpErrorResponse) => ctx.dispatch(new RecoverFailed(error))),
     );
   }
 
   @Action(RecoverSuccess)
-  public onRecoverSuccess(ctx: StateContext<AuthStateModel>) {
-    // this.snackBar.open('Recovery link sent');
-    console.log('recover success');
+  onRecoverSuccess(ctx: StateContext<AuthStateModel>) {
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.RECOVER_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.RECOVER_SUCCESS.DETAIL'),
+      life: 3000,
+    });
+
     ctx.patchState({ loading: false });
   }
 
   @Action(RecoverFailed)
-  public onRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: RecoverFailed) {
-    // this.errorSnackBarService.showError('Cannot send recovery link');
+  onRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: RecoverFailed) {
+    this.messageService.add({
+      severity: 'error',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.RECOVER_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.RECOVER_FAILED.DETAIL'),
+      life: 3000,
+    });
+
     ctx.patchState({ loading: false });
     return of(error);
   }
 
   // Activate after recover
   @Action(ActivateAfterRecover)
-  public onActivateAfterRecover(ctx: StateContext<AuthStateModel>, { token, password }: ActivateAfterRecover) {
+  onActivateAfterRecover(ctx: StateContext<AuthStateModel>, { token, password }: ActivateAfterRecover) {
     ctx.patchState({ loading: true });
 
-    return this.authService.activateAfterRecover(token, password).pipe(
+    return this.#authService.activateAfterRecover(token, password).pipe(
       tap(() => ctx.dispatch(new ActivationAfterRecoverSuccess())),
-      catchError((error: Error) => ctx.dispatch(new ActivationAfterSignupFailed(error))),
+      catchError((error: HttpErrorResponse) => ctx.dispatch(new ActivationAfterSignupFailed(error))),
     );
   }
 
   @Action(ActivationAfterRecoverSuccess)
-  public onActivationAfterRecoverSuccess(ctx: StateContext<AuthStateModel>) {
-    // this.snackBar.open('Password created');
+  onActivationAfterRecoverSuccess(ctx: StateContext<AuthStateModel>) {
+    this.messageService.add({
+      severity: 'success',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_RECOVER_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_RECOVER_SUCCESS.DETAIL'),
+      life: 3000,
+    });
+
     ctx.patchState({ loading: false });
     ctx.dispatch(new LoginRedirect());
   }
 
   @Action(ActivationAfterSignupFailed)
-  public onActivationAfterRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
-    // this.errorSnackBarService.showError('Cannot create password');
+  onActivationAfterRecoverFailed(ctx: StateContext<AuthStateModel>, { error }: ActivationAfterSignupFailed) {
+    this.messageService.add({
+      severity: 'error',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_RECOVER_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.ACTIVATION_RECOVER_FAILED.DETAIL'),
+      life: 3000,
+    });
+
     ctx.patchState({ loading: false });
     return of(error);
   }
 
   // Refresh
   @Action(RefreshToken)
-  public onRefreshToken(ctx: StateContext<AuthStateModel>) {
+  onRefreshToken(ctx: StateContext<AuthStateModel>) {
     const { user } = ctx.getState();
 
-    return this.authService.refreshToken(user?.id || 0).pipe(
+    return this.#authService.refreshToken(user?.id || 0).pipe(
       tap((result: ISessionUser) => {
         ctx.patchState({
           accessToken: result.accessToken,
@@ -290,12 +354,12 @@ export class AuthState {
 
   // Logout
   @Action(Logout)
-  public onLogout(ctx: StateContext<AuthStateModel>) {
+  onLogout(ctx: StateContext<AuthStateModel>) {
     ctx.dispatch([new RemoveUser(), new LoginRedirect()]);
   }
 
   @Action(RemoveUser)
-  public onRemoveUser(ctx: StateContext<AuthStateModel>) {
+  onRemoveUser(ctx: StateContext<AuthStateModel>) {
     ctx.patchState({
       user: null,
       loading: false,
@@ -307,36 +371,47 @@ export class AuthState {
   }
 
   @Action(LoginRedirect)
-  public onLoginRedirect(ctx: StateContext<AuthStateModel>) {
+  onLoginRedirect(ctx: StateContext<AuthStateModel>) {
     ctx.dispatch(new Navigate(['/auth/sign-in']));
   }
 
   // Terminate
   @Action(Terminate)
-  public onTerminate(ctx: StateContext<AuthStateModel>) {
+  onTerminate(ctx: StateContext<AuthStateModel>) {
     ctx.patchState({ loading: true });
 
-    return this.authService.terminateSessions().pipe(
+    return this.#authService.terminateSessions().pipe(
       tap(() => {
         ctx.dispatch(new TerminationSuccess());
       }),
-      catchError((error: Error) => ctx.dispatch(new TerminationFailed(error))),
+      catchError((error: HttpErrorResponse) => ctx.dispatch(new TerminationFailed(error))),
     );
   }
 
   @Action(TerminationSuccess)
-  public onTerminationSuccess(ctx: StateContext<AuthStateModel>) {
+  onTerminationSuccess(ctx: StateContext<AuthStateModel>) {
     ctx.patchState({
       loading: false,
       error: null,
     });
 
-    // this.snackBar.open('Termination Success');
+    this.messageService.add({
+      severity: 'warn',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.TERMINATION_SUCCESS.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.TERMINATION_SUCCESS.DETAIL'),
+      life: 3000,
+    });
   }
 
   @Action(TerminationFailed)
-  public onTerminationFailed(ctx: StateContext<AuthStateModel>, { error }: TerminationFailed) {
-    // this.errorSnackBarService.showError('Termination failed');
+  onTerminationFailed(ctx: StateContext<AuthStateModel>, { error }: TerminationFailed) {
+    this.messageService.add({
+      severity: 'error',
+      summary: this.translateService.instant('AUTH.NOTIFICATION.TERMINATION_FAILED.SUMMARY'),
+      detail: this.translateService.instant('AUTH.NOTIFICATION.TERMINATION_FAILED.DETAIL'),
+      life: 3000,
+    });
+
     ctx.patchState({ loading: false });
     return of(error);
   }

@@ -1,6 +1,128 @@
 {
-  "CHECK": "CHECK (EN)",
-
+  "TOPBAR": {
+    "LANGUAGE": "English"
+  },
+  "NOTIFICATIONS": {
+    "SUCCESS": "Success",
+    "ERROR": "Error"
+  },
+  "FORM": {
+    "LABELS": {
+      "PHOTOS": "Photos",
+      "PREVIEW": "Preview",
+      "PROPERTY_TYPE": "Property Type",
+      "STATUS": "Status",
+      "ZONING": "Zoning",
+      "MAP_LINK": "Map Link",
+      "AREA": "Area (m²)",
+      "ADDRESS": "Address",
+      "PRICE": "Price",
+      "CURRENCY": "Currency",
+      "CONTACT_NAME": "Contact name",
+      "CONTACT_PHONE": "Contact phone",
+      "COMMENT": "Comment",
+      "ADDITIONAL_PARAMS": "Additional params",
+      "CURRENT_FLOOR": "Current Floor",
+      "TOTAL_FLOORS": "Total Floors",
+      "ROOMS": "Rooms",
+      "FURNISHED": "Furnished",
+      "RENOVATION": "Renovation",
+      "KITCHEN": "Kitchen",
+      "SHARED_FACILITIES": "Shared Facilities",
+      "SHARED_KITCHEN": "Kitchen",
+      "SHARED_BATHROOM": "Bathroom",
+      "UTILITIES": "Utilities",
+      "ELECTRICITY": "Electricity",
+      "WATER_SUPPLY": "Water Supply",
+      "NATURAL_GAS": "Natural Gas",
+      "SEWERAGE": "Sewerage",
+      "HEATING": "Heating",
+      "INTERNET": "Internet",
+      "OTHER": "Other",
+      "PARKING": "Parking",
+      "BATH": "Bath",
+      "SHOWER": "Shower",
+      "AIR_CONDITIONING": "Air Conditioning",
+      "FIREPLACE": "Fireplace",
+      "BEAUTIFUL_VIEW": "Beautiful View",
+      "NEW_BUILDING": "New Building",
+      "ELEVATOR": "Elevator",
+      "BALCONY": "Balcony",
+      "GARDEN": "Garden",
+      "GARAGE": "Garage"
+    },
+    "PLACEHOLDERS": {
+      "PROPERTY_TYPE": "Select Property Type",
+      "STATUS": "Select Status",
+      "ZONING": "Select zoning type",
+      "MAP_LINK": "Enter map link",
+      "AREA": "Enter area",
+      "ADDRESS": "Enter address",
+      "PRICE": "Enter price",
+      "CURRENCY": "e.g., USD",
+      "CONTACT_NAME": "Enter name",
+      "CONTACT_PHONE": "Enter phone",
+      "UPLOAD_PHOTOS": "Drag and drop files to here to upload",
+      "CURRENT_FLOOR": "Enter current floor",
+      "TOTAL_FLOORS": "Enter total floors",
+      "ROOMS": "Enter number of rooms",
+      "HEATING": "Select heating type",
+      "FURNISHED": "Select furnished",
+      "RENOVATION": "Select renovation",
+      "KITCHEN": "Select kitchen type"
+    },
+    "PROPERTIES": {
+      "PROPERTY_TYPE": {
+        "flat": "Flat",
+        "house": "House",
+        "room": "Room",
+        "office": "Office",
+        "land": "Land"
+      },
+      "PROPERTY_STATUS": {
+        "available": "Available",
+        "reserved": "Reserved",
+        "rented": "Rented"
+      },
+      "ZONING_TYPE": {
+        "residential": "Residential",
+        "commercial": "Commercial",
+        "agricultural": "Agricultural",
+        "mixed": "Mixed"
+      },
+      "FURNISHED_STATUS": {
+        "fully": "Fully furnished",
+        "partially": "Partially furnished",
+        "unfurnished": "Unfurnished"
+      },
+      "RENOVATION_STATUS": {
+        "recent": "Recently renovated",
+        "needs": "Needs renovation",
+        "none": "No renovation"
+      },
+      "KITCHEN_TYPE": {
+        "separated": "Separated",
+        "combined": "Combined",
+        "none": "No kitchen"
+      },
+      "HEATING_TYPE": {
+        "gas": "Gas",
+        "electric": "Electric",
+        "central": "Central",
+        "none": "No heating"
+      }
+    },
+    "ERRORS": {
+      "REQUIRED": "{{label}} is required",
+      "MIN": "{{label}} must be at least {{min}}",
+      "MAX": "{{label}} must not exceed {{max}}",
+      "INVALID": "{{label}} is invalid"
+    },
+    "BUTTONS": {
+      "CANCEL": "Cancel",
+      "SAVE": "Save"
+    }
+  },
   "AUTH": {
     "WELCOME": "Welcome to Realtor!",
     "SIGN_IN_TO_CONTINUE": "Sign in to continue",
@@ -37,6 +159,133 @@
     "SIGN_UP_BUTTON": "Sign Up",
     "BACK_TO_TEXT": "Back to",
     "SEND_BUTTON": "Send",
-    "SAVE_BUTTON": "Save"
+    "SAVE_BUTTON": "Save",
+    "NOTIFICATION": {
+      "SESSION_EXPIRED": {
+        "SUMMARY": "Session expired",
+        "DETAIL": "Log In again"
+      },
+      "LOGIN_SUCCESS": {
+        "SUMMARY": "Log In Success",
+        "DETAIL": "You successfully logged in"
+      },
+      "LOGIN_FAILED": {
+        "SUMMARY": "Log In failed",
+        "DETAIL": "Check validity of your credentials"
+      },
+      "SIGNUP_SUCCESS": {
+        "SUMMARY": "Sign Up link sent",
+        "DETAIL": "Check your e-mail"
+      },
+      "SIGNUP_FAILED": {
+        "SUMMARY": "Sign Up link hasn't been sent",
+        "DETAIL": "Check validity of your credentials"
+      },
+      "ACTIVATION_SIGNUP_SUCCESS": {
+        "SUMMARY": "Sign Up successful",
+        "DETAIL": "Enjoy using application"
+      },
+      "ACTIVATION_SIGNUP_FAILED": {
+        "SUMMARY": "Sign Up failed",
+        "DETAIL": "And I don't know why"
+      },
+      "RECOVER_SUCCESS": {
+        "SUMMARY": "Recovery link sent",
+        "DETAIL": "Check your e-mail"
+      },
+      "RECOVER_FAILED": {
+        "SUMMARY": "Recovery link hasn't been sent",
+        "DETAIL": "Check validity of your e-mail"
+      },
+      "ACTIVATION_RECOVER_SUCCESS": {
+        "SUMMARY": "Recovery successful",
+        "DETAIL": "New password was created"
+      },
+      "ACTIVATION_RECOVER_FAILED": {
+        "SUMMARY": "Recovery failed",
+        "DETAIL": "Request activation link again"
+      },
+      "TERMINATION_SUCCESS": {
+        "SUMMARY": "Termination successful",
+        "DETAIL": "All sessions were terminated"
+      },
+      "TERMINATION_FAILED": {
+        "SUMMARY": "Termination failed",
+        "DETAIL": "Something went wrong, try again"
+      }
+    }
+  },
+  "CATALOG": {
+    "TABLE": {
+      "HEADERS": {
+        "PHOTO": "Photo",
+        "TYPE": "Type",
+        "ZONING": "Zoning",
+        "ADDRESS": "Address",
+        "PRICE": "Price",
+        "AREA": "Area",
+        "DATE": "Date",
+        "STATUS": "Status"
+      },
+      "PAGINATOR": {
+        "CURRENT_PAGE_REPORT": "Showing {first} to {last} of {totalRecords} entries"
+      },
+      "BUTTONS": {
+        "ADD": "Add",
+        "FILTERS": "Filters",
+        "ADD_TO_LISTING": "Add to listing",
+        "DELETE": "Delete"
+      },
+      "FOOTER": {
+        "SELECTED": "Selected {{count}}"
+      },
+      "ACTIONS": {
+        "EDIT": "Edit",
+        "DELETE": "Delete"
+      },
+      "DIALOG": {
+        "ADD": "Add new item",
+        "EDIT": "Edit item",
+        "CANCEL": "Cancel",
+        "DELETE_REQUEST_SINGLE": "Delete item?",
+        "DELETE_REQUEST_MANY": "Delete items?",
+        "DELETE_HINT": "Attention! This action is irreversible!"
+      },
+      "CONFIRM_DIALOG": {
+        "YES": "Yes",
+        "NO": "No"
+      }
+    },
+    "FILTERS": {
+      "LABEL": "Filters",
+      "RESET": "Reset",
+      "DATE": {
+        "LABEL": "Date",
+        "FROM": "Date from",
+        "TO": "Date to",
+        "PLACEHOLDER": "not selected"
+      },
+      "PROPERTIES": "Properties",
+      "AREA": {
+        "LABEL": "Area",
+        "MIN": "Area min",
+        "MAX": "Area max"
+      },
+      "PRICE": {
+        "LABEL": "Price",
+        "MIN": "Price min",
+        "MAX": "Price max"
+      }
+    },
+      "NOTIFICATION": {
+        "OBJECT_CREATED": "Property object created successfully",
+        "CREATION_FAILED": "Failed to create property object",
+        "OBJECT_UPDATED": "Property object updated successfully",
+        "UPDATE_FAILED": "Failed to update property object",
+        "STATUS_UPDATED": "Status updated successfully",
+        "STATUS_UPDATE_FAILED": "Failed to update status",
+        "OBJECT_DELETED": "Property object deleted successfully",
+        "DELETEION_FAILED": "Failed to delete property object"
+      }
   }
 }
