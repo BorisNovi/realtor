@@ -124,8 +124,8 @@ export class CatalogState {
     ctx.patchState({ loading: true });
     return this.#catalogService.createPropertyObject(propertyObject).pipe(
       tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
-      tap(() => ctx.dispatch(new CatalogOperationSuccess('успешно создан'))),
-      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось создать'))),
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('OBJECT_CREATED'))),
+      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'CREATION_FAILED'))),
     );
   }
 
@@ -134,8 +134,8 @@ export class CatalogState {
     ctx.patchState({ loading: true });
     return this.#catalogService.updatePropertyObject(propertyObject).pipe(
       tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
-      tap(() => ctx.dispatch(new CatalogOperationSuccess('успешно обновлен'))),
-      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось обновить'))),
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('OBJECT_UPDATED'))),
+      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'UPDATE_FAILED'))),
     );
   }
 
@@ -143,8 +143,8 @@ export class CatalogState {
   updateStatus(ctx: StateContext<CatalogStateModel>, { id, status }: UpdateStatus) {
     ctx.patchState({ loading: true });
     return this.#catalogService.updateStatus(id, status).pipe(
-      tap(() => ctx.dispatch(new CatalogOperationSuccess('status успешно обновлен'))),
-      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось обновить status'))),
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('STATUS_UPDATED'))),
+      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'STATUS_UPDATE_FAILED'))),
     );
   }
 
@@ -153,9 +153,9 @@ export class CatalogState {
     ctx.patchState({ loading: true });
     return this.#catalogService.deletePropertyObject(idList).pipe(
       tap(() => {
-        ctx.dispatch(new CatalogOperationSuccess('успешно удален'));
+        ctx.dispatch(new CatalogOperationSuccess('OBJECT_DELETED'));
       }),
-      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'Не удалось удалить'))),
+      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'DELETEION_FAILED'))),
     );
   }
 
@@ -164,8 +164,8 @@ export class CatalogState {
     if (message) {
       this.messageService.add({
         severity: 'success',
-        summary: this.translateService.instant('Success'),
-        detail: this.translateService.instant(message),
+        summary: this.translateService.instant('NOTIFICATIONS.SUCCESS'),
+        detail: this.translateService.instant('CATALOG.NOTIFICATION.' + message),
         life: 3000,
       });
     }
@@ -179,7 +179,7 @@ export class CatalogState {
     if (message) {
       this.messageService.add({
         severity: 'error',
-        summary: this.translateService.instant('Error'),
+        summary: this.translateService.instant('NOTIFICATIONS.ERROR'),
         detail: this.translateService.instant(message),
         life: 3000,
       });
