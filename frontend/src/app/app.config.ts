@@ -11,11 +11,12 @@ import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
 import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { provideStore } from '@ngxs/store';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { authInterceptor, AuthState } from './core';
+import { authInterceptor, AuthState, CatalogState } from './core';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -52,13 +53,14 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
+    MessageService,
+    ConfirmationService,
     provideStore(
-      [AuthState],
+      [AuthState, CatalogState],
       withNgxsReduxDevtoolsPlugin(),
       withNgxsFormPlugin(),
       withNgxsRouterPlugin(),
       withNgxsStoragePlugin({
-        namespace: 'realtor',
         keys: ['auth.accessToken', 'auth.refreshToken', 'auth.user'],
         afterDeserialize: (obj, key) => {
           if (key === 'auth.accessToken' && obj?.expires < Date.now()) {

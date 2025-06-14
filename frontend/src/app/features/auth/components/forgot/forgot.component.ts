@@ -28,21 +28,21 @@ import { TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForgotComponent {
-  private readonly fb = inject(FormBuilder);
-  private readonly store = inject(Store);
+  readonly #fb = inject(FormBuilder);
+  readonly #store = inject(Store);
 
-  public isLoading = this.store.selectSignal(AuthState.loading);
+  readonly isLoading = this.#store.selectSignal(AuthState.loading);
 
-  public form = this.fb.group({
+  form = this.#fb.group({
     email: ['', [Validators.required, Validators.email]],
   });
 
-  public onSubmit(): void {
+  onSubmit(): void {
     const { email } = this.form.value;
     if (this.form.invalid || !email) {
       return;
     }
 
-    this.store.dispatch(new RecoverPassword(email));
+    this.#store.dispatch(new RecoverPassword(email));
   }
 }

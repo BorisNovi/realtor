@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, Renderer2, ViewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { PrivateLayoutService } from './shared';
@@ -12,34 +12,32 @@ import { FooterComponent, SidebarComponent, TopbarComponent } from './components
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrivateLayoutComponent implements OnDestroy {
-  overlayMenuOpenSubscription: Subscription;
-
-  menuOutsideClickListener: any;
-
   @ViewChild(SidebarComponent) appSidebar!: SidebarComponent;
-
   @ViewChild(SidebarComponent) appTopBar!: TopbarComponent;
 
-  constructor(
-    public layoutService: PrivateLayoutService,
-    public renderer: Renderer2,
-    public router: Router,
-  ) {
-    this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
+  readonly #layoutService = inject(PrivateLayoutService);
+  readonly #renderer = inject(Renderer2);
+  readonly #router = inject(Router);
+
+  overlayMenuOpenSubscription: Subscription;
+  menuOutsideClickListener: any;
+
+  constructor() {
+    this.overlayMenuOpenSubscription = this.#layoutService.overlayOpen$.subscribe(() => {
       if (!this.menuOutsideClickListener) {
-        this.menuOutsideClickListener = this.renderer.listen('document', 'click', event => {
+        this.menuOutsideClickListener = this.#renderer.listen('document', 'click', event => {
           if (this.isOutsideClicked(event)) {
             this.hideMenu();
           }
         });
       }
 
-      if (this.layoutService.layoutState().staticMenuMobileActive) {
+      if (this.#layoutService.layoutState().staticMenuMobileActive) {
         this.blockBodyScroll();
       }
     });
 
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
+    this.#router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       this.hideMenu();
     });
   }
@@ -58,7 +56,7 @@ export class PrivateLayoutComponent implements OnDestroy {
   }
 
   hideMenu() {
-    this.layoutService.layoutState.update(prev => ({
+    this.#layoutService.layoutState.update(prev => ({
       ...prev,
       overlayMenuActive: false,
       staticMenuMobileActive: false,
@@ -92,12 +90,12 @@ export class PrivateLayoutComponent implements OnDestroy {
 
   get containerClass() {
     return {
-      'layout-overlay': this.layoutService.layoutConfig().menuMode === 'overlay',
-      'layout-static': this.layoutService.layoutConfig().menuMode === 'static',
+      'layout-overlay': this.#layoutService.layoutConfig().menuMode === 'overlay',
+      'layout-static': this.#layoutService.layoutConfig().menuMode === 'static',
       'layout-static-inactive':
-        this.layoutService.layoutState().staticMenuDesktopInactive && this.layoutService.layoutConfig().menuMode === 'static',
-      'layout-overlay-active': this.layoutService.layoutState().overlayMenuActive,
-      'layout-mobile-active': this.layoutService.layoutState().staticMenuMobileActive,
+        this.#layoutService.layoutState().staticMenuDesktopInactive && this.#layoutService.layoutConfig().menuMode === 'static',
+      'layout-overlay-active': this.#layoutService.layoutState().overlayMenuActive,
+      'layout-mobile-active': this.#layoutService.layoutState().staticMenuMobileActive,
     };
   }
 
