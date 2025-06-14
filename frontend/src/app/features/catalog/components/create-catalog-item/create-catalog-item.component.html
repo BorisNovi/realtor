@@ -1,0 +1,413 @@
+<div class="p-4">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Photos (File Upload) -->
+    @let photos = photosS();
+
+    <div class="md:col-span-2">
+      <label for="photos" class="block text-sm lept-medium text-gray-700 mb-1">{{ 'FORM.LABELS.PHOTOS' | translate }}</label>
+      <p-fileupload
+        #fileUpload
+        [customUpload]="true"
+        [auto]="true"
+        (uploadHandler)="onUpload($event)"
+        [multiple]="true"
+        accept="image/*"
+        maxFileSize="4000000"
+        mode="advanced"
+      >
+        <ng-template #header let-files let-chooseCallback="chooseCallback">
+          @if (photos.length > 0) {
+            <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
+              <div class="flex gap-2">
+                <p-button (onClick)="choose(chooseCallback)" icon="pi pi-plus" [rounded]="true" [text]="true" />
+              </div>
+            </div>
+          }
+        </ng-template>
+        <ng-template #file></ng-template>
+        <ng-template #content let-chooseCallback="chooseCallback">
+          @if (uploadErrorS()) {
+            <p-message severity="error" [text]="uploadErrorS() || ''" class="w-full mb-4"></p-message>
+          }
+
+          @if (photos.length <= 0) {
+            <div class="flex items-center justify-center flex-col">
+              <p-button (click)="choose(chooseCallback)" [rounded]="true" [text]="true">
+                <i class="pi pi-plus !p-8 !text-4xl !text-muted-color"></i>
+              </p-button>
+              <p class="mt-6 mb-0">{{ 'FORM.PLACEHOLDERS.UPLOAD_PHOTOS' | translate }}</p>
+            </div>
+          }
+
+          @if (photos.length > 0) {
+            <div class="mt-4">
+              <div class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.PREVIEW' | translate }}</div>
+              <div class="flex flex-wrap gap-4">
+                @for (photo of photos; track photo; let i = $index) {
+                  <div class="relative overflow-hidden aspect-[1/1] w-[10rem]">
+                    <button
+                      pButton
+                      type="button"
+                      class="!absolute right-0 p-button-text p-button-sm"
+                      severity="danger"
+                      (click)="removePhoto(i)"
+                    >
+                      <i class="pi pi-trash"></i>
+                    </button>
+                    <img [src]="photo" [alt]="photo || 'Photo'" class="w-full h-auto" />
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </ng-template>
+      </p-fileupload>
+    </div>
+
+    <!-- Property Type (Select) -->
+    <app-input-wrapper
+      [control]="form.get('propertyType')!"
+      [label]="'FORM.LABELS.PROPERTY_TYPE' | translate"
+      id="propertyType"
+    >
+      <p-select
+        id="propertyType"
+        formControlName="propertyType"
+        [options]="propertyTypes"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'FORM.PLACEHOLDERS.PROPERTY_TYPE' | translate"
+        class="w-full"
+      />
+    </app-input-wrapper>
+
+    <!-- Status (Select with Severity) -->
+    <app-input-wrapper [control]="form.get('status')!" [label]="'FORM.LABELS.STATUS' | translate" id="status">
+      <p-select
+        id="status"
+        formControlName="status"
+        [options]="statuses"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'FORM.PLACEHOLDERS.STATUS' | translate"
+        class="w-full"
+        [ngStyle]="{
+          'background-color': getStatusBackground(form.controls['status'].value),
+        }"
+      >
+        <ng-template pTemplate="item" let-item>
+          <div class="flex items-center">
+            <p-tag [value]="item.label" [severity]="getSeverity(item.value)" />
+          </div>
+        </ng-template>
+      </p-select>
+    </app-input-wrapper>
+
+    <!-- Zoning Type (Select) -->
+    <app-input-wrapper [control]="form.get('zoningType')!" [label]="'FORM.LABELS.ZONING' | translate" id="zoningType">
+      <p-select
+        id="zoningType"
+        formControlName="zoningType"
+        [options]="zoningTypes"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'FORM.PLACEHOLDERS.ZONING' | translate"
+        class="w-full"
+      />
+    </app-input-wrapper>
+
+    <!-- Map Link -->
+    <app-input-wrapper [control]="form.get('mapLink')!" [label]="'FORM.LABELS.MAP_LINK' | translate" id="mapLink">
+      <input
+        id="mapLink"
+        pInputText
+        type="text"
+        formControlName="mapLink"
+        [placeholder]="'FORM.PLACEHOLDERS.MAP_LINK' | translate"
+        class="w-full"
+      />
+    </app-input-wrapper>
+
+    <!-- Area -->
+    <app-input-wrapper [control]="form.get('area')!" [label]="'FORM.LABELS.AREA' | translate" id="area">
+      <p-inputnumber
+        inputId="area"
+        [showButtons]="true"
+        [step]="10"
+        [min]="0"
+        [max]="100_000_000_000"
+        formControlName="area"
+        [placeholder]="'FORM.PLACEHOLDERS.AREA' | translate"
+        class="w-full"
+      />
+    </app-input-wrapper>
+
+    <!-- Address -->
+    <app-input-wrapper [control]="form.get('address')!" [label]="'FORM.LABELS.ADDRESS' | translate" id="address">
+      <input
+        id="address"
+        pInputText
+        type="text"
+        formControlName="address"
+        [placeholder]="'FORM.PLACEHOLDERS.ADDRESS' | translate"
+        class="w-full"
+      />
+    </app-input-wrapper>
+
+    <!-- Price -->
+    <ng-container formGroupName="price">
+      <!-- Price Currency -->
+      <app-input-wrapper
+        [control]="form.get('price')?.get('currency')!"
+        [label]="'FORM.LABELS.CURRENCY' | translate"
+        id="currency"
+      >
+        <p-select
+          id="currency"
+          formControlName="currency"
+          [options]="currencies"
+          [filter]="true"
+          filterBy="value"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'FORM.PLACEHOLDERS.CURRENCY' | translate"
+          placeholder="e.g., USD"
+          class="w-full"
+        />
+      </app-input-wrapper>
+
+      <!-- Price Value -->
+      <app-input-wrapper [control]="form.get('price')?.get('value')!" [label]="'FORM.LABELS.PRICE' | translate" id="price">
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <i class="pi pi-wallet"></i>
+          </p-inputgroup-addon>
+          <p-inputnumber
+            inputId="price"
+            formControlName="value"
+            [placeholder]="'FORM.PLACEHOLDERS.PRICE' | translate"
+            [showButtons]="true"
+            [step]="10"
+            [min]="0"
+            [max]="100_000_000_000"
+            mode="currency"
+            [currency]="form.controls['price'].value.currency || 'EUR'"
+            locale="de-DE"
+            class="w-full"
+          />
+        </p-inputgroup>
+      </app-input-wrapper>
+    </ng-container>
+
+    <!-- Contact -->
+    <ng-container formGroupName="contact">
+      <!-- Name -->
+      <app-input-wrapper
+        [control]="form.get('contact')?.get('name')!"
+        [label]="'FORM.LABELS.CONTACT_NAME' | translate"
+        id="contactName"
+      >
+        <input
+          id="contactName"
+          pInputText
+          type="text"
+          formControlName="name"
+          [placeholder]="'FORM.PLACEHOLDERS.CONTACT_NAME' | translate"
+          class="w-full"
+        />
+      </app-input-wrapper>
+
+      <!-- Phone -->
+      <app-input-wrapper
+        [control]="form.get('contact')?.get('phone')!"
+        [label]="'FORM.LABELS.CONTACT_PHONE' | translate"
+        id="contactPhone"
+      >
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <i class="pi pi-phone"></i>
+          </p-inputgroup-addon>
+          <input
+            id="contactPhone"
+            pInputText
+            type="text"
+            formControlName="phone"
+            [placeholder]="'FORM.PLACEHOLDERS.CONTACT_PHONE' | translate"
+            appWorldPhoneMasks
+            (valid)="validPhone($event)"
+          />
+        </p-inputgroup>
+      </app-input-wrapper>
+    </ng-container>
+
+    <p-divider align="left" type="solid" class="md:col-span-2">
+      <div class="flex items-center justify-between w-full gap-2">
+        <b>{{ 'FORM.LABELS.COMMENT' | translate }}</b>
+        <button pButton type="button" class="p-button-text p-button-sm" (click)="toggleComment()">
+          @let icon = isCommentVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
+          <i [class]="icon"></i>
+        </button>
+      </div>
+    </p-divider>
+
+    @if (isCommentVisible) {
+      <div class="md:col-span-2" [@fadeSlide]>
+        <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">{{
+          'FORM.LABELS.COMMENT' | translate
+        }}</label>
+        <textarea id="comment" formControlName="comment" [fluid]="true" rows="5" pTextarea [autoResize]="true"></textarea>
+      </div>
+    }
+
+    <p-divider align="left" type="solid" class="md:col-span-2">
+      <div class="flex items-center justify-between w-full gap-2">
+        <b>{{ 'FORM.LABELS.ADDITIONAL_PARAMS' | translate }}</b>
+        <button pButton type="button" class="p-button-text p-button-sm" (click)="toggleAdditionalParams()">
+          @let iconAdditional = isAdditionalParamsVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
+          <i [class]="iconAdditional"></i>
+        </button>
+      </div>
+    </p-divider>
+
+    <!-- Additional Params Section -->
+    @if (isAdditionalParamsVisible) {
+      <div formGroupName="specifics" [@fadeSlide] class="grid md:col-span-2 gap-8">
+        <div class="grid md:grid-cols-2 gap-4">
+          <!-- Floor -->
+          <ng-container formGroupName="floor">
+            <!-- Floor Current -->
+            <div>
+              <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">{{
+                'FORM.LABELS.CURRENT_FLOOR' | translate
+              }}</label>
+              <p-inputnumber
+                inputId="currentFloor"
+                formControlName="current"
+                [min]="0"
+                [max]="200"
+                [useGrouping]="false"
+                [placeholder]="'FORM.PLACEHOLDERS.CURRENT_FLOOR' | translate"
+                class="w-full"
+              />
+            </div>
+
+            <!-- Floor Full -->
+            <div>
+              <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">{{
+                'FORM.LABELS.TOTAL_FLOORS' | translate
+              }}</label>
+              <p-inputnumber
+                inputId="totalFloors"
+                formControlName="full"
+                [min]="0"
+                [max]="200"
+                [useGrouping]="false"
+                [placeholder]="'FORM.PLACEHOLDERS.TOTAL_FLOORS' | translate"
+                class="w-full"
+              />
+            </div>
+          </ng-container>
+
+          <!-- Rooms -->
+          <div>
+            <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'FORM.LABELS.ROOMS' | translate
+            }}</label>
+            <p-inputnumber
+              inputId="rooms"
+              formControlName="rooms"
+              [min]="0"
+              [max]="200"
+              [useGrouping]="false"
+              [placeholder]="'FORM.PLACEHOLDERS.ROOMS' | translate"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Heating -->
+          <div>
+            <label for="heating" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'FORM.LABELS.HEATING' | translate
+            }}</label>
+            <p-select
+              id="heating"
+              [options]="heatingTypes"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="heating"
+              [placeholder]="'FORM.PLACEHOLDERS.HEATING' | translate"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Furnished -->
+          <div>
+            <label for="furnished" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'FORM.LABELS.FURNISHED' | translate
+            }}</label>
+            <p-select
+              id="furnished"
+              [options]="furnishedStatuses"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="furnished"
+              [placeholder]="'FORM.PLACEHOLDERS.FURNISHED' | translate"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Renovation -->
+          <div>
+            <label for="renovation" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'FORM.LABELS.RENOVATION' | translate
+            }}</label>
+            <p-select
+              id="renovation"
+              [options]="renovationStatuses"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="renovation"
+              [placeholder]="'FORM.PLACEHOLDERS.RENOVATION' | translate"
+              class="w-full"
+            />
+          </div>
+
+          <!-- Kitchen -->
+          <div>
+            <label for="kitchen" class="block text-sm font-medium text-gray-700 mb-1">{{
+              'FORM.LABELS.KITCHEN' | translate
+            }}</label>
+            <p-select
+              id="kitchen"
+              [options]="kitchenTypes"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="kitchen"
+              [placeholder]="'FORM.PLACEHOLDERS.KITCHEN' | translate"
+              class="w-full"
+            />
+          </div>
+        </div>
+
+        <app-fieldset-checkbox-group [fieldsetConfig]="fieldsetConfig" formControlName="options"></app-fieldset-checkbox-group>
+      </div>
+    }
+
+    <!-- Buttons -->
+    <div class="md:col-span-2 flex justify-end gap-2 mt-6 sticky bottom-0">
+      <p-button
+        [label]="'FORM.BUTTONS.CANCEL' | translate"
+        type="button"
+        (click)="onCancel()"
+        class="backdrop-blur-[2px]"
+        outlined
+      />
+      <p-button
+        [label]="'FORM.BUTTONS.SAVE' | translate"
+        type="submit"
+        class="p-button-primary backdrop-blur-[2px]"
+        [disabled]="form.invalid"
+      />
+    </div>
+  </form>
+</div>

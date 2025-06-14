@@ -13,13 +13,13 @@ import { Logout, Terminate } from 'src/app/core';
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent {
-  private readonly store = inject(Store);
+  readonly #store = inject(Store);
 
   logOut(): void {
-    this.store.dispatch(new Logout());
+    this.#store.dispatch(new Logout());
   }
 
   terminate(): void {
-    this.store.dispatch(new Terminate());
+    this.#store.dispatch(new Terminate());
   }
 }
