@@ -1,7 +1,10 @@
 <p-menu #menu [popup]="true" [model]="actionItems"></p-menu>
 <p-confirm-dialog />
 
-<div class="card">
+<div class="card overflow-x-auto relative !p-4 !pl-0 !pr-0">
+  @if (loadingS()) {
+    <p-progressbar mode="indeterminate" [style]="{ height: '4px' }" class="w-[101%] h-1 top-0 left-[-4px] absolute" />
+  }
   @let tableData = tableDataS();
   <p-table
     #pTable
@@ -10,11 +13,11 @@
     [scrollHeight]="'calc(100vh - 19.4rem)'"
     [value]="tableData!.items"
     [paginator]="true"
-    [loading]="loadingS()"
     [totalRecords]="tableData?.total || 0"
     [lazy]="true"
     [rowsPerPageOptions]="[10, 20, 50]"
     [showCurrentPageReport]="true"
+    paginatorDropdownAppendTo="body"
     [currentPageReportTemplate]="
       'CATALOG.TABLE.PAGINATOR.CURRENT_PAGE_REPORT'
         | translate: { first: '{first}', last: '{last}', totalRecords: '{totalRecords}' }
@@ -79,7 +82,7 @@
           pEditableColumnField="status"
           (click)="$event.stopPropagation()"
         >
-          <p-cellEditor>
+          <p-cellEditor class="relative">
             <ng-template #input>
               <p-select
                 [options]="statuses"
@@ -88,10 +91,8 @@
                 optionLabel="label"
                 optionValue="value"
                 appendTo="body"
-                [ngStyle]="{
-                  'background-color': getStatusBackground(item.status),
-                  'z-index': '5000',
-                }"
+                [ngStyle]="{ 'background-color': getStatusBackground(item.status) }"
+                class="!absolute bottom-[-1.2rem]"
               >
                 <ng-template pTemplate="item" let-item>
                   <div class="flex items-center">

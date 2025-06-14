@@ -31,6 +31,7 @@ import { TagModule } from 'primeng/tag';
 import { startWith, tap } from 'rxjs';
 import { CatalogState, DeletePropertyObjects, FetchPropertyObject, UpdateStatus } from 'src/app/core';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 @Component({
   selector: 'app-table',
@@ -45,6 +46,7 @@ import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalo
     ConfirmDialog,
     DynamicDialogModule,
     SelectModule,
+    ProgressBarModule,
     TranslatePipe,
   ],
   providers: [DialogService],

@@ -2,6 +2,10 @@
   "TOPBAR": {
     "LANGUAGE": "Español"
   },
+  "NOTIFICATIONS": {
+    "SUCCESS": "Éxito",
+    "ERROR": "Error"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Fotos",
@@ -272,6 +276,16 @@
         "MIN": "Precio mínimo",
         "MAX": "Precio máximo"
       }
+    },
+    "NOTIFICATION": {
+      "OBJECT_CREATED": "El objeto inmobiliario se ha creado correctamente",
+      "CREATION_FAILED": "No se pudo crear el objeto inmobiliario",
+      "OBJECT_UPDATED": "El objeto inmobiliario se ha actualizado correctamente",
+      "UPDATE_FAILED": "No se pudo actualizar el objeto inmobiliario",
+      "STATUS_UPDATED": "Estado actualizado correctamente",
+      "STATUS_UPDATE_FAILED": "No se pudo actualizar el estado",
+      "OBJECT_DELETED": "El objeto inmobiliario se ha eliminado correctamente",
+      "DELETEION_FAILED": "No se pudo eliminar el objeto inmobiliario"
     }
   }
 }

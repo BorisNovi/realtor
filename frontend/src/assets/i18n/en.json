@@ -2,6 +2,10 @@
   "TOPBAR": {
     "LANGUAGE": "English"
   },
+  "NOTIFICATIONS": {
+    "SUCCESS": "Success",
+    "ERROR": "Error"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Photos",
@@ -272,6 +276,16 @@
         "MIN": "Price min",
         "MAX": "Price max"
       }
-    }
+    },
+      "NOTIFICATION": {
+        "OBJECT_CREATED": "Property object created successfully",
+        "CREATION_FAILED": "Failed to create property object",
+        "OBJECT_UPDATED": "Property object updated successfully",
+        "UPDATE_FAILED": "Failed to update property object",
+        "STATUS_UPDATED": "Status updated successfully",
+        "STATUS_UPDATE_FAILED": "Failed to update status",
+        "OBJECT_DELETED": "Property object deleted successfully",
+        "DELETEION_FAILED": "Failed to delete property object"
+      }
   }
 }
