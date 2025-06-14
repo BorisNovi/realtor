@@ -1,16 +1,20 @@
-import { AfterViewInit, Component, effect, ElementRef, input, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, inject, input, signal } from '@angular/core';
+import { environment } from '@environments/environment';
 import maplibregl, { LngLatLike } from 'maplibre-gl';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'app-map',
   imports: [],
-  templateUrl: './map.component.html',
+  template: '<ng-content></ng-content>',
 })
 export class MapComponent implements AfterViewInit {
+  readonly #host: ElementRef<HTMLElement> = inject(ElementRef);
+
   readonly center = input<LngLatLike>([0, 0]);
   readonly zoom = input<number>(3);
-  readonly mapContainer = viewChild.required<ElementRef>('map');
   readonly #mapS = signal<maplibregl.Map | null>(null);
+  readonly mapReady$ = new ReplaySubject<maplibregl.Map>(1);
 
   constructor() {
     effect(() => {
@@ -21,14 +25,15 @@ export class MapComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     const map = new maplibregl.Map({
-      container: this.mapContainer().nativeElement, // container id
+      container: this.#host.nativeElement,
       // cooperativeGestures: true,
-      style: 'https://demotiles.maplibre.org/style.json', // style URL
-      center: this.center(), // starting position [lng, lat]
+      style: environment.tilesUrl,
+      center: this.center(),
       zoom: 3,
     });
 
     this.#mapS.set(map);
+    this.mapReady$.next(map);
   }
 
   get map(): maplibregl.Map {
