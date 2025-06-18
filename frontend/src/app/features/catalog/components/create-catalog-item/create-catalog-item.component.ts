@@ -1,11 +1,10 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { FieldsetCheckboxGroupComponent, InputWrapperComponent } from '@shared/components';
+import { AddressPickerComponent, FieldsetCheckboxGroupComponent, InputWrapperComponent } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { createItemsFieldsetConfig } from '@shared/constants/fieldset.configs';
 import { WorldPhoneMasksDirective } from '@shared/directives';
@@ -32,12 +31,12 @@ import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
+import { TooltipModule } from 'primeng/tooltip';
 import { startWith, tap } from 'rxjs';
 import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
 
 @Component({
   imports: [
-    CommonModule,
     FileUploadModule,
     ReactiveFormsModule,
     InputTextModule,
@@ -45,6 +44,7 @@ import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 's
     ButtonModule,
     SelectModule,
     TagModule,
+    TooltipModule,
     DividerModule,
     TextareaModule,
     InputGroupModule,
@@ -54,6 +54,7 @@ import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 's
     InputWrapperComponent,
     TranslatePipe,
     FieldsetCheckboxGroupComponent,
+    AddressPickerComponent,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -108,8 +109,9 @@ export class CreateCatalogItemComponent implements OnInit {
   );
   readonly currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
 
-  isCommentVisible = !!this.#config.data?.comment || false;
-  isAdditionalParamsVisible = !!this.#config.data?.specifics || false;
+  readonly isCommentVisible = signal(!!this.#config.data?.comment || false);
+  readonly isAdditionalParamsVisible = signal(!!this.#config.data?.specifics || false);
+  readonly isPickerOpen = signal(false);
 
   ngOnInit(): void {
     this.#initForm();
@@ -244,13 +246,5 @@ export class CreateCatalogItemComponent implements OnInit {
 
   onCancel(): void {
     this.#ref.close();
-  }
-
-  toggleComment(): void {
-    this.isCommentVisible = !this.isCommentVisible;
-  }
-
-  toggleAdditionalParams(): void {
-    this.isAdditionalParamsVisible = !this.isAdditionalParamsVisible;
   }
 }
