@@ -44,7 +44,7 @@ export class MapPageComponent {
       if (!coords || coords.length < 2) return;
 
       this.foundMarker.set(coords);
-      this.mapComponent()?.map.panTo(coords);
+      this.mapComponent()?.map.flyTo({ center: coords, zoom: 13 });
     });
   }
 }
