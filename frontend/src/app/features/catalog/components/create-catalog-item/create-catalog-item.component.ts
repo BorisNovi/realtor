@@ -7,7 +7,7 @@ import { Store } from '@ngxs/store';
 import { AddressPickerComponent, FieldsetCheckboxGroupComponent, InputWrapperComponent } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { createItemsFieldsetConfig } from '@shared/constants/fieldset.configs';
-import { WorldPhoneMasksDirective } from '@shared/directives';
+import { ScrollToTopOnShowDirective, WorldPhoneMasksDirective } from '@shared/directives';
 import {
   Currency,
   FurnishedStatus,
@@ -55,6 +55,7 @@ import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 's
     TranslatePipe,
     FieldsetCheckboxGroupComponent,
     AddressPickerComponent,
+    ScrollToTopOnShowDirective,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
