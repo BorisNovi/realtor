@@ -1,12 +1,6 @@
 from django.utils import timezone
 from django.db import models
-
-class Contact(models.Model):
-    name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20)
-
-    def __str__(self):
-        return f"{self.name} ({self.phone})"
+from contacts.models import Contact
 
 class PropertyStatus(models.TextChoices):
     AVAILABLE = 'available', 
@@ -54,7 +48,13 @@ class Flat(BaseProperty):
     beautiful_view = models.BooleanField(default=False)
     new_building = models.BooleanField(default=False)
     elevator = models.BooleanField(default=False)
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="flats")
+    contact = models.ForeignKey(
+        Contact, 
+        on_delete=models.CASCADE, 
+        related_name="flats", 
+        null=True, 
+        blank=True)
+
 
     # Дополнительно для соответствия интерфейсу
     kitchen_type = models.CharField(max_length=50, null=True, blank=True)
@@ -82,7 +82,13 @@ class Office(BaseProperty):
     floor = models.PositiveIntegerField()
     open_space = models.BooleanField(default=False)
     meeting_rooms = models.PositiveIntegerField(default=0)
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="offices")
+    contact = models.ForeignKey(
+        Contact, 
+        on_delete=models.CASCADE, 
+        related_name="offices", 
+        null=True, 
+        blank=True)
+
 
     def __str__(self):
         return f"Офис – {self.address} ({self.price_value} {self.price_currency})"
@@ -94,7 +100,13 @@ class LandPlot(BaseProperty):
     """ Модель для земельных участков """
     is_agricultural = models.BooleanField(default=False)
     has_communications = models.BooleanField(default=False)
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="landplots")
+    contact = models.ForeignKey(
+        Contact, 
+        on_delete=models.CASCADE, 
+        related_name="landlots", 
+        null=True, 
+        blank=True)
+
 
     def __str__(self):
         return f"Земельный участок – {self.address} ({self.price_value} {self.price_currency})"

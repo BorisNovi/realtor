@@ -1,9 +1,13 @@
 from rest_framework import serializers
 from catalog.models import Flat
 
+class PriceSerializer(serializers.Serializer):
+    value = serializers.FloatField()
+    currency = serializers.CharField()
+
 class FlatDetailSerializer(serializers.ModelSerializer):
     specifics = serializers.SerializerMethodField()
-    price = serializers.SerializerMethodField()
+    price = PriceSerializer()
     contact = serializers.SerializerMethodField()
 
     class Meta:

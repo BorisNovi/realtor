@@ -11,8 +11,31 @@ PROPERTY_SERIALIZER_MAP = {
     # 'landplot': LandPlotDetailSerializer,
 }
 
+
+
 class CatalogDetailView(APIView):
 
+    #  Обновление объекта недвижимости по первичному ключу (pk)
+    def put(self, request, pk):
+        instance = self.get_instance(pk)
+        if not instance:
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        property_type = next(
+            (key for key, model in PROPERTY_MODEL_MAP.items() if isinstance(instance, model)),
+            None
+        )
+        serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
+        if not serializer_class:
+            return Response({"detail": "Unsupported property type."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = serializer_class(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()  # <-- вот здесь и вызовется ТВОЙ update()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    #  Получение объекта недвижимости по первичному ключу (pk) 
     def get_instance(self, pk):
         for model in PROPERTY_MODEL_MAP.values():
             try:
@@ -21,6 +44,7 @@ class CatalogDetailView(APIView):
                 continue
         return None
 
+    # Получение детальной информации об объекте недвижимости
     def get(self, request, pk):
         instance = self.get_instance(pk)
         if not instance:
@@ -37,6 +61,7 @@ class CatalogDetailView(APIView):
         serializer = serializer_class(instance)
         return Response(serializer.data)
 
+    # Обновление статуса объекта
     def patch(self, request, pk):
         instance = self.get_instance(pk)
         if not instance:

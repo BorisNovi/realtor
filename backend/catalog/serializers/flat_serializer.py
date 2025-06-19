@@ -16,4 +16,5 @@ class FlatSerializer(serializers.ModelSerializer):
             'beautiful_view': {'required': False},
             'new_building': {'required': False},
             'elevator': {'required': False},
+            'contact': {'required': False, 'allow_null': True},
         }
