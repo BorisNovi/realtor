@@ -8,9 +8,8 @@ describe('AddressPickerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddressPickerComponent]
-    })
-    .compileComponents();
+      imports: [AddressPickerComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AddressPickerComponent);
     component = fixture.componentInstance;

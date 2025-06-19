@@ -1,18 +1,19 @@
-<div class="relative w-full flex items-center flex-col">
-  <p-inputgroup class="absolute z-10 top-2 !w-[80%]">
-    <input pInputText placeholder="Address" [ngModel]="address()" (ngModelChange)="address.set($event)" />
+<div class="relative w-full flex items-center flex-col overflow-hidden rounded-md">
+  <p-inputgroup class="absolute z-10 top-2 !w-[90%]">
+    <input pInputText placeholder="City, Street, House ..." [ngModel]="address()" (ngModelChange)="address.set($event)" />
     <p-inputgroup-addon>
-      <p-button icon="pi pi-search" severity="secondary" variant="text" (click)="search()" />
+      <p-button icon="pi pi-search" severity="secondary" (click)="search()" [disabled]="!address()" />
     </p-inputgroup-addon>
   </p-inputgroup>
 
-  <app-map class="flex w-full h-[28rem]" [center]="mapCenter()" [zoom]="10">
+  <p-button class="absolute z-10 right-2 bottom-20" icon="pi pi-map-marker" [outlined]="true" (click)="updateLocation(true)" />
 
+  <app-map class="flex w-full h-[28rem]" [center]="mapCenter()" [zoom]="10">
     <app-map-marker
       [position]="markerPosition()!"
       [draggable]="true"
       (dragEnd)="onMarkerDrag($event)"
-      (markerClick)="null"
+      (markerClick)="(null)"
     ></app-map-marker>
   </app-map>
 </div>

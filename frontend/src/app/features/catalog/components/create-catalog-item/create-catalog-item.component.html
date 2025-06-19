@@ -133,7 +133,13 @@
     <!-- Address -->
     @let pickerOpen = isPickerOpen();
     @if (!pickerOpen) {
-      <app-input-wrapper [@fadeSlide] [control]="form.get('address')!" [label]="'FORM.LABELS.ADDRESS' | translate" id="address" class="md:col-span-2">
+      <app-input-wrapper
+        [@fadeSlide]
+        [control]="form.get('address')!"
+        [label]="'FORM.LABELS.ADDRESS' | translate"
+        id="address"
+        class="md:col-span-2"
+      >
         <p-inputgroup>
           <input
             id="address"
@@ -144,7 +150,14 @@
             class="w-full"
           />
           <p-inputgroup-addon>
-            <p-button icon="pi pi-map-marker" severity="secondary" variant="text" pTooltip="Pick on map" showDelay="300" (click)="isPickerOpen.set(true)" />
+            <p-button
+              icon="pi pi-map"
+              severity="secondary"
+              variant="text"
+              pTooltip="Pick on map"
+              showDelay="300"
+              (click)="isPickerOpen.set(true)"
+            />
           </p-inputgroup-addon>
         </p-inputgroup>
       </app-input-wrapper>
@@ -152,7 +165,7 @@
 
     <!-- Address Picker -->
     @if (isPickerOpen()) {
-      <div [@fadeSlide] class="md:col-span-2">
+      <div [@fadeSlide] [appScrollToTopOnShow]="isPickerOpen()" [scrollOffset]="70" class="md:col-span-2">
         <app-address-picker></app-address-picker>
       </div>
     }
@@ -267,7 +280,12 @@
     <p-divider align="left" type="solid" class="md:col-span-2">
       <div class="flex items-center justify-between w-full gap-2">
         <b>{{ 'FORM.LABELS.ADDITIONAL_PARAMS' | translate }}</b>
-        <button pButton type="button" class="p-button-text p-button-sm" (click)="isAdditionalParamsVisible.set(!addParamsVisible)">
+        <button
+          pButton
+          type="button"
+          class="p-button-text p-button-sm"
+          (click)="isAdditionalParamsVisible.set(!addParamsVisible)"
+        >
           @let iconAdditional = addParamsVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
           <i [class]="iconAdditional"></i>
         </button>
