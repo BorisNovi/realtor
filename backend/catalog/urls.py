@@ -1,6 +1,6 @@
 from django.urls import path
 from catalog.views.catalog_detail_view import CatalogDetailView
-from catalog.views.property_create_view import PropertyCreateView
+from catalog.views.create_object_view import PropertyCreateView
 from catalog.views.catalog_list_view import CatalogListView
 from catalog.views.catalog_bulk_delete_view import CatalogBulkDeleteView
 

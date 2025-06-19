@@ -1,10 +1,9 @@
 from rest_framework import serializers
 from rest_framework import serializers
-from ..models import Contact
 from .flat_serializer import FlatSerializer
 from .office_serializer import OfficeSerializer
 from .land_serializer import LandPlotSerializer
-from .contact_serializer import ContactSerializer
+from contacts.serializers import ContactSerializer
 # TODO: добавить HouseSerializer, GarageSerializer и т.п.
 
 PROPERTY_SERIALIZER_MAP = {
@@ -32,7 +31,8 @@ class CatalogCreateSerializer(serializers.Serializer):
     comment = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     date_added = serializers.DateTimeField(required=False)
 
-    contact = ContactSerializer()
+    contact = ContactSerializer(required=False, allow_null=True, default=None)
+
 
     def to_internal_value(self, data):
         base_fields = super().to_internal_value(data)
@@ -46,25 +46,25 @@ class CatalogCreateSerializer(serializers.Serializer):
         return base_fields
 
     def create(self, validated_data):
-        # Извлекаем данные о контакте
-        contact_data = validated_data.pop('contact')
+        contact_data = validated_data.pop('contact', None)
+        contact = None
 
-        # Создаем контакт или получаем существующий
-        contact_serializer = ContactSerializer(data=contact_data)
-        contact_serializer.is_valid(raise_exception=True)
-        contact = contact_serializer.save()  # Сохраняем контакт
-
+        if contact_data:
+            contact_serializer = ContactSerializer(data=contact_data)
+            contact_serializer.is_valid(raise_exception=True)
+            contact = contact_serializer.save()
 
         property_type = validated_data.pop('property_type')
         extra_fields = validated_data.pop('extra_fields', {})
 
-        # Распаковываем вложенный price
         price_data = validated_data.pop('price', {})
         validated_data['price_value'] = price_data.get('value')
         validated_data['price_currency'] = price_data.get('currency')
 
-        # Объединяем все данные
-        combined_data = {**validated_data, **extra_fields, 'contact': contact.id}
+        combined_data = {**validated_data, **extra_fields}
+
+        if contact is not None:
+            combined_data['contact'] = contact.id  # Добавляем только если контакт есть
 
         serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
         if not serializer_class:
@@ -74,30 +74,32 @@ class CatalogCreateSerializer(serializers.Serializer):
         serializer.is_valid(raise_exception=True)
         return serializer.save()
 
+
     def update(self, instance, validated_data):
         contact_data = validated_data.pop('contact', None)
         if contact_data:
-            contact_serializer = ContactSerializer(instance.contact, data=contact_data)
+            # Создаём/обновляем контакт через сериализатор из contacts
+            contact_serializer = ContactSerializer(instance=instance.contact, data=contact_data)
             contact_serializer.is_valid(raise_exception=True)
-            contact_serializer.save()
+            contact = contact_serializer.save()
+            instance.contact = contact
 
+        # Обновляем price
         price_data = validated_data.pop('price', {})
-        validated_data['price_value'] = price_data.get('value', instance.price_value)
-        validated_data['price_currency'] = price_data.get('currency', instance.price_currency)
+        if price_data:
+            instance.price_value = price_data.get('value', instance.price_value)
+            instance.price_currency = price_data.get('currency', instance.price_currency)
 
         extra_fields = validated_data.pop('extra_fields', {})
-
-        # Список запрещенных для прямого изменения атрибутов
         forbidden_fields = ['property_type', 'id']
 
         for attr, value in {**validated_data, **extra_fields}.items():
             if attr in forbidden_fields:
-                continue  # пропускаем поля, которые нельзя менять напрямую
+                continue
             setattr(instance, attr, value)
 
         instance.save()
         return instance
-
 
     def to_representation(self, instance):
         # возвращаем, как сериализует конкретный сериализатор
