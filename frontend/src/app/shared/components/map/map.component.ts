@@ -3,15 +3,17 @@ import { environment } from '@environments/environment';
 import maplibregl, { LngLatLike } from 'maplibre-gl';
 import { ReplaySubject } from 'rxjs';
 import { PrivateLayoutService } from 'src/app/layouts/private-layout/shared';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-map',
-  imports: [],
-  template: '<ng-content></ng-content>',
+  imports: [ButtonModule],
+  templateUrl: 'map.component.html',
 })
 export class MapComponent implements AfterViewInit {
   readonly center = input<LngLatLike>([0, 0]);
   readonly zoom = input<number>(3);
+  readonly scrollZoomDisabled = input(false, { transform: v => v === '' || !!v });
 
   readonly #host: ElementRef<HTMLElement> = inject(ElementRef);
   readonly layoutService = inject(PrivateLayoutService);
@@ -33,6 +35,12 @@ export class MapComponent implements AfterViewInit {
       const map = this.#mapS();
       const dt = this.layoutService.isDarkTheme();
       if (map) map.setStyle(dt ? environment.tilesDarkUrl : environment.tilesLightUrl);
+    });
+    effect(() => {
+      const map = this.#mapS();
+      const sz = this.scrollZoomDisabled();
+      if (map && sz) map.scrollZoom.disable();
+      if (map && !sz) map.scrollZoom.enable();
     });
   }
 
