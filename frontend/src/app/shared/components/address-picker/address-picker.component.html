@@ -1,12 +1,22 @@
 <div class="relative w-full flex items-center flex-col overflow-hidden rounded-md">
   <p-inputgroup class="absolute z-10 top-2 !w-[90%]">
-    <input pInputText placeholder="City, Street, House ..." [ngModel]="address()" (ngModelChange)="address.set($event)" />
+    <input
+      pInputText
+      placeholder="City, Street, House ..."
+      [ngModel]="addressQuery()"
+      (ngModelChange)="addressQuery.set($event)"
+    />
     <p-inputgroup-addon>
-      <p-button icon="pi pi-search" severity="secondary" (click)="search()" [disabled]="!address()" />
+      <p-button icon="pi pi-search" severity="secondary" (click)="search()" [disabled]="!addressQuery()" />
     </p-inputgroup-addon>
   </p-inputgroup>
 
   <p-button class="absolute z-10 right-2 bottom-20" icon="pi pi-map-marker" [outlined]="true" (click)="updateLocation(true)" />
+  <div class="absolute m-[10px] z-10 bottom-0 left-0 text-sm font-medium text-gray-500">
+    @let normalized = normalizeLngLat(posToShow());
+    <div>lng: {{ normalized.lng.toString().slice(0, 9) }}</div>
+    <div>lat: {{ normalized.lat.toString().slice(0, 9) }}</div>
+  </div>
 
   <app-map class="flex w-full h-[28rem]" [center]="mapCenter()" [zoom]="10">
     <app-map-marker
@@ -14,6 +24,8 @@
       [draggable]="true"
       (dragEnd)="onMarkerDrag($event)"
       (markerClick)="(null)"
+      [title]="popupTitle()"
+      showTooltip
     ></app-map-marker>
   </app-map>
 </div>
