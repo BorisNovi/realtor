@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnInit, signal, viewChild } from '@angular/core';
+import { Component, computed, inject, OnInit, output, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
@@ -7,9 +7,10 @@ import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputText } from 'primeng/inputtext';
 import { GeocodeService } from 'src/app/core';
-import { getCurrentLocation } from '../../utils';
+import { getCurrentLocation, normalizeLngLat } from '../../utils';
 import { MapMarkerComponent } from '../map/map-marker.component';
 import { MapComponent } from '../map/map.component';
+import { GeocodeFeature } from '@shared/interfaces';
 
 @Component({
   selector: 'app-address-picker',
@@ -30,23 +31,33 @@ export class AddressPickerComponent implements OnInit {
 
   readonly #geo = inject(GeocodeService);
 
-  readonly mapCenter = signal<LngLatLike>([12.4, 41.8]);
+  readonly mapCenter = signal<LngLatLike>([0, 0]);
 
-  readonly address = signal<string>('');
-  readonly markerPosition = signal<LngLatLike>([41.642414, 41.635242]);
+  readonly addressQuery = signal<string>('');
+  readonly markerPosition = signal<LngLatLike>([0, 0]);
+  readonly popupTitle = signal<string | null>(null);
+  readonly posToShow = signal<LngLatLike>([0, 0]);
+
+  readonly address = output<any>();
+
+  readonly normalizeLngLat = normalizeLngLat;
 
   ngOnInit(): void {
     this.updateLocation();
+    this.popupTitle.set('geocoded address');
   }
 
   onMarkerDrag(markerPos: LngLatLike): void {
-    console.log(markerPos);
+    this.posToShow.set(markerPos);
+    this.reverse(markerPos);
   }
 
   updateLocation(flyTo = false): void {
     getCurrentLocation()
       .then(lngLat => {
         this.markerPosition.set(lngLat);
+        this.posToShow.set(lngLat);
+        this.reverse(lngLat);
         if (flyTo) this.mapComponent()?.map.flyTo({ center: lngLat, zoom: 15 });
         else this.mapCenter.set(lngLat);
       })
@@ -56,15 +67,34 @@ export class AddressPickerComponent implements OnInit {
   }
 
   search(): void {
-    const address = this.address();
+    const address = this.addressQuery();
     if (!address) return;
-    this.#geo.geocode(address).subscribe(data => {
-      console.log(data);
-      const coords = data?.features?.[0]?.geometry?.coordinates;
-      if (!coords || coords.length < 2) return;
+    this.#geo.geocode(address).subscribe(result => {
+      const feat = result?.features?.[0];
+      const lngLat = feat?.geometry?.coordinates;
+      if (!lngLat || lngLat.length < 2) this.popupTitle.set('Nothig found');
 
-      this.markerPosition.set(coords);
-      this.mapComponent()?.map.flyTo({ center: coords, zoom: 15 });
+      this.setOutput(feat);
+      this.markerPosition.set(lngLat);
+      this.posToShow.set(lngLat);
+      this.mapComponent()?.map.flyTo({ center: lngLat, zoom: 15 });
+    });
+  }
+
+  reverse(lngLat: LngLatLike): void {
+    this.#geo.reverse(lngLat).subscribe(result => {
+      const feat = result?.features?.[0];
+      this.setOutput(feat);
+    });
+  }
+
+  // TODO: Сделать тип для адреса и режим ручного ввода. Автоперключение карты на языки приложения
+  setOutput(feature: GeocodeFeature): void {
+    this.popupTitle.set(feature?.properties.display_name || null);
+    this.address.emit({
+      coordinates: feature?.geometry?.coordinates || null,
+      address: feature?.properties?.address || null,
+      name: feature?.properties.display_name || null,
     });
   }
 }

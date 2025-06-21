@@ -1,19 +1,51 @@
 import { Component, DestroyRef, effect, inject, input, OnDestroy, OnInit, output, signal } from '@angular/core';
-import maplibregl, { LngLatLike, Marker } from 'maplibre-gl';
-import { MapComponent } from './map.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import maplibregl, { LngLatLike, Marker, Popup } from 'maplibre-gl';
+import { TooltipModule } from 'primeng/tooltip';
+import { MapComponent } from './map.component';
 import { DEFAULT_MAP_MARKER } from './marker.svg';
 
 @Component({
   selector: 'app-map-marker',
-  imports: [],
+  imports: [TooltipModule],
   template: '',
+  styles: `
+    ::ng-deep {
+      .maplibregl-popup {
+        &-content {
+          padding: 5px;
+          background: var(--p-button-secondary-background);
+        }
+
+        &-anchor {
+          &-top-left .maplibregl-popup-tip,
+          &-top-right .maplibregl-popup-tip,
+          &-top .maplibregl-popup-tip {
+            border-bottom-color: var(--p-button-secondary-background) !important;
+          }
+          &-bottom-left .maplibregl-popup-tip,
+          &-bottom-right .maplibregl-popup-tip,
+          &-bottom .maplibregl-popup-tip {
+            border-top-color: var(--p-button-secondary-background) !important;
+          }
+          &-left .maplibregl-popup-tip {
+            border-right-color: var(--p-button-secondary-background) !important;
+          }
+          &-right .maplibregl-popup-tip {
+            border-left-color: var(--p-button-secondary-background) !important;
+          }
+        }
+      }
+    }
+  `,
 })
 export class MapMarkerComponent implements OnInit, OnDestroy {
   readonly position = input.required<LngLatLike>();
   readonly svg = input<string>(DEFAULT_MAP_MARKER);
   readonly color = input<string>('var(--primary-color)');
   readonly draggable = input(false, { transform: v => v === '' || !!v });
+  readonly title = input<string | null>(null);
+  readonly showTooltip = input(false, { transform: v => v === '' || !!v });
 
   readonly markerClick = output<void>();
   readonly dragEnd = output<LngLatLike>();
@@ -22,6 +54,7 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
   readonly #destroyRef = inject(DestroyRef);
 
   readonly #marker = signal<Marker | null>(null);
+  readonly #popup = signal<Popup | null>(null);
   #element!: HTMLDivElement;
   #onClick!: () => void;
 
@@ -49,6 +82,26 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
       if (!m || !c) return;
       const el = m.getElement();
       el.style.color = c;
+    });
+    effect(() => {
+      const m = this.#marker();
+      const title = this.title();
+      if (!m || !title) return;
+      let popup = this.#popup();
+      if (!popup) {
+        popup = new maplibregl.Popup({
+          offset: 20,
+          closeButton: false,
+          closeOnClick: false,
+        }).setDOMContent(document.createTextNode(title));
+        this.#popup.set(popup);
+        m.setPopup(popup);
+      } else {
+        popup.setText(title);
+      }
+
+      if (this.showTooltip()) popup.addTo(m._map);
+      else popup.remove();
     });
   }
 
@@ -83,5 +136,6 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.#element?.removeEventListener('click', this.#onClick);
     this.#marker()?.remove();
+    this.#popup()?.remove();
   }
 }
