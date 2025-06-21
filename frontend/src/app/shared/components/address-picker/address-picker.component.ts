@@ -37,6 +37,7 @@ export class AddressPickerComponent implements OnInit {
   readonly markerPosition = signal<LngLatLike>([0, 0]);
   readonly popupTitle = signal<string | null>(null);
   readonly posToShow = signal<LngLatLike>([0, 0]);
+  readonly scrollZooomDisabled = signal<boolean>(true);
 
   readonly address = output<any>();
 

@@ -1,3 +1,6 @@
+@let sz = scrollZooomDisabled();
+@let normalizedLL = normalizeLngLat(posToShow());
+
 <div class="relative w-full flex items-center flex-col overflow-hidden rounded-md">
   <p-inputgroup class="absolute z-10 top-2 !w-[90%]">
     <input
@@ -10,15 +13,20 @@
       <p-button icon="pi pi-search" severity="secondary" (click)="search()" [disabled]="!addressQuery()" />
     </p-inputgroup-addon>
   </p-inputgroup>
-
   <p-button class="absolute z-10 right-2 bottom-20" icon="pi pi-map-marker" [outlined]="true" (click)="updateLocation(true)" />
+  <p-button
+    class="absolute z-10 right-2 bottom-40"
+    [icon]="sz ? 'pi pi-lock' : 'pi pi-lock-open'"
+    [outlined]="true"
+    (click)="scrollZooomDisabled.set(!sz)"
+  />
+
   <div class="absolute m-[10px] z-10 bottom-0 left-0 text-sm font-medium text-gray-500">
-    @let normalized = normalizeLngLat(posToShow());
-    <div>lng: {{ normalized.lng.toString().slice(0, 9) }}</div>
-    <div>lat: {{ normalized.lat.toString().slice(0, 9) }}</div>
+    <div>lng: {{ normalizedLL.lng.toString().slice(0, 9) }}</div>
+    <div>lat: {{ normalizedLL.lat.toString().slice(0, 9) }}</div>
   </div>
 
-  <app-map class="flex w-full h-[28rem]" [center]="mapCenter()" [zoom]="10">
+  <app-map class="flex w-full h-[28rem]" [center]="mapCenter()" [zoom]="10" [scrollZoomDisabled]="sz">
     <app-map-marker
       [position]="markerPosition()!"
       [draggable]="true"
