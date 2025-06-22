@@ -44,7 +44,7 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
   readonly svg = input<string>(DEFAULT_MAP_MARKER);
   readonly color = input<string>('var(--primary-color)');
   readonly draggable = input(false, { transform: v => v === '' || !!v });
-  readonly title = input<string | null>(null);
+  readonly title = input<string | { name: string; value: string }[] | null>(null);
   readonly showTooltip = input(false, { transform: v => v === '' || !!v });
 
   readonly markerClick = output<void>();
@@ -87,18 +87,38 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
       const m = this.#marker();
       const title = this.title();
       if (!m || !title) return;
+
       let popup = this.#popup();
       if (!popup) {
         popup = new maplibregl.Popup({
           offset: 20,
           closeButton: false,
           closeOnClick: false,
-        }).setDOMContent(document.createTextNode(title));
+        });
         this.#popup.set(popup);
         m.setPopup(popup);
-      } else {
-        popup.setText(title);
       }
+
+      // Генерация DOM
+      let content: Node;
+      if (typeof title === 'string') {
+        content = document.createTextNode(title);
+      } else {
+        const ul = document.createElement('ul');
+        ul.style.listStyle = 'none';
+        ul.style.padding = '0';
+        ul.style.margin = '0';
+
+        for (const item of title) {
+          const li = document.createElement('li');
+          li.innerHTML = `<b>${item.name}:</b> ${item.value}`;
+          ul.appendChild(li);
+        }
+
+        content = ul;
+      }
+
+      popup.setDOMContent(content);
 
       if (this.showTooltip()) popup.addTo(m._map);
       else popup.remove();

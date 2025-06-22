@@ -166,7 +166,7 @@
     <!-- Address Picker -->
     @if (isPickerOpen()) {
       <div [@fadeSlide] [appScrollToTopOnShow]="isPickerOpen()" [scrollOffset]="70" class="md:col-span-2">
-        <app-address-picker></app-address-picker>
+        <app-address-picker (address)="onAddresPickerFill($event); isPickerOpen.set(false)"></app-address-picker>
       </div>
     }
 

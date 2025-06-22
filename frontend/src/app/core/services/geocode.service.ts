@@ -4,11 +4,15 @@ import { GeocodeFeatureCollection } from '@shared/interfaces';
 import { normalizeLngLat } from '@shared/utils';
 import { LngLatLike } from 'maplibre-gl';
 import { Observable, of, tap } from 'rxjs';
+import { LanguageSelectService } from './language-select.service';
 
 @Injectable({ providedIn: 'root' })
 export class GeocodeService {
   readonly #http = inject(HttpClient);
+  readonly #languageSelectService = inject(LanguageSelectService);
   readonly #cache = new Map<string, any>();
+
+  readonly currentLanguage = this.#languageSelectService.currentLanguageOption;
 
   geocode(query: string): Observable<GeocodeFeatureCollection> {
     if (this.#cache.has(query)) return of(this.#cache.get(query));
@@ -19,14 +23,7 @@ export class GeocodeService {
       addressdetails: 1,
       limit: 1,
       layer: 'address',
-      // countrycodes: 'ge',
-      // countrycodes // comma-separated list of country codes
-      // street
-      // city
-      // county
-      // state
-      // country
-      // postalcode
+      'accept-language': `${this.currentLanguage().value}, en`,
     };
 
     return this.#http
@@ -45,6 +42,7 @@ export class GeocodeService {
       lon: lng.toString(),
       format: 'geojson',
       addressdetails: 1,
+      'accept-language': `${this.currentLanguage().value}, en`,
     };
 
     return this.#http

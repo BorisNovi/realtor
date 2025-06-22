@@ -34,6 +34,7 @@ export interface GeocodeAddress {
   county?: string;
   postcode?: string;
   country: string;
+  house_number?: string;
   country_code: string;
   [key: string]: string | undefined;
 }

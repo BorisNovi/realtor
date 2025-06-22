@@ -2,23 +2,46 @@
 @let normalizedLL = normalizeLngLat(posToShow());
 
 <div class="relative w-full flex items-center flex-col overflow-hidden rounded-md">
-  <p-inputgroup class="absolute z-10 top-2 !w-[90%]">
-    <input
-      pInputText
-      placeholder="City, Street, House ..."
-      [ngModel]="addressQuery()"
-      (ngModelChange)="addressQuery.set($event)"
+  <div class="absolute z-10 top-2 flex items-center w-full gap-4 ps-4 pe-2">
+    <p-inputgroup class="">
+      <input
+        pInputText
+        [placeholder]="'ADDRESS_PICKER.PLACEHOLDER' | translate"
+        [ngModel]="addressQuery()"
+        (ngModelChange)="addressQuery.set($event)"
+      />
+      <p-inputgroup-addon>
+        <p-button icon="pi pi-search" severity="secondary" (click)="search()" [disabled]="!addressQuery()" />
+      </p-inputgroup-addon>
+    </p-inputgroup>
+
+    <p-button
+      class="z-10 right-2 bottom-20"
+      icon="pi pi-check"
+      (click)="fillPickedAddress()"
+      [pTooltip]="'ADDRESS_PICKER.TOOLTIP.FILL' | translate"
+      showDelay="300"
+      tooltipPosition="left"
     />
-    <p-inputgroup-addon>
-      <p-button icon="pi pi-search" severity="secondary" (click)="search()" [disabled]="!addressQuery()" />
-    </p-inputgroup-addon>
-  </p-inputgroup>
-  <p-button class="absolute z-10 right-2 bottom-20" icon="pi pi-map-marker" [outlined]="true" (click)="updateLocation(true)" />
+  </div>
+
+  <p-button
+    class="absolute z-10 right-2 bottom-20"
+    icon="pi pi-map-marker"
+    [outlined]="true"
+    (click)="updateLocation(true)"
+    [pTooltip]="'ADDRESS_PICKER.TOOLTIP.LOCATE' | translate"
+    showDelay="300"
+    tooltipPosition="left"
+  />
   <p-button
     class="absolute z-10 right-2 bottom-40"
     [icon]="sz ? 'pi pi-lock' : 'pi pi-lock-open'"
     [outlined]="true"
     (click)="scrollZooomDisabled.set(!sz)"
+    [pTooltip]="'ADDRESS_PICKER.TOOLTIP.' + (sz ? 'UNLOCK_SCROLL' : 'LOCK_SCROLL') | translate"
+    showDelay="300"
+    tooltipPosition="left"
   />
 
   <div class="absolute m-[10px] z-10 bottom-0 left-0 text-sm font-medium text-gray-500">
