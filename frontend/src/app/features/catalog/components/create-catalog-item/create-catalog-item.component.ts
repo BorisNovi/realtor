@@ -18,6 +18,7 @@ import {
   RenovationStatus,
   ZoningType,
 } from '@shared/enums';
+import { IPickerAddress } from '@shared/interfaces/picker-address.interface';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -193,6 +194,12 @@ export class CreateCatalogItemComponent implements OnInit {
           },
         });
     }
+  }
+
+  onAddresPickerFill(address: IPickerAddress | null): void {
+    console.log(address);
+    // TODO: сделать 4 инпута под адрес - город, улица, дом, квартира
+    this.form.get('address')?.setValue(address?.name);
   }
 
   removePhoto(index: number): void {

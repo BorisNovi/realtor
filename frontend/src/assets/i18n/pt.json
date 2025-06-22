@@ -287,5 +287,22 @@
       "OBJECT_DELETED": "Objeto de imóvel excluído com sucesso",
       "DELETEION_FAILED": "Falha ao excluir o objeto de imóvel"
     }
+  }, 
+  "ADDRESS_PICKER": {
+    "PLACEHOLDER": "Cidade, rua, casa ...",
+    "TOOLTIP": {
+      "FILL": "Usar endereço encontrado",
+      "LOCATE": "Localizar posição atual",
+      "UNLOCK_SCROLL": "Ativar zoom com a roda",
+      "LOCK_SCROLL": "Desativar zoom com a roda"
+    },
+    "POPUP": {
+      "DEFAULT": "Endereço geocodificado",
+      "GEO_DISABLED": "Permita acesso à localização ou mova o marcador",
+      "NOT_FOUND": "Nada encontrado",
+      "CITY": "Cidade",
+      "STREET": "Rua",
+      "HOUSE": "Casa"
+    }
   }
 }

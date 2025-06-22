@@ -287,5 +287,22 @@
         "OBJECT_DELETED": "Property object deleted successfully",
         "DELETEION_FAILED": "Failed to delete property object"
       }
+  },
+  "ADDRESS_PICKER": {
+    "PLACEHOLDER": "City, Street, House ...",
+    "TOOLTIP": {
+      "FILL": "Fill picked address",
+      "LOCATE": "Locate current position",
+      "UNLOCK_SCROLL": "Unlock scroll zoom",
+      "LOCK_SCROLL": "Lock scroll zoom"
+    },
+    "POPUP": {
+      "DEFAULT": "Geocoded address",
+      "GEO_DISABLED": "Allow geoposition or move marker",
+      "NOT_FOUND": "Nothing found",
+      "CITY": "City",
+      "STREET": "Street",
+      "HOUSE": "House"
+    }
   }
 }
