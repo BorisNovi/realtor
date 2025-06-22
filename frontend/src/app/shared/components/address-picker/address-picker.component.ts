@@ -60,8 +60,8 @@ export class AddressPickerComponent implements OnInit {
       ?.mapReady$.pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe((map: maplibregl.Map) => {
         map.getCanvas().style.cursor = 'pointer';
-        map.on('drag', e => (map.getCanvas().style.cursor = 'grabbing'));
-        map.on('dragend', e => (map.getCanvas().style.cursor = 'pointer'));
+        map.on('drag', () => (map.getCanvas().style.cursor = 'grabbing'));
+        map.on('dragend', () => (map.getCanvas().style.cursor = 'pointer'));
         map.on('click', e => {
           const lngLat: LngLatLike = [e.lngLat.lng, e.lngLat.lat];
 
