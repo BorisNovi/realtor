@@ -12,7 +12,7 @@ import { RecoverPassword } from 'src/app/core/auth/state/auth.actions';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-forgot',
+  selector: 'rx-forgot',
   imports: [
     RouterLink,
     FormsModule,

@@ -17,7 +17,7 @@ import { IPickerAddress } from '@shared/interfaces/picker-address.interface';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-address-picker',
+  selector: 'rx-address-picker',
   imports: [
     CommonModule,
     FormsModule,

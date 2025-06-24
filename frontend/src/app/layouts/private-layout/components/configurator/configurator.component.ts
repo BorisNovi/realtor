@@ -5,7 +5,7 @@ import { LanguageSelectService } from 'src/app/core';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
-  selector: 'app-configurator',
+  selector: 'rx-configurator',
   imports: [ButtonModule, TooltipModule],
   templateUrl: './configurator.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

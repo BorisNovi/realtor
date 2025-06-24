@@ -5,14 +5,14 @@
   </p-inputgroup-addon>
 </p-inputgroup>
 
-<app-map class="flex w-full h-[40rem]" [center]="c()" [zoom]="10">
-  <app-map-marker [position]="[41.649008, 41.641028]" (dragEnd)="on3($event)" draggable></app-map-marker>
-  <app-map-marker [position]="[41.642414, 41.635242]" (markerClick)="on3($event)"></app-map-marker>
+<rx-map class="flex w-full h-[40rem]" [center]="c()" [zoom]="10">
+  <rx-map-marker [position]="[41.649008, 41.641028]" (dragEnd)="on3($event)" draggable></rx-map-marker>
+  <rx-map-marker [position]="[41.642414, 41.635242]" (markerClick)="on3($event)"></rx-map-marker>
 
   @if (foundMarker() !== null) {
-    <app-map-marker [position]="foundMarker() || [0, 0]" color="red"></app-map-marker>
+    <rx-map-marker [position]="foundMarker() || [0, 0]" color="red"></rx-map-marker>
   }
-</app-map>
+</rx-map>
 <div>
   <button (click)="on1()">pan batumi</button>
   <button (click)="on2()">set center</button>

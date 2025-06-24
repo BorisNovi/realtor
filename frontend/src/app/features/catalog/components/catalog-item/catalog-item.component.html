@@ -7,7 +7,7 @@
     [model]="[{ label: '№ ' + pObject?.id }]"
     [home]="{ icon: 'pi pi-home', routerLink: '/' }"
   />
-  <app-detail [propertyObject]="pObject">
+  <rx-detail [propertyObject]="pObject">
     <p-divider align="left" type="solid" class="md:col-span-2"></p-divider>
     <div class="flex gap-4 justify-between">
       <div class="flex gap-2">
@@ -16,5 +16,5 @@
       </div>
       <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate" icon="pi pi-list-check" />
     </div>
-  </app-detail>
+  </rx-detail>
 }

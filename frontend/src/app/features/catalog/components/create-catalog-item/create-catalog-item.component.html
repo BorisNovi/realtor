@@ -65,7 +65,7 @@
     </div>
 
     <!-- Property Type (Select) -->
-    <app-input-wrapper
+    <rx-input-wrapper
       [control]="form.get('propertyType')!"
       [label]="'FORM.LABELS.PROPERTY_TYPE' | translate"
       id="propertyType"
@@ -79,10 +79,10 @@
         [placeholder]="'FORM.PLACEHOLDERS.PROPERTY_TYPE' | translate"
         class="w-full"
       />
-    </app-input-wrapper>
+    </rx-input-wrapper>
 
     <!-- Status (Select with Severity) -->
-    <app-input-wrapper [control]="form.get('status')!" [label]="'FORM.LABELS.STATUS' | translate" id="status">
+    <rx-input-wrapper [control]="form.get('status')!" [label]="'FORM.LABELS.STATUS' | translate" id="status">
       <p-select
         id="status"
         formControlName="status"
@@ -101,10 +101,10 @@
           </div>
         </ng-template>
       </p-select>
-    </app-input-wrapper>
+    </rx-input-wrapper>
 
     <!-- Zoning Type (Select) -->
-    <app-input-wrapper [control]="form.get('zoningType')!" [label]="'FORM.LABELS.ZONING' | translate" id="zoningType">
+    <rx-input-wrapper [control]="form.get('zoningType')!" [label]="'FORM.LABELS.ZONING' | translate" id="zoningType">
       <p-select
         id="zoningType"
         formControlName="zoningType"
@@ -114,10 +114,10 @@
         [placeholder]="'FORM.PLACEHOLDERS.ZONING' | translate"
         class="w-full"
       />
-    </app-input-wrapper>
+    </rx-input-wrapper>
 
     <!-- Area -->
-    <app-input-wrapper [control]="form.get('area')!" [label]="'FORM.LABELS.AREA' | translate" id="area">
+    <rx-input-wrapper [control]="form.get('area')!" [label]="'FORM.LABELS.AREA' | translate" id="area">
       <p-inputnumber
         inputId="area"
         [showButtons]="true"
@@ -128,12 +128,12 @@
         [placeholder]="'FORM.PLACEHOLDERS.AREA' | translate"
         class="w-full"
       />
-    </app-input-wrapper>
+    </rx-input-wrapper>
 
     <!-- Address -->
     @let pickerOpen = isPickerOpen();
     @if (!pickerOpen) {
-      <app-input-wrapper
+      <rx-input-wrapper
         [@fadeSlide]
         [control]="form.get('address')!"
         [label]="'FORM.LABELS.ADDRESS' | translate"
@@ -160,20 +160,20 @@
             />
           </p-inputgroup-addon>
         </p-inputgroup>
-      </app-input-wrapper>
+      </rx-input-wrapper>
     }
 
     <!-- Address Picker -->
     @if (isPickerOpen()) {
-      <div [@fadeSlide] [appScrollToTopOnShow]="isPickerOpen()" [scrollOffset]="70" class="md:col-span-2">
-        <app-address-picker (address)="onAddresPickerFill($event); isPickerOpen.set(false)"></app-address-picker>
+      <div [@fadeSlide] [rxScrollToTopOnShow]="isPickerOpen()" [scrollOffset]="70" class="md:col-span-2">
+        <rx-address-picker (address)="onAddresPickerFill($event); isPickerOpen.set(false)"></rx-address-picker>
       </div>
     }
 
     <!-- Price -->
     <ng-container formGroupName="price">
       <!-- Price Currency -->
-      <app-input-wrapper
+      <rx-input-wrapper
         [control]="form.get('price')?.get('currency')!"
         [label]="'FORM.LABELS.CURRENCY' | translate"
         id="currency"
@@ -190,10 +190,10 @@
           placeholder="e.g., USD"
           class="w-full"
         />
-      </app-input-wrapper>
+      </rx-input-wrapper>
 
       <!-- Price Value -->
-      <app-input-wrapper [control]="form.get('price')?.get('value')!" [label]="'FORM.LABELS.PRICE' | translate" id="price">
+      <rx-input-wrapper [control]="form.get('price')?.get('value')!" [label]="'FORM.LABELS.PRICE' | translate" id="price">
         <p-inputgroup>
           <p-inputgroup-addon>
             <i class="pi pi-wallet"></i>
@@ -212,13 +212,13 @@
             class="w-full"
           />
         </p-inputgroup>
-      </app-input-wrapper>
+      </rx-input-wrapper>
     </ng-container>
 
     <!-- Contact -->
     <ng-container formGroupName="contact">
       <!-- Name -->
-      <app-input-wrapper
+      <rx-input-wrapper
         [control]="form.get('contact')?.get('name')!"
         [label]="'FORM.LABELS.CONTACT_NAME' | translate"
         id="contactName"
@@ -231,10 +231,10 @@
           [placeholder]="'FORM.PLACEHOLDERS.CONTACT_NAME' | translate"
           class="w-full"
         />
-      </app-input-wrapper>
+      </rx-input-wrapper>
 
       <!-- Phone -->
-      <app-input-wrapper
+      <rx-input-wrapper
         [control]="form.get('contact')?.get('phone')!"
         [label]="'FORM.LABELS.CONTACT_PHONE' | translate"
         id="contactPhone"
@@ -249,11 +249,11 @@
             type="text"
             formControlName="phone"
             [placeholder]="'FORM.PLACEHOLDERS.CONTACT_PHONE' | translate"
-            appWorldPhoneMasks
+            rxWorldPhoneMasks
             (valid)="validPhone($event)"
           />
         </p-inputgroup>
-      </app-input-wrapper>
+      </rx-input-wrapper>
     </ng-container>
 
     @let commentVisible = isCommentVisible();
@@ -412,7 +412,7 @@
           </div>
         </div>
 
-        <app-fieldset-checkbox-group [fieldsetConfig]="fieldsetConfig" formControlName="options"></app-fieldset-checkbox-group>
+        <rx-fieldset-checkbox-group [fieldsetConfig]="fieldsetConfig" formControlName="options"></rx-fieldset-checkbox-group>
       </div>
     }
 

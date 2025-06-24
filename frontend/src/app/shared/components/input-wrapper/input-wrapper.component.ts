@@ -13,7 +13,7 @@ import { AbstractControl, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-input-wrapper',
+  selector: 'rx-input-wrapper',
   templateUrl: './input-wrapper.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

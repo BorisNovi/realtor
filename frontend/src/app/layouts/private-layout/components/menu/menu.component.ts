@@ -4,7 +4,7 @@ import { MenuItem } from 'primeng/api';
 import { MenuitemComponent } from '../menuitem/menuitem.component';
 
 @Component({
-  selector: 'app-menu',
+  selector: 'rx-menu',
   imports: [MenuitemComponent, RouterModule],
   templateUrl: './menu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

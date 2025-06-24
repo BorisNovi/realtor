@@ -6,7 +6,7 @@ import { MapComponent } from './map.component';
 import { DEFAULT_MAP_MARKER } from './marker.svg';
 
 @Component({
-  selector: 'app-map-marker',
+  selector: 'rx-map-marker',
   imports: [TooltipModule],
   template: '',
   styles: `

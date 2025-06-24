@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-width-tester',
+  selector: 'rx-width-tester',
   imports: [],
   templateUrl: './width-tester.component.html',
 })

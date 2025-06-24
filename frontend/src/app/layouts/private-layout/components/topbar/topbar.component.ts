@@ -9,7 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconDirective } from '@shared/directives';
 
 @Component({
-  selector: 'app-topbar',
+  selector: 'rx-topbar',
   imports: [RouterModule, CommonModule, StyleClassModule, TranslatePipe, IconDirective],
   templateUrl: './topbar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

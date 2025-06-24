@@ -13,7 +13,7 @@ import { CatalogState, DeletePropertyObjects } from 'src/app/core';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
 @Component({
-  selector: 'app-catalog-item',
+  selector: 'rx-catalog-item',
   imports: [DetailComponent, Divider, Button, TranslatePipe, BreadcrumbModule, ConfirmDialog],
   providers: [DialogService],
   styles: `

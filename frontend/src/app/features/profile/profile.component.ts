@@ -8,7 +8,7 @@ import { Store } from '@ngxs/store';
 import { Logout, Terminate } from 'src/app/core';
 
 @Component({
-  selector: 'app-profile',
+  selector: 'rx-profile',
   imports: [InputTextModule, FluidModule, ButtonModule, FormsModule, DividerModule],
   templateUrl: './profile.component.html',
 })

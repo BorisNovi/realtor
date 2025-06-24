@@ -5,7 +5,7 @@ import { IFieldsetConfig } from '@shared/interfaces';
 import { Checkbox } from 'primeng/checkbox';
 
 @Component({
-  selector: 'app-fieldset-checkbox-group',
+  selector: 'rx-fieldset-checkbox-group',
   standalone: true,
   imports: [ReactiveFormsModule, Checkbox, TranslatePipe],
   templateUrl: './fieldset-checkbox-group.component.html',

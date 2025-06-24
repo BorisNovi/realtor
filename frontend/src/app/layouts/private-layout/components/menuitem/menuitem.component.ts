@@ -9,7 +9,7 @@ import { RippleModule } from 'primeng/ripple';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: '[app-menuitem]',
+  selector: '[rx-menuitem]',
   imports: [CommonModule, RouterModule, RippleModule],
   templateUrl: './menuitem.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

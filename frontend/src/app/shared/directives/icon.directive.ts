@@ -1,17 +1,17 @@
 import { Directive, ElementRef, Renderer2, effect, inject, input } from '@angular/core';
 
 @Directive({
-  selector: '[appIcon]',
+  selector: '[rxIcon]',
 })
 export class IconDirective {
-  readonly appIcon = input.required<string>();
+  readonly rxIcon = input.required<string>();
 
   readonly #el: ElementRef = inject(ElementRef);
   readonly #renderer: Renderer2 = inject(Renderer2);
 
   constructor() {
     effect(() => {
-      const icon = this.appIcon();
+      const icon = this.rxIcon();
       if (icon) {
         this.#clearHostElement();
         this.#createIcon(icon);

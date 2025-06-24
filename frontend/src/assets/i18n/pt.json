@@ -124,9 +124,9 @@
     }
   },
   "AUTH": {
-    "WELCOME": "Bem-vindo ao Realtor!",
+    "WELCOME": "Bem-vindo ao REALTOR-X!",
     "SIGN_IN_TO_CONTINUE": "Faça login para continuar",
-    "JOIN": "Junte-se ao Realtor!",
+    "JOIN": "Junte-se ao REALTOR-X!",
     "SIGN_UP_TO_GET_STARTED": "Cadastre-se para começar",
     "RESET_PASSWORD": "Redefinir senha",
     "ENTER_YOUR_EMAIL_TO_CONTINUE": "Digite seu e-mail para continuar",
