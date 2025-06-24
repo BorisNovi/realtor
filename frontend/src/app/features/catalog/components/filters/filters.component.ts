@@ -19,7 +19,7 @@ import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
 import { CatalogState } from 'src/app/core';
 
 @Component({
-  selector: 'app-filters',
+  selector: 'rx-filters',
   imports: [
     CommonModule,
     ReactiveFormsModule,

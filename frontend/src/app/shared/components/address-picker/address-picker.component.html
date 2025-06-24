@@ -49,14 +49,14 @@
     <div>lat: {{ normalizedLL.lat.toString().slice(0, 9) }}</div>
   </div>
 
-  <app-map class="flex w-full h-[28rem]" [center]="mapCenter()" [zoom]="10" [scrollZoomDisabled]="sz">
-    <app-map-marker
+  <rx-map class="flex w-full h-[28rem]" [center]="mapCenter()" [zoom]="10" [scrollZoomDisabled]="sz">
+    <rx-map-marker
       [position]="markerPosition()!"
       [draggable]="true"
       (dragEnd)="onMarkerDrag($event)"
       (markerClick)="(null)"
       [title]="popupTitle()"
       showTooltip
-    ></app-map-marker>
-  </app-map>
+    ></rx-map-marker>
+  </rx-map>
 </div>

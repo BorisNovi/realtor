@@ -6,7 +6,7 @@ import { PrivateLayoutService } from './shared';
 import { FooterComponent, SidebarComponent, TopbarComponent } from './components';
 
 @Component({
-  selector: 'app-private-layout',
+  selector: 'rx-private-layout',
   imports: [RouterOutlet, CommonModule, TopbarComponent, SidebarComponent, FooterComponent],
   templateUrl: './private-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

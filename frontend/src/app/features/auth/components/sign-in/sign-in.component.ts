@@ -11,7 +11,7 @@ import { AuthState } from 'src/app/core/auth/state/auth.state';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-sign-in',
+  selector: 'rx-sign-in',
   imports: [
     RouterLink,
     ButtonModule,

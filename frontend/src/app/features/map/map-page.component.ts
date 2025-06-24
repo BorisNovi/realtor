@@ -10,7 +10,7 @@ import { InputText } from 'primeng/inputtext';
 import { GeocodeService } from 'src/app/core';
 
 @Component({
-  selector: 'app-map-page',
+  selector: 'rx-map-page',
   imports: [MapComponent, MapMarkerComponent, FormsModule, ButtonModule, InputText, InputGroup, InputGroupAddonModule],
   templateUrl: './map-page.component.html',
 })

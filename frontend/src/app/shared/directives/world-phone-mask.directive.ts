@@ -4,7 +4,7 @@ import { PHONE_MASKS } from '@shared/constants';
 import { IPhoneMaskConfig } from '@shared/interfaces';
 
 @Directive({
-  selector: '[appWorldPhoneMasks]',
+  selector: '[rxWorldPhoneMasks]',
   standalone: true,
   providers: [
     {

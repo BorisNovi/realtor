@@ -34,7 +34,7 @@ import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalo
 import { ProgressBarModule } from 'primeng/progressbar';
 
 @Component({
-  selector: 'app-table',
+  selector: 'rx-table',
   imports: [
     FormsModule,
     TableModule,

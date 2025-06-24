@@ -12,7 +12,7 @@ import { ActivateAfterSignup, Signup } from 'src/app/core/auth/state/auth.action
 import { AuthState } from 'src/app/core/auth/state/auth.state';
 
 @Component({
-  selector: 'app-sign-up',
+  selector: 'rx-sign-up',
   imports: [
     RouterLink,
     FormsModule,

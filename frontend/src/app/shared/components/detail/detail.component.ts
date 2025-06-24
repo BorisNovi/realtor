@@ -9,7 +9,7 @@ import { ImageModule } from 'primeng/image';
 import { TagModule } from 'primeng/tag';
 
 @Component({
-  selector: 'app-detail',
+  selector: 'rx-detail',
   imports: [ButtonModule, GalleriaModule, ImageModule, TagModule, TranslatePipe, WorldPhoneMaskPipe],
   styles: `
     ::ng-deep {

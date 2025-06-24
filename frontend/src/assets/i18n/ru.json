@@ -124,9 +124,9 @@
     }
   },
   "AUTH": {
-    "WELCOME": "Добро пожаловать в Realtor!",
+    "WELCOME": "Добро пожаловать в REALTOR-X!",
     "SIGN_IN_TO_CONTINUE": "Войдите, чтобы продолжить",
-    "JOIN": "Присоединяйтесь к Realtor!",
+    "JOIN": "Присоединяйтесь к REALTOR-X!",
     "SIGN_UP_TO_GET_STARTED": "Зарегистрируйтесь, чтобы начать",
     "RESET_PASSWORD": "Сбросить пароль",
     "ENTER_YOUR_EMAIL_TO_CONTINUE": "Введите ваш email, чтобы продолжить",

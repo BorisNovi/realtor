@@ -1,10 +1,10 @@
 import { Directive, ElementRef, OnChanges, SimpleChanges, AfterViewInit, input, inject } from '@angular/core';
 
 @Directive({
-  selector: '[appScrollToTopOnShow]',
+  selector: '[rxScrollToTopOnShow]',
 })
 export class ScrollToTopOnShowDirective implements OnChanges, AfterViewInit {
-  readonly isVisible = input(false, { alias: 'appScrollToTopOnShow' });
+  readonly isVisible = input(false, { alias: 'rxScrollToTopOnShow' });
   readonly scrollOffset = input<number>(0);
 
   readonly el = inject(ElementRef<HTMLElement>);

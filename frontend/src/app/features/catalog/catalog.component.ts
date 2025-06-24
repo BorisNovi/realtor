@@ -9,7 +9,7 @@ import { FiltersComponent } from './components/filters/filters.component';
 import { TableComponent } from './components/table/table.component';
 
 @Component({
-  selector: 'app-catalog',
+  selector: 'rx-catalog',
   imports: [TableComponent, FiltersComponent, DrawerModule, TranslatePipe],
   templateUrl: './catalog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

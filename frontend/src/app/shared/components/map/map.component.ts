@@ -6,7 +6,7 @@ import { PrivateLayoutService } from 'src/app/layouts/private-layout/shared';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
-  selector: 'app-map',
+  selector: 'rx-map',
   imports: [ButtonModule],
   templateUrl: 'map.component.html',
 })

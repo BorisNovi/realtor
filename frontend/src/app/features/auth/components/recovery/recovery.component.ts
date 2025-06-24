@@ -12,7 +12,7 @@ import { ActivateAfterRecover } from 'src/app/core/auth/state/auth.actions';
 import { AuthState } from 'src/app/core/auth/state/auth.state';
 
 @Component({
-  selector: 'app-recovery',
+  selector: 'rx-recovery',
   imports: [
     RouterLink,
     FormsModule,

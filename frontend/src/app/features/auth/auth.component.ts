@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { ConfiguratorComponent } from 'src/app/layouts/private-layout/components';
 
 @Component({
-  selector: 'app-auth',
+  selector: 'rx-auth',
   imports: [RouterOutlet, ConfiguratorComponent],
   providers: [],
   templateUrl: './auth.component.html',
