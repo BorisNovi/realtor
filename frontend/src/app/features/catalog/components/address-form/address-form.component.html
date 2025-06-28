@@ -1,0 +1,60 @@
+@let f = form();
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4" [formGroup]="f">
+  <rx-input-wrapper id="address-city" [control]="f.get('city')!" [label]="'FORM.LABELS.CITY' | translate" class="md:col-span-1">
+    <input
+      id="address-city"
+      pInputText
+      type="text"
+      formControlName="city"
+      [placeholder]="'FORM.PLACEHOLDERS.CITY' | translate"
+      class="w-full"
+    />
+  </rx-input-wrapper>
+
+  <rx-input-wrapper id="address-road" [control]="f.get('road')!" [label]="'FORM.LABELS.ROAD' | translate" class="md:col-span-1">
+    <input
+      id="address-road"
+      pInputText
+      type="text"
+      formControlName="road"
+      [placeholder]="'FORM.PLACEHOLDERS.ROAD' | translate"
+      class="w-full"
+    />
+  </rx-input-wrapper>
+
+  <rx-input-wrapper
+    id="address-house"
+    [control]="f.get('house')!"
+    [label]="'FORM.LABELS.HOUSE' | translate"
+    class="md:col-span-1"
+  >
+    <input
+      id="address-house"
+      pInputText
+      type="text"
+      formControlName="house"
+      [placeholder]="'FORM.PLACEHOLDERS.HOUSE' | translate"
+      class="w-full"
+    />
+  </rx-input-wrapper>
+
+  <rx-input-wrapper
+    id="address-apartment"
+    [control]="f.get('apartment')!"
+    [label]="'FORM.LABELS.APARTMENT' | translate"
+    class="md:col-span-1"
+  >
+    <input
+      id="address-apartment"
+      pInputText
+      type="text"
+      formControlName="apartment"
+      [placeholder]="'FORM.PLACEHOLDERS.APARTMENT' | translate"
+      class="w-full"
+    />
+  </rx-input-wrapper>
+  <div class="block text-sm font-small text-gray-500">
+    @let p = f.get('position')?.value;
+    <span>lng: {{ p?.[0].toString().slice(0, 9) }}&nbsp;&nbsp;lat: {{ p?.[1].toString().slice(0, 9) }}</span>
+  </div>
+</div>

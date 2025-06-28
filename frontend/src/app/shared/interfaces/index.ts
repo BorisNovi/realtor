@@ -1,3 +1,4 @@
+export type { IAddress } from './address.interface';
 export type { ICatalogFilters } from './catalog-filters.interface';
 export type { ICatalogItem } from './catalog-item.interface';
 export type { IContact } from './contact.interface';

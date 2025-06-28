@@ -122,7 +122,7 @@ export class AddressPickerComponent implements OnInit {
     const address = feature?.properties?.address;
     this.popupTitle.set([
       { name: this.#translateService.instant('ADDRESS_PICKER.POPUP.CITY'), value: address?.city || '-' },
-      { name: this.#translateService.instant('ADDRESS_PICKER.POPUP.STREET'), value: address?.road || '-' },
+      { name: this.#translateService.instant('ADDRESS_PICKER.POPUP.ROAD'), value: address?.road || '-' },
       { name: this.#translateService.instant('ADDRESS_PICKER.POPUP.HOUSE'), value: address?.house_number || '-' },
     ]);
 

@@ -13,11 +13,17 @@
       "PROPERTY_TYPE": "Property Type",
       "STATUS": "Status",
       "ZONING": "Zoning",
-      "MAP_LINK": "Map Link",
       "AREA": "Area (m²)",
       "ADDRESS": "Address",
+      "CITY": "City",
+      "ROAD": "Road",
+      "HOUSE": "House",
+      "APARTMENT": "Apartment",
+      "PICK": "Pick on map",
+      "POSITION": "Position",
       "PRICE": "Price",
       "CURRENCY": "Currency",
+      "CONTACT": "Contact",
       "CONTACT_NAME": "Contact name",
       "CONTACT_PHONE": "Contact phone",
       "COMMENT": "Comment",
@@ -58,6 +64,10 @@
       "MAP_LINK": "Enter map link",
       "AREA": "Enter area",
       "ADDRESS": "Enter address",
+      "CITY": "Enter city",
+      "ROAD": "Enter road",
+      "HOUSE": "Enter house number",
+      "APARTMENT": "Enter apartment number",
       "PRICE": "Enter price",
       "CURRENCY": "e.g., USD",
       "CONTACT_NAME": "Enter name",
@@ -289,7 +299,7 @@
       }
   },
   "ADDRESS_PICKER": {
-    "PLACEHOLDER": "City, Street, House ...",
+    "PLACEHOLDER": "City, Road, House ...",
     "TOOLTIP": {
       "FILL": "Fill picked address",
       "LOCATE": "Locate current position",
@@ -301,7 +311,7 @@
       "GEO_DISABLED": "Allow geoposition or move marker",
       "NOT_FOUND": "Nothing found",
       "CITY": "City",
-      "STREET": "Street",
+      "ROAD": "Road",
       "HOUSE": "House"
     }
   }
