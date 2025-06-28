@@ -65,11 +65,7 @@
     </div>
 
     <!-- Property Type (Select) -->
-    <rx-input-wrapper
-      [control]="form.get('propertyType')!"
-      [label]="'FORM.LABELS.PROPERTY_TYPE' | translate"
-      id="propertyType"
-    >
+    <rx-input-wrapper [control]="form.get('propertyType')!" [label]="'FORM.LABELS.PROPERTY_TYPE' | translate" id="propertyType">
       <p-select
         id="propertyType"
         formControlName="propertyType"
@@ -131,46 +127,34 @@
     </rx-input-wrapper>
 
     <!-- Address -->
+    <p-divider align="left" type="solid" class="md:col-span-2">
+      <b>{{ 'FORM.LABELS.ADDRESS' | translate }}</b>
+    </p-divider>
+
     @let pickerOpen = isPickerOpen();
-    @if (!pickerOpen) {
-      <rx-input-wrapper
-        [@fadeSlide]
-        [control]="form.get('address')!"
-        [label]="'FORM.LABELS.ADDRESS' | translate"
-        id="address"
-        class="md:col-span-2"
-      >
-        <p-inputgroup>
-          <input
-            id="address"
-            pInputText
-            type="text"
-            formControlName="address"
-            [placeholder]="'FORM.PLACEHOLDERS.ADDRESS' | translate"
-            class="w-full"
-          />
-          <p-inputgroup-addon>
-            <p-button
-              icon="pi pi-map"
-              severity="secondary"
-              variant="text"
-              pTooltip="Pick on map"
-              showDelay="300"
-              (click)="isPickerOpen.set(true)"
-            />
-          </p-inputgroup-addon>
-        </p-inputgroup>
-      </rx-input-wrapper>
-    }
+    <p-button
+      class="w-fit md:col-start-2 justify-self-end mb-[-2rem]"
+      [label]="'FORM.LABELS.PICK' | translate"
+      icon="pi pi-map"
+      size="small"
+      showDelay="300"
+      [outlined]="true"
+      (click)="isPickerOpen.set(true)"
+      [disabled]="pickerOpen"
+    />
+    <rx-address-form @fadeSlide class="md:col-span-2" [form]="addressGroup" [value]="config.data?.address"></rx-address-form>
 
     <!-- Address Picker -->
-    @if (isPickerOpen()) {
-      <div [@fadeSlide] [rxScrollToTopOnShow]="isPickerOpen()" [scrollOffset]="70" class="md:col-span-2">
+    @if (pickerOpen) {
+      <div @fadeSlide [rxScrollToTopOnShow]="pickerOpen" [scrollOffset]="150" class="md:col-span-2">
         <rx-address-picker (address)="onAddresPickerFill($event); isPickerOpen.set(false)"></rx-address-picker>
       </div>
     }
 
     <!-- Price -->
+    <p-divider align="left" type="solid" class="md:col-span-2">
+      <b>{{ 'FORM.LABELS.PRICE' | translate }}</b>
+    </p-divider>
     <ng-container formGroupName="price">
       <!-- Price Currency -->
       <rx-input-wrapper
@@ -216,6 +200,9 @@
     </ng-container>
 
     <!-- Contact -->
+    <p-divider align="left" type="solid" class="md:col-span-2">
+      <b>{{ 'FORM.LABELS.CONTACT' | translate }}</b>
+    </p-divider>
     <ng-container formGroupName="contact">
       <!-- Name -->
       <rx-input-wrapper
@@ -268,7 +255,7 @@
     </p-divider>
 
     @if (commentVisible) {
-      <div class="md:col-span-2" [@fadeSlide]>
+      <div class="md:col-span-2" @fadeSlide>
         <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">{{
           'FORM.LABELS.COMMENT' | translate
         }}</label>
@@ -294,7 +281,7 @@
 
     <!-- Additional Params Section -->
     @if (addParamsVisible) {
-      <div formGroupName="specifics" [@fadeSlide] class="grid md:col-span-2 gap-8">
+      <div formGroupName="specifics" @fadeSlide class="grid md:col-span-2 gap-8">
         <div class="grid md:grid-cols-2 gap-4">
           <!-- Floor -->
           <ng-container formGroupName="floor">

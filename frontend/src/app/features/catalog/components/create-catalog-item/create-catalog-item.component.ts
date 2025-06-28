@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { AddressPickerComponent, FieldsetCheckboxGroupComponent, InputWrapperComponent } from '@shared/components';
@@ -32,9 +32,10 @@ import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
-import { TooltipModule } from 'primeng/tooltip';
 import { startWith, tap } from 'rxjs';
 import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
+import { AddressFormComponent } from '../address-form/address-form.component';
+import { LngLatLike } from 'maplibre-gl';
 
 @Component({
   imports: [
@@ -45,7 +46,6 @@ import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 's
     ButtonModule,
     SelectModule,
     TagModule,
-    TooltipModule,
     DividerModule,
     TextareaModule,
     InputGroupModule,
@@ -57,6 +57,7 @@ import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 's
     FieldsetCheckboxGroupComponent,
     AddressPickerComponent,
     ScrollToTopOnShowDirective,
+    AddressFormComponent,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -72,7 +73,7 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly fileUpload = viewChild.required<FileUpload>('fileUpload');
 
   readonly #ref = inject(DynamicDialogRef);
-  readonly #config = inject(DynamicDialogConfig);
+  readonly config = inject(DynamicDialogConfig);
   readonly #fb = inject(FormBuilder);
   readonly #store = inject(Store);
   readonly #destroyRef = inject(DestroyRef);
@@ -82,6 +83,7 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
   readonly fieldsetConfig = createItemsFieldsetConfig;
+  readonly position = signal<LngLatLike>([0, 0]);
 
   form!: FormGroup;
 
@@ -111,24 +113,27 @@ export class CreateCatalogItemComponent implements OnInit {
   );
   readonly currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
 
-  readonly isCommentVisible = signal(!!this.#config.data?.comment || false);
-  readonly isAdditionalParamsVisible = signal(!!this.#config.data?.specifics || false);
+  readonly isCommentVisible = signal(!!this.config.data?.comment || false);
+  readonly isAdditionalParamsVisible = signal(!!this.config.data?.specifics || false);
   readonly isPickerOpen = signal(false);
+
+  get addressGroup(): FormGroup {
+    return this.form.get('address') as FormGroup;
+  }
 
   ngOnInit(): void {
     this.#initForm();
   }
 
   #initForm(): void {
-    const data = this.#config.data;
+    const data = this.config.data;
 
     this.form = this.#fb.group({
       photos: [data?.photos || []],
       propertyType: [data?.propertyType || null, Validators.required],
       zoningType: [data?.zoningType || null, Validators.required],
       status: [data?.status || null, Validators.required],
-      mapLink: [data?.mapLink || null],
-      address: [data?.address || null, Validators.required],
+      address: this.#fb.group({}),
       area: [data?.area || null, [Validators.required, Validators.min(1)]],
 
       price: this.#fb.group({
@@ -196,10 +201,13 @@ export class CreateCatalogItemComponent implements OnInit {
     }
   }
 
-  onAddresPickerFill(address: IPickerAddress | null): void {
-    console.log(address);
-    // TODO: сделать 4 инпута под адрес - город, улица, дом, квартира
-    this.form.get('address')?.setValue(address?.name);
+  onAddresPickerFill(picked: IPickerAddress | null): void {
+    this.position.set(picked?.coordinates || [0, 0]);
+    const address = this.form.get('address')! as FormGroup;
+    address.get('city')?.setValue(picked?.address.city);
+    address.get('road')?.setValue(picked?.address.road);
+    address.get('house')?.setValue(picked?.address.house_number);
+    address.get('position')?.setValue(picked?.coordinates);
   }
 
   removePhoto(index: number): void {
@@ -224,15 +232,16 @@ export class CreateCatalogItemComponent implements OnInit {
 
     const formData = this.form.value;
     const cleanPhone = formData.contact.phone?.replace(/\D/g, '') ?? null;
-    const hasId = Boolean(this.#config.data?.id);
+    const position = this.position();
+    const hasId = Boolean(this.config.data?.id);
 
     const payload = hasId
       ? {
-          ...this.#config.data,
+          ...this.config.data,
           ...formData,
-          price: { ...this.#config.data!.price, ...formData.price },
-          contact: { ...this.#config.data!.contact, name: formData.contact.name, phone: cleanPhone },
-          specifics: { ...this.#config.data!.specifics, ...formData.specifics },
+          price: { ...this.config.data!.price, ...formData.price },
+          contact: { ...this.config.data!.contact, name: formData.contact.name, phone: cleanPhone },
+          specifics: { ...this.config.data!.specifics, ...formData.specifics },
           photos: this.photosS(),
         }
       : {
