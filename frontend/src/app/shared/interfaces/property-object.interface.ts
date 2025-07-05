@@ -23,5 +23,5 @@ export interface IPropertyObjectSpecifics {
     internet?: boolean;
   };
 
-  options: Record<string, object | boolean>;
+  options?: Record<string, object | boolean>;
 }
