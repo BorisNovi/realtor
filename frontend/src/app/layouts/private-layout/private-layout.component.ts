@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, Renderer2 } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
-import { PrivateLayoutService } from './shared';
 import { FooterComponent, SidebarComponent, TopbarComponent } from './components';
+import { PrivateLayoutService } from './shared';
 
 @Component({
   selector: 'rx-private-layout',
@@ -12,9 +12,6 @@ import { FooterComponent, SidebarComponent, TopbarComponent } from './components
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrivateLayoutComponent implements OnDestroy {
-  @ViewChild(SidebarComponent) appSidebar!: SidebarComponent;
-  @ViewChild(SidebarComponent) appTopBar!: TopbarComponent;
-
   readonly #layoutService = inject(PrivateLayoutService);
   readonly #renderer = inject(Renderer2);
   readonly #router = inject(Router);

@@ -1,7 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit, output, signal, viewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { GeocodeFeature } from '@shared/interfaces';
+import { IPickerAddress } from '@shared/interfaces/picker-address.interface';
 import maplibregl, { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { InputGroup } from 'primeng/inputgroup';
@@ -12,14 +14,10 @@ import { GeocodeService } from 'src/app/core';
 import { getCurrentLocation, normalizeLngLat } from '../../utils';
 import { MapMarkerComponent } from '../map/map-marker.component';
 import { MapComponent } from '../map/map.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { IPickerAddress } from '@shared/interfaces/picker-address.interface';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'rx-address-picker',
   imports: [
-    CommonModule,
     FormsModule,
     MapComponent,
     MapMarkerComponent,
@@ -28,7 +26,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
     InputGroup,
     InputGroupAddonModule,
     TooltipModule,
-    TranslatePipe,
+    TranslatePipe
   ],
   templateUrl: './address-picker.component.html',
 })

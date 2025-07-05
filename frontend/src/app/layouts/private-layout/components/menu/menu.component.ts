@@ -45,7 +45,7 @@ export class MenuComponent implements OnInit {
             routerLink: ['/landing'],
           },
           {
-            visible: false,
+            visible: true,
             label: 'Auth',
             icon: 'pi pi-fw pi-user',
             items: [
@@ -70,7 +70,7 @@ export class MenuComponent implements OnInit {
       },
       {
         label: 'Hierarchy',
-        visible: false,
+        visible: true,
         items: [
           {
             label: 'Submenu 1',

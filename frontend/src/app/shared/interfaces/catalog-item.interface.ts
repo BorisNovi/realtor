@@ -9,7 +9,6 @@ export interface ICatalogItem {
   zoningType: ZoningType;
   status: PropertyStatus;
   address: IAddress;
-  mapLink: string;
   price: { value: number; currency: string };
   area: number;
   dateAdded: string | Date;
