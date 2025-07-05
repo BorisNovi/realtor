@@ -8,22 +8,30 @@ class ContactSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         phone = validated_data.get('phone')
-        if Contact.objects.filter(phone=phone).exists():
-            raise serializers.ValidationError(f"Contact with phone {phone} already exists.")
-        contact = Contact.objects.create(**validated_data)
-        return contact
+        name = validated_data.get('name')
 
+        try:
+            existing_contact = Contact.objects.get(phone=phone)
+            if existing_contact.name != name:
+                raise serializers.ValidationError(
+                    f"Phone {phone} is already assigned to contact '{existing_contact.name}'."
+                )
+            return existing_contact
+        except Contact.DoesNotExist:
+            return Contact.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         new_phone = validated_data.get('phone', instance.phone)
-        
-        # Check if phone changed and already exists on another contact
+
+        # Если пытаемся обновить номер телефона, проверяем его уникальность
+        # и если он уже используется другим контактом, выбрасываем ошибку 
         if new_phone != instance.phone:
             if Contact.objects.filter(phone=new_phone).exclude(pk=instance.pk).exists():
-                raise serializers.ValidationError(f"Phone number {new_phone} is already used by another contact.")
-        
+                raise serializers.ValidationError(
+                    f"Phone number {new_phone} is already used by another contact."
+                )
+
         instance.name = validated_data.get('name', instance.name)
         instance.phone = new_phone
         instance.save()
         return instance
-
