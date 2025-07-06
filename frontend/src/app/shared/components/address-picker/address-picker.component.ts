@@ -26,7 +26,7 @@ import { MapComponent } from '../map/map.component';
     InputGroup,
     InputGroupAddonModule,
     TooltipModule,
-    TranslatePipe
+    TranslatePipe,
   ],
   templateUrl: './address-picker.component.html',
 })

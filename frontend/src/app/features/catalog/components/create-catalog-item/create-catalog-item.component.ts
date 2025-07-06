@@ -247,6 +247,8 @@ export class CreateCatalogItemComponent implements OnInit {
       : {
           ...formData,
           contact: { name: formData.contact.name, phone: cleanPhone },
+          // TODO: заглушку надо убрать, как димас напишет обработку адреса
+          address: 'заглушка',
           photos: this.photosS(),
         };
 

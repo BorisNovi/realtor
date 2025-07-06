@@ -11,7 +11,7 @@
       [attr.target]="mItem?.target"
       tabindex="0"
       pRipple
-      >
+    >
       <i [ngClass]="mItem?.icon" class="layout-menuitem-icon"></i>
       <span class="layout-menuitem-text">{{ mItem?.label }}</span>
       @if (mItem?.items) {
@@ -26,7 +26,12 @@
       [routerLink]="mItem?.routerLink"
       routerLinkActive="active-route"
       [routerLinkActiveOptions]="
-        mItem?.routerLinkActiveOptions || { paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' }
+        mItem?.routerLinkActiveOptions || {
+          paths: 'exact',
+          queryParams: 'ignored',
+          matrixParams: 'ignored',
+          fragment: 'ignored',
+        }
       "
       [fragment]="mItem?.fragment"
       [queryParamsHandling]="mItem?.queryParamsHandling"
@@ -38,7 +43,7 @@
       [attr.target]="mItem?.target"
       tabindex="0"
       pRipple
-      >
+    >
       <i [ngClass]="mItem?.icon" class="layout-menuitem-icon"></i>
       <span class="layout-menuitem-text">{{ mItem?.label }}</span>
       @if (mItem?.items) {

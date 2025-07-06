@@ -1,9 +1,5 @@
-<p-drawer [header]="'CATALOG.FILTERS.LABEL' | translate" [(visible)]="isFiltersOpen" position="right">
-  <rx-filters (filtersChange)="onFiltersChange($event)" (filtersCount)="filtersCount.set($event)"></rx-filters>
+<p-drawer [header]="'CATALOG.FILTERS.LABEL' | translate" [(visible)]="filtersService.isOpen" position="right">
+  <rx-filters (filtersChange)="onFiltersChange($event)" (filtersCount)="filtersService.setFiltersCount($event)"></rx-filters>
 </p-drawer>
-<rx-table
-  [filtersCount]="filtersCount()"
-  (filtersOpen)="isFiltersOpen = true"
-  (paginationChange)="onPaginationChange($event)"
-  (sortChange)="onSortChange($event)"
-></rx-table>
+
+<router-outlet></router-outlet>

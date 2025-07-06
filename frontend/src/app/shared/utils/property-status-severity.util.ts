@@ -13,17 +13,17 @@ export function getPropertyStatusSeverity(status: string): 'success' | 'secondar
   }
 }
 
-export function getPropertyStatusBackground(status: string): string {
-  if (!status) return 'var(--p-tag-info-background)';
+export function getPropertyStatusColor(status: string, type: 'color' | 'background' = 'background'): string {
+  const prefix = type === 'color' ? 'color' : 'background';
 
   switch (status) {
     case PropertyStatus.available:
-      return 'var(--p-tag-success-background)';
+      return `var(--p-tag-success-${prefix})`;
     case PropertyStatus.reserved:
-      return 'var(--p-tag-warn-background)';
+      return `var(--p-tag-warn-${prefix})`;
     case PropertyStatus.rented:
-      return 'var(--p-tag-danger-background)';
+      return `var(--p-tag-danger-${prefix})`;
     default:
-      return 'var(--p-tag-info-background)';
+      return `var(--p-tag-info-${prefix})`;
   }
 }

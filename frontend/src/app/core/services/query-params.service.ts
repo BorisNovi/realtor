@@ -30,7 +30,8 @@ export class QueryParamsService {
       queryParams = this.buildQueryParams(params);
     }
 
-    this.#router.navigate([''], {
+    this.#router.navigate([], {
+      relativeTo: this.#route,
       queryParams,
       queryParamsHandling: 'merge',
       replaceUrl: false,
