@@ -1,8 +1,4 @@
 def get_address(obj):
-    """
-    Converts address string like "Rustaveli 14" into structured address dict.
-    """
-
     raw_address = obj.address or ""
     parts = raw_address.strip().split()
 
@@ -17,7 +13,7 @@ def get_address(obj):
             road = " ".join(parts)
 
     return {
-        "city": "Tbilisi",  # пока по дефолту
+        "city": "Tbilisi",  # если не передан - по умолчанию Тбилиси
         "road": road,
         "house_number": house_number,
         "position": getattr(obj, "map_link", None),
