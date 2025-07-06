@@ -11,7 +11,7 @@ def get_flat_specifics(obj):
         "renovation": obj.renovation,
         "furnished": obj.furnished,
         "kitchen": obj.kitchen_type,
-        "shared_facilities": {  # ключи snake_case в словаре, функция их конвертирует
+        "shared_facilities": {  
             "kitchen": obj.shared_kitchen,
             "bathroom": obj.shared_bathroom,
         },

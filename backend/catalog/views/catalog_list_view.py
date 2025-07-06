@@ -1,14 +1,13 @@
 from rest_framework.views import APIView
+from rest_framework import status
 from rest_framework.response import Response
+from catalog.interfaces.property_response import format_list_property
 from catalog.models import Flat, Office, LandPlot
 from catalog.serializers.catalog_serializer import PROPERTY_SERIALIZER_MAP
-
+from catalog.serializers.catalog_serializer import CatalogCreateSerializer
 from ..utils.pagination import FrontendPagination
 from itertools import chain
 from catalog.utils.filters import apply_catalog_filters
-
-from rest_framework import status
-from catalog.serializers.catalog_serializer import CatalogCreateSerializer
 
 PROPERTY_MODEL_MAP = {
     'flat': Flat,
@@ -21,8 +20,9 @@ class CatalogListView(APIView):
         flats = Flat.objects.filter(deleted_at__isnull=True)
         offices = Office.objects.filter(deleted_at__isnull=True)
         lands = LandPlot.objects.filter(deleted_at__isnull=True)
-
-        combined = sorted(chain(flats, offices, lands), key=lambda obj: obj.date_added, reverse=True)
+        
+        # TODO: Добавить прочие типы недвижимости
+        combined = sorted(chain(flats, offices, lands), key=lambda obj: obj.date_added, reverse=True) 
 
         # Применяем фильтрацию
         filtered = apply_catalog_filters(combined, request.query_params)
@@ -31,10 +31,7 @@ class CatalogListView(APIView):
         paginator = FrontendPagination()
         paginated_qs = paginator.paginate_queryset(filtered, request)
 
-        serialized_data = []
-        for obj in paginated_qs:
-            serializer = CatalogItemSerializer(obj)
-            serialized_data.append(serializer.data)
+        serialized_data = [format_list_property(obj) for obj in paginated_qs]
 
         return paginator.get_paginated_response(serialized_data)
 
