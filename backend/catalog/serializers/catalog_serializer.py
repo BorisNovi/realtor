@@ -1,10 +1,9 @@
 from rest_framework import serializers
-from rest_framework import serializers
 from .flat_serializer import FlatSerializer
 from .office_serializer import OfficeSerializer
 from .land_serializer import LandPlotSerializer
 from contacts.serializers import ContactSerializer
-# TODO: добавить HouseSerializer, GarageSerializer и т.п.
+from .address_serializer import AddressSerializer
 
 PROPERTY_SERIALIZER_MAP = {
     'flat': FlatSerializer,
@@ -17,31 +16,23 @@ class PriceSerializer(serializers.Serializer):
     currency = serializers.CharField(max_length=3)
 
 class CatalogCreateSerializer(serializers.Serializer):
-    # Обязательные поля
     property_type = serializers.ChoiceField(choices=list(PROPERTY_SERIALIZER_MAP.keys()))
-    # zoning_type = serializers.CharField()
     status = serializers.CharField()
-    address = serializers.CharField()
+    address = AddressSerializer()
     area = serializers.DecimalField(max_digits=7, decimal_places=2)
     price = PriceSerializer()
-
-    # Необязательные поля
     title = serializers.CharField(required=False, allow_blank=True)
     map_link = serializers.URLField(required=False, allow_blank=True, allow_null=True)
     comment = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     date_added = serializers.DateTimeField(required=False)
-
     contact = ContactSerializer(required=False, allow_null=True, default=None)
-
 
     def to_internal_value(self, data):
         base_fields = super().to_internal_value(data)
-
-        property_type = base_fields.get('property_type')
+        known_fields = set(self.fields.keys())
         extra_fields = {
-            k: v for k, v in data.items() if k not in base_fields
+            k: v for k, v in data.items() if k not in self.fields
         }
-
         base_fields['extra_fields'] = extra_fields
         return base_fields
 
@@ -61,18 +52,24 @@ class CatalogCreateSerializer(serializers.Serializer):
         validated_data['price_value'] = price_data.get('value')
         validated_data['price_currency'] = price_data.get('currency')
 
+        
+        address_data = validated_data.pop('address', {})
+        road = address_data.get('road')
+        house_number = address_data.get('house_number')
+        address_str = f"{road} {house_number}".strip() if road else None
+        validated_data['address'] = address_str
+
         combined_data = {**validated_data, **extra_fields}
 
+
         if contact is not None:
-            combined_data['contact'] = contact.id  # Добавляем только если контакт есть
+            combined_data['contact'] = contact.id  # <<< ОБЪЕКТ, не ID
 
-        serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
-        if not serializer_class:
-            raise serializers.ValidationError(f"Unsupported property type: {property_type}")
-
+        serializer_class = PROPERTY_SERIALIZER_MAP[property_type]
         serializer = serializer_class(data=combined_data)
         serializer.is_valid(raise_exception=True)
         return serializer.save()
+
 
 
     def update(self, instance, validated_data):

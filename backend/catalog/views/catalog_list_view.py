@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from catalog.models import Flat, Office, LandPlot
 from catalog.serializers.catalog_serializer import PROPERTY_SERIALIZER_MAP
-from catalog.serializers.catalog_item_serializer import CatalogItemSerializer
+
 from ..utils.pagination import FrontendPagination
 from itertools import chain
 from catalog.utils.filters import apply_catalog_filters

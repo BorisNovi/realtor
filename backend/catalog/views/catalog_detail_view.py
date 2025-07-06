@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from catalog.serializers.catalog_serializer import PROPERTY_SERIALIZER_MAP
 from catalog.serializers.flat_details_serializer import FlatDetailSerializer
-from catalog.views.catalog_list_view import PROPERTY_MODEL_MAP
+
 
 PROPERTY_SERIALIZER_MAP = {
     'flat': FlatDetailSerializer,
