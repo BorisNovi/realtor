@@ -1,7 +1,7 @@
 <p-menu #menu [popup]="true" [model]="actionItems"></p-menu>
 <p-confirm-dialog />
 
-<div class="card overflow-x-auto relative !p-4 !pl-0 !pr-0">
+<div class="card overflow-x-auto relative !p-0 !pb-2">
   @if (loadingS()) {
     <p-progressbar mode="indeterminate" [style]="{ height: '4px' }" class="w-[101%] h-1 top-0 left-[-4px] absolute" />
   }
@@ -10,7 +10,7 @@
     #pTable
     (onEditComplete)="onEditComplete($event)"
     [scrollable]="true"
-    [scrollHeight]="'calc(100vh - 19.4rem)'"
+    [scrollHeight]="'calc(100vh - 15.4rem)'"
     [value]="tableData!.items"
     [paginator]="true"
     [totalRecords]="tableData?.total || 0"

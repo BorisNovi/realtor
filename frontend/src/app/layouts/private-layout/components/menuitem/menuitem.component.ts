@@ -53,7 +53,7 @@ export class MenuitemComponent implements OnInit, OnDestroy {
     const i = this.index();
     const pKey = this.parentKey();
     return pKey ? pKey + '-' + i : String(i);
-  })
+  });
 
   constructor() {
     this.#menuSourceSubscription = this.#layoutService.menuSource$.subscribe(value => {

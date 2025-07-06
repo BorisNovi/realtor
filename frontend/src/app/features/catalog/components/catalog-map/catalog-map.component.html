@@ -1,0 +1,24 @@
+@let data = tableDataS();
+<div class="relative h-full rounded-md overflow-hidden bg-[var(--surface-card)]">
+  <div class="flex justify-end w-full gap-4 px-4 py-3 absolute z-10 backdrop-brightness-50">
+    <p-button
+      [label]="'CATALOG.TABLE.BUTTONS.FILTERS' | translate"
+      [outlined]="true"
+      icon="pi pi-filter"
+      (click)="filtersService.openFilters()"
+      [badge]="filtersService.currentCount.toString()"
+    />
+  </div>
+  <rx-map class="flex w-full h-[51.4rem]" [center]="center()" [zoom]="10">
+    @for (item of data.items; track item.id) {
+      @if (item.address.position; as position) {
+        <rx-map-marker
+          [position]="center()"
+          [color]="getStatusColor(item.status, 'color')"
+          (markerClick)="(null)"
+          draggable
+        ></rx-map-marker>
+      }
+    }
+  </rx-map>
+</div>

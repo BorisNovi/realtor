@@ -75,7 +75,7 @@ export class WorldPhoneMasksDirective implements ControlValueAccessor {
         this.#determinedCountryCode = '+7';
         number = phone.slice(1);
 
-        this.countryIsoCode.emit(this.#countryConfigs['7'].countryIsoCode);
+        this.countryIsoCode.emit(this.#countryConfigs['7']?.countryIsoCode);
       } else {
         for (const code of this.#countryCodes) {
           const codeWithoutPlus = code.replace('+', '');
