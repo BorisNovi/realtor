@@ -1,41 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from catalog.serializers.catalog_serializer import PROPERTY_SERIALIZER_MAP
-from catalog.serializers.flat_details_serializer import FlatDetailSerializer
 
-
-PROPERTY_SERIALIZER_MAP = {
-    'flat': FlatDetailSerializer,
-    # 'office': OfficeDetailSerializer,
-    # 'landplot': LandPlotDetailSerializer,
-}
-
-
+from catalog.views.catalog_list_view import PROPERTY_MODEL_MAP
+from catalog.interfaces.property_response import format_property
 
 class CatalogDetailView(APIView):
-
-    #  Обновление объекта недвижимости по первичному ключу (pk)
-    def put(self, request, pk):
-        instance = self.get_instance(pk)
-        if not instance:
-            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        property_type = next(
-            (key for key, model in PROPERTY_MODEL_MAP.items() if isinstance(instance, model)),
-            None
-        )
-        serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
-        if not serializer_class:
-            return Response({"detail": "Unsupported property type."}, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = serializer_class(instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()  # <-- вот здесь и вызовется ТВОЙ update()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    #  Получение объекта недвижимости по первичному ключу (pk) 
     def get_instance(self, pk):
         for model in PROPERTY_MODEL_MAP.values():
             try:
@@ -44,22 +14,14 @@ class CatalogDetailView(APIView):
                 continue
         return None
 
-    # Получение детальной информации об объекте недвижимости
+    # Получение детальной информации об объекте
     def get(self, request, pk):
         instance = self.get_instance(pk)
         if not instance:
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        property_type = next(
-            (key for key, model in PROPERTY_MODEL_MAP.items() if isinstance(instance, model)),
-            None
-        )
-        serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
-        if not serializer_class:
-            return Response({"detail": "Unsupported property type."}, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = serializer_class(instance)
-        return Response(serializer.data)
+        response_data = format_property(instance)
+        return Response(response_data)
 
     # Обновление статуса объекта
     def patch(self, request, pk):
