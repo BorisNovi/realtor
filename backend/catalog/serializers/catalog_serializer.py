@@ -54,23 +54,18 @@ class CatalogCreateSerializer(serializers.Serializer):
 
         
         address_data = validated_data.pop('address', {})
-        road = address_data.get('road')
-        house_number = address_data.get('house_number')
-        address_str = f"{road} {house_number}".strip() if road else None
-        validated_data['address'] = address_str
+        validated_data['address'] = address_data
 
         combined_data = {**validated_data, **extra_fields}
 
 
         if contact is not None:
-            combined_data['contact'] = contact.id  # <<< ОБЪЕКТ, не ID
+            combined_data['contact'] = contact.id
 
         serializer_class = PROPERTY_SERIALIZER_MAP[property_type]
         serializer = serializer_class(data=combined_data)
         serializer.is_valid(raise_exception=True)
         return serializer.save()
-
-
 
     def update(self, instance, validated_data):
         contact_data = validated_data.pop('contact', None)

@@ -1,20 +1,15 @@
 def get_address(obj):
-    raw_address = obj.address or ""
-    parts = raw_address.strip().split()
-
-    road = None
-    house_number = None
-
-    if parts:
-        if parts[-1].isdigit():
-            house_number = parts[-1]
-            road = " ".join(parts[:-1])
-        else:
-            road = " ".join(parts)
+    address = obj.address or {}
 
     return {
-        "city": "Tbilisi",  # если не передан - по умолчанию Тбилиси
-        "road": road,
-        "house_number": house_number,
-        "position": getattr(obj, "map_link", None),
+        "city": address.get("city", "Tbilisi"),
+        "road": address.get("road"),
+        "house_number": address.get("house_number"),
+        "apartment": address.get("apartment"),
+        "position": address.get("position") or getattr(obj, "map_link", None),
     }
+
+
+# Функция для получения адреса объекта недвижимости. 
+# Принимает объект недвижимости и возвращает словарь с адресными данными.
+# Если адрес не задан, возвращает значения по умолчанию.

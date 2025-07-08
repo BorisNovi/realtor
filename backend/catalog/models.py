@@ -9,15 +9,14 @@ class PropertyStatus(models.TextChoices):
 
 
 class BaseProperty(models.Model):
-    """ Базовая модель недвижимости с общими полями """
     def soft_delete(self):
         self.is_deleted = True
         self.deleted_at = timezone.now()
         self.save()
     
     photos = models.JSONField(default=list)
-    address = models.CharField(max_length=255)
-    map_link = models.URLField(blank=True, null=True)
+    
+    address = models.JSONField()
 
     price_value = models.DecimalField(max_digits=12, decimal_places=2)
     price_currency = models.CharField(max_length=3, default="USD")
@@ -34,8 +33,8 @@ class BaseProperty(models.Model):
     class Meta:
         abstract = True 
 
+# Модель для квартир
 class Flat(BaseProperty):
-    """ Модель для квартир """
     rooms = models.IntegerField(null=True, blank=True)
     floor_current = models.PositiveIntegerField(null=True, blank=True)
     floor_full = models.PositiveIntegerField(null=True, blank=True)
@@ -56,12 +55,13 @@ class Flat(BaseProperty):
         blank=True)
 
 
-    # Дополнительно для соответствия интерфейсу
+    # Specific fields for flats
     kitchen_type = models.CharField(max_length=50, null=True, blank=True)
+    shared_kitchen = models.BooleanField(default=False)
+    
     renovation = models.CharField(max_length=50, null=True, blank=True)
     furnished = models.CharField(max_length=50, null=True, blank=True)
 
-    shared_kitchen = models.BooleanField(default=False)
     shared_bathroom = models.BooleanField(default=False)
 
     has_electricity = models.BooleanField(default=False)
