@@ -206,7 +206,7 @@ export class CreateCatalogItemComponent implements OnInit {
     const address = this.form.get('address')! as FormGroup;
     address.get('city')?.setValue(picked?.address.city);
     address.get('road')?.setValue(picked?.address.road);
-    address.get('house')?.setValue(picked?.address.house_number);
+    address.get('house_number')?.setValue(picked?.address.house_number);
     address.get('position')?.setValue(picked?.coordinates);
   }
 
