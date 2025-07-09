@@ -13,7 +13,7 @@
     @for (item of data.items; track item.id) {
       @if (item.address.position; as position) {
         <rx-map-marker
-          [position]="center()"
+          [position]="position"
           [color]="getStatusColor(item.status, 'color')"
           (markerClick)="(null)"
           draggable

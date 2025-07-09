@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
@@ -24,7 +24,8 @@ export class CatalogMapComponent {
   readonly filtersService = inject(CatalogFiltersService);
 
   readonly tableDataS = this.#store.selectSignal(CatalogState.catalog);
-  readonly center = signal<LngLatLike>([41.6, 41.6]);
+  // TODO: это для демо, затем сделай бокс из самых дальних координат плюс зазор по краям
+  readonly center = computed<LngLatLike>(() => this.tableDataS().items.at(0)?.address?.position ?? [41.6, 41.6]);
 
   readonly getStatusColor = getPropertyStatusColor;
 
