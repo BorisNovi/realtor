@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IPropertyObject } from '@shared/interfaces';
 import { WorldPhoneMaskPipe } from '@shared/pipes';
@@ -22,6 +22,7 @@ import { TagModule } from 'primeng/tag';
     }
   `,
   templateUrl: './detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailComponent {
   readonly propertyObject = input<IPropertyObject>();

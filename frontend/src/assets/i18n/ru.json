@@ -314,5 +314,11 @@
       "ROAD": "Улица",
       "HOUSE": "Дом"
     }
+  },
+  "MAP": {
+    "SHOW_ALL": "Показать все"
+  },
+  "PREFIXES": {
+    "APARTMENT": "Кв."
   }
 }

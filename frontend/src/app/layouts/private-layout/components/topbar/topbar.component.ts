@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { PrivateLayoutService } from '../../shared';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { StyleClassModule } from 'primeng/styleclass';
-import { LanguageSelectService } from 'src/app/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IconDirective } from '@shared/directives';
+import { MenuItem } from 'primeng/api';
+import { StyleClassModule } from 'primeng/styleclass';
+import { LanguageSelectService } from 'src/app/core';
+import { PrivateLayoutService } from '../../shared';
 
 @Component({
   selector: 'rx-topbar',

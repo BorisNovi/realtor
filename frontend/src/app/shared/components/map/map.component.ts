@@ -1,17 +1,19 @@
-import { AfterViewInit, Component, effect, ElementRef, inject, input, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, signal } from '@angular/core';
 import { environment } from '@environments/environment';
-import maplibregl, { LngLatLike } from 'maplibre-gl';
+import maplibregl, { LngLatBoundsLike, LngLatLike } from 'maplibre-gl';
+import { ButtonModule } from 'primeng/button';
 import { ReplaySubject } from 'rxjs';
 import { PrivateLayoutService } from 'src/app/layouts/private-layout/shared';
-import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'rx-map',
   imports: [ButtonModule],
   templateUrl: 'map.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapComponent implements AfterViewInit {
-  readonly center = input<LngLatLike>([0, 0]);
+  readonly center = input<LngLatLike | undefined>(undefined);
+  readonly bounds = input<LngLatBoundsLike | undefined>(undefined);
   readonly zoom = input<number>(3);
   readonly scrollZoomDisabled = input(false, { transform: v => v === '' || !!v });
 
@@ -23,13 +25,17 @@ export class MapComponent implements AfterViewInit {
 
   constructor() {
     effect(() => {
-      const center = this.center();
-      if (this.#mapS()) this.map?.setCenter(center);
+      const c = this.center();
+      if (this.#mapS() && c) this.map?.setCenter(c);
+    });
+    effect(() => {
+      const b = this.bounds();
+      if (this.#mapS() && b) this.map?.fitBounds(b, { maxZoom: 17, padding: 100 });
     });
     effect(() => {
       const map = this.#mapS();
       const z = this.zoom();
-      if (map) map.setZoom(z);
+      if (map && z) map.setZoom(z);
     });
     effect(() => {
       const map = this.#mapS();
@@ -50,6 +56,7 @@ export class MapComponent implements AfterViewInit {
       // cooperativeGestures: true,
       style: environment.tilesDarkUrl,
       center: this.center(),
+      bounds: this.bounds(),
       zoom: this.zoom(),
     });
 

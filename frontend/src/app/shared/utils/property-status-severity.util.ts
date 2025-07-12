@@ -14,16 +14,17 @@ export function getPropertyStatusSeverity(status: string): 'success' | 'secondar
 }
 
 export function getPropertyStatusColor(status: string, type: 'color' | 'background' = 'background'): string {
-  const prefix = type === 'color' ? 'color' : 'background';
-
   switch (status) {
     case PropertyStatus.available:
-      return `var(--p-tag-success-${prefix})`;
+      return type === 'color' ? 'var(--p-green-300)' : 'color-mix(in srgb, var(--p-green-500), transparent 84%)';
+
     case PropertyStatus.reserved:
-      return `var(--p-tag-warn-${prefix})`;
+      return type === 'color' ? 'var(--p-orange-300)' : 'color-mix(in srgb, var(--p-orange-500), transparent 84%)';
+
     case PropertyStatus.rented:
-      return `var(--p-tag-danger-${prefix})`;
+      return type === 'color' ? 'var(--p-red-300)' : 'color-mix(in srgb, var(--p-red-500), transparent 84%)';
+
     default:
-      return `var(--p-tag-info-${prefix})`;
+      return type === 'color' ? 'var(--p-sky-300)' : 'color-mix(in srgb, var(--p-sky-500), transparent 84%)';
   }
 }

@@ -1,6 +1,7 @@
 @let data = tableDataS();
 <div class="relative h-full rounded-md overflow-hidden bg-[var(--surface-card)]">
   <div class="flex justify-end w-full gap-4 px-4 py-3 absolute z-10 backdrop-brightness-50">
+    <p-button [label]="'MAP.SHOW_ALL' | translate" [outlined]="true" icon="pi pi-expand" (click)="showAll()" />
     <p-button
       [label]="'CATALOG.TABLE.BUTTONS.FILTERS' | translate"
       [outlined]="true"
@@ -9,14 +10,13 @@
       [badge]="filtersService.currentCount.toString()"
     />
   </div>
-  <rx-map class="flex w-full h-[51.4rem]" [center]="center()" [zoom]="10">
+  <rx-map class="flex w-full h-[51.4rem]" [bounds]="fitBounds()" [zoom]="6">
     @for (item of data.items; track item.id) {
       @if (item.address.position; as position) {
         <rx-map-marker
           [position]="position"
           [color]="getStatusColor(item.status, 'color')"
           (markerClick)="(null)"
-          draggable
         ></rx-map-marker>
       }
     }

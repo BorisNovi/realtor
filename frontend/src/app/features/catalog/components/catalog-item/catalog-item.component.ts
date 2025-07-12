@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
@@ -24,6 +24,7 @@ import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalo
     }
   `,
   templateUrl: './catalog-item.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CatalogItemComponent implements OnDestroy {
   readonly #store = inject(Store);

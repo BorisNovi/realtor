@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ConfiguratorComponent } from 'src/app/layouts/private-layout/components';
 
@@ -7,5 +7,6 @@ import { ConfiguratorComponent } from 'src/app/layouts/private-layout/components
   imports: [RouterOutlet, ConfiguratorComponent],
   providers: [],
   templateUrl: './auth.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthComponent {}

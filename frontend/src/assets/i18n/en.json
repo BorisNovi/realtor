@@ -314,5 +314,11 @@
       "ROAD": "Road",
       "HOUSE": "House"
     }
+  },
+  "MAP": {
+    "SHOW_ALL": "Show all"
+  },
+  "PREFIXES": {
+    "APARTMENT": "Ap."
   }
 }

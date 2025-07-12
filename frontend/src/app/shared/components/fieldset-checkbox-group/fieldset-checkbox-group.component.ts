@@ -1,4 +1,4 @@
-import { Component, effect, forwardRef, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, forwardRef, inject, input } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IFieldsetConfig } from '@shared/interfaces';
@@ -16,6 +16,7 @@ import { Checkbox } from 'primeng/checkbox';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FieldsetCheckboxGroupComponent implements ControlValueAccessor {
   readonly fieldsetConfig = input.required<IFieldsetConfig[]>();

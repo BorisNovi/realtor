@@ -314,5 +314,11 @@
       "ROAD": "Calle",
       "HOUSE": "Casa"
     }
+  },
+  "MAP": {
+    "SHOW_ALL": ""
+  },
+  "PREFIXES": {
+    "APARTMENT": ""
   }
 }

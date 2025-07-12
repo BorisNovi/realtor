@@ -73,7 +73,17 @@
         </td>
         <td>{{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + item.propertyType | translate }}</td>
         <td>{{ item.zoningType ? ('FORM.PROPERTIES.ZONING_TYPE.' + item.zoningType | translate) : '—' }}</td>
-        <td>{{ item.address }}</td>
+        <td class="max-w-36">
+          @let a = item.address;
+          <div class="truncate">{{ a.city }}</div>
+          <div class="text-xs text-nowrap">
+            <div class="truncate">{{ a.road }}</div>
+            <div class="truncate">№ {{ a.houseNumber }}</div>
+            @if (a.apartment) {
+              <div class="truncate">{{ 'PREFIXES.APARTMENT' | translate }} {{ a.apartment }}</div>
+            }
+          </div>
+        </td>
         <td>{{ item.price.value | number }} {{ getCurrencySymbol(item.price.currency) }}</td>
         <td>{{ item.area }} m²</td>
         <td>{{ item.dateAdded | date: 'd MM y' }}</td>

@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { TableComponent } from '../table/table.component';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { FetchCatalog, QueryParamsService, SetCatalogPagination, SetCatalogSort } from 'src/app/core';
-import { IPagination, ISort } from '@shared/interfaces';
 import { CATALOG_PAGINATION_KEY } from '@shared/constants';
+import { IPagination, ISort } from '@shared/interfaces';
+import { FetchCatalog, QueryParamsService, SetCatalogPagination, SetCatalogSort } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
+import { TableComponent } from '../table/table.component';
 
 @Component({
   selector: 'rx-catalog-list',
