@@ -19,7 +19,7 @@ export class AddressFormComponent implements OnInit {
     const v = this.value();
     f.addControl('city', new FormControl(v?.city || '', Validators.required));
     f.addControl('road', new FormControl(v?.road || '', Validators.required));
-    f.addControl('house_number', new FormControl(v?.house_number || '', Validators.required));
+    f.addControl('houseNumber', new FormControl(v?.houseNumber || '', Validators.required));
     f.addControl('apartment', new FormControl(''));
     f.addControl('position', new FormControl(v?.position || [0, 0]));
   }
