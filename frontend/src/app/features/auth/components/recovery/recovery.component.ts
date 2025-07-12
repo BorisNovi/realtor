@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
@@ -25,6 +25,7 @@ import { AuthState } from 'src/app/core/auth/state/auth.state';
     TranslatePipe,
   ],
   templateUrl: './recovery.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecoveryComponent {
   readonly #fb = inject(FormBuilder);

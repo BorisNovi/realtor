@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { AddressPickerComponent, FieldsetCheckboxGroupComponent, InputWrapperComponent } from '@shared/components';
@@ -20,6 +20,7 @@ import {
 } from '@shared/enums';
 import { IPickerAddress } from '@shared/interfaces/picker-address.interface';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
+import { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -35,7 +36,6 @@ import { TextareaModule } from 'primeng/textarea';
 import { startWith, tap } from 'rxjs';
 import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
 import { AddressFormComponent } from '../address-form/address-form.component';
-import { LngLatLike } from 'maplibre-gl';
 
 @Component({
   imports: [

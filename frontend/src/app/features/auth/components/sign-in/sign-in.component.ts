@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Store } from '@ngxs/store';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { RouterLink } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
-import { Store } from '@ngxs/store';
 import { Login } from 'src/app/core/auth/state/auth.actions';
 import { AuthState } from 'src/app/core/auth/state/auth.state';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'rx-sign-in',
