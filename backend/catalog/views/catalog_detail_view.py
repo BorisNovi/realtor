@@ -1,11 +1,17 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from catalog.serializers.catalog_serializer import CatalogCreateSerializer
 from catalog.views.catalog_list_view import PROPERTY_MODEL_MAP
 from catalog.interfaces.property_response import format_property
 
+# Этот класс отвечает за получение, обновление и изменение данных об объектах недвижимости
+# Он использует сериализатор CatalogCreateSerializer для валидации и сохранения данных
+
 class CatalogDetailView(APIView):
+
+    # Получает объект недвижимости по первичному ключу (pk)
+    # Позволяет обновлять его данные и изменять статус
     def get_instance(self, pk):
         for model in PROPERTY_MODEL_MAP.values():
             try:
@@ -14,16 +20,26 @@ class CatalogDetailView(APIView):
                 continue
         return None
 
-    # Получение детальной информации об объекте
+    # Методы для работы с объектами недвижимости
+    
+    # GET - получение данных об объекте
     def get(self, request, pk):
         instance = self.get_instance(pk)
         if not instance:
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+        return Response(format_property(instance))
 
-        response_data = format_property(instance)
-        return Response(response_data)
+    # PUT - обновление данных об объекте
+    def put(self, request, pk):
+        instance = self.get_instance(pk)
+        if not instance:
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+        serializer = CatalogCreateSerializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        updated_instance = serializer.save()
+        return Response(format_property(updated_instance))
 
-    # Обновление статуса объекта
+    # PATCH - изменение статуса объекта
     def patch(self, request, pk):
         instance = self.get_instance(pk)
         if not instance:
@@ -36,13 +52,5 @@ class CatalogDetailView(APIView):
         instance.status = status_value
         instance.save()
 
-        property_type = next(
-            (key for key, model in PROPERTY_MODEL_MAP.items() if isinstance(instance, model)),
-            None
-        )
-        serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
-        if not serializer_class:
-            return Response({"detail": "Unsupported property type."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(format_property(instance), status=status.HTTP_200_OK)
 
-        serializer = serializer_class(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)

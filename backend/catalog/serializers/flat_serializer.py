@@ -18,3 +18,6 @@ class FlatSerializer(serializers.ModelSerializer):
             'elevator': {'required': False},
             'contact': {'required': False, 'allow_null': True},
         }
+
+# Возможно, этот и похожие сериализаторы можно будет устранить в будущем 
+# при правильной настройке модели (сообщить DRF что поля не null-able итд). 

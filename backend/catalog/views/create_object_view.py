@@ -20,3 +20,6 @@ class PropertyCreateView(generics.CreateAPIView):
 
         # Возвращаем JSON
         return Response(response_data, status=status.HTTP_201_CREATED)
+
+# Этот класс отвечает за создание новых объектов недвижимости
+# Он использует сериализатор CatalogCreateSerializer для валидации и сохранения данных
