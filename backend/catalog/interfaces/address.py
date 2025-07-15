@@ -4,7 +4,7 @@ def get_address(obj):
     return {
         "city": address.get("city", "Tbilisi"),
         "road": address.get("road"),
-        "house_number": address.get("house_number"),
+        "house": address.get("house"),
         "apartment": address.get("apartment"),
         "position": address.get("position") or getattr(obj, "map_link", None),
     }
