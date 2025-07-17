@@ -7,29 +7,34 @@ def get_flat_specifics(obj):
             "current": obj.floor_current,
             "full": obj.floor_full,
         },
-        "heating": obj.heating,
         "renovation": obj.renovation,
         "furnished": obj.furnished,
         "kitchen": obj.kitchen_type,
-        "shared_facilities": {  
-            "kitchen": obj.shared_kitchen,
-            "bathroom": obj.shared_bathroom,
-        },
-        "utilities": {
-            "electricity": obj.has_electricity,
-            "water_supply": obj.has_water,
-            "natural_gas": obj.has_gas,
-            "sewerage": obj.has_sewerage,
-            "internet": obj.has_internet,
-        },
         "options": {
-            "bath": obj.bath,
-            "shower": obj.shower,
-            "air_conditioning": obj.air_conditioning,
-            "fireplace": obj.fireplace,
-            "beautiful_view": obj.beautiful_view,
-            "new_building": obj.new_building,
-            "elevator": obj.elevator,
+            "shared_facilities": {
+                "kitchen": obj.shared_kitchen,
+                "bathroom": obj.shared_bathroom,
+            },
+            "utilities": {
+                "electricity": obj.electricity,
+                "waterSupply": obj.water_supply,
+                "naturalGas": obj.natural_gas,
+                "sewerage": obj.sewerage,
+                "internet": obj.internet,
+            },
+            "other": {
+                "parking": obj.parking,
+                "bath": obj.bath,
+                "shower": obj.shower,
+                "airConditioning": obj.air_conditioning,
+                "fireplace": obj.fireplace,
+                "beautifulView": obj.beautiful_view,
+                "newBuilding": obj.new_building,
+                "elevator": obj.elevator,
+                "balcony": obj.balcony,
+                "garden": obj.garden,
+                "garage": obj.garage,
+            },
         }
     }
     return dict_keys_to_camelcase(specifics)
