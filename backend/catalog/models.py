@@ -35,40 +35,59 @@ class BaseProperty(models.Model):
 
 # Модель для квартир
 class Flat(BaseProperty):
+    # specifics
     rooms = models.IntegerField(null=True, blank=True)
+
+    # specifics.floor
     floor_current = models.PositiveIntegerField(null=True, blank=True)
     floor_full = models.PositiveIntegerField(null=True, blank=True)
 
+    # specifics.kitchen
+    kitchen_type = models.CharField(max_length=50, null=True, blank=True)
+
+    # specifics.heating (тип, не булево)
+    heating = models.CharField(max_length=50, null=True, blank=True)
+
+    # specifics.furnished
+    furnished = models.CharField(max_length=50, null=True, blank=True)
+
+    # specifics.renovation
+    renovation = models.CharField(max_length=50, null=True, blank=True)
+
+    # specifics.sharedFacilities
+    shared_kitchen = models.BooleanField(default=False)
+    shared_bathroom = models.BooleanField(default=False)
+
+    # specifics.utilities
+    electricity = models.BooleanField(default=False)
+    water_supply = models.BooleanField(default=False)
+    natural_gas = models.BooleanField(default=False)
+    sewerage = models.BooleanField(default=False)
+    internet = models.BooleanField(default=False)
+
+    # specifics.options
     bath = models.BooleanField(default=False)
     shower = models.BooleanField(default=False)
     air_conditioning = models.BooleanField(default=False)
-    heating = models.BooleanField(default=False)
     fireplace = models.BooleanField(default=False)
     beautiful_view = models.BooleanField(default=False)
     new_building = models.BooleanField(default=False)
     elevator = models.BooleanField(default=False)
+
+    # specifics.options.other
+    parking = models.BooleanField(default=False)
+    balcony = models.BooleanField(default=False)
+    garden = models.BooleanField(default=False)
+    garage = models.BooleanField(default=False)
+
+    # === CONTACT ===
     contact = models.ForeignKey(
-        Contact, 
-        on_delete=models.CASCADE, 
-        related_name="flats", 
-        null=True, 
-        blank=True)
-
-
-    # Specific fields for flats
-    kitchen_type = models.CharField(max_length=50, null=True, blank=True)
-    shared_kitchen = models.BooleanField(default=False)
-    
-    renovation = models.CharField(max_length=50, null=True, blank=True)
-    furnished = models.CharField(max_length=50, null=True, blank=True)
-
-    shared_bathroom = models.BooleanField(default=False)
-
-    has_electricity = models.BooleanField(default=False)
-    has_water = models.BooleanField(default=False)
-    has_gas = models.BooleanField(default=False)
-    has_sewerage = models.BooleanField(default=False)
-    has_internet = models.BooleanField(default=False)
+        Contact,
+        on_delete=models.CASCADE,
+        related_name="flats",
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return f"Квартира – {self.address} ({self.price_value} {self.price_currency})"

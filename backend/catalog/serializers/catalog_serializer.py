@@ -4,6 +4,8 @@ from .office_serializer import OfficeSerializer
 from .land_serializer import LandPlotSerializer
 from contacts.serializers import ContactSerializer
 from .address_serializer import AddressSerializer
+from catalog.parsers.specifics_parser import flatten_specifics
+
 
 PROPERTY_SERIALIZER_MAP = {
     'flat': FlatSerializer,
@@ -26,6 +28,8 @@ class CatalogCreateSerializer(serializers.Serializer):
     comment = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     date_added = serializers.DateTimeField(required=False)
     contact = ContactSerializer(required=False, allow_null=True, default=None)
+
+    specifics = serializers.DictField(required=False)
 
     def to_internal_value(self, data):
         base_fields = super().to_internal_value(data)
@@ -52,12 +56,13 @@ class CatalogCreateSerializer(serializers.Serializer):
         validated_data['price_value'] = price_data.get('value')
         validated_data['price_currency'] = price_data.get('currency')
 
-        
         address_data = validated_data.pop('address', {})
         validated_data['address'] = address_data
 
-        combined_data = {**validated_data, **extra_fields}
+        specifics = validated_data.pop('specifics', {})
+        specifics_flat = flatten_specifics(property_type, specifics)
 
+        combined_data = {**validated_data, **extra_fields, **specifics_flat}
 
         if contact is not None:
             combined_data['contact'] = contact.id
@@ -70,22 +75,23 @@ class CatalogCreateSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         contact_data = validated_data.pop('contact', None)
         if contact_data:
-            # Создаём/обновляем контакт через сериализатор из contacts
             contact_serializer = ContactSerializer(instance=instance.contact, data=contact_data)
             contact_serializer.is_valid(raise_exception=True)
             contact = contact_serializer.save()
             instance.contact = contact
 
-        # Обновляем price
         price_data = validated_data.pop('price', {})
         if price_data:
             instance.price_value = price_data.get('value', instance.price_value)
             instance.price_currency = price_data.get('currency', instance.price_currency)
 
+        specifics = validated_data.pop('specifics', {})
+        specifics_flat = flatten_specifics(specifics)
+
         extra_fields = validated_data.pop('extra_fields', {})
         forbidden_fields = ['property_type', 'id']
 
-        for attr, value in {**validated_data, **extra_fields}.items():
+        for attr, value in {**validated_data, **specifics_flat, **extra_fields}.items():
             if attr in forbidden_fields:
                 continue
             setattr(instance, attr, value)
@@ -94,9 +100,7 @@ class CatalogCreateSerializer(serializers.Serializer):
         return instance
 
     def to_representation(self, instance):
-        # возвращаем, как сериализует конкретный сериализатор
         for property_type, serializer_class in PROPERTY_SERIALIZER_MAP.items():
             if isinstance(instance, serializer_class.Meta.model):
                 return serializer_class(instance).data
         return super().to_representation(instance)
-
