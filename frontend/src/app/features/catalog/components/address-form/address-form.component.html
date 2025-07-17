@@ -24,7 +24,7 @@
 
   <rx-input-wrapper
     id="address-house"
-    [control]="f.get('houseNumber')!"
+    [control]="f.get('house')!"
     [label]="'FORM.LABELS.HOUSE' | translate"
     class="md:col-span-1"
   >
@@ -32,7 +32,7 @@
       id="address-house"
       pInputText
       type="text"
-      formControlName="houseNumber"
+      formControlName="house"
       [placeholder]="'FORM.PLACEHOLDERS.HOUSE' | translate"
       class="w-full"
     />

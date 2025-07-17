@@ -32,7 +32,7 @@ export class CatalogService {
   }
 
   fetchPropertyObject(id: number): Observable<IPropertyObject> {
-    return this.#http.get<IPropertyObject>(`${environment.apiUrl}/catalog/${id}`);
+    return this.#http.get<IPropertyObject>(`${environment.apiUrl}/property_object/${id}`);
   }
 
   createPropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
@@ -40,12 +40,12 @@ export class CatalogService {
   }
 
   updatePropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
-    return this.#http.put<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
+    return this.#http.put<IPropertyObject>(`${environment.apiUrl}/property_object/${body.id}`, body);
   }
 
   updateStatus(id: number, status: PropertyStatus): Observable<IPropertyObject> {
     const body = { status };
-    return this.#http.patch<IPropertyObject>(`${environment.apiUrl}/catalog/${id}`, body);
+    return this.#http.patch<IPropertyObject>(`${environment.apiUrl}/property_object/${id}`, body);
   }
 
   deletePropertyObject(ids: number[]): Observable<void> {
