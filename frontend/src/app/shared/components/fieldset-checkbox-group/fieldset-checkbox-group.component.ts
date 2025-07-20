@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, forwardRef, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, forwardRef, inject, input, signal, WritableSignal } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IFieldsetConfig } from '@shared/interfaces';
@@ -24,24 +24,26 @@ export class FieldsetCheckboxGroupComponent implements ControlValueAccessor {
   readonly #fb = inject(FormBuilder);
 
   form: FormGroup = this.#fb.group({});
+  readonly initialValue: WritableSignal<any> = signal(null);
+
   onChange: (value: any) => void = () => {};
   onTouched: () => void = () => {};
 
   constructor() {
     effect(() => {
       const config = this.fieldsetConfig();
-      if (config?.length) {
-        this.initializeForm();
-      }
+      const value = this.initialValue();
+      if (config?.length) this.initializeForm(value);
     });
   }
 
-  private initializeForm(): void {
+  private initializeForm(initialValue: any): void {
     const group: Record<string, FormGroup> = {};
     this.fieldsetConfig().forEach(fieldset => {
       const controls: Record<string, boolean> = {};
       fieldset.fields.forEach(field => {
-        controls[field.formControlName] = false;
+        const isChecked = !!initialValue?.[fieldset.formGroupName]?.[field.formControlName];
+        controls[field.formControlName] = isChecked;
       });
       group[fieldset.formGroupName] = this.#fb.group(controls);
     });
@@ -54,9 +56,8 @@ export class FieldsetCheckboxGroupComponent implements ControlValueAccessor {
 
   // ControlValueAccessor methods
   writeValue(value: any): void {
-    if (value) {
-      this.form.patchValue(value, { emitEvent: false });
-    }
+    this.initialValue.set(value);
+    if (this.form && Object.keys(this.form.controls).length) this.form.patchValue(value, { emitEvent: false });
   }
 
   registerOnChange(fn: (value: any) => void): void {

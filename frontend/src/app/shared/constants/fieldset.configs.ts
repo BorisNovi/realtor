@@ -18,7 +18,6 @@ export const createItemsFieldsetConfig: IFieldsetConfig[] = [
       { formControlName: 'waterSupply', label: 'FORM.LABELS.WATER_SUPPLY' },
       { formControlName: 'naturalGas', label: 'FORM.LABELS.NATURAL_GAS' },
       { formControlName: 'sewerage', label: 'FORM.LABELS.SEWERAGE' },
-      { formControlName: 'heating', label: 'FORM.LABELS.HEATING' },
       { formControlName: 'internet', label: 'FORM.LABELS.INTERNET' },
     ],
   },

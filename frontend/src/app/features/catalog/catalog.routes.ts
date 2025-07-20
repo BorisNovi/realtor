@@ -23,7 +23,7 @@ export const catalogRoutes: Routes = [
       },
       {
         path: 'map',
-        component: CatalogMapComponent,
+        loadComponent: () => import('./components/catalog-map/catalog-map.component').then(c => c.CatalogMapComponent),
       },
     ],
   },
