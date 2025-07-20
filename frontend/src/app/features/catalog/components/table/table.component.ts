@@ -30,7 +30,13 @@ import { SelectModule } from 'primeng/select';
 import { Table, TableEditCompleteEvent, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { startWith, tap } from 'rxjs';
-import { CatalogState, DeletePropertyObjects, FetchPropertyObject, UpdateStatus } from 'src/app/core';
+import {
+  CatalogState,
+  DeletePropertyObjects,
+  DeletionConfirmationService,
+  FetchPropertyObject,
+  UpdateStatus,
+} from 'src/app/core';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
 @Component({
@@ -69,6 +75,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   readonly #translateService = inject(TranslateService);
   readonly #router = inject(Router);
   readonly #destroyRef = inject(DestroyRef);
+  readonly #deletionConfirmationService = inject(DeletionConfirmationService);
 
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
@@ -107,7 +114,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
     this.#store.dispatch(new UpdateStatus(id, newStatus));
   }
 
-  #setActionItems(event: Event, item: ICatalogItem): void {
+  #setActionItems(item: ICatalogItem): void {
     this.actionItems = [
       {
         label: this.#translateService.instant('CATALOG.TABLE.BUTTONS.ADD_TO_LISTING'),
@@ -131,14 +138,14 @@ export class TableComponent implements AfterViewInit, OnDestroy {
         label: this.#translateService.instant('CATALOG.TABLE.ACTIONS.DELETE'),
         icon: 'pi pi-trash',
         command: () => {
-          this.confirmDeletion(event, [item]);
+          this.deleteItems([item]);
         },
       },
     ];
   }
 
   onActionClick(event: Event, item: ICatalogItem): void {
-    this.#setActionItems(event, item);
+    this.#setActionItems(item);
     this.menu().toggle(event);
   }
 
@@ -206,25 +213,10 @@ export class TableComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  confirmDeletion(event: Event, items: ICatalogItem[]): void {
-    this.#confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: this.#translateService.instant('CATALOG.TABLE.DIALOG.DELETE_HINT'),
-      header: this.#translateService.instant(`CATALOG.TABLE.DIALOG.DELETE_REQUEST_${items.length > 1 ? 'MANY' : 'SINGLE'}`),
-      icon: 'pi pi-info-circle',
-      rejectButtonProps: {
-        label: this.#translateService.instant('CATALOG.TABLE.DIALOG.CANCEL'),
-        severity: 'secondary',
-        outlined: true,
-      },
-      acceptButtonProps: {
-        label: this.#translateService.instant('CATALOG.TABLE.ACTIONS.DELETE'),
-        severity: 'danger',
-      },
-
-      accept: () => {
-        this.#store.dispatch(new DeletePropertyObjects(items.map(item => item.id)));
-      },
+  deleteItems(items: ICatalogItem[]): void {
+    this.#deletionConfirmationService.confirm(() => {
+      this.#store.dispatch(new DeletePropertyObjects(items.map(item => item.id)));
+      this.selectedItems = [];
     });
   }
 

@@ -1,19 +1,48 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { MapComponent } from '@shared/components';
 import { MapMarkerComponent } from '@shared/components/map/map-marker.component';
+import { ICatalogItem } from '@shared/interfaces';
 import { getPropertyStatusColor } from '@shared/utils/property-status-severity.util';
 import { LngLatBoundsLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
-import { CatalogState } from 'src/app/core';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { DrawerModule } from 'primeng/drawer';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { GalleriaModule } from 'primeng/galleria';
+import { tap } from 'rxjs';
+import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchPropertyObject } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
+import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
 @Component({
   selector: 'rx-catalog-map',
-  imports: [MapComponent, MapMarkerComponent, FormsModule, ButtonModule, TranslatePipe],
+  imports: [
+    MapComponent,
+    MapMarkerComponent,
+    FormsModule,
+    ButtonModule,
+    TranslatePipe,
+    DrawerModule,
+    GalleriaModule,
+    ConfirmDialog,
+  ],
+  providers: [DialogService],
   templateUrl: './catalog-map.component.html',
+  styles: `
+    ::ng-deep {
+      p-galleria .p-galleria {
+        border-color: transparent !important;
+        border-radius: 0;
+      }
+    }
+    .card {
+      margin-bottom: 1rem;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CatalogMapComponent {
@@ -22,9 +51,25 @@ export class CatalogMapComponent {
   readonly #store = inject(Store);
   readonly #destroyRef = inject(DestroyRef);
   readonly filtersService = inject(CatalogFiltersService);
+  readonly #translateService = inject(TranslateService);
+  readonly #deletionConfirmationService = inject(DeletionConfirmationService);
+  readonly #dialogService = inject(DialogService);
 
   readonly tableDataS = this.#store.selectSignal(CatalogState.catalog);
   readonly getStatusColor = getPropertyStatusColor;
+  readonly selectedItem = signal<ICatalogItem | null>(null);
+  readonly drawerOpen = signal(false);
+
+  #ref: DynamicDialogRef | undefined;
+
+  images: Record<string, string>[] = [
+    { image: 'https://picsum.photos/id/238/1200/1000', thumbnail: 'https://picsum.photos/id/238/100/100' },
+    { image: 'https://picsum.photos/id/237/1200/1000', thumbnail: 'https://picsum.photos/id/237/100/100' },
+    { image: 'https://picsum.photos/id/239/1200/1000', thumbnail: 'https://picsum.photos/id/239/100/100' },
+    { image: 'https://picsum.photos/id/240/1200/1000', thumbnail: 'https://picsum.photos/id/240/100/100' },
+    { image: 'https://picsum.photos/id/241/1200/1000', thumbnail: 'https://picsum.photos/id/241/100/100' },
+    { image: 'https://picsum.photos/id/242/1200/1000', thumbnail: 'https://picsum.photos/id/242/100/100' },
+  ];
 
   readonly fitBounds = computed<LngLatBoundsLike | undefined>(() => {
     const positions = this.tableDataS()
@@ -51,5 +96,48 @@ export class CatalogMapComponent {
     const map = this.mapComponent()?.map;
     const bounds = this.fitBounds();
     if (bounds && map) map.fitBounds(bounds, { maxZoom: 17, padding: 100 });
+  }
+
+  onMarkerClick(item: ICatalogItem): void {
+    this.selectedItem.set(item);
+    this.drawerOpen.set(true);
+  }
+
+  deleteItem(id: number): void {
+    this.#deletionConfirmationService.confirm(() => {
+      this.#store.dispatch(new DeletePropertyObjects([id]));
+    });
+  }
+
+  edit(id: number): void {
+    this.#store
+      .dispatch(new FetchPropertyObject(id))
+      .pipe(
+        tap(() => {
+          const propertyData = this.#store.selectSnapshot(CatalogState.propertyObject);
+          if (propertyData) {
+            this.openEditDialog(propertyData);
+          }
+        }),
+        takeUntilDestroyed(this.#destroyRef),
+      )
+      .subscribe();
+  }
+
+  openEditDialog(item: ICatalogItem): void {
+    this.#ref = this.#dialogService.open(CreateCatalogItemComponent, {
+      data: item,
+      header: this.#translateService.instant('CATALOG.TABLE.DIALOG.EDIT'),
+      width: '50vw',
+      modal: true,
+      closable: true,
+      contentStyle: { overflow: 'auto' },
+      focusOnShow: false,
+      breakpoints: {
+        '960px': '75vw',
+        '768px': '90vw',
+        '640px': '95vw',
+      },
+    });
   }
 }
