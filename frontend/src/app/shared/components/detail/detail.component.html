@@ -38,7 +38,15 @@
         <!-- {{pObject?.mapLink}} как роутерлинк у ссылки адреса -->
         <!-- Тут или кнопку, которая пошлет на карту, или откроет модалку с картой или сошлет на внешние краты. Или все три -->
         <li>
-          <strong>{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </strong><a>{{ pObject?.address || '—' }}</a>
+          <span class="truncate text-wrap">
+            @let a = pObject?.address;
+            <strong>{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </strong>
+            {{ a?.city }}, {{ a?.road }}, <span class="text-nowrap">№ {{ a?.house }}</span
+            >,
+            @if (a?.apartment) {
+              <span class="text-nowrap">{{ 'PREFIXES.APARTMENT' | translate }} {{ a?.apartment }}</span>
+            }
+          </span>
         </li>
         <li>
           <strong>{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }}: </strong
@@ -48,7 +56,7 @@
       <ng-content></ng-content>
     </div>
     <div class="card">
-      <ul>
+      <ul class="space-y-1">
         <li>
           <strong>Area: </strong><span>{{ pObject?.area || '—' }} m²</span>
         </li>
@@ -67,7 +75,7 @@
     </div>
     <div class="card">
       <h5>Contact</h5>
-      <ul>
+      <ul class="space-y-1">
         <li>
           <strong>Contact person: </strong><span>{{ pObject?.contact?.name || '—' }}</span>
         </li>
