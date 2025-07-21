@@ -142,11 +142,11 @@
       (click)="isPickerOpen.set(true)"
       [disabled]="pickerOpen"
     />
-    <rx-address-form @fadeSlide class="md:col-span-2" [form]="addressGroup" [value]="config.data?.address"></rx-address-form>
+    <rx-address-form @slide class="md:col-span-2" [form]="addressGroup" [value]="config.data?.address"></rx-address-form>
 
     <!-- Address Picker -->
     @if (pickerOpen) {
-      <div @fadeSlide [rxScrollToTopOnShow]="pickerOpen" [scrollOffset]="150" class="md:col-span-2">
+      <div @slide [rxScrollToTopOnShow]="pickerOpen" [scrollOffset]="150" class="md:col-span-2">
         <rx-address-picker (address)="onAddresPickerFill($event); isPickerOpen.set(false)"></rx-address-picker>
       </div>
     }
@@ -255,7 +255,7 @@
     </p-divider>
 
     @if (commentVisible) {
-      <div class="md:col-span-2" @fadeSlide>
+      <div class="md:col-span-2" @slide>
         <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">{{
           'FORM.LABELS.COMMENT' | translate
         }}</label>
@@ -281,7 +281,7 @@
 
     <!-- Additional Params Section -->
     @if (addParamsVisible) {
-      <div formGroupName="specifics" @fadeSlide class="grid md:col-span-2 gap-8">
+      <div formGroupName="specifics" @slide class="grid md:col-span-2 gap-8">
         <div class="grid md:grid-cols-2 gap-4">
           <!-- Floor -->
           <ng-container formGroupName="floor">

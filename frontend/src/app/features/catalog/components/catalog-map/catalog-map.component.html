@@ -33,13 +33,21 @@
 </div>
 
 @let selected = selectedItem();
-<p-drawer [(visible)]="drawerOpen" [blockScroll]="true" position="right" styleClass="!w-full md:!w-[30rem]">
+<p-drawer [(visible)]="drawerOpen" [blockScroll]="true" position="right" styleClass="!w-full sm:!w-[30rem]">
   <ng-template #header>
-    <h1 class="font-semibold text-xl mb-0">
-      {{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + selected?.propertyType | translate }} {{ selected?.area || 0 }} m² —
-      {{ selected?.price?.value || 0 }}
-      {{ selected?.price?.currency || 'G' }}
-    </h1>
+    <div>
+      <h1 class="font-semibold text-xl mb-2">
+        {{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + selected?.propertyType | translate }} {{ selected?.area || 0 }} m² —
+        {{ selected?.price?.value || 0 }}
+        {{ getCurrencySymbol((selected?.price)!.currency) }}
+      </h1>
+      <p-tag
+        class="h-6"
+        [value]="'FORM.PROPERTIES.PROPERTY_STATUS.' + selected?.status | translate"
+        [severity]="getSeverity(selected?.status || '')"
+      >
+      </p-tag>
+    </div>
   </ng-template>
   <!-- TODO: тру стоит для теста, как будут картинки - убрать -->
   @if (selected?.photos?.length || true) {
@@ -51,7 +59,6 @@
         [showItemNavigators]="true"
         [circular]="true"
         [showThumbnails]="false"
-        [responsiveOptions]=""
         [numVisible]="5"
       >
         <ng-template #item let-item>
@@ -61,7 +68,40 @@
     </div>
   }
 
-  <p>Props will lbe here</p>
+  <div class="mt-4">
+    <ul class="space-y-2">
+      <li>
+        <strong>{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}: </strong
+        ><span>{{ 'FORM.PROPERTIES.ZONING_TYPE.' + selected?.zoningType | translate }}</span>
+      </li>
+      <li>
+        <span class="truncate text-wrap">
+          @let a = selected?.address;
+          <strong>{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </strong>
+          {{ a?.city }}, {{ a?.road }}, <span class="text-nowrap">№ {{ a?.house }}</span
+          >,
+          @if (a?.apartment) {
+            <span class="text-nowrap">{{ 'PREFIXES.APARTMENT' | translate }} {{ a?.apartment }}</span>
+          }
+        </span>
+      </li>
+      @let detailedVisible = isDetailedVisible();
+      <p-divider align="left" type="solid">
+        <div class="flex items-center justify-between w-full gap-2">
+          <b>{{ 'Detailed' | translate }}</b>
+          <button pButton type="button" class="p-button-text p-button-sm" (click)="isDetailedVisible.set(!detailedVisible)">
+            @let icon = detailedVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
+            <i [class]="icon"></i>
+          </button>
+        </div>
+      </p-divider>
+      @if (detailedVisible) {
+        <div @slide>
+          <li>Детали с кэшем, которые будут подгуржены</li>
+        </div>
+      }
+    </ul>
+  </div>
 
   <ng-template #footer>
     <div class="flex gap-4 justify-between">

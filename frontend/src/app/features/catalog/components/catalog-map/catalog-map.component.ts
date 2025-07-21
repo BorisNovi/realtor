@@ -3,16 +3,21 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { SLIDE } from '@shared/animations';
 import { MapComponent } from '@shared/components';
 import { MapMarkerComponent } from '@shared/components/map/map-marker.component';
+import { CURRENCY_SYMBOLS } from '@shared/constants';
+import { Currency } from '@shared/enums';
 import { ICatalogItem } from '@shared/interfaces';
-import { getPropertyStatusColor } from '@shared/utils/property-status-severity.util';
+import { getPropertyStatusColor, getPropertyStatusSeverity } from '@shared/utils/property-status-severity.util';
 import { LngLatBoundsLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { DividerModule } from 'primeng/divider';
 import { DrawerModule } from 'primeng/drawer';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GalleriaModule } from 'primeng/galleria';
+import { TagModule } from 'primeng/tag';
 import { tap } from 'rxjs';
 import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchPropertyObject } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
@@ -29,6 +34,8 @@ import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalo
     DrawerModule,
     GalleriaModule,
     ConfirmDialog,
+    TagModule,
+    DividerModule,
   ],
   providers: [DialogService],
   templateUrl: './catalog-map.component.html',
@@ -43,6 +50,7 @@ import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalo
       margin-bottom: 1rem;
     }
   `,
+  animations: [SLIDE],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CatalogMapComponent {
@@ -59,6 +67,13 @@ export class CatalogMapComponent {
   readonly getStatusColor = getPropertyStatusColor;
   readonly selectedItem = signal<ICatalogItem | null>(null);
   readonly drawerOpen = signal(false);
+
+  readonly getSeverity = getPropertyStatusSeverity;
+  getCurrencySymbol(key: string): string {
+    return CURRENCY_SYMBOLS[key as Currency];
+  }
+
+  readonly isDetailedVisible = signal(false);
 
   #ref: DynamicDialogRef | undefined;
 

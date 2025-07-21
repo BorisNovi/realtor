@@ -1,9 +1,9 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { SLIDE } from '@shared/animations';
 import { AddressPickerComponent, FieldsetCheckboxGroupComponent, InputWrapperComponent } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { createItemsFieldsetConfig } from '@shared/constants/fieldset.configs';
@@ -61,13 +61,7 @@ import { AddressFormComponent } from '../address-form/address-form.component';
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('fadeSlide', [
-      state('void', style({ opacity: 0, height: '0px', marginBottom: '0' })),
-      state('*', style({ opacity: 1, height: '*', marginBottom: '*' })),
-      transition('void <=> *', animate('300ms ease-in-out')),
-    ]),
-  ],
+  animations: [SLIDE],
 })
 export class CreateCatalogItemComponent implements OnInit {
   readonly fileUpload = viewChild.required<FileUpload>('fileUpload');
