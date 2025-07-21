@@ -44,6 +44,7 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
   readonly svg = input<string>(DEFAULT_MAP_MARKER);
   readonly color = input<string>('var(--primary-color)');
   readonly draggable = input(false, { transform: v => v === '' || !!v });
+  readonly clickable = input(false, { transform: v => v === '' || !!v });
   readonly titlePopup = input<string | { name: string; value: string }[] | null>(null);
   readonly popupBehavior = input<'click' | 'hover' | 'always'>('always');
 
@@ -70,13 +71,24 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
       const m = this.#marker();
       if (!m) return;
       m.setLngLat(this.#pos());
-      // TODO: сделать курсоры для дрэга и клика, а также если ничего нет
-      // m.getElement().style.cursor = 'grab';
     });
     effect(() => {
       const m = this.#marker();
       if (!m) return;
       m.setDraggable(this.draggable());
+    });
+    effect(() => {
+      const m = this.#marker();
+      const c = this.clickable();
+      const d = this.draggable();
+      if (!m) return;
+
+      this.#removeMarkerEvents();
+      this.#setupMarkerEvents();
+
+      if (c) this.#element.style.cursor = 'pointer';
+      if (!c && d) this.#element.style.cursor = 'grab';
+      if (!c && !d) this.#element.style.cursor = 'default';
     });
     effect(() => {
       const m = this.#marker();
@@ -150,11 +162,6 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
     this.#element.style.alignItems = 'flex-end';
     this.#element.style.color = this.color();
 
-    this.#setupMarkerEvents();
-
-    this.#onClick = () => this.markerClick.emit();
-    this.#element.addEventListener('click', this.#onClick);
-
     const marker = new maplibregl.Marker({ element: this.#element, draggable: this.draggable() })
       .setLngLat(this.#pos())
       .addTo(map);
@@ -173,6 +180,15 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
 
   #setupMarkerEvents(): void {
     const el = this.#element;
+    const c = this.clickable();
+
+    if (!c) {
+      this.#shouldShowPopup.set(this.popupBehavior() === 'always');
+      return;
+    }
+
+    this.#onClick = () => this.markerClick.emit();
+    el.addEventListener('click', this.#onClick);
 
     switch (this.popupBehavior()) {
       case 'click':
@@ -193,13 +209,23 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
+  #removeMarkerEvents(): void {
     const el = this.#element;
+    if (!el) return;
 
     el?.removeEventListener('click', this.#onClick);
-    if (this.#onToggle) el?.removeEventListener('click', this.#onToggle);
-    if (this.#onEnter) el?.removeEventListener('mouseenter', this.#onEnter);
-    if (this.#onLeave) el?.removeEventListener('mouseleave', this.#onLeave);
+    if (this.#onToggle) el.removeEventListener('click', this.#onToggle);
+    if (this.#onEnter) el.removeEventListener('mouseenter', this.#onEnter);
+    if (this.#onLeave) el.removeEventListener('mouseleave', this.#onLeave);
+
+    this.#onClick = undefined!;
+    this.#onToggle = undefined;
+    this.#onEnter = undefined;
+    this.#onLeave = undefined;
+  }
+
+  ngOnDestroy(): void {
+    this.#removeMarkerEvents();
 
     this.#marker()?.remove();
     this.#popup()?.remove();
