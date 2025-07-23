@@ -5,7 +5,7 @@ from catalog.interfaces.property_response import format_property
 
 class PropertyCreateView(generics.CreateAPIView):
     serializer_class = CatalogCreateSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         # Принимаем данные от фронта

@@ -62,15 +62,30 @@ class CatalogCreateSerializer(serializers.Serializer):
         specifics = validated_data.pop('specifics', {})
         specifics_flat = flatten_specifics(property_type, specifics)
 
-        combined_data = {**validated_data, **extra_fields, **specifics_flat}
+        print("=== [DEBUG] specifics_flat ===")
+        for k, v in specifics_flat.items():
+            print(f"{k}: {v}")
+
+        # Объединяем с правильным приоритетом (чтобы specifics_flat побеждали)
+        combined_data = {**extra_fields, **validated_data, **specifics_flat}
 
         if contact is not None:
             combined_data['contact'] = contact.id
 
+        # Логируем после объединения
+        print("=== Debug combined_data ===")
+        for k, v in combined_data.items():
+            print(f"{k}: {v} ({type(v)})")
+
         serializer_class = PROPERTY_SERIALIZER_MAP[property_type]
+
         serializer = serializer_class(data=combined_data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            print("🔥 Serializer errors:", serializer.errors)
+            raise serializers.ValidationError(serializer.errors)
+
         return serializer.save()
+
 
     def update(self, instance, validated_data):
         contact_data = validated_data.pop('contact', None)
@@ -86,7 +101,8 @@ class CatalogCreateSerializer(serializers.Serializer):
             instance.price_currency = price_data.get('currency', instance.price_currency)
 
         specifics = validated_data.pop('specifics', {})
-        specifics_flat = flatten_specifics(specifics)
+        property_type = getattr(instance, 'property_type', None)
+        specifics_flat = flatten_specifics(property_type, specifics)
 
         extra_fields = validated_data.pop('extra_fields', {})
         forbidden_fields = ['property_type', 'id']
