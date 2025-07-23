@@ -44,7 +44,10 @@ class Flat(BaseProperty):
 
     # specifics.kitchen
     kitchen_type = models.CharField(max_length=50, null=True, blank=True)
-
+    
+    # specifics.zoning
+    zoning_type = models.CharField(max_length=50, null=True, blank=True)
+    
     # specifics.heating (тип, не булево)
     heating = models.CharField(max_length=50, null=True, blank=True)
 
