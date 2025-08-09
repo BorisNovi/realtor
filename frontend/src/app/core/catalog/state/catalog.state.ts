@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { ICatalogFilters, ICatalogItem, IPagination, IPropertyObject, ISort, ITableData } from '@shared/interfaces';
 import { MessageService } from 'primeng/api';
-import { catchError, of, tap } from 'rxjs';
+import { catchError, of, switchMap, tap, throwError } from 'rxjs';
 import { CatalogService } from '../shared';
 import {
   CatalogOperationFailed,
@@ -125,7 +125,9 @@ export class CatalogState {
     return this.#catalogService.createPropertyObject(propertyObject).pipe(
       tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
       tap(() => ctx.dispatch(new CatalogOperationSuccess('OBJECT_CREATED'))),
-      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'CREATION_FAILED'))),
+      catchError((error: Error) =>
+        ctx.dispatch(new CatalogOperationFailed(error, 'CREATION_FAILED')).pipe(switchMap(() => throwError(() => error))),
+      ),
     );
   }
 
@@ -135,7 +137,9 @@ export class CatalogState {
     return this.#catalogService.updatePropertyObject(propertyObject).pipe(
       tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
       tap(() => ctx.dispatch(new CatalogOperationSuccess('OBJECT_UPDATED'))),
-      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'UPDATE_FAILED'))),
+      catchError((error: Error) =>
+        ctx.dispatch(new CatalogOperationFailed(error, 'UPDATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
+      ),
     );
   }
 
