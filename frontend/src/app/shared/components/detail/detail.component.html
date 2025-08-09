@@ -4,8 +4,7 @@
     <ng-container [ngTemplateOutlet]="headerTpl"></ng-container>
   </div>
   <div class="md:w-[50%] h-fit mb-4 md:sticky md:top-24">
-    <p-galleria class="border-transparent!" [value]="images" [responsiveOptions]="galleriaResponsiveOptions"
-      [numVisible]="5">
+    <p-galleria class="border-transparent!" [value]="images" [responsiveOptions]="galleriaResponsiveOptions" [numVisible]="5">
       <ng-template #item let-item>
         <img [src]="item.image" style="width: 100%" alt="image" />
       </ng-template>
@@ -21,31 +20,35 @@
     <div class="card">
       <ul class="text-lg">
         <li>
-          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}: </span><span>{{
-            'FORM.PROPERTIES.PROPERTY_TYPE.' + pObject?.propertyType | translate }}</span>
+          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}: </span
+          ><span>{{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + pObject?.propertyType | translate }}</span>
         </li>
         <li>
-          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}: </span><p-tag class="h-6"
+          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}: </span
+          ><p-tag
+            class="h-6"
             [value]="'FORM.PROPERTIES.PROPERTY_STATUS.' + pObject?.status | translate"
-            [severity]="getSeverity(pObject?.status || '')"></p-tag>
+            [severity]="getSeverity(pObject?.status || '')"
+          ></p-tag>
         </li>
         <li>
-          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}: </span><span>{{
-            'FORM.PROPERTIES.ZONING_TYPE.' + pObject?.zoningType | translate }}</span>
+          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}: </span
+          ><span>{{ 'FORM.PROPERTIES.ZONING_TYPE.' + pObject?.zoningType | translate }}</span>
         </li>
         <li>
           <span class="truncate text-wrap">
             @let a = pObject?.address;
             <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </span>
-            {{ a?.city }}, {{ a?.road }}, <span class="text-nowrap">№ {{ a?.house }}</span>,
+            {{ a?.city }}, {{ a?.road }}, <span class="text-nowrap">№ {{ a?.house }}</span
+            >,
             @if (a?.apartment) {
-            <span class="text-nowrap">{{ 'PREFIXES.APARTMENT' | translate }} {{ a?.apartment }}</span>
+              <span class="text-nowrap">{{ 'PREFIXES.APARTMENT' | translate }} {{ a?.apartment }}</span>
             }
           </span>
         </li>
         <li>
-          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }}: </span><a>{{
-            pObject?.price?.value || '—' }} {{ getCurrencySymbol((pObject?.price)!.currency) }}</a>
+          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }}: </span
+          ><a>{{ pObject?.price?.value || '—' }} {{ getCurrencySymbol((pObject?.price)!.currency) }}</a>
         </li>
       </ul>
       <ng-content></ng-content>
@@ -64,36 +67,34 @@
       <h5>{{ 'CATALOG.LABELS.ABOUT' | translate }}</h5>
       <ul class="columns-1 sm:columns-2 gap-4 space-y-2">
         <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.AREA' | translate }}: </span><span>{{ pObject?.area || '—' }}
-            m²</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.AREA' | translate }}: </span><span>{{ pObject?.area || '—' }} m²</span>
         </li>
         <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.CURRENT_FLOOR' | translate }}: </span><span>{{
-            specifics?.floor?.current || '—' }}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.CURRENT_FLOOR' | translate }}: </span
+          ><span>{{ specifics?.floor?.current || '—' }}</span>
         </li>
         <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.TOTAL_FLOORS' | translate }}: </span><span>{{
-            specifics?.floor?.full || '—' }}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.TOTAL_FLOORS' | translate }}: </span
+          ><span>{{ specifics?.floor?.full || '—' }}</span>
         </li>
         <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.ROOMS' | translate }}: </span><span>{{ specifics?.rooms || '—'
-            }}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.ROOMS' | translate }}: </span><span>{{ specifics?.rooms || '—' }}</span>
         </li>
         <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.HEATING' | translate }}: </span><span>{{ specifics?.heating || '—'
-            }}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.HEATING' | translate }}: </span
+          ><span>{{ specifics?.heating || '—' }}</span>
         </li>
         <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.RENOVATION' | translate }}: </span><span>{{
-            'FORM.PROPERTIES.RENOVATION_STATUS.' + specifics?.renovation | translate }}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.RENOVATION' | translate }}: </span
+          ><span>{{ 'FORM.PROPERTIES.RENOVATION_STATUS.' + specifics?.renovation | translate }}</span>
         </li>
         <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.FURNISHED' | translate }}: </span><span>{{
-            'FORM.PROPERTIES.FURNISHED_STATUS.' + specifics?.furnished | translate}}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.FURNISHED' | translate }}: </span
+          ><span>{{ 'FORM.PROPERTIES.FURNISHED_STATUS.' + specifics?.furnished | translate }}</span>
         </li>
         <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.KITCHEN' | translate }}: </span><span>{{
-            'FORM.PROPERTIES.KITCHEN_TYPE.' + specifics?.kitchen | translate }}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.KITCHEN' | translate }}: </span
+          ><span>{{ 'FORM.PROPERTIES.KITCHEN_TYPE.' + specifics?.kitchen | translate }}</span>
         </li>
       </ul>
     </div>
@@ -103,16 +104,16 @@
       <h5>{{ 'CATALOG.LABELS.OPTIONS' | translate }}</h5>
       <ul class="columns-1 sm:columns-2 gap-4 space-y-2">
         @for (group of optionsArray(); track group.category) {
-        <li class="pb-4 break-inside-avoid">
-          <strong>{{ 'FORM.LABELS.' + group.category | camelToUpperSnake | translate }}</strong>
-          <ul class="pl-4 pt-2 space-y-1 list-disc">
-            @for (opt of group.values; track opt[0]) {
-            <li>
-              <span>{{ 'FORM.LABELS.' + opt[0] | camelToUpperSnake | translate }}</span>
-            </li>
-            }
-          </ul>
-        </li>
+          <li class="pb-4 break-inside-avoid">
+            <strong>{{ 'FORM.LABELS.' + group.category | camelToUpperSnake | translate }}</strong>
+            <ul class="pl-4 pt-2 space-y-1 list-disc">
+              @for (opt of group.values; track opt[0]) {
+                <li>
+                  <span>{{ 'FORM.LABELS.' + opt[0] | camelToUpperSnake | translate }}</span>
+                </li>
+              }
+            </ul>
+          </li>
         }
       </ul>
     </div>
