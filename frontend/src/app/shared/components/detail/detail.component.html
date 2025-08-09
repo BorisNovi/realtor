@@ -1,9 +1,9 @@
 @let pObject = propertyObject();
-<div class="flex flex-col md:flex-row md:gap-8 w-full">
+<div class="flex flex-col md:flex-row md:gap-4 w-full">
   <div class="block md:hidden">
-    <ng-container [ngTemplateOutlet]="header"></ng-container>
+    <ng-container [ngTemplateOutlet]="headerTpl"></ng-container>
   </div>
-  <div class="md:w-[50%] h-fit mb-4">
+  <div class="md:w-[50%] h-fit mb-4 md:sticky md:top-24">
     <p-galleria class="border-transparent!" [value]="images" [responsiveOptions]="galleriaResponsiveOptions" [numVisible]="5">
       <ng-template #item let-item>
         <img [src]="item.image" style="width: 100%" alt="image" />
@@ -15,17 +15,16 @@
   </div>
   <div class="md:w-[50%] xl:w-[60%]">
     <div class="hidden md:block">
-      <ng-container [ngTemplateOutlet]="header"></ng-container>
+      <ng-container [ngTemplateOutlet]="headerTpl"></ng-container>
     </div>
     <div class="card">
       <ul class="text-lg">
-        <!-- TODO: переводы отделить -->
         <li>
-          <strong>{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}: </strong
+          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}: </span
           ><span>{{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + pObject?.propertyType | translate }}</span>
         </li>
         <li>
-          <strong>{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}: </strong
+          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}: </span
           ><p-tag
             class="h-6"
             [value]="'FORM.PROPERTIES.PROPERTY_STATUS.' + pObject?.status | translate"
@@ -33,14 +32,13 @@
           ></p-tag>
         </li>
         <li>
-          <strong>{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}: </strong><span>{{ pObject?.zoningType || '—' }}</span>
+          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}: </span
+          ><span>{{ 'FORM.PROPERTIES.ZONING_TYPE.' + pObject?.zoningType | translate }}</span>
         </li>
-        <!-- {{pObject?.mapLink}} как роутерлинк у ссылки адреса -->
-        <!-- Тут или кнопку, которая пошлет на карту, или откроет модалку с картой или сошлет на внешние краты. Или все три -->
         <li>
           <span class="truncate text-wrap">
             @let a = pObject?.address;
-            <strong>{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </strong>
+            <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </span>
             {{ a?.city }}, {{ a?.road }}, <span class="text-nowrap">№ {{ a?.house }}</span
             >,
             @if (a?.apartment) {
@@ -49,48 +47,96 @@
           </span>
         </li>
         <li>
-          <strong>{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }}: </strong
-          ><a>{{ pObject?.price?.value || '—' }} {{ pObject?.price?.currency }}</a>
+          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }}: </span
+          ><a>{{ pObject?.price?.value || '—' }} {{ getCurrencySymbol((pObject?.price)!.currency) }}</a>
         </li>
       </ul>
       <ng-content></ng-content>
     </div>
+
+    <!-- Comment -->
+    @let comment = pObject?.comment;
     <div class="card">
-      <ul class="space-y-1">
+      <h5>{{ 'FORM.LABELS.COMMENT' | translate }}</h5>
+      <span>{{ comment }}</span>
+    </div>
+
+    <!-- Specifics -->
+    @let specifics = pObject?.specifics;
+    <div class="card">
+      <h5>{{ 'CATALOG.LABELS.ABOUT' | translate }}</h5>
+      <ul class="columns-1 sm:columns-2 gap-4 space-y-2">
         <li>
-          <strong>Area: </strong><span>{{ pObject?.area || '—' }} m²</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.AREA' | translate }}: </span><span>{{ pObject?.area || '—' }} m²</span>
         </li>
-        <!-- особенности лучше перебрать циклом -->
         <li>
-          <strong>Floor: </strong
-          ><span>{{ pObject?.specifics?.floor?.current || '—' }} / {{ pObject?.specifics?.floor?.full || '—' }}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.CURRENT_FLOOR' | translate }}: </span
+          ><span>{{ specifics?.floor?.current || '—' }}</span>
         </li>
         <li>
-          <strong>Rooms: </strong><span>{{ pObject?.specifics?.rooms || '—' }}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.TOTAL_FLOORS' | translate }}: </span
+          ><span>{{ specifics?.floor?.full || '—' }}</span>
         </li>
         <li>
-          <strong>Heating: </strong><span>{{ pObject?.specifics?.heating || '—' }}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.ROOMS' | translate }}: </span><span>{{ specifics?.rooms || '—' }}</span>
+        </li>
+        <li>
+          <span class="text-gray-500">{{ 'FORM.LABELS.HEATING' | translate }}: </span
+          ><span>{{ specifics?.heating || '—' }}</span>
+        </li>
+        <li>
+          <span class="text-gray-500">{{ 'FORM.LABELS.RENOVATION' | translate }}: </span
+          ><span>{{ 'FORM.PROPERTIES.RENOVATION_STATUS.' + specifics?.renovation | translate }}</span>
+        </li>
+        <li>
+          <span class="text-gray-500">{{ 'FORM.LABELS.FURNISHED' | translate }}: </span
+          ><span>{{ 'FORM.PROPERTIES.FURNISHED_STATUS.' + specifics?.furnished | translate }}</span>
+        </li>
+        <li>
+          <span class="text-gray-500">{{ 'FORM.LABELS.KITCHEN' | translate }}: </span
+          ><span>{{ 'FORM.PROPERTIES.KITCHEN_TYPE.' + specifics?.kitchen | translate }}</span>
         </li>
       </ul>
     </div>
+
+    <!-- Options -->
     <div class="card">
-      <h5>Contact</h5>
+      <h5>{{ 'CATALOG.LABELS.OPTIONS' | translate }}</h5>
+      <ul class="columns-1 sm:columns-2 gap-4 space-y-2">
+        @for (group of optionsArray(); track group.category) {
+          <li class="pb-4 break-inside-avoid">
+            <strong>{{ 'FORM.LABELS.' + group.category | camelToUpperSnake | translate }}</strong>
+            <ul class="pl-4 pt-2 space-y-1 list-disc">
+              @for (opt of group.values; track opt[0]) {
+                <li>
+                  <span>{{ 'FORM.LABELS.' + opt[0] | camelToUpperSnake | translate }}</span>
+                </li>
+              }
+            </ul>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="card">
+      <h5>{{ 'FORM.LABELS.CONTACT' | translate }}</h5>
       <ul class="space-y-1">
         <li>
-          <strong>Contact person: </strong><span>{{ pObject?.contact?.name || '—' }}</span>
+          <span class="text-gray-500">Contact person: </span><span>{{ pObject?.contact?.name || '—' }}</span>
         </li>
         <li>
-          <strong>Contact phone: </strong><span>{{ pObject?.contact?.phone | worldPhoneMask }}</span>
+          <span class="text-gray-500">Contact phone: </span><span>{{ pObject?.contact?.phone | worldPhoneMask }}</span>
         </li>
       </ul>
     </div>
   </div>
 </div>
 
-<ng-template #header>
-  <h1 class="font-semibold text-xxs mb-4">
+<ng-template #headerTpl>
+  <h1 class="font-semibold text-3xl mb-4">
     {{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + pObject?.propertyType | translate }} {{ pObject?.area || 0 }} m² —
     {{ pObject?.price?.value || 0 }}
-    {{ pObject?.price?.currency || 'G' }}
+    {{ getCurrencySymbol((pObject?.price)!.currency) }}
   </h1>
 </ng-template>

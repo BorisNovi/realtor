@@ -36,7 +36,7 @@
       "KITCHEN": "Кухня",
       "SHARED_FACILITIES": "Общие удобства",
       "SHARED_KITCHEN": "Кухня",
-      "SHARED_BATHROOM": "Ванная",
+      "BATHROOM": "Ванная",
       "UTILITIES": "Коммунальные услуги",
       "ELECTRICITY": "Электричество",
       "WATER_SUPPLY": "Водоснабжение",
@@ -265,6 +265,10 @@
         "YES": "Да",
         "NO": "Нет"
       }
+    },
+    "LABELS": {
+      "ABOUT": "Об объекте",
+      "OPTIONS": "Опции"
     },
     "FILTERS": {
       "LABEL": "Фильтры",

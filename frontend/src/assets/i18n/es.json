@@ -36,7 +36,7 @@
       "KITCHEN": "Cocina",
       "SHARED_FACILITIES": "Instalaciones compartidas",
       "SHARED_KITCHEN": "Cocina compartida",
-      "SHARED_BATHROOM": "Baño compartido",
+      "BATHROOM": "Baño compartido",
       "UTILITIES": "Servicios públicos",
       "ELECTRICITY": "Electricidad",
       "WATER_SUPPLY": "Suministro de agua",
@@ -265,6 +265,10 @@
         "YES": "Sí",
         "NO": "No"
       }
+    },
+    "LABELS": {
+      "ABOUT": "",
+      "OPTIONS": ""
     },
     "FILTERS": {
       "LABEL": "Filtros",
