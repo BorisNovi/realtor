@@ -36,7 +36,7 @@
       "KITCHEN": "Kitchen",
       "SHARED_FACILITIES": "Shared Facilities",
       "SHARED_KITCHEN": "Kitchen",
-      "SHARED_BATHROOM": "Bathroom",
+      "BATHROOM": "Bathroom",
       "UTILITIES": "Utilities",
       "ELECTRICITY": "Electricity",
       "WATER_SUPPLY": "Water Supply",
@@ -265,6 +265,10 @@
         "YES": "Yes",
         "NO": "No"
       }
+    },
+    "LABELS": {
+      "ABOUT": "About",
+      "OPTIONS": "Options"
     },
     "FILTERS": {
       "LABEL": "Filters",
