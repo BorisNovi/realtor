@@ -8,7 +8,7 @@ import { MapComponent } from '@shared/components';
 import { MapMarkerComponent } from '@shared/components/map/map-marker.component';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency } from '@shared/enums';
-import { ICatalogItem } from '@shared/interfaces';
+import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
 import { getPropertyStatusColor, getPropertyStatusSeverity } from '@shared/utils/property-status-severity.util';
 import { LngLatBoundsLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
@@ -17,11 +17,13 @@ import { DividerModule } from 'primeng/divider';
 import { DrawerModule } from 'primeng/drawer';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GalleriaModule } from 'primeng/galleria';
+import { ProgressBarModule } from 'primeng/progressbar';
 import { TagModule } from 'primeng/tag';
 import { tap } from 'rxjs';
 import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchPropertyObject } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
+import { CamelToUpperSnakePipe, WorldPhoneMaskPipe } from '@shared/pipes';
 
 @Component({
   selector: 'rx-catalog-map',
@@ -36,6 +38,9 @@ import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalo
     ConfirmDialog,
     TagModule,
     DividerModule,
+    ProgressBarModule,
+    CamelToUpperSnakePipe,
+    WorldPhoneMaskPipe,
   ],
   providers: [DialogService],
   templateUrl: './catalog-map.component.html',
@@ -68,12 +73,13 @@ export class CatalogMapComponent {
   readonly selectedItem = signal<ICatalogItem | null>(null);
   readonly drawerOpen = signal(false);
 
+  readonly detailedCache = signal<Record<number, IPropertyObject | null>>({});
+  readonly detailedSelected = signal<IPropertyObject | null>(null);
+
   readonly getSeverity = getPropertyStatusSeverity;
   getCurrencySymbol(key: string): string {
     return CURRENCY_SYMBOLS[key as Currency];
   }
-
-  readonly isDetailedVisible = signal(false);
 
   #ref: DynamicDialogRef | undefined;
 
@@ -107,6 +113,18 @@ export class CatalogMapComponent {
     ];
   });
 
+  readonly optionsArray = computed(() => {
+    const options = this.detailedSelected()?.specifics?.options;
+    if (!options) return [];
+
+    return Object.entries(options)
+      .map(([category, values]) => ({
+        category,
+        values: Object.entries(values as Record<string, boolean>).filter(opt => opt[1]),
+      }))
+      .filter(group => group.values.length > 0);
+  });
+
   showAll() {
     const map = this.mapComponent()?.map;
     const bounds = this.fitBounds();
@@ -116,6 +134,7 @@ export class CatalogMapComponent {
   onMarkerClick(item: ICatalogItem): void {
     this.selectedItem.set(item);
     this.drawerOpen.set(true);
+    if (item.id) this.loadDetailedItem(item.id);
   }
 
   deleteItem(id: number): void {
@@ -154,5 +173,29 @@ export class CatalogMapComponent {
         '640px': '95vw',
       },
     });
+  }
+
+  private loadDetailedItem(id: number) {
+    this.detailedSelected.set(null);
+
+    const cache = this.detailedCache();
+    if (cache[id]) {
+      this.detailedSelected.set(cache[id]);
+      return;
+    }
+
+    this.#store
+      .dispatch(new FetchPropertyObject(id))
+      .pipe(
+        tap(() => {
+          const propertyData = this.#store.selectSnapshot(CatalogState.propertyObject);
+          if (propertyData) {
+            this.detailedCache.set({ ...this.detailedCache(), [id]: propertyData });
+            this.detailedSelected.set(propertyData);
+          }
+        }),
+        takeUntilDestroyed(this.#destroyRef),
+      )
+      .subscribe();
   }
 }
