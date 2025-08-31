@@ -1,7 +1,7 @@
 @let mItem = item();
 <ng-container>
   @if (root() && mItem?.visible !== false) {
-    <div class="layout-menuitem-root-text">{{ mItem?.label }}</div>
+    <div class="layout-menuitem-root-text">{{ mItem?.label || '' | translate }}</div>
   }
   @if ((!mItem?.routerLink || mItem?.items) && mItem?.visible !== false) {
     <a
@@ -13,7 +13,7 @@
       pRipple
     >
       <i [ngClass]="mItem?.icon" class="layout-menuitem-icon"></i>
-      <span class="layout-menuitem-text">{{ mItem?.label }}</span>
+      <span class="layout-menuitem-text">{{ mItem?.label || '' | translate }}</span>
       @if (mItem?.items) {
         <i class="pi pi-fw pi-angle-down layout-submenu-toggler"></i>
       }
@@ -45,7 +45,7 @@
       pRipple
     >
       <i [ngClass]="mItem?.icon" class="layout-menuitem-icon"></i>
-      <span class="layout-menuitem-text">{{ mItem?.label }}</span>
+      <span class="layout-menuitem-text">{{ mItem?.label || '' | translate }}</span>
       @if (mItem?.items) {
         <i class="pi pi-fw pi-angle-down layout-submenu-toggler"></i>
       }

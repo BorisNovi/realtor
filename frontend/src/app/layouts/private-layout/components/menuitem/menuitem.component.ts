@@ -2,6 +2,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, computed, inject, input } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
 import { Subscription, filter } from 'rxjs';
@@ -10,7 +11,7 @@ import { PrivateLayoutService } from '../../shared';
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: '[rx-menuitem]',
-  imports: [CommonModule, RouterModule, RippleModule],
+  imports: [CommonModule, RouterModule, RippleModule, TranslatePipe],
   templateUrl: './menuitem.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [

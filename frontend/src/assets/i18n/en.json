@@ -6,6 +6,15 @@
     "SUCCESS": "Success",
     "ERROR": "Error"
   },
+  "MENU": {
+    "CATALOG": "Catalog",
+    "LIST": "List",
+    "MAP": "Map",
+    "SHARING": "Sharing",
+    "LISTINGS": "Listings",
+    "INFO": "Info",
+    "CONTACTS": "Contacts"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Photos",
