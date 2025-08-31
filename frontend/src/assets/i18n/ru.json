@@ -1,10 +1,142 @@
 {
-  "CHECK": "ПРОВЕРКА (РУ)",
-
+  "TOPBAR": {
+    "LANGUAGE": "Русский"
+  },
+  "NOTIFICATIONS": {
+    "SUCCESS": "Успех",
+    "ERROR": "Ошибка"
+  },
+  "FORM": {
+    "LABELS": {
+      "PHOTOS": "Фото",
+      "PREVIEW": "Превью",
+      "PROPERTY_TYPE": "Тип недвижимости",
+      "STATUS": "Статус",
+      "ZONING": "Категория",
+      "AREA": "Площадь (м²)",
+      "ADDRESS": "Адрес",
+      "CITY": "Город",
+      "ROAD": "Улица",
+      "HOUSE": "Дом",
+      "APARTMENT": "Квартира",
+      "PICK": "Выбрать на карте",
+      "POSITION": "Местоположение",
+      "PRICE": "Цена",
+      "CURRENCY": "Валюта",
+      "CONTACT": "Контакт",
+      "CONTACT_NAME": "Имя контакта",
+      "CONTACT_PHONE": "Телефон контакта",
+      "COMMENT": "Комментарий",
+      "ADDITIONAL_PARAMS": "Дополнительные параметры",
+      "CURRENT_FLOOR": "Текущий этаж",
+      "TOTAL_FLOORS": "Всего этажей",
+      "ROOMS": "Комнаты",
+      "FURNISHED": "Меблировка",
+      "RENOVATION": "Ремонт",
+      "KITCHEN": "Кухня",
+      "SHARED_FACILITIES": "Общие удобства",
+      "SHARED_KITCHEN": "Кухня",
+      "BATHROOM": "Ванная",
+      "UTILITIES": "Коммунальные услуги",
+      "ELECTRICITY": "Электричество",
+      "WATER_SUPPLY": "Водоснабжение",
+      "NATURAL_GAS": "Природный газ",
+      "SEWERAGE": "Канализация",
+      "HEATING": "Отопление",
+      "INTERNET": "Интернет",
+      "OTHER": "Прочее",
+      "PARKING": "Парковка",
+      "BATH": "Ванна",
+      "SHOWER": "Душ",
+      "AIR_CONDITIONING": "Кондиционер",
+      "FIREPLACE": "Камин",
+      "BEAUTIFUL_VIEW": "Красивый вид",
+      "NEW_BUILDING": "Новостройка",
+      "ELEVATOR": "Лифт",
+      "BALCONY": "Балкон",
+      "GARDEN": "Сад",
+      "GARAGE": "Гараж"
+    },
+    "PLACEHOLDERS": {
+      "PROPERTY_TYPE": "Выберите тип недвижимости",
+      "STATUS": "Выберите статус",
+      "ZONING": "Выберите категорию",
+      "MAP_LINK": "Введите ссылку на карту",
+      "AREA": "Введите площадь",
+      "ADDRESS": "Введите адрес",
+      "CITY": "Введите город",
+      "ROAD": "Введите улицу",
+      "HOUSE": "Введите номер дома",
+      "APARTMENT": "Введите номер квартиры",
+      "PRICE": "Введите цену",
+      "CURRENCY": "Напр., USD",
+      "CONTACT_NAME": "Введите имя",
+      "CONTACT_PHONE": "Введите телефон",
+      "UPLOAD_PHOTOS": "Перетащите файлы сюда для загрузки",
+      "CURRENT_FLOOR": "Введите текущий этаж",
+      "TOTAL_FLOORS": "Введите общее количество этажей",
+      "ROOMS": "Введите количество комнат",
+      "HEATING": "Выберите тип отопления",
+      "FURNISHED": "Выберите меблировку",
+      "RENOVATION": "Выберите тип ремонта",
+      "KITCHEN": "Выберите тип кухни"
+    },
+    "PROPERTIES": {
+      "PROPERTY_TYPE": {
+        "flat": "Квартира",
+        "house": "Дом",
+        "room": "Комната",
+        "office": "Офис",
+        "land": "Участок"
+      },
+      "PROPERTY_STATUS": {
+        "available": "Доступно",
+        "reserved": "Забронировано",
+        "rented": "Арендовано"
+      },
+      "ZONING_TYPE": {
+        "residential": "Жилая",
+        "commercial": "Коммерческая",
+        "agricultural": "Сельскохозяйственная",
+        "mixed": "Смешанная"
+      },
+      "FURNISHED_STATUS": {
+        "fully": "Полностью меблирована",
+        "partially": "Частично меблирована",
+        "unfurnished": "Без мебели"
+      },
+      "RENOVATION_STATUS": {
+        "recent": "Недавно отремонтировано",
+        "needs": "Требует ремонта",
+        "none": "Без ремонта"
+      },
+      "KITCHEN_TYPE": {
+        "separated": "Отдельная",
+        "combined": "Совмещённая",
+        "none": "Без кухни"
+      },
+      "HEATING_TYPE": {
+        "gas": "Газовое",
+        "electric": "Электрическое",
+        "central": "Центральное",
+        "none": "Без отопления"
+      }
+    },
+    "ERRORS": {
+      "REQUIRED": "{{label}} - обязательное поле",
+      "MIN": "{{label}} должно быть не менее {{min}}",
+      "MAX": "{{label}} не должно превышать {{max}}",
+      "INVALID": "Поле {{label}} некорректно"
+    },
+    "BUTTONS": {
+      "CANCEL": "Отмена",
+      "SAVE": "Сохранить"
+    }
+  },
   "AUTH": {
-    "WELCOME": "Добро пожаловать в Realtor!",
+    "WELCOME": "Добро пожаловать в REALTOR-X!",
     "SIGN_IN_TO_CONTINUE": "Войдите, чтобы продолжить",
-    "JOIN": "Присоединяйтесь к Realtor!",
+    "JOIN": "Присоединяйтесь к REALTOR-X!",
     "SIGN_UP_TO_GET_STARTED": "Зарегистрируйтесь, чтобы начать",
     "RESET_PASSWORD": "Сбросить пароль",
     "ENTER_YOUR_EMAIL_TO_CONTINUE": "Введите ваш email, чтобы продолжить",
@@ -37,6 +169,160 @@
     "SIGN_UP_BUTTON": "Зарегистрироваться",
     "BACK_TO_TEXT": "Назад к",
     "SEND_BUTTON": "Отправить",
-    "SAVE_BUTTON": "Сохранить"
+    "SAVE_BUTTON": "Сохранить",
+    "NOTIFICATION": {
+      "SESSION_EXPIRED": {
+        "SUMMARY": "Сессия истекла",
+        "DETAIL": "Войдите снова"
+      },
+      "LOGIN_SUCCESS": {
+        "SUMMARY": "Вход выполнен успешно",
+        "DETAIL": "Вы успешно вошли в систему"
+      },
+      "LOGIN_FAILED": {
+        "SUMMARY": "Ошибка входа",
+        "DETAIL": "Проверьте правильность ваших данных"
+      },
+      "SIGNUP_SUCCESS": {
+        "SUMMARY": "Ссылка для регистрации отправлена",
+        "DETAIL": "Проверьте вашу электронную почту"
+      },
+      "SIGNUP_FAILED": {
+        "SUMMARY": "Ссылка для регистрации не отправлена",
+        "DETAIL": "Проверьте правильность ваших данных"
+      },
+      "ACTIVATION_SIGNUP_SUCCESS": {
+        "SUMMARY": "Регистрация успешно завершена",
+        "DETAIL": "Приятного использования приложения"
+      },
+      "ACTIVATION_SIGNUP_FAILED": {
+        "SUMMARY": "Ошибка регистрации",
+        "DETAIL": "И я не знаю почему"
+      },
+      "RECOVER_SUCCESS": {
+        "SUMMARY": "Ссылка для восстановления отправлена",
+        "DETAIL": "Проверьте вашу электронную почту"
+      },
+      "RECOVER_FAILED": {
+        "SUMMARY": "Ссылка для восстановления не отправлена",
+        "DETAIL": "Проверьте правильность вашей электронной почты"
+      },
+      "ACTIVATION_RECOVER_SUCCESS": {
+        "SUMMARY": "Восстановление успешно",
+        "DETAIL": "Новый пароль создан"
+      },
+      "ACTIVATION_RECOVER_FAILED": {
+        "SUMMARY": "Ошибка восстановления",
+        "DETAIL": "Запросите ссылку для активации снова"
+      },
+      "TERMINATION_SUCCESS": {
+        "SUMMARY": "Завершение успешно",
+        "DETAIL": "Все сессии были завершены"
+      },
+      "TERMINATION_FAILED": {
+        "SUMMARY": "Ошибка завершения",
+        "DETAIL": "Что-то пошло не так, попробуйте снова"
+      }
+    }
+  },
+  "CATALOG": {
+    "TABLE": {
+      "HEADERS": {
+        "PHOTO": "Фото",
+        "TYPE": "Тип",
+        "ZONING": "Категория",
+        "ADDRESS": "Адрес",
+        "PRICE": "Цена",
+        "AREA": "Площадь",
+        "DATE": "Дата",
+        "STATUS": "Статус"
+      },
+      "PAGINATOR": {
+        "CURRENT_PAGE_REPORT": "Показано с {first} по {last} из {totalRecords} записей"
+      },
+      "BUTTONS": {
+        "ADD": "Добавить",
+        "FILTERS": "Фильтры",
+        "ADD_TO_LISTING": "Добавить в подборку",
+        "DELETE": "Удалить"
+      },
+      "FOOTER": {
+        "SELECTED": "Выбрано {{count}}"
+      },
+      "ACTIONS": {
+        "EDIT": "Редактировать",
+        "DELETE": "Удалить"
+      },
+      "DIALOG": {
+        "ADD": "Добавить новый объект",
+        "EDIT": "Редактировать объект",
+        "CANCEL": "Отмена",
+        "DELETE_REQUEST_SINGLE": "Удалить объект?",
+        "DELETE_REQUEST_MANY": "Удалить объекты?",
+        "DELETE_HINT": "Внимание! Это дейстиве необратимо!"
+      },
+      "CONFIRM_DIALOG": {
+        "YES": "Да",
+        "NO": "Нет"
+      }
+    },
+    "LABELS": {
+      "ABOUT": "Об объекте",
+      "OPTIONS": "Опции"
+    },
+    "FILTERS": {
+      "LABEL": "Фильтры",
+      "RESET": "Сбросить",
+      "DATE": {
+        "LABEL": "Дата",
+        "FROM": "Дата с",
+        "TO": "Дата по",
+        "PLACEHOLDER": "не выбрано"
+      },
+      "PROPERTIES": "Свойства",
+      "AREA": {
+        "LABEL": "Площадь",
+        "MIN": "Мин. площадь",
+        "MAX": "Макс. площадь"
+      },
+      "PRICE": {
+        "LABEL": "Цена",
+        "MIN": "Мин. цена",
+        "MAX": "Макс. цена"
+      }
+    },
+    "NOTIFICATION": {
+      "OBJECT_CREATED": "Объект недвижимости успешно создан",
+      "CREATION_FAILED": "Не удалось создать объект недвижимости",
+      "OBJECT_UPDATED": "Объект недвижимости успешно обновлен",
+      "UPDATE_FAILED": "Не удалось обновить объект недвижимости",
+      "STATUS_UPDATED": "Статус успешно обновлен",
+      "STATUS_UPDATE_FAILED": "Не удалось обновить статус",
+      "OBJECT_DELETED": "Объект недвижимости успешно удален",
+      "DELETEION_FAILED": "Не удалось удалить объект недвижимости"
+    }
+  },
+  "ADDRESS_PICKER": {
+    "PLACEHOLDER": "Город, улица, дом ...",
+    "TOOLTIP": {
+      "FILL": "Подставить найденный адрес",
+      "LOCATE": "Определить текущее местоположение",
+      "UNLOCK_SCROLL": "Разблокировать масштаб колесиком",
+      "LOCK_SCROLL": "Заблокировать масштаб колесиком"
+    },
+    "POPUP": {
+      "DEFAULT": "Найденный адрес",
+      "GEO_DISABLED": "Разрешите доступ к геопозиции или переместите маркер",
+      "NOT_FOUND": "Ничего не найдено",
+      "CITY": "Город",
+      "ROAD": "Улица",
+      "HOUSE": "Дом"
+    }
+  },
+  "MAP": {
+    "SHOW_ALL": "Показать все"
+  },
+  "PREFIXES": {
+    "APARTMENT": "Кв."
   }
 }

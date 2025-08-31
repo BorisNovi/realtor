@@ -1,18 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Store } from '@ngxs/store';
 import { ButtonModule } from 'primeng/button';
-
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { RouterLink } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
-import { Store } from '@ngxs/store';
-import { AuthState } from 'src/app/core/auth/state/auth.state';
 import { RecoverPassword } from 'src/app/core/auth/state/auth.actions';
-import { TranslatePipe } from '@ngx-translate/core';
+import { AuthState } from 'src/app/core/auth/state/auth.state';
 
 @Component({
-  selector: 'app-forgot',
+  selector: 'rx-forgot',
   imports: [
     RouterLink,
     FormsModule,
@@ -28,21 +27,21 @@ import { TranslatePipe } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForgotComponent {
-  private readonly fb = inject(FormBuilder);
-  private readonly store = inject(Store);
+  readonly #fb = inject(FormBuilder);
+  readonly #store = inject(Store);
 
-  public isLoading = this.store.selectSignal(AuthState.loading);
+  readonly isLoading = this.#store.selectSignal(AuthState.loading);
 
-  public form = this.fb.group({
+  form = this.#fb.group({
     email: ['', [Validators.required, Validators.email]],
   });
 
-  public onSubmit(): void {
+  onSubmit(): void {
     const { email } = this.form.value;
     if (this.form.invalid || !email) {
       return;
     }
 
-    this.store.dispatch(new RecoverPassword(email));
+    this.#store.dispatch(new RecoverPassword(email));
   }
 }
