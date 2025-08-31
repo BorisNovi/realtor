@@ -6,6 +6,15 @@
     "SUCCESS": "Успех",
     "ERROR": "Ошибка"
   },
+  "MENU": {
+    "CATALOG": "Каталог",
+    "LIST": "Список",
+    "MAP": "Карта",
+    "SHARING": "Шэринг",
+    "LISTINGS": "Подборки",
+    "INFO": "Инфо",
+    "CONTACTS": "Контакты"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Фото",
