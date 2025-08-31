@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
+import { catalogRoutes } from 'src/app/features';
 import { PrivateLayoutComponent } from './private-layout.component';
-import { CatalogComponent } from '../../features';
 
 export const privateLayoutRoutes: Routes = [
   {
@@ -12,12 +12,12 @@ export const privateLayoutRoutes: Routes = [
         pathMatch: 'full',
         redirectTo: 'catalog',
       },
-      { path: 'catalog', component: CatalogComponent },
+      { path: 'catalog', children: catalogRoutes },
+      { path: 'listings', loadComponent: () => import('../../features').then(c => c.ListingsComponent) },
       {
         path: 'profile',
-        loadComponent: () => import('../../features/profile/profile.component').then(c => c.ProfileComponent),
+        loadComponent: () => import('../../features').then(c => c.ProfileComponent),
       },
-      { path: '**', redirectTo: 'catalog' },
     ],
   },
 ];

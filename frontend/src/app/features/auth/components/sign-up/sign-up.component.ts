@@ -12,7 +12,7 @@ import { ActivateAfterSignup, Signup } from 'src/app/core/auth/state/auth.action
 import { AuthState } from 'src/app/core/auth/state/auth.state';
 
 @Component({
-  selector: 'app-sign-up',
+  selector: 'rx-sign-up',
   imports: [
     RouterLink,
     FormsModule,
@@ -28,14 +28,14 @@ import { AuthState } from 'src/app/core/auth/state/auth.state';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignUpComponent implements OnInit {
-  private readonly fb = inject(FormBuilder);
-  private readonly store = inject(Store);
-  private readonly router = inject(Router);
+  readonly #fb = inject(FormBuilder);
+  readonly #store = inject(Store);
+  readonly #router = inject(Router);
 
-  private token: string | null = this.router.parseUrl(this.router.url).queryParamMap.get('token');
-  public isLoading = this.store.selectSignal(AuthState.loading);
+  readonly #token: string | null = this.#router.parseUrl(this.#router.url).queryParamMap.get('token');
+  readonly isLoading = this.#store.selectSignal(AuthState.loading);
 
-  public form = this.fb.group(
+  form = this.#fb.group(
     {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/)]],
@@ -49,19 +49,19 @@ export class SignUpComponent implements OnInit {
     },
   );
 
-  public ngOnInit(): void {
-    if (this.token) {
-      this.store.dispatch(new ActivateAfterSignup(this.token));
+  ngOnInit(): void {
+    if (this.#token) {
+      this.#store.dispatch(new ActivateAfterSignup(this.#token));
     }
   }
 
-  public onSubmit(): void {
+  onSubmit(): void {
     const { email, password, passwordConfirmation } = this.form.value;
 
     if (this.form.invalid || !email || !password || !passwordConfirmation) {
       return;
     }
 
-    this.store.dispatch(new Signup(email, password, passwordConfirmation));
+    this.#store.dispatch(new Signup(email, password, passwordConfirmation));
   }
 }

@@ -1,1 +1,5 @@
-<p>{{ 'CHECK' | translate }}</p>
+<p-drawer [header]="'CATALOG.FILTERS.LABEL' | translate" [(visible)]="filtersService.isOpen" position="right">
+  <rx-filters (filtersChange)="onFiltersChange($event)" (filtersCount)="filtersService.setFiltersCount($event)"></rx-filters>
+</p-drawer>
+
+<router-outlet></router-outlet>

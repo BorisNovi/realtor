@@ -1,10 +1,142 @@
 {
-  "CHECK": "CHECK (PT)",
-
+  "TOPBAR": {
+    "LANGUAGE": "Português"
+  },
+  "NOTIFICATIONS": {
+    "SUCCESS": "Sucesso",
+    "ERROR": "Erro"
+  },
+  "FORM": {
+    "LABELS": {
+      "PHOTOS": "Fotos",
+      "PREVIEW": "Visualização",
+      "PROPERTY_TYPE": "Tipo de propriedade",
+      "STATUS": "Estado",
+      "ZONING": "Zoneamento",
+      "AREA": "Área (m²)",
+      "ADDRESS": "Endereço",
+      "CITY": "-",
+      "ROAD": "-",
+      "HOUSE": "-",
+      "APARTMENT": "-",
+      "PICK": "-",
+      "POSITION": "-",
+      "PRICE": "Preço",
+      "CURRENCY": "Moeda",
+      "CONTACT": "Contato",
+      "CONTACT_NAME": "Nome de contato",
+      "CONTACT_PHONE": "Telefone de contato",
+      "COMMENT": "Comentário",
+      "ADDITIONAL_PARAMS": "Parâmetros adicionais",
+      "CURRENT_FLOOR": "Andar atual",
+      "TOTAL_FLOORS": "Total de andares",
+      "ROOMS": "Quartos",
+      "FURNISHED": "Mobiliado",
+      "RENOVATION": "Reforma",
+      "KITCHEN": "Cozinha",
+      "SHARED_FACILITIES": "Instalações compartilhadas",
+      "SHARED_KITCHEN": "Cozinha compartilhada",
+      "BATHROOM": "Banheiro compartilhado",
+      "UTILITIES": "Serviços públicos",
+      "ELECTRICITY": "Eletricidade",
+      "WATER_SUPPLY": "Abastecimento de água",
+      "NATURAL_GAS": "Gás natural",
+      "SEWERAGE": "Esgoto",
+      "HEATING": "Aquecimento",
+      "INTERNET": "Internet",
+      "OTHER": "Outros",
+      "PARKING": "Estacionamento",
+      "BATH": "Banheira",
+      "SHOWER": "Chuveiro",
+      "AIR_CONDITIONING": "Ar condicionado",
+      "FIREPLACE": "Lareira",
+      "BEAUTIFUL_VIEW": "Vista bonita",
+      "NEW_BUILDING": "Construção nova",
+      "ELEVATOR": "Elevador",
+      "BALCONY": "Varanda",
+      "GARDEN": "Jardim",
+      "GARAGE": "Garagem"
+    },
+    "PLACEHOLDERS": {
+      "PROPERTY_TYPE": "Selecionar tipo de propriedade",
+      "STATUS": "Selecionar estado",
+      "ZONING": "Selecionar zoneamento",
+      "MAP_LINK": "Inserir link do mapa",
+      "AREA": "Inserir área",
+      "ADDRESS": "Inserir endereço",
+      "CITY": "-",
+      "ROAD": "-",
+      "HOUSE": "-",
+      "APARTMENT": "-",
+      "PRICE": "Inserir preço",
+      "CURRENCY": "Ex., USD",
+      "CONTACT_NAME": "Inserir nome",
+      "CONTACT_PHONE": "Inserir telefone",
+      "UPLOAD_PHOTOS": "Arraste e solte arquivos aqui para fazer upload",
+      "CURRENT_FLOOR": "Inserir andar atual",
+      "TOTAL_FLOORS": "Inserir total de andares",
+      "ROOMS": "Inserir número de quartos",
+      "HEATING": "Selecione o tipo de aquecimento",
+      "FURNISHED": "Selecionar mobiliado",
+      "RENOVATION": "Selecionar reforma",
+      "KITCHEN": "Selecionar tipo de cozinha"
+    },
+    "PROPERTIES": {
+      "PROPERTY_TYPE": {
+        "flat": "Apartamento",
+        "house": "Casa",
+        "room": "Quarto",
+        "office": "Escritório",
+        "land": "Terreno"
+      },
+      "PROPERTY_STATUS": {
+        "available": "Disponível",
+        "reserved": "Reservado",
+        "rented": "Alugado"
+      },
+      "ZONING_TYPE": {
+        "residential": "Residencial",
+        "commercial": "Comercial",
+        "agricultural": "Agrícola",
+        "mixed": "Misto"
+      },
+      "FURNISHED_STATUS": {
+        "fully": "Totalmente mobiliado",
+        "partially": "Parcialmente mobiliado",
+        "unfurnished": "Sem mobília"
+      },
+      "RENOVATION_STATUS": {
+        "recent": "Reformado recentemente",
+        "needs": "Precisa de reforma",
+        "none": "Sem reforma"
+      },
+      "KITCHEN_TYPE": {
+        "separated": "Separada",
+        "combined": "Combinada",
+        "none": "Sem cozinha"
+      },
+      "HEATING_TYPE": {
+        "gas": "Gás",
+        "electric": "Elétrico",
+        "central": "Central",
+        "none": "Sem aquecimento"
+      }
+    },
+    "ERRORS": {
+      "REQUIRED": "{{label}} é obrigatório",
+      "MIN": "{{label}} deve ser pelo menos {{min}}",
+      "MAX": "{{label}} não deve exceder {{max}}",
+      "INVALID": "{{label}} é inválido"
+    },
+    "BUTTONS": {
+      "CANCEL": "Cancelar",
+      "SAVE": "Salvar"
+    }
+  },
   "AUTH": {
-    "WELCOME": "Bem-vindo ao Realtor!",
+    "WELCOME": "Bem-vindo ao REALTOR-X!",
     "SIGN_IN_TO_CONTINUE": "Faça login para continuar",
-    "JOIN": "Junte-se ao Realtor!",
+    "JOIN": "Junte-se ao REALTOR-X!",
     "SIGN_UP_TO_GET_STARTED": "Cadastre-se para começar",
     "RESET_PASSWORD": "Redefinir senha",
     "ENTER_YOUR_EMAIL_TO_CONTINUE": "Digite seu e-mail para continuar",
@@ -37,6 +169,160 @@
     "SIGN_UP_BUTTON": "Cadastrar",
     "BACK_TO_TEXT": "Voltar para",
     "SEND_BUTTON": "Enviar",
-    "SAVE_BUTTON": "Salvar"
+    "SAVE_BUTTON": "Salvar",
+    "NOTIFICATION": {
+      "SESSION_EXPIRED": {
+        "SUMMARY": "Sessão expirada",
+        "DETAIL": "Faça login novamente"
+      },
+      "LOGIN_SUCCESS": {
+        "SUMMARY": "Login bem-sucedido",
+        "DETAIL": "Você fez login com sucesso"
+      },
+      "LOGIN_FAILED": {
+        "SUMMARY": "Falha no login",
+        "DETAIL": "Verifique a validade das suas credenciais"
+      },
+      "SIGNUP_SUCCESS": {
+        "SUMMARY": "Link de inscrição enviado",
+        "DETAIL": "Verifique seu e-mail"
+      },
+      "SIGNUP_FAILED": {
+        "SUMMARY": "O link de inscrição não foi enviado",
+        "DETAIL": "Verifique a validade das suas credenciais"
+      },
+      "ACTIVATION_SIGNUP_SUCCESS": {
+        "SUMMARY": "Inscrição bem-sucedida",
+        "DETAIL": "Aproveite o uso do aplicativo"
+      },
+      "ACTIVATION_SIGNUP_FAILED": {
+        "SUMMARY": "Falha na inscrição",
+        "DETAIL": "E eu não sei por quê"
+      },
+      "RECOVER_SUCCESS": {
+        "SUMMARY": "Link de recuperação enviado",
+        "DETAIL": "Verifique seu e-mail"
+      },
+      "RECOVER_FAILED": {
+        "SUMMARY": "O link de recuperação não foi enviado",
+        "DETAIL": "Verifique a validade do seu e-mail"
+      },
+      "ACTIVATION_RECOVER_SUCCESS": {
+        "SUMMARY": "Recuperação bem-sucedida",
+        "DETAIL": "Uma nova senha foi criada"
+      },
+      "ACTIVATION_RECOVER_FAILED": {
+        "SUMMARY": "Falha na recuperação",
+        "DETAIL": "Solicite o link de ativação novamente"
+      },
+      "TERMINATION_SUCCESS": {
+        "SUMMARY": "Término bem-sucedido",
+        "DETAIL": "Todas as sessões foram encerradas"
+      },
+      "TERMINATION_FAILED": {
+        "SUMMARY": "Falha no término",
+        "DETAIL": "Algo deu errado, tente novamente"
+      }
+    }
+  },
+  "CATALOG": {
+    "TABLE": {
+      "HEADERS": {
+        "PHOTO": "Foto",
+        "TYPE": "Tipo",
+        "ZONING": "Zoneamento",
+        "ADDRESS": "Endereço",
+        "PRICE": "Preço",
+        "AREA": "Área",
+        "DATE": "Data",
+        "STATUS": "Estado"
+      },
+      "PAGINATOR": {
+        "CURRENT_PAGE_REPORT": "Mostrando de {first} a {last} de {totalRecords} registros"
+      },
+      "BUTTONS": {
+        "ADD": "Adicionar",
+        "FILTERS": "Filtros",
+        "ADD_TO_LISTING": "Adicionar à lista",
+        "DELETE": "Excluir"
+      },
+      "FOOTER": {
+        "SELECTED": "Selecionado {{count}}"
+      },
+      "ACTIONS": {
+        "EDIT": "Editar",
+        "DELETE": "Excluir"
+      },
+      "DIALOG": {
+        "ADD": "Adicionar um novo objecto",
+        "EDIT": "Editar o objecto",
+        "CANCEL": "Cancelar",
+        "DELETE_REQUEST_SINGLE": "Excluir um objeto?",
+        "DELETE_REQUEST_MANY": "Excluir um objeto?",
+        "DELETE_HINT": "Atenção! Você não pode restaurá-lo!"
+      },
+      "CONFIRM_DIALOG": {
+        "YES": "Sim",
+        "NO": "Não"
+      }
+    },
+    "LABELS": {
+      "ABOUT": "",
+      "OPTIONS": ""
+    },
+    "FILTERS": {
+      "LABEL": "Filtros",
+      "RESET": "Redefinir",
+      "DATE": {
+        "LABEL": "Data",
+        "FROM": "Data inicial",
+        "TO": "Data final",
+        "PLACEHOLDER": "não selecionado"
+      },
+      "PROPERTIES": "Propriedades",
+      "AREA": {
+        "LABEL": "Área",
+        "MIN": "Área mínima",
+        "MAX": "Área máxima"
+      },
+      "PRICE": {
+        "LABEL": "Preço",
+        "MIN": "Preço mínimo",
+        "MAX": "Preço máximo"
+      }
+    },
+    "NOTIFICATION": {
+      "OBJECT_CREATED": "Objeto de imóvel criado com sucesso",
+      "CREATION_FAILED": "Falha ao criar o objeto de imóvel",
+      "OBJECT_UPDATED": "Objeto de imóvel atualizado com sucesso",
+      "UPDATE_FAILED": "Falha ao atualizar o objeto de imóvel",
+      "STATUS_UPDATED": "Status atualizado com sucesso",
+      "STATUS_UPDATE_FAILED": "Falha ao atualizar o status",
+      "OBJECT_DELETED": "Objeto de imóvel excluído com sucesso",
+      "DELETEION_FAILED": "Falha ao excluir o objeto de imóvel"
+    }
+  }, 
+  "ADDRESS_PICKER": {
+    "PLACEHOLDER": "Cidade, rua, casa ...",
+    "TOOLTIP": {
+      "FILL": "Usar endereço encontrado",
+      "LOCATE": "Localizar posição atual",
+      "UNLOCK_SCROLL": "Ativar zoom com a roda",
+      "LOCK_SCROLL": "Desativar zoom com a roda"
+    },
+    "POPUP": {
+      "DEFAULT": "Endereço geocodificado",
+      "GEO_DISABLED": "Permita acesso à localização ou mova o marcador",
+      "NOT_FOUND": "Nada encontrado",
+      "CITY": "Cidade",
+      "ROAD": "Rua",
+      "HOUSE": "Casa"
+    }
+  },
+  "MAP": {
+    "SHOW_ALL": ""
+  },
+  "PREFIXES": {
+    "APARTMENT": ""
   }
 }

@@ -1,28 +1,26 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
-
-// TODO: Перенести в constants
-const STORAGE_NAMESPACE = 'realtor:';
+import { STORAGE_NAMESPACE } from '@shared/constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
-  private storageSignal = signal<Record<string, unknown>>(this.loadInitialData());
+  readonly #storageSignal = signal<Record<string, unknown>>(this.#loadInitialData());
 
   // Публичный сигнал для доступа к данным
-  data = computed(() => this.storageSignal());
+  readonly data = computed(() => this.#storageSignal());
 
   // Эффект для синхронизации с localStorage
   constructor() {
     effect(() => {
       try {
-        const currentData = this.storageSignal();
+        const currentData = this.#storageSignal();
         for (const [key, value] of Object.entries(currentData)) {
           // Сохраняем простые типы без лишних кавычек, сложные — через JSON
-          const storedValue = this.isSimpleType(value) ? String(value) : JSON.stringify(value);
+          const storedValue = this.#isSimpleType(value) ? String(value) : JSON.stringify(value);
           localStorage.setItem(key, storedValue);
         }
-        this.cleanUpUnusedKeys(currentData);
+        this.#cleanUpUnusedKeys(currentData);
       } catch (error) {
         console.error(`Error while writing to localStorage: ${error}`);
       }
@@ -31,15 +29,15 @@ export class StorageService {
 
   // Получение значения по ключу
   getItem<T>(key: string): T | null {
-    const data = this.storageSignal();
-    const namespacedKey = this.getNamespacedKey(key);
+    const data = this.#storageSignal();
+    const namespacedKey = this.#getNamespacedKey(key);
     return data[namespacedKey] !== undefined ? (data[namespacedKey] as T) : null;
   }
 
   // Установка значения по ключу
   setItem<T>(key: string, value: T): void {
-    const namespacedKey = this.getNamespacedKey(key);
-    this.storageSignal.update(currentData => ({
+    const namespacedKey = this.#getNamespacedKey(key);
+    this.#storageSignal.update(currentData => ({
       ...currentData,
       [namespacedKey]: value,
     }));
@@ -47,8 +45,8 @@ export class StorageService {
 
   // Удаление значения по ключу
   removeItem(key: string): void {
-    const namespacedKey = this.getNamespacedKey(key);
-    this.storageSignal.update(currentData => {
+    const namespacedKey = this.#getNamespacedKey(key);
+    this.#storageSignal.update(currentData => {
       const newData = { ...currentData };
       delete newData[namespacedKey];
       localStorage.removeItem(namespacedKey);
@@ -58,7 +56,7 @@ export class StorageService {
 
   // Очистка всех данных
   clear(): void {
-    this.storageSignal.update(currentData => {
+    this.#storageSignal.update(currentData => {
       for (const key of Object.keys(currentData)) {
         localStorage.removeItem(key);
       }
@@ -67,7 +65,7 @@ export class StorageService {
   }
 
   // Загрузка начальных данных из localStorage
-  private loadInitialData(): Record<string, unknown> {
+  #loadInitialData(): Record<string, unknown> {
     const data: Record<string, unknown> = {};
     try {
       for (let i = 0; i < localStorage.length; i++) {
@@ -92,7 +90,7 @@ export class StorageService {
   }
 
   // Удаление ключей, которых нет в текущем состоянии
-  private cleanUpUnusedKeys(currentData: Record<string, unknown>): void {
+  #cleanUpUnusedKeys(currentData: Record<string, unknown>): void {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key && key.startsWith(STORAGE_NAMESPACE) && !(key in currentData)) {
@@ -102,12 +100,12 @@ export class StorageService {
   }
 
   // Формирование ключа с неймспейсом
-  private getNamespacedKey(key: string): string {
+  #getNamespacedKey(key: string): string {
     return `${STORAGE_NAMESPACE}${key}`;
   }
 
   // Проверка, является ли значение простым типом (строка, число, булево, null)
-  private isSimpleType(value: unknown): boolean {
+  #isSimpleType(value: unknown): boolean {
     return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value === null;
   }
 }

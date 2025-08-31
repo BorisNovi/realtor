@@ -1,37 +1,38 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { PrivateLayoutService } from '../../shared';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { IconDirective } from '@shared/directives';
+import { MenuItem } from 'primeng/api';
 import { StyleClassModule } from 'primeng/styleclass';
-import { TooltipModule } from 'primeng/tooltip';
 import { LanguageSelectService } from 'src/app/core';
+import { PrivateLayoutService } from '../../shared';
 
 @Component({
-  selector: 'app-topbar',
-  imports: [RouterModule, CommonModule, StyleClassModule, TooltipModule],
+  selector: 'rx-topbar',
+  imports: [RouterModule, CommonModule, StyleClassModule, TranslatePipe, IconDirective],
   templateUrl: './topbar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopbarComponent {
-  private readonly languageSelectService = inject(LanguageSelectService);
-  public readonly layoutService = inject(PrivateLayoutService);
+  readonly #languageSelectService = inject(LanguageSelectService);
+  readonly layoutService = inject(PrivateLayoutService);
   items!: MenuItem[];
 
-  public readonly currentLanguage = this.languageSelectService.currentLanguageOption;
+  readonly currentLanguage = this.#languageSelectService.currentLanguageOption;
 
   toggleDarkMode() {
     this.layoutService.layoutConfig.update(state => ({ ...state, darkTheme: !state.darkTheme }));
   }
 
   toggleLanguage(): void {
-    const availableLanguages = this.languageSelectService.availableLanguages;
-    const currentLang = this.languageSelectService.currentLanguageOption().value;
+    const availableLanguages = this.#languageSelectService.availableLanguages;
+    const currentLang = this.#languageSelectService.currentLanguageOption().value;
 
     const currentIndex = availableLanguages.indexOf(currentLang);
     const nextIndex = (currentIndex + 1) % availableLanguages.length;
     const nextLang = availableLanguages[nextIndex];
 
-    this.languageSelectService.changeLanguage(nextLang);
+    this.#languageSelectService.changeLanguage(nextLang);
   }
 }
