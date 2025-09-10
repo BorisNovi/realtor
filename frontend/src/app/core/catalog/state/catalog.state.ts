@@ -45,8 +45,8 @@ interface CatalogStateModel {
 @Injectable()
 export class CatalogState {
   readonly #catalogService = inject(CatalogService);
-  readonly messageService = inject(MessageService);
-  readonly translateService = inject(TranslateService);
+  readonly #messageService = inject(MessageService);
+  readonly #translateService = inject(TranslateService);
 
   // Selectors
   @Selector()
@@ -74,6 +74,7 @@ export class CatalogState {
     return filters;
   }
 
+  // Actions
   @Action(FetchCatalog)
   FetchCatalog(ctx: StateContext<CatalogStateModel>) {
     const { filters, pagination, sort } = ctx.getState();
@@ -166,10 +167,10 @@ export class CatalogState {
   @Action(CatalogOperationSuccess)
   onCatalogOperationSuccess(ctx: StateContext<CatalogStateModel>, { message }: CatalogOperationSuccess) {
     if (message) {
-      this.messageService.add({
+      this.#messageService.add({
         severity: 'success',
-        summary: this.translateService.instant('NOTIFICATIONS.SUCCESS'),
-        detail: this.translateService.instant('CATALOG.NOTIFICATION.' + message),
+        summary: this.#translateService.instant('NOTIFICATIONS.SUCCESS'),
+        detail: this.#translateService.instant('CATALOG.NOTIFICATION.' + message),
         life: 3000,
       });
     }
@@ -181,10 +182,10 @@ export class CatalogState {
   @Action(CatalogOperationFailed)
   onCatalogOperationFailed(ctx: StateContext<CatalogStateModel>, { error, message }: CatalogOperationFailed) {
     if (message) {
-      this.messageService.add({
+      this.#messageService.add({
         severity: 'error',
-        summary: this.translateService.instant('NOTIFICATIONS.ERROR'),
-        detail: this.translateService.instant(message),
+        summary: this.#translateService.instant('NOTIFICATIONS.ERROR'),
+        detail: this.#translateService.instant(message),
         life: 3000,
       });
     }
