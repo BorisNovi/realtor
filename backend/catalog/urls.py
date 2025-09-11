@@ -5,8 +5,8 @@ from catalog.views.catalog_list_view import CatalogListView
 from catalog.views.catalog_bulk_delete_view import CatalogBulkDeleteView
 
 urlpatterns = [
-    path('/property_object', PropertyCreateView.as_view(), name='property-create'),         # POST
-    path('/catalog', CatalogListView.as_view(), name='catalog'),                            # GET (список)
-    path('/catalog/delete', CatalogBulkDeleteView.as_view(), name="catalog-bulk-delete"),   # POST/DELETE
-    path('/property_object/<int:pk>', CatalogDetailView.as_view(), name='property-detail'), # GET / PUT / PATCH
+    path('property_object', PropertyCreateView.as_view(), name='property-create'),         # POST
+    path('catalog', CatalogListView.as_view(), name='catalog'),                            # GET (список)
+    path('catalog/delete', CatalogBulkDeleteView.as_view(), name="catalog-bulk-delete"),   # POST/DELETE
+    path('property_object/<int:pk>', CatalogDetailView.as_view(), name='property-detail'), # GET / PUT / PATCH
 ]
