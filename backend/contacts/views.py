@@ -5,7 +5,37 @@ from rest_framework import status
 from contacts.models import Contact
 from contacts.serializers import ContactSerializer
 
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank # Инструменты для полнотекстового поиска 
+
+
 class ContactView(APIView):
+    def get(self, request, pk=None):
+        if pk:
+            # Получаем конкретный контакт по id
+            try:
+                contact = Contact.objects.get(pk=pk)
+            except Contact.DoesNotExist:
+                return Response({"detail": "Contact not found."}, status=status.HTTP_404_NOT_FOUND)
+            serializer = ContactSerializer(contact)
+            return Response(serializer.data)
+
+        # Если pk не передан — список контактов
+        search = request.query_params.get("search")
+        queryset = Contact.objects.all()
+
+        if search:
+            query = SearchQuery(search)
+            queryset = (
+                queryset
+                .annotate(search=SearchVector("name", "phone"))
+                .filter(search=query)
+                .annotate(rank=SearchRank(SearchVector("name", "phone"), query))
+                .order_by("-rank")
+            )
+
+        serializer = ContactSerializer(queryset, many=True)
+        return Response(serializer.data)
+
     def post(self, request):
         serializer = ContactSerializer(data=request.data)
         if serializer.is_valid():
@@ -24,3 +54,13 @@ class ContactView(APIView):
             contact = serializer.save()
             return Response(ContactSerializer(contact).data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Удаление контакта по айди
+    def delete(self, request, pk):
+        try:
+            contact = Contact.objects.get(pk=pk)
+        except Contact.DoesNotExist:
+            return Response({"detail": "Contact not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        contact.delete()
+        return Response({"detail": f"Contact {pk} deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
