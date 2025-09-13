@@ -312,6 +312,19 @@
         "DELETEION_FAILED": "Failed to delete property object"
       }
   },
+  "CONTACTS": {
+    "TABLE": {
+      "HEADERS": {
+        "NAME": "Name",
+        "PHONE": "Phone"
+      },
+      "DIALOG": {
+        "ADD": "Add new contact",
+        "EDIT": "Edit contact",
+        "DELETE_REQUEST_SINGLE": "Delete contact?"
+      }
+    }
+  },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "City, Road, House ...",
     "TOOLTIP": {

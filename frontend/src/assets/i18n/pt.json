@@ -312,6 +312,19 @@
       "DELETEION_FAILED": "Falha ao excluir o objeto de imóvel"
     }
   }, 
+  "CONTACTS": {
+    "TABLE": {
+      "HEADERS": {
+        "NAME": "-",
+        "PHONE": "-"
+      },
+      "DIALOG": {
+        "ADD": "-",
+        "EDIT": "-",
+        "DELETE_REQUEST_SINGLE": "-"
+      }
+    }
+  },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "Cidade, rua, casa ...",
     "TOOLTIP": {

@@ -23,7 +23,6 @@
         | translate: { first: '{first}', last: '{last}', totalRecords: '{totalRecords}' }
     "
     (onPage)="pageChange($event)"
-    [(selection)]="selectedItems"
     [customSort]="true"
     (onLazyLoad)="onLazyLoad($event)"
     [tableStyle]="{ 'min-width': '40rem' }"
@@ -40,14 +39,13 @@
     </ng-template>
     <ng-template #header>
       <tr>
-        <th><p-tableHeaderCheckbox /></th>
-        <th class="min-w-32" pSortableColumn="name">
-          {{ 'CONTACTS.TABLE.HEADERS.NAME' | translate }} <p-sortIcon field="name" />
-        </th>
-        <th class="min-w-32" pSortableColumn="phone">
-          {{ 'CONTACTS.TABLE.HEADERS.PHONE' | translate }} <p-sortIcon field="phone" />
+        <th class="min-w-32">
+          {{ 'CONTACTS.TABLE.HEADERS.NAME' | translate }}
         </th>
         <th class="min-w-32">
+          {{ 'CONTACTS.TABLE.HEADERS.PHONE' | translate }}
+        </th>
+        <th class="min-w-32" pSortableColumn="date">
           {{ 'CATALOG.TABLE.HEADERS.DATE' | translate }}
           <p-sortIcon field="dateAdded" />
         </th>
@@ -56,9 +54,6 @@
     </ng-template>
     <ng-template #body let-item>
       <tr>
-        <td>
-          <p-tableCheckbox [value]="item" (click)="$event.stopPropagation()" />
-        </td>
         <td>{{ item.name }}</td>
         <td>{{ item.phone }}</td>
         <td>{{ item.dateAdded | date: 'd MM y' }}</td>
@@ -73,32 +68,5 @@
         </td>
       </tr>
     </ng-template>
-    @if (selectedItems.length) {
-      <ng-template #footer>
-        <tr>
-          <td colspan="8" class="text-right font-bold">
-            {{ 'CATALOG.TABLE.FOOTER.SELECTED' | translate: { count: selectedItems.length } }}
-          </td>
-          <td colspan="3">
-            <p-buttongroup class="flex justify-end">
-              <p-button
-                [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate"
-                icon="pi pi-plus"
-                class="text-nowrap"
-                outlined
-                (onClick)="(null)"
-              />
-              <p-button
-                severity="danger"
-                [label]="'CATALOG.TABLE.BUTTONS.DELETE' | translate"
-                icon="pi pi-trash"
-                outlined
-                (onClick)="deleteItems(selectedItems)"
-              />
-            </p-buttongroup>
-          </td>
-        </tr>
-      </ng-template>
-    }
   </p-table>
 </div>
