@@ -35,6 +35,7 @@
       "CONTACT": "Contacto",
       "CONTACT_NAME": "Nombre de contacto",
       "CONTACT_PHONE": "Teléfono de contacto",
+      "ADDITIONAL_CONTACT_PHONE": "-",
       "COMMENT": "Comentario",
       "ADDITIONAL_PARAMS": "Parámetros adicionales",
       "CURRENT_FLOOR": "Piso actual",

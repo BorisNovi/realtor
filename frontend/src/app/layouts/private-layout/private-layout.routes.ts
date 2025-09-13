@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { catalogRoutes } from 'src/app/features';
+import { catalogRoutes, contactsResolver } from 'src/app/features';
 import { PrivateLayoutComponent } from './private-layout.component';
 
 export const privateLayoutRoutes: Routes = [
@@ -14,7 +14,12 @@ export const privateLayoutRoutes: Routes = [
       },
       { path: 'catalog', title: 'Catalog', children: catalogRoutes },
       { path: 'listings', title: 'Listings', loadComponent: () => import('../../features').then(c => c.ListingsComponent) },
-      { path: 'contacts', title: 'Contacts', loadComponent: () => import('../../features').then(c => c.ContactsComponent) },
+      {
+        path: 'contacts',
+        title: 'Contacts',
+        resolve: { data: contactsResolver },
+        loadComponent: () => import('../../features').then(c => c.ContactsComponent),
+      },
       {
         path: 'profile',
         title: 'Profile',

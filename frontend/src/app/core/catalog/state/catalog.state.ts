@@ -78,6 +78,8 @@ export class CatalogState {
   @Action(FetchCatalog)
   FetchCatalog(ctx: StateContext<CatalogStateModel>) {
     const { filters, pagination, sort } = ctx.getState();
+    if (!pagination.first || !pagination.rows) return;
+
     ctx.patchState({ loading: true });
 
     return this.#catalogService.fetchCatalog(filters, pagination, sort).pipe(

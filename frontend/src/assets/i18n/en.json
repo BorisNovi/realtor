@@ -35,6 +35,7 @@
       "CONTACT": "Contact",
       "CONTACT_NAME": "Contact name",
       "CONTACT_PHONE": "Contact phone",
+      "ADDITIONAL_CONTACT_PHONE": "Additional contact phone",
       "COMMENT": "Comment",
       "ADDITIONAL_PARAMS": "Additional params",
       "CURRENT_FLOOR": "Current Floor",
