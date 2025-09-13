@@ -1,40 +1,35 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { of } from 'rxjs';
+import { CONTACTS_PAGINATION_KEY } from '@shared/constants';
+import { map, switchMap, take } from 'rxjs';
 import { QueryParamsService } from 'src/app/core';
+import { FetchContacts, SetContactsPagination } from 'src/app/core/contacts/state/contacts.actions';
+import { ContactsState } from 'src/app/core/contacts/state/contacts.state';
 
 export const contactsResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapshot) => {
   const queryParamsService = inject(QueryParamsService);
   const store = inject(Store);
   const router = inject(Router);
-  return of();
-  // return combineLatest([store.select(CatalogState.pagination), store.select(CatalogState.filters)]).pipe(
-  //   take(1),
-  //   switchMap(([pagination, filters]) => {
-  //     const currentQueryParams = route.queryParams;
-  //     const paginationFromQuery = queryParamsService.parseQueryParams(currentQueryParams, CATALOG_PAGINATION_KEY);
-  //     const filtersFromQuery = queryParamsService.parseQueryParams(currentQueryParams, CATALOG_FILTERS_KEY);
+  return store.select(ContactsState.pagination).pipe(
+    take(1),
+    switchMap(pagination => {
+      const currentQueryParams = route.queryParams;
+      const paginationFromQuery = queryParamsService.parseQueryParams(currentQueryParams, CONTACTS_PAGINATION_KEY);
 
-  //     const newQueryParams = {
-  //       ...queryParamsService.buildQueryParams(pagination, CATALOG_PAGINATION_KEY),
-  //       ...queryParamsService.buildQueryParams(filters, CATALOG_FILTERS_KEY),
-  //     };
+      const newQueryParams = {
+        ...queryParamsService.buildQueryParams(pagination, CONTACTS_PAGINATION_KEY),
+      };
 
-  //     if (!Object.keys(paginationFromQuery).length) {
-  //       router.navigate([''], {
-  //         queryParams: newQueryParams,
-  //         queryParamsHandling: 'merge',
-  //         replaceUrl: false,
-  //       });
-  //     }
+      if (!Object.keys(paginationFromQuery).length) {
+        router.navigate(['/contacts'], {
+          queryParams: newQueryParams,
+          replaceUrl: false,
+        });
+      }
 
-  //     return store.dispatch([
-  //       new SetCatalogPagination(paginationFromQuery),
-  //       new SetCatalogFilters(filtersFromQuery),
-  //       new FetchCatalog(),
-  //     ]);
-  //   }),
-  //   map(() => true),
-  // );
+      return store.dispatch([new SetContactsPagination(paginationFromQuery), new FetchContacts()]);
+    }),
+    map(() => true),
+  );
 };

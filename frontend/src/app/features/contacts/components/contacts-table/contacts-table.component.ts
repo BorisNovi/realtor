@@ -17,7 +17,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency } from '@shared/enums';
-import { ICatalogItem, IPagination, IPropertyObject } from '@shared/interfaces';
+import { ICatalogItem, IContact, IPagination, IPropertyObject } from '@shared/interfaces';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
@@ -31,6 +31,8 @@ import { TagModule } from 'primeng/tag';
 import { tap } from 'rxjs';
 import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchPropertyObject } from 'src/app/core';
 import { CreateContactComponent } from '../create-contact/create-contact.component';
+import { ContactsState } from 'src/app/core/contacts/state/contacts.state';
+import { FetchContact } from 'src/app/core/contacts/state/contacts.actions';
 
 @Component({
   selector: 'rx-contacts-table',
@@ -71,11 +73,11 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
 
   actionItems: MenuItem[] = [];
 
-  selectedItems: ICatalogItem[] = [];
+  selectedItems: IContact[] = [];
 
-  readonly tableDataS = this.#store.selectSignal(CatalogState.catalog);
-  readonly paginationS = this.#store.selectSignal(CatalogState.pagination);
-  readonly loadingS = this.#store.selectSignal(CatalogState.loading);
+  readonly tableDataS = this.#store.selectSignal(ContactsState.contacts);
+  readonly paginationS = this.#store.selectSignal(ContactsState.pagination);
+  readonly loadingS = this.#store.selectSignal(ContactsState.loading);
 
   ngAfterViewInit(): void {
     const pagination = this.paginationS();
@@ -83,15 +85,11 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     this.pTable().rows = pagination.rows;
   }
 
-  getCurrencySymbol(key: string): string {
-    return CURRENCY_SYMBOLS[key as Currency];
-  }
-
   onEditComplete(event: TableEditCompleteEvent): void {
     const { id, value: status } = event.data;
   }
 
-  #setActionItems(item: ICatalogItem): void {
+  #setActionItems(item: IContact): void {
     this.actionItems = [
       {
         label: this.#translateService.instant('CATALOG.TABLE.ACTIONS.EDIT'),
@@ -113,13 +111,9 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     ];
   }
 
-  onActionClick(event: Event, item: ICatalogItem): void {
+  onActionClick(event: Event, item: IContact): void {
     this.#setActionItems(item);
     this.menu().toggle(event);
-  }
-
-  onRowClick(item: ICatalogItem): void {
-    this.#router.navigate(['catalog', item.id]);
   }
 
   onLazyLoad(event: TableLazyLoadEvent): void {
@@ -150,10 +144,10 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     }
 
     this.#store
-      .dispatch(new FetchPropertyObject(id))
+      .dispatch(new FetchContact(id))
       .pipe(
         tap(() => {
-          const propertyData = this.#store.selectSnapshot(CatalogState.propertyObject);
+          const propertyData = this.#store.selectSnapshot(ContactsState.contact);
           if (propertyData) {
             this.openDialog(propertyData);
           } else {
@@ -165,7 +159,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
       .subscribe();
   }
 
-  openDialog(data?: IPropertyObject): void {
+  openDialog(data?: IContact): void {
     this.#ref = this.#dialogService.open(CreateContactComponent, {
       data: data,
       header: this.#translateService.instant(data?.id ? 'CATALOG.TABLE.DIALOG.EDIT' : 'CATALOG.TABLE.DIALOG.ADD'),
@@ -182,9 +176,9 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  deleteItems(items: ICatalogItem[]): void {
+  deleteItems(items: IContact[]): void {
     this.#deletionConfirmationService.confirm(() => {
-      this.#store.dispatch(new DeletePropertyObjects(items.map(item => item.id)));
+      // this.#store.dispatch(new DeletePropertyObjects(items.map(item => item.id)));
       this.selectedItems = [];
     });
   }

@@ -16,7 +16,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { tap } from 'rxjs';
-import { CreatePropertyObject, UpdatePropertyObject } from 'src/app/core';
+import { CreateContact, UpdateContact } from 'src/app/core/contacts/state/contacts.actions';
 
 @Component({
   imports: [
@@ -57,17 +57,19 @@ export class CreateContactComponent implements OnInit {
     const data = this.config.data;
 
     this.form = this.#fb.group({
-      contact: this.#fb.group({
-        name: [data?.contact?.name || null, [Validators.required]],
-        phone: [data?.contact?.phone || null, [Validators.required]],
-      }),
-
-      comment: [data?.comment || null],
+      name: [data?.contact?.name || null, [Validators.required]],
+      phone: [data?.contact?.phone || null, [Validators.required]],
+      additional_phone: [data?.contact?.additional_phone || null],
     });
   }
 
   validPhone(valid: boolean): void {
-    const phoneControl = this.form?.get('contact.phone');
+    const phoneControl = this.form?.get('phone');
+    phoneControl?.setErrors(valid ? null : { invalidPhone: true });
+  }
+
+  validAddPhone(valid: boolean): void {
+    const phoneControl = this.form?.get('additional_phone');
     phoneControl?.setErrors(valid ? null : { invalidPhone: true });
   }
 
@@ -78,22 +80,18 @@ export class CreateContactComponent implements OnInit {
     }
 
     const formData = this.form.value;
-    const cleanPhone = formData.contact.phone?.replace(/\D/g, '') ?? null;
+    const cleanPhone = formData.phone?.replace(/\D/g, '') ?? null;
     const hasId = Boolean(this.config.data?.id);
 
     const payload = hasId
       ? {
           ...this.config.data,
           ...formData,
-          price: { ...this.config.data!.price, ...formData.price },
-          contact: { ...this.config.data!.contact, name: formData.contact.name, phone: cleanPhone },
+          contact: { ...this.config.data!.contact, name: formData.name, phone: cleanPhone },
         }
-      : {
-          ...formData,
-          contact: { name: formData.contact.name, phone: cleanPhone },
-        };
+      : { ...formData, phone: cleanPhone };
 
-    const action = hasId ? new UpdatePropertyObject(payload) : new CreatePropertyObject(payload);
+    const action = hasId ? new UpdateContact(payload) : new CreateContact(payload);
 
     this.#store
       .dispatch(action)

@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { CATALOG_PAGINATION_KEY } from '@shared/constants';
+import { CONTACTS_PAGINATION_KEY } from '@shared/constants';
 import { IPagination, ISort } from '@shared/interfaces';
-import { FetchCatalog, QueryParamsService, SetCatalogPagination, SetCatalogSort } from 'src/app/core';
+import { QueryParamsService } from 'src/app/core';
+import { FetchContacts, SetContactsPagination } from 'src/app/core/contacts/state/contacts.actions';
 import { ContactsTableComponent } from './components/contacts-table/contacts-table.component';
 
 @Component({
@@ -17,11 +18,14 @@ export class ContactsComponent {
   readonly #queryParamsService = inject(QueryParamsService);
 
   onPaginationChange(event: IPagination): void {
-    this.#queryParamsService.updateQueryParams(event, CATALOG_PAGINATION_KEY);
-    this.#store.dispatch([new SetCatalogPagination(event), new FetchCatalog()]);
+    this.#queryParamsService.updateQueryParams(event, CONTACTS_PAGINATION_KEY);
+    this.#store.dispatch([new SetContactsPagination(event), new FetchContacts()]);
   }
 
   onSortChange(event: ISort): void {
-    this.#store.dispatch([new SetCatalogSort(event), new FetchCatalog()]);
+    this.#store.dispatch([
+      // new SetContactsSort(event),
+      new FetchContacts(),
+    ]);
   }
 }

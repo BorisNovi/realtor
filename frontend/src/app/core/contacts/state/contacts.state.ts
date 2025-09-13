@@ -75,6 +75,9 @@ export class ContactsState {
   @Action(FetchContacts)
   fetchContacts(ctx: StateContext<ContactsStateModel>) {
     const { pagination, sort } = ctx.getState();
+
+    if (!pagination.first || !pagination.rows) return;
+
     ctx.patchState({ loading: true });
 
     // TODO: Добавить поиск и фильтрацию за бэком

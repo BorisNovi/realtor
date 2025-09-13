@@ -24,9 +24,10 @@ export const catalogResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapsho
       };
 
       if (!Object.keys(paginationFromQuery).length) {
-        router.navigate([''], {
+        console.log('set params to query');
+        router.navigate(['/catalog'], {
           queryParams: newQueryParams,
-          queryParamsHandling: 'merge',
+          // queryParamsHandling: 'merge',
           replaceUrl: false,
         });
       }

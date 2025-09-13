@@ -55,7 +55,7 @@
       </tr>
     </ng-template>
     <ng-template #body let-item>
-      <tr (click)="onRowClick(item)" class="cursor-pointer">
+      <tr>
         <td>
           <p-tableCheckbox [value]="item" (click)="$event.stopPropagation()" />
         </td>

@@ -5,7 +5,7 @@ import { ICatalogFilters, IContact, IPagination, ISort, ITableData } from '@shar
 import { buildHttpParams } from '@shared/utils';
 import { Observable } from 'rxjs';
 
-// TODO: URL запросов частично моковые. Бэкендера надо пиздить палкой
+// TODO: Бэкендера надо пиздить палкой
 @Injectable({
   providedIn: 'root',
 })
@@ -31,7 +31,7 @@ export class ContactsService {
 
     if (sort) params = buildHttpParams(sort, params);
 
-    return this.#http.get<ITableData<IContact>>(`${environment.apiUrl}/contact/list`, { params });
+    return this.#http.get<ITableData<IContact>>(`${environment.apiUrl}/contacts/`, { params });
   }
 
   fetchContact(id: number): Observable<IContact> {
@@ -39,15 +39,14 @@ export class ContactsService {
   }
 
   createContact(body: IContact): Observable<IContact> {
-    return this.#http.post<IContact>(`${environment.apiUrl}/contact`, body);
+    return this.#http.post<IContact>(`${environment.apiUrl}/contacts/`, body);
   }
 
   updateContact(body: IContact): Observable<IContact> {
-    return this.#http.put<IContact>(`${environment.apiUrl}/contact/${body.id}`, body);
+    return this.#http.put<IContact>(`${environment.apiUrl}/contacts/${body.id}`, body);
   }
 
   deleteContact(id: number): Observable<void> {
-    const params = new HttpParams().set('id', id);
-    return this.#http.delete<void>(`${environment.apiUrl}/contact`, { params });
+    return this.#http.delete<void>(`${environment.apiUrl}/contacts/${id}`);
   }
 }
