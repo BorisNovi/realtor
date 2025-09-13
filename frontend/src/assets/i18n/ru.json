@@ -312,6 +312,19 @@
       "DELETEION_FAILED": "Не удалось удалить объект недвижимости"
     }
   },
+  "CONTACTS": {
+    "TABLE": {
+      "HEADERS": {
+        "NAME": "Имя",
+        "PHONE": "Телефон"
+      },
+      "DIALOG": {
+        "ADD": "Добавить новый контакт",
+        "EDIT": "Изменить контакт",
+        "DELETE_REQUEST_SINGLE": "Удалить контакт?"
+      }
+    }
+  },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "Город, улица, дом ...",
     "TOOLTIP": {
