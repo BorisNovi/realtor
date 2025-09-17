@@ -7,7 +7,7 @@ import { SLIDE } from '@shared/animations';
 import { InputWrapperComponent } from '@shared/components';
 import { createItemsFieldsetConfig } from '@shared/constants/fieldset.configs';
 import { WorldPhoneMasksDirective } from '@shared/directives';
-import { getPropertyStatusBackground, getPropertyStatusSeverity } from '@shared/utils';
+import { clearPhone, getPropertyStatusBackground, getPropertyStatusSeverity } from '@shared/utils';
 import { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -80,16 +80,20 @@ export class CreateContactComponent implements OnInit {
     }
 
     const formData = this.form.value;
-    const cleanPhone = formData.phone?.replace(/\D/g, '') ?? null;
     const hasId = Boolean(this.config.data?.id);
 
     const payload = hasId
       ? {
           ...this.config.data,
           ...formData,
-          contact: { ...this.config.data!.contact, name: formData.name, phone: cleanPhone },
+          contact: {
+            ...this.config.data!.contact,
+            name: formData.name,
+            phone: clearPhone(formData.phone),
+            additional_phone: clearPhone(formData.additional_phone),
+          },
         }
-      : { ...formData, phone: cleanPhone };
+      : { ...formData, phone: clearPhone(formData.phone), additional_phone: clearPhone(formData.additional_phone) };
 
     const action = hasId ? new UpdateContact(payload) : new CreateContact(payload);
 
