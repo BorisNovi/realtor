@@ -31,7 +31,7 @@ export class ContactsService {
 
     if (sort) params = buildHttpParams(sort, params);
 
-    return this.#http.get<ITableData<IContact>>(`${environment.apiUrl}/contacts/`, { params });
+    return this.#http.get<ITableData<IContact>>(`${environment.apiUrl}/contact/list/`, { params });
   }
 
   fetchContact(id: number): Observable<IContact> {
@@ -39,7 +39,7 @@ export class ContactsService {
   }
 
   createContact(body: IContact): Observable<IContact> {
-    return this.#http.post<IContact>(`${environment.apiUrl}/contacts/`, body);
+    return this.#http.post<IContact>(`${environment.apiUrl}/contact/`, body);
   }
 
   updateContact(body: IContact): Observable<IContact> {

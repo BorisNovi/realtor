@@ -68,6 +68,8 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   readonly paginationS = this.#store.selectSignal(ContactsState.pagination);
   readonly loadingS = this.#store.selectSignal(ContactsState.loading);
 
+  // TODO: добавить строку поиска сверху таблицы
+
   ngAfterViewInit(): void {
     const pagination = this.paginationS();
     this.pTable().first = pagination.first;

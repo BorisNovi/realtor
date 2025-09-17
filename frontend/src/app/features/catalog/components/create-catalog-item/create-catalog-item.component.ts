@@ -19,7 +19,7 @@ import {
   ZoningType,
 } from '@shared/enums';
 import { IPickerAddress } from '@shared/interfaces/picker-address.interface';
-import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
+import { clearPhone, getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -225,7 +225,6 @@ export class CreateCatalogItemComponent implements OnInit {
     }
 
     const formData = this.form.value;
-    const cleanPhone = formData.contact.phone?.replace(/\D/g, '') ?? null;
     const position = this.position();
     const hasId = Boolean(this.config.data?.id);
 
@@ -234,13 +233,13 @@ export class CreateCatalogItemComponent implements OnInit {
           ...this.config.data,
           ...formData,
           price: { ...this.config.data!.price, ...formData.price },
-          contact: { ...this.config.data!.contact, name: formData.contact.name, phone: cleanPhone },
+          contact: { ...this.config.data!.contact, name: formData.contact.name, phone: clearPhone(formData.contact.phone) },
           specifics: { ...this.config.data!.specifics, ...formData.specifics },
           photos: this.photosS(),
         }
       : {
           ...formData,
-          contact: { name: formData.contact.name, phone: cleanPhone },
+          contact: { name: formData.contact.name, phone: clearPhone(formData.contact.phone) },
           photos: this.photosS(),
         };
 
