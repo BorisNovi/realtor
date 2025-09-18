@@ -21,6 +21,9 @@ class ContactView(APIView):
 
         # Если pk не передан — список контактов
         search = request.query_params.get("search")
+        first = int(request.query_params.get("first", 0))  # индекс первого элемента, по умолчанию 0
+        rows = int(request.query_params.get("rows", 10))   # количество элементов на странице, по умолчанию 10
+
         queryset = Contact.objects.all()
 
         if search:
@@ -33,13 +36,17 @@ class ContactView(APIView):
                 .order_by("-rank")
             )
 
-        serializer = ContactSerializer(queryset, many=True)
+        total_count = queryset.count()  # общее количество контактов
+        paginated_queryset = queryset[first:first + rows]  # срез для текущей страницы
+
+        serializer = ContactSerializer(paginated_queryset, many=True)
 
         # Оборачиваем список контактов в формат "items + total" для фронта
         return Response({
             "items": serializer.data,
-            "total": queryset.count()
+            "total": total_count
         })
+
 
     def post(self, request):
         serializer = ContactSerializer(data=request.data)
