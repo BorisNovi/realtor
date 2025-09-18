@@ -5,9 +5,9 @@ from rest_framework import status
 from contacts.models import Contact
 from contacts.serializers import ContactSerializer
 
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank # Инструменты для полнотекстового поиска 
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
-# Новые с корректными путями
+
 class ContactView(APIView):
     def get(self, request, pk=None):
         if pk:
@@ -34,7 +34,12 @@ class ContactView(APIView):
             )
 
         serializer = ContactSerializer(queryset, many=True)
-        return Response(serializer.data)
+
+        # Оборачиваем список контактов в формат "items + total" для фронта
+        return Response({
+            "items": serializer.data,
+            "total": queryset.count()
+        })
 
     def post(self, request):
         serializer = ContactSerializer(data=request.data)

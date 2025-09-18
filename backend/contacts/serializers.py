@@ -14,11 +14,11 @@ class ContactSerializer(serializers.ModelSerializer):
         fields = ['id', 'dateAdded', 'name', 'phone', 'additional_phone']
 
     def validate_name(self, value):
-        # Валидируем, чтобы имя содержало только буквы
-        # Поддерживаем: русский, английский, испанский, португальский, грузинский
-        if not re.match(r'^[a-zA-Zа-яА-ЯñÑáéíóúÁÉÍÓÚãõÃÕძპგჰკლმნოპრტჩჩსვზთჭცჯა-ჰ\s]+$', value):
-            raise serializers.ValidationError("Name must contain only letters from supported alphabets.")
+        # Валидируем, чтобы имя не превышало 50 символов
+        if len(value) > 50:
+            raise serializers.ValidationError("Name must be at most 50 characters long.")
         return value
+
 
     def validate_phone(self, value):
         # Валидируем, чтобы номер телефона содержал только цифры
