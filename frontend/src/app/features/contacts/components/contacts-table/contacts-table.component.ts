@@ -6,13 +6,13 @@ import {
   DestroyRef,
   inject,
   input,
+  model,
   OnDestroy,
   output,
-  viewChild,
+  viewChild
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { IContact, IPagination } from '@shared/interfaces';
@@ -20,14 +20,18 @@ import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
-import { Table, TableEditCompleteEvent, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
-import { tap } from 'rxjs';
+import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
+import { debounceTime, tap } from 'rxjs';
 import { DeletionConfirmationService } from 'src/app/core';
-import { DeleteContact, FetchContact } from 'src/app/core/contacts/state/contacts.actions';
+import { DeleteContact, FetchContact, FetchContacts, SetContactsSearch } from 'src/app/core/contacts/state/contacts.actions';
 import { ContactsState } from 'src/app/core/contacts/state/contacts.state';
 import { CreateContactComponent } from '../create-contact/create-contact.component';
+import { WorldPhoneMaskPipe } from '@shared/pipes';
 
 @Component({
   selector: 'rx-contacts-table',
@@ -35,12 +39,16 @@ import { CreateContactComponent } from '../create-contact/create-contact.compone
     FormsModule,
     TableModule,
     ButtonModule,
+    InputTextModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     DatePipe,
     MenuModule,
     ConfirmDialog,
     DynamicDialogModule,
     ProgressBarModule,
     TranslatePipe,
+    WorldPhoneMaskPipe,
   ],
   providers: [DialogService],
   templateUrl: './contacts-table.component.html',
@@ -68,16 +76,18 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   readonly paginationS = this.#store.selectSignal(ContactsState.pagination);
   readonly loadingS = this.#store.selectSignal(ContactsState.loading);
 
-  // TODO: добавить строку поиска сверху таблицы
+  readonly search = model<string>('');
+
+  constructor() {
+    toObservable(this.search)
+    .pipe(debounceTime(500), takeUntilDestroyed())
+    .subscribe(q => this.#store.dispatch([new SetContactsSearch(q), new FetchContacts()]));
+  }
 
   ngAfterViewInit(): void {
     const pagination = this.paginationS();
     this.pTable().first = pagination.first;
     this.pTable().rows = pagination.rows;
-  }
-
-  onEditComplete(event: TableEditCompleteEvent): void {
-    const { id, value: status } = event.data;
   }
 
   #setActionItems(item: IContact): void {

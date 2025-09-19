@@ -322,8 +322,13 @@
         "ADD": "Добавить новый контакт",
         "EDIT": "Изменить контакт",
         "DELETE_REQUEST_SINGLE": "Удалить контакт?"
+      },
+      "ACTIONS": {
+        "EDIT": "Изменить",
+        "DELETE": "Удалить"
       }
-    }
+    },
+    "SEARCH_PLACEHOLDER": "Имя или телефон"
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "Город, улица, дом ...",

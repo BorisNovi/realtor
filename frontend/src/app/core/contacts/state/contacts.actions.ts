@@ -1,4 +1,4 @@
-import { IContact, IPagination } from '@shared/interfaces';
+import { IContact, IPagination, ISort } from '@shared/interfaces';
 
 export class FetchContacts {
   static readonly type = '[Contacts] Fetch Contacts';
@@ -14,10 +14,15 @@ export class SetContactsPagination {
 //   constructor(public readonly filters: IContactsFilters) {}
 // }
 
-// export class SetContactsSort {
-//   public static readonly type = '[Contacts] Set Contacts Sort';
-//   constructor(public readonly sort: ISort) {}
-// }
+export class SetContactsSearch {
+  public static readonly type = '[Contacts] Set Contacts Search';
+  constructor(public readonly search: string) {}
+}
+
+export class SetContactsSort {
+  public static readonly type = '[Contacts] Set Contacts Sort';
+  constructor(public readonly sort: ISort) {}
+}
 
 export class FetchContact {
   static readonly type = '[Contacts] Fetch Contact';

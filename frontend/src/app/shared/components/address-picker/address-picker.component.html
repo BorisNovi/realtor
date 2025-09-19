@@ -7,8 +7,7 @@
       <input
         pInputText
         [placeholder]="'ADDRESS_PICKER.PLACEHOLDER' | translate"
-        [ngModel]="addressQuery()"
-        (ngModelChange)="addressQuery.set($event)"
+        [(ngModel)]="addressQuery"
       />
       <p-inputgroup-addon>
         <p-button icon="pi pi-search" severity="secondary" (click)="search()" [disabled]="!addressQuery()" />

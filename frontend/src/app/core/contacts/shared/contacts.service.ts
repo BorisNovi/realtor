@@ -35,7 +35,7 @@ export class ContactsService {
   }
 
   fetchContact(id: number): Observable<IContact> {
-    return this.#http.get<IContact>(`${environment.apiUrl}/contact/${id}`);
+    return this.#http.get<IContact>(`${environment.apiUrl}/contact/${id}/`);
   }
 
   createContact(body: IContact): Observable<IContact> {
@@ -43,10 +43,10 @@ export class ContactsService {
   }
 
   updateContact(body: IContact): Observable<IContact> {
-    return this.#http.put<IContact>(`${environment.apiUrl}/contacts/${body.id}`, body);
+    return this.#http.put<IContact>(`${environment.apiUrl}/contact/${body.id}/`, body);
   }
 
   deleteContact(id: number): Observable<void> {
-    return this.#http.delete<void>(`${environment.apiUrl}/contacts/${id}`);
+    return this.#http.delete<void>(`${environment.apiUrl}/contact/${id}/`);
   }
 }

@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { SLIDE } from '@shared/animations';
 import { InputWrapperComponent } from '@shared/components';
 import { createItemsFieldsetConfig } from '@shared/constants/fieldset.configs';
 import { WorldPhoneMasksDirective } from '@shared/directives';
+import { IContact } from '@shared/interfaces';
 import { clearPhone, getPropertyStatusBackground, getPropertyStatusSeverity } from '@shared/utils';
 import { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
@@ -16,7 +17,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { tap } from 'rxjs';
-import { CreateContact, UpdateContact } from 'src/app/core/contacts/state/contacts.actions';
+import { CreateContact, UpdateContact } from 'src/app/core';
 
 @Component({
   imports: [
@@ -40,7 +41,6 @@ export class CreateContactComponent implements OnInit {
   readonly #fb = inject(FormBuilder);
   readonly #store = inject(Store);
   readonly #destroyRef = inject(DestroyRef);
-  readonly #translateService = inject(TranslateService);
 
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
@@ -54,12 +54,13 @@ export class CreateContactComponent implements OnInit {
   }
 
   #initForm(): void {
-    const data = this.config.data;
+    const data: IContact = this.config.data;
 
     this.form = this.#fb.group({
-      name: [data?.contact?.name || null, [Validators.required]],
-      phone: [data?.contact?.phone || null, [Validators.required]],
-      additional_phone: [data?.contact?.additional_phone || null],
+      // TODO: добавить читаемый текст ошибок
+      name: [data?.name || null, [Validators.required, Validators.maxLength(50)]],
+      phone: [data?.phone || null, [Validators.required]],
+      additional_phone: [data?.additional_phone || null],
     });
   }
 

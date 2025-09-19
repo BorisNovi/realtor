@@ -322,8 +322,13 @@
         "ADD": "Add new contact",
         "EDIT": "Edit contact",
         "DELETE_REQUEST_SINGLE": "Delete contact?"
+      },
+      "ACTIONS": {
+        "EDIT": "Edit",
+        "DELETE": "Delete"
       }
-    }
+    },
+    "SEARCH_PLACEHOLDER": "Name or phone number"
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "City, Road, House ...",
