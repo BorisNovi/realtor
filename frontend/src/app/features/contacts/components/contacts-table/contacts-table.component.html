@@ -8,7 +8,6 @@
   @let tableData = tableDataS();
   <p-table
     #pTable
-    (onEditComplete)="onEditComplete($event)"
     [scrollable]="true"
     [scrollHeight]="'calc(100vh - 15.4rem)'"
     [value]="tableData!.items"
@@ -35,6 +34,17 @@
           icon="pi pi-plus"
           (click)="openItemDialog()"
         />
+
+      <p-inputgroup>
+      <p-inputgroup-addon>
+        <i class="pi pi-search"></i>
+      </p-inputgroup-addon>
+      <input
+        pInputText
+        [placeholder]="'CONTACTS.SEARCH_PLACEHOLDER' | translate"
+        [(ngModel)]="search"
+      />
+    </p-inputgroup>
       </div>
     </ng-template>
     <ng-template #header>
@@ -55,7 +65,7 @@
     <ng-template #body let-item>
       <tr>
         <td>{{ item.name }}</td>
-        <td>{{ item.phone }}</td>
+        <td>{{ item.phone | worldPhoneMask }}</td>
         <td>{{ item.dateAdded | date: 'd MM y' }}</td>
         <td>
           <p-button

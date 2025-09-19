@@ -13,12 +13,15 @@ import {
   FetchContact,
   FetchContacts,
   SetContactsPagination,
+  SetContactsSearch,
+  SetContactsSort,
   UpdateContact,
 } from './contacts.actions';
 
 interface ContactsStateModel {
   contacts: ITableData<IContact>;
   // filters: IContactsFilters;
+  search: string;
   sort: ISort | null;
   contact: IContact | null;
   loading: boolean;
@@ -30,6 +33,7 @@ interface ContactsStateModel {
   defaults: {
     contacts: { items: [], total: 0 },
     // filters: {},
+    search: '',
     sort: null,
     contact: null,
     pagination: {
@@ -74,14 +78,15 @@ export class ContactsState {
   // Actions
   @Action(FetchContacts)
   fetchContacts(ctx: StateContext<ContactsStateModel>) {
-    const { pagination, sort } = ctx.getState();
+    const { pagination, search, sort } = ctx.getState();
+    // console.log(search)
 
-    if (!pagination.first || !pagination.rows) return;
+    if ((pagination.first === undefined) || (pagination.rows === undefined))
+      return;
 
     ctx.patchState({ loading: true });
 
-    // TODO: Добавить поиск и фильтрацию за бэком
-    return this.#contactsService.fetchContacts(null, {}, pagination, sort).pipe(
+    return this.#contactsService.fetchContacts(search, {}, pagination, sort).pipe(
       tap((contacts: ITableData<IContact>) => ctx.patchState({ contacts, loading: false })),
       catchError((error: Error) => ctx.dispatch(new ContactsOperationFailed(error))),
     );
@@ -142,10 +147,15 @@ export class ContactsState {
     ctx.patchState({ pagination });
   }
 
-  // @Action(SetContactsSort)
-  // setContactsSort(ctx: StateContext<ContactsStateModel>, { sort }: SetContactsSort) {
-  //   ctx.patchState({ sort });
-  // }
+  @Action(SetContactsSort)
+  setContactsSort(ctx: StateContext<ContactsStateModel>, { sort }: SetContactsSort) {
+    ctx.patchState({ sort });
+  }
+
+  @Action(SetContactsSearch)
+  setContactsSearch(ctx: StateContext<ContactsStateModel>, { search }: SetContactsSearch) {
+    ctx.patchState({ search });
+  }
 
   @Action(ContactsOperationSuccess)
   onContactsOperationSuccess(ctx: StateContext<ContactsStateModel>, { message }: ContactsOperationSuccess) {

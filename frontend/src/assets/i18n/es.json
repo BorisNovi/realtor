@@ -322,8 +322,13 @@
         "ADD": "-",
         "EDIT": "-",
         "DELETE_REQUEST_SINGLE": "-"
+      },
+      "ACTIONS": {
+        "EDIT": "-",
+        "DELETE": "-"
       }
-    }
+    },
+    "SEARCH_PLACEHOLDER": "-"
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "Ciudad, calle, casa ...",

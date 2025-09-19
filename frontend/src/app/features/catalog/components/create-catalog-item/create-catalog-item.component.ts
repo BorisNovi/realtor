@@ -36,6 +36,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { startWith, tap } from 'rxjs';
 import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
 import { AddressFormComponent } from '../address-form/address-form.component';
+import { IPropertyObject } from '@shared/interfaces';
 
 @Component({
   imports: [
