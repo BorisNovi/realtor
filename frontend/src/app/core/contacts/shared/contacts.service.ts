@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
-import { ICatalogFilters, IContact, IPagination, ISort, ITableData } from '@shared/interfaces';
+import { IContact, IPagination, ISort, ITableData } from '@shared/interfaces';
 import { buildHttpParams } from '@shared/utils';
 import { Observable } from 'rxjs';
 
@@ -14,7 +14,7 @@ export class ContactsService {
 
   fetchContacts(
     search: string | null,
-    filters: ICatalogFilters,
+    filters: any,
     pagination: IPagination,
     sort: ISort | null,
   ): Observable<ITableData<IContact>> {

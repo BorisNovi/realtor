@@ -1,12 +1,12 @@
 import { Component, DestroyRef, inject, input, model, signal } from '@angular/core';
-import { SelectModule } from 'primeng/select';
-import { ScrollerOptions, SelectItem } from 'primeng/api';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { IContact, IPagination, ITableData } from '@shared/interfaces';
-import { ContactsService } from 'src/app/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { IContact, IPagination, ISort, ITableData } from '@shared/interfaces';
+import { ScrollerOptions, SelectItem } from 'primeng/api';
+import { SelectModule } from 'primeng/select';
+import { Observable, Subject, switchMap, tap } from 'rxjs';
 
-// TODO: компонент надо сделать универсальным
+// TODO: добавить поиск
 @Component({
   selector: 'rx-select',
   standalone: true,
@@ -15,29 +15,53 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './select.component.scss',
 })
 export class SelectComponent {
-  readonly #contactsService = inject(ContactsService);
   readonly #destroyRef = inject(DestroyRef);
 
   readonly contact = model<IContact | null>(null);
+  readonly fetchMethod =
+    input.required<
+      (search: string | null, filters: any, pagination: IPagination, sort: ISort | null) => Observable<ITableData<any>>
+    >();
+  readonly mapToSelectItem = input.required<(item: any) => SelectItem>();
   readonly pageSize = input(25);
+  readonly placeholder = input('Select item');
 
   readonly items = signal<SelectItem[]>([]);
   readonly loading = signal(false);
+  readonly #loadPage$ = new Subject<IPagination>();
 
   #totalOnServer = 0;
 
-  options: ScrollerOptions = {
+  readonly #dataSignal = toSignal(
+    this.#loadPage$.pipe(
+      takeUntilDestroyed(this.#destroyRef),
+      tap(() => this.loading.set(true)),
+      switchMap(pagination =>
+        this.fetchMethod()(null, null, pagination, null).pipe(
+          tap(res => {
+            this.#totalOnServer = res.total;
+            const newItems = res.items.map(this.mapToSelectItem());
+            this.items.update(current => [...current, ...newItems]);
+            this.loading.set(false);
+          }),
+        ),
+      ),
+    ),
+    { initialValue: null },
+  );
+
+  readonly options: ScrollerOptions = {
     showLoader: true,
     step: this.pageSize(),
-    onScrollIndexChange: this.onScroll.bind(this),
+    onScrollIndexChange: this.#onScroll.bind(this),
   };
 
   onShow(): void {
     if (this.items().length) return;
-    this.load({ first: 0, rows: this.pageSize() });
+    this.#loadPage$.next({ first: 0, rows: this.pageSize() });
   }
 
-  private onScroll(event: { first: number; last: number }): void {
+  #onScroll(event: { first: number; last: number }): void {
     if (this.loading() || this.items().length >= this.#totalOnServer) return;
 
     const threshold = 5;
@@ -46,25 +70,7 @@ export class SelectComponent {
         first: this.items().length,
         rows: this.pageSize(),
       };
-      this.load(pagination);
+      this.#loadPage$.next({ first: this.items().length, rows: this.pageSize() });
     }
-  }
-
-  private load(pagination: IPagination): void {
-    this.loading.set(true);
-
-    this.#contactsService
-      .fetchContacts(null, {}, pagination, null)
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe({
-        next: (res: ITableData<IContact>) => {
-          this.#totalOnServer = res.total;
-
-          const newItems = res.items.map(i => ({ label: i.name, value: i }));
-          this.items.update(current => [...current, ...newItems]);
-          this.loading.set(false);
-        },
-        error: () => this.loading.set(false),
-      });
   }
 }
