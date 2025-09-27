@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SelectComponent } from '@shared/components';
-import { ICatalogFilters, IContact, IPagination, ISort } from '@shared/interfaces';
+import { ICatalogFilters, IContact, IFetchOptions, IPagination, ISort } from '@shared/interfaces';
 import { ContactsService } from 'src/app/core';
 
 @Component({
@@ -12,7 +12,6 @@ import { ContactsService } from 'src/app/core';
 })
 export class ListingsComponent {
   readonly contactsService = inject(ContactsService);
-  fetchMethod = (search: string | null, filters: any, pagination: IPagination, sort: ISort | null) =>
-    this.contactsService.fetchContacts(search, filters, pagination, sort);
+  fetchMethod = (options: IFetchOptions) => this.contactsService.fetchContacts(options);
   mapToSelect = (item: IContact) => ({ label: item.name, value: item });
 }

@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, input, model, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { IContact, IPagination, ISort, ITableData } from '@shared/interfaces';
+import { IContact, IFetchOptions, IPagination, ITableData } from '@shared/interfaces';
 import { ScrollerOptions, SelectItem } from 'primeng/api';
 import { SelectModule } from 'primeng/select';
 import { Observable, Subject, switchMap, tap } from 'rxjs';
@@ -18,10 +18,7 @@ export class SelectComponent {
   readonly #destroyRef = inject(DestroyRef);
 
   readonly contact = model<IContact | null>(null);
-  readonly fetchMethod =
-    input.required<
-      (search: string | null, filters: any, pagination: IPagination, sort: ISort | null) => Observable<ITableData<any>>
-    >();
+  readonly fetchMethod = input.required<(options: IFetchOptions) => Observable<ITableData<any>>>();
   readonly mapToSelectItem = input.required<(item: any) => SelectItem>();
   readonly pageSize = input(25);
   readonly placeholder = input('Select item');
@@ -37,7 +34,7 @@ export class SelectComponent {
       takeUntilDestroyed(this.#destroyRef),
       tap(() => this.loading.set(true)),
       switchMap(pagination =>
-        this.fetchMethod()(null, null, pagination, null).pipe(
+        this.fetchMethod()({ pagination }).pipe(
           tap(res => {
             this.#totalOnServer = res.total;
             const newItems = res.items.map(this.mapToSelectItem());
