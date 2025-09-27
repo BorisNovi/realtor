@@ -83,7 +83,7 @@ export class CatalogState {
 
     ctx.patchState({ loading: true });
 
-    return this.#catalogService.fetchCatalog(filters, pagination, sort).pipe(
+    return this.#catalogService.fetchCatalog({ filters, pagination, sort }).pipe(
       tap((catalog: ITableData<ICatalogItem>) => ctx.patchState({ catalog, loading: false })),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error))),
     );

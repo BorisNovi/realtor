@@ -85,7 +85,7 @@ export class ContactsState {
 
     ctx.patchState({ loading: true });
 
-    return this.#contactsService.fetchContacts(search, {}, pagination, sort).pipe(
+    return this.#contactsService.fetchContacts({ search, pagination, sort }).pipe(
       tap((contacts: ITableData<IContact>) => ctx.patchState({ contacts, loading: false })),
       catchError((error: Error) => ctx.dispatch(new ContactsOperationFailed(error))),
     );

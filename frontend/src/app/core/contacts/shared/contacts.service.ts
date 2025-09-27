@@ -1,51 +1,42 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
-import { IContact, IPagination, ISort, ITableData } from '@shared/interfaces';
-import { buildHttpParams } from '@shared/utils';
+import { IContact, IFetchOptions, ITableData } from '@shared/interfaces';
 import { Observable } from 'rxjs';
+import { CrudBaseService } from '../../base';
 
 // TODO: Бэкендера надо пиздить палкой
 @Injectable({
   providedIn: 'root',
 })
-export class ContactsService {
+export class ContactsService extends CrudBaseService {
   readonly #http = inject(HttpClient);
 
-  fetchContacts(
-    search: string | null,
-    filters: any,
-    pagination: IPagination,
-    sort: ISort | null,
-  ): Observable<ITableData<IContact>> {
-    let params = new HttpParams();
+  constructor() {
+    super(`${environment.apiUrl}`);
+  }
 
-    if (search) params = params!.set('search', search);
-
-    if (pagination) {
-      params = params!.set('first', String(pagination.first));
-      params = params!.set('rows', String(pagination.rows));
-    }
-
-    if (filters) params = buildHttpParams(filters, params);
-
-    if (sort) params = buildHttpParams(sort, params);
-
-    return this.#http.get<ITableData<IContact>>(`${environment.apiUrl}/contact/list/`, { params });
+  fetchContacts(options: IFetchOptions): Observable<ITableData<IContact>> {
+    return this.fetchList<ITableData<IContact>>('contact/list/', options);
   }
 
   fetchContact(id: number): Observable<IContact> {
-    return this.#http.get<IContact>(`${environment.apiUrl}/contact/${id}/`);
+    return this.fetchOne<IContact>(id, 'contact/');
   }
 
   createContact(body: IContact): Observable<IContact> {
-    return this.#http.post<IContact>(`${environment.apiUrl}/contact/`, body);
+    return this.create<IContact>(body, 'contact/');
   }
 
   updateContact(body: IContact): Observable<IContact> {
-    return this.#http.put<IContact>(`${environment.apiUrl}/contact/${body.id}/`, body);
+    return this.update<IContact>(body, 'contact/');
   }
 
+  // deleteContact(id: number): Observable<void> {
+  //   return this.delete(id, 'contact/');
+  // }
+
+  // TODO: заменить на закомментированный, когда бэк будет сделан
   deleteContact(id: number): Observable<void> {
     return this.#http.delete<void>(`${environment.apiUrl}/contact/${id}/`);
   }
