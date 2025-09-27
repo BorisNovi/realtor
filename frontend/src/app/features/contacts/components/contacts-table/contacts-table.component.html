@@ -35,16 +35,12 @@
           (click)="openItemDialog()"
         />
 
-      <p-inputgroup>
-      <p-inputgroup-addon>
-        <i class="pi pi-search"></i>
-      </p-inputgroup-addon>
-      <input
-        pInputText
-        [placeholder]="'CONTACTS.SEARCH_PLACEHOLDER' | translate"
-        [(ngModel)]="search"
-      />
-    </p-inputgroup>
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <i class="pi pi-search"></i>
+          </p-inputgroup-addon>
+          <input pInputText [placeholder]="'CONTACTS.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="search" />
+        </p-inputgroup>
       </div>
     </ng-template>
     <ng-template #header>

@@ -4,11 +4,7 @@
 <div class="relative w-full flex items-center flex-col overflow-hidden rounded-md">
   <div class="absolute z-10 top-2 flex items-center w-full gap-4 ps-4 pe-2">
     <p-inputgroup>
-      <input
-        pInputText
-        [placeholder]="'ADDRESS_PICKER.PLACEHOLDER' | translate"
-        [(ngModel)]="addressQuery"
-      />
+      <input pInputText [placeholder]="'ADDRESS_PICKER.PLACEHOLDER' | translate" [(ngModel)]="addressQuery" />
       <p-inputgroup-addon>
         <p-button icon="pi pi-search" severity="secondary" (click)="search()" [disabled]="!addressQuery()" />
       </p-inputgroup-addon>

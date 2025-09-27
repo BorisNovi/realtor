@@ -1,0 +1,12 @@
+<p-select
+  [(ngModel)]="contact"
+  [options]="items()"
+  optionLabel="label"
+  [virtualScroll]="true"
+  [virtualScrollItemSize]="38"
+  [virtualScrollOptions]="options"
+  [loading]="loading()"
+  (onShow)="onShow()"
+  placeholder="Выберите контакт"
+  class="w-full"
+/>
