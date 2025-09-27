@@ -9,7 +9,7 @@ import {
   model,
   OnDestroy,
   output,
-  viewChild
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -80,8 +80,8 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
 
   constructor() {
     toObservable(this.search)
-    .pipe(debounceTime(500), takeUntilDestroyed())
-    .subscribe(q => this.#store.dispatch([new SetContactsSearch(q), new FetchContacts()]));
+      .pipe(debounceTime(500), takeUntilDestroyed())
+      .subscribe(q => this.#store.dispatch([new SetContactsSearch(q), new FetchContacts()]));
   }
 
   ngAfterViewInit(): void {

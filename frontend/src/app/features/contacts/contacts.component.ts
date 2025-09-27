@@ -21,9 +21,6 @@ export class ContactsComponent {
   }
 
   onSortChange(event: ISort): void {
-    this.#store.dispatch([
-      new SetContactsSort(event),
-      new FetchContacts(),
-    ]);
+    this.#store.dispatch([new SetContactsSort(event), new FetchContacts()]);
   }
 }

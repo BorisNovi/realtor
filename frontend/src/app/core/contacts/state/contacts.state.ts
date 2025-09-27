@@ -81,8 +81,7 @@ export class ContactsState {
     const { pagination, search, sort } = ctx.getState();
     // console.log(search)
 
-    if ((pagination.first === undefined) || (pagination.rows === undefined))
-      return;
+    if (pagination.first === undefined || pagination.rows === undefined) return;
 
     ctx.patchState({ loading: true });
 
