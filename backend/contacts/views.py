@@ -1,16 +1,17 @@
 from rest_framework.views import APIView
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
-
+from typing import Optional
 from contacts.models import Contact
 from contacts.serializers import ContactSerializer
 
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-
+from django.db.models import QuerySet
 
 class ContactView(APIView):
-    def get(self, request, pk=None):
-        if pk:
+    def get(self, request: Request, pk: Optional[int] = None) -> Response:
+        if pk is not None:
             # Получаем конкретный контакт по id
             try:
                 contact = Contact.objects.get(pk=pk)
@@ -20,12 +21,17 @@ class ContactView(APIView):
             return Response(serializer.data)
 
         # Если pk не передан — список контактов
-        search = request.query_params.get("search")
-        first = int(request.query_params.get("first", 0))  # индекс первого элемента, по умолчанию 0
-        rows = int(request.query_params.get("rows", 10))   # количество элементов на странице, по умолчанию 10
+        search: Optional[str] = request.query_params.get("search")
+        first: int = int(request.query_params.get("first", 0))
+        rows: int = int(request.query_params.get("rows", 10))
+
+        # Получаем объект сортировки от фронта
+        sort_field: Optional[str] = request.query_params.get("sortField")
+        sort_order: str = request.query_params.get("sortOrder", "asc")  # по умолчанию asc
 
         queryset = Contact.objects.all()
 
+        # Полнотекстовый поиск
         if search:
             query = SearchQuery(search)
             queryset = (
@@ -33,20 +39,25 @@ class ContactView(APIView):
                 .annotate(search=SearchVector("name", "phone"))
                 .filter(search=query)
                 .annotate(rank=SearchRank(SearchVector("name", "phone"), query))
-                .order_by("-rank")
+                .order_by("-rank")  # релевантные первыми
             )
 
-        total_count = queryset.count()  # общее количество контактов
-        paginated_queryset = queryset[first:first + rows]  # срез для текущей страницы
+        # Сортировка по фронту
+        if sort_field in ["name", "dateAdded"]:
+            if sort_order.lower() == "desc":
+                queryset = queryset.order_by(f"-{sort_field}")
+            else:
+                queryset = queryset.order_by(sort_field)
+
+        total_count: int = queryset.count()
+        paginated_queryset = queryset[first:first + rows]
 
         serializer = ContactSerializer(paginated_queryset, many=True)
 
-        # Оборачиваем список контактов в формат "items + total" для фронта
         return Response({
             "items": serializer.data,
             "total": total_count
         })
-
 
     def post(self, request):
         serializer = ContactSerializer(data=request.data)
