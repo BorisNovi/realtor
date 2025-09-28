@@ -13,5 +13,5 @@ import { ContactsService } from 'src/app/core';
 export class ListingsComponent {
   readonly contactsService = inject(ContactsService);
   fetchMethod = (options: IFetchOptions) => this.contactsService.fetchContacts(options);
-  mapToSelect = (item: IContact) => ({ label: item.name, value: item });
+  mapToSelect = (item: IContact) => ({ label: `${item.name} (${item.phone})`, value: item });
 }
