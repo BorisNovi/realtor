@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "externalDependencies": [""],
             "outputPath": "dist/frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",

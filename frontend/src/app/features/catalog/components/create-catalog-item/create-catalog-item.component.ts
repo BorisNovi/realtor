@@ -4,10 +4,15 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { SLIDE } from '@shared/animations';
-import { AddressPickerComponent, FieldsetCheckboxGroupComponent, InputWrapperComponent } from '@shared/components';
+import {
+  AddressPickerComponent,
+  FieldsetCheckboxGroupComponent,
+  InputWrapperComponent,
+  SelectComponent,
+} from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { createItemsFieldsetConfig } from '@shared/constants/fieldset.configs';
-import { ScrollToTopOnShowDirective, WorldPhoneMasksDirective } from '@shared/directives';
+import { ScrollToTopOnShowDirective } from '@shared/directives';
 import {
   Currency,
   FurnishedStatus,
@@ -18,12 +23,14 @@ import {
   RenovationStatus,
   ZoningType,
 } from '@shared/enums';
+import { IContact, IFetchOptions } from '@shared/interfaces';
 import { IPickerAddress } from '@shared/interfaces/picker-address.interface';
+import { WorldPhoneMaskPipe } from '@shared/pipes';
 import { clearPhone, getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FileUpload, FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -34,9 +41,9 @@ import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
 import { startWith, tap } from 'rxjs';
-import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
+import { ContactsService, CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
+import { CreateContactComponent } from 'src/app/features/contacts';
 import { AddressFormComponent } from '../address-form/address-form.component';
-import { IPropertyObject } from '@shared/interfaces';
 
 @Component({
   imports: [
@@ -51,7 +58,6 @@ import { IPropertyObject } from '@shared/interfaces';
     TextareaModule,
     InputGroupModule,
     InputGroupAddonModule,
-    WorldPhoneMasksDirective,
     MessageModule,
     InputWrapperComponent,
     TranslatePipe,
@@ -59,10 +65,13 @@ import { IPropertyObject } from '@shared/interfaces';
     AddressPickerComponent,
     ScrollToTopOnShowDirective,
     AddressFormComponent,
+    SelectComponent,
+    WorldPhoneMaskPipe
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [SLIDE],
+  providers: [WorldPhoneMaskPipe]
 })
 export class CreateCatalogItemComponent implements OnInit {
   readonly fileUpload = viewChild.required<FileUpload>('fileUpload');
@@ -74,7 +83,13 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly #destroyRef = inject(DestroyRef);
   readonly #fileUploadService = inject(FileUploadService);
   readonly #translateService = inject(TranslateService);
+  readonly #dialogService = inject(DialogService);
+  readonly contactsService = inject(ContactsService);
+  readonly #worldPhoneMaskPipe = inject(WorldPhoneMaskPipe);
 
+  readonly contactFetchMethod = (options: IFetchOptions) => this.contactsService.fetchContacts(options);
+  readonly contactMapToSelect = (item: IContact) => ({ label: `${item?.name} ${this.#worldPhoneMaskPipe.transform(item?.phone)}`, value: item });
+  readonly contactValueMapper = (contact: IContact) => ({ id: contact?.id || null, name: contact?.name || null, phone: contact?.phone || null });
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
   readonly fieldsetConfig = createItemsFieldsetConfig;
@@ -136,11 +151,7 @@ export class CreateCatalogItemComponent implements OnInit {
         value: [data?.price?.value || null, [Validators.required, Validators.min(0)]],
       }),
 
-      contact: this.#fb.group({
-        name: [data?.contact?.name || null, [Validators.required]],
-        phone: [data?.contact?.phone || null, [Validators.required]],
-      }),
-
+      contact: [data?.contact || null, [Validators.required]],
       comment: [data?.comment || null],
 
       specifics: this.#fb.group({
@@ -214,9 +225,18 @@ export class CreateCatalogItemComponent implements OnInit {
     this.form.patchValue({ photos: this.photosS() });
   }
 
-  validPhone(valid: boolean): void {
-    const phoneControl = this.form?.get('contact.phone');
-    phoneControl?.setErrors(valid ? null : { invalidPhone: true });
+  openContactDialog(): void {
+    this.#dialogService.open(CreateContactComponent, {
+      header: this.#translateService.instant('CONTACTS.TABLE.DIALOG.ADD'),
+      appendTo: document.querySelector('.p-dynamic-dialog')!,
+      width: '480px',
+      modal: true,
+      closable: true,
+      focusOnShow: false,
+      breakpoints: {
+        '640px': '90vw',
+      },
+    });
   }
 
   onSubmit(): void {

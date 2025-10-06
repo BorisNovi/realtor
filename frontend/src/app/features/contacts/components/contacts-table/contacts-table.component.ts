@@ -63,7 +63,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   readonly paginationChange = output<IPagination>();
   readonly sortChange = output<{ sortField: string; sortOrder: string }>();
 
-  #ref: DynamicDialogRef | undefined;
+  #ref!: DynamicDialogRef | null;
   readonly #dialogService = inject(DialogService);
   readonly #store = inject(Store);
   readonly #translateService = inject(TranslateService);

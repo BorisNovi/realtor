@@ -1,2 +1,2 @@
 <p>listings works!</p>
-<rx-select [fetchMethod]="fetchMethod" [mapToSelectItem]="mapToSelect" withSearch></rx-select>
+<rx-select [fetchMethod]="fetchMethod" [mapToSelectItem]="mapToSelect" withSearch (output)="onChange($event)"></rx-select>

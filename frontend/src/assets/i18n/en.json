@@ -35,6 +35,7 @@
       "CONTACT": "Contact",
       "CONTACT_NAME": "Contact name",
       "CONTACT_PHONE": "Contact phone",
+      "CREATE_CONTACT": "Create contact",
       "ADDITIONAL_CONTACT_PHONE": "Additional contact phone",
       "COMMENT": "Comment",
       "ADDITIONAL_PARAMS": "Additional params",
@@ -89,7 +90,8 @@
       "HEATING": "Select heating type",
       "FURNISHED": "Select furnished",
       "RENOVATION": "Select renovation",
-      "KITCHEN": "Select kitchen type"
+      "KITCHEN": "Select kitchen type",
+      "NOT_SELECTED": "Not Selected"
     },
     "PROPERTIES": {
       "PROPERTY_TYPE": {

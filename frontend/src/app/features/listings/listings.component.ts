@@ -14,4 +14,8 @@ export class ListingsComponent {
   readonly contactsService = inject(ContactsService);
   fetchMethod = (options: IFetchOptions) => this.contactsService.fetchContacts(options);
   mapToSelect = (item: IContact) => ({ label: `${item.name} (${item.phone})`, value: item });
+
+  onChange(event: any) {
+    console.log(event);
+  }
 }
