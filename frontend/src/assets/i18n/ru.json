@@ -36,6 +36,7 @@
       "CONTACT_NAME": "Имя",
       "CONTACT_PHONE": "Телефон",
       "ADDITIONAL_CONTACT_PHONE": "Дополнительный телефон",
+      "CREATE_CONTACT": "Создать контакт",
       "COMMENT": "Комментарий",
       "ADDITIONAL_PARAMS": "Дополнительные параметры",
       "CURRENT_FLOOR": "Текущий этаж",
@@ -89,7 +90,8 @@
       "HEATING": "Выберите тип отопления",
       "FURNISHED": "Выберите меблировку",
       "RENOVATION": "Выберите тип ремонта",
-      "KITCHEN": "Выберите тип кухни"
+      "KITCHEN": "Выберите тип кухни",
+      "NOT_SELECTED": "Не выбран"
     },
     "PROPERTIES": {
       "PROPERTY_TYPE": {

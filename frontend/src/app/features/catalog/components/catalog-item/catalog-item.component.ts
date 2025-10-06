@@ -33,7 +33,7 @@ export class CatalogItemComponent implements OnDestroy {
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
   readonly item = this.#store.selectSignal(CatalogState.propertyObject);
 
-  #ref: DynamicDialogRef | undefined;
+  #ref!: DynamicDialogRef | null;
 
   deleteItem(): void {
     this.#deletionConfirmationService.confirm(() => {

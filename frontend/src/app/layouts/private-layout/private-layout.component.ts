@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, Renderer2 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { FooterComponent, SidebarComponent, TopbarComponent } from './components';
@@ -20,7 +21,7 @@ export class PrivateLayoutComponent implements OnDestroy {
   menuOutsideClickListener: any;
 
   constructor() {
-    this.overlayMenuOpenSubscription = this.#layoutService.overlayOpen$.subscribe(() => {
+    this.overlayMenuOpenSubscription = this.#layoutService.overlayOpen$.pipe(takeUntilDestroyed()).subscribe(() => {
       if (!this.menuOutsideClickListener) {
         this.menuOutsideClickListener = this.#renderer.listen('document', 'click', event => {
           if (this.isOutsideClicked(event)) {
@@ -34,9 +35,14 @@ export class PrivateLayoutComponent implements OnDestroy {
       }
     });
 
-    this.#router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-      this.hideMenu();
-    });
+    this.#router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => {
+        this.hideMenu();
+      });
   }
 
   isOutsideClicked(event: MouseEvent) {

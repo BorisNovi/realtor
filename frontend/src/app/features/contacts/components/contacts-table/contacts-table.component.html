@@ -45,24 +45,24 @@
     </ng-template>
     <ng-template #header>
       <tr>
-        <th class="min-w-32">
+        <th class="w-full">
           {{ 'CONTACTS.TABLE.HEADERS.NAME' | translate }}
         </th>
-        <th class="min-w-32">
+        <th class="min-w-[12rem]">
           {{ 'CONTACTS.TABLE.HEADERS.PHONE' | translate }}
         </th>
-        <th class="min-w-32" pSortableColumn="dateAdded">
+        <th class="min-w-[8rem]" pSortableColumn="dateAdded">
           {{ 'CATALOG.TABLE.HEADERS.DATE' | translate }}
           <p-sortIcon field="dateAdded" />
         </th>
-        <th class="min-w-16"></th>
+        <th class="w-[0%]"></th>
       </tr>
     </ng-template>
     <ng-template #body let-item>
       <tr>
-        <td>{{ item.name }}</td>
-        <td>{{ item.phone | worldPhoneMask }}</td>
-        <td>{{ item.dateAdded | date: 'd MM y' }}</td>
+        <td class="max-w-[20rem] whitespace-nowrap text-ellipsis overflow-hidden">{{ item.name }}</td>
+        <td class="whitespace-nowrap">{{ item.phone | worldPhoneMask }}</td>
+        <td class="whitespace-nowrap">{{ item.dateAdded | date: 'd MM y' }}</td>
         <td>
           <p-button
             icon="pi pi-ellipsis-v"

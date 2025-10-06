@@ -81,7 +81,7 @@ export class CatalogMapComponent {
     return CURRENCY_SYMBOLS[key as Currency];
   }
 
-  #ref: DynamicDialogRef | undefined;
+  #ref!: DynamicDialogRef | null;
 
   images: Record<string, string>[] = [
     { image: 'https://picsum.photos/id/238/1200/1000', thumbnail: 'https://picsum.photos/id/238/100/100' },

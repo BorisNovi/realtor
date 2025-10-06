@@ -1,7 +1,8 @@
 <p-select
-  [(ngModel)]="contact"
+  [ngModel]="selected()"
+  (ngModelChange)="selected.set($event)"
   [options]="items()"
-  optionLabel="label"
+  appendTo="body"
   [virtualScroll]="true"
   [virtualScrollItemSize]="38"
   [virtualScrollOptions]="options"

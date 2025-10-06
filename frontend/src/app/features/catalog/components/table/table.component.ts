@@ -68,7 +68,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   readonly paginationChange = output<IPagination>();
   readonly sortChange = output<{ sortField: string; sortOrder: string }>();
 
-  #ref: DynamicDialogRef | undefined;
+  #ref!: DynamicDialogRef | null;
   readonly #dialogService = inject(DialogService);
   readonly #store = inject(Store);
   readonly #confirmationService = inject(ConfirmationService);
@@ -203,7 +203,6 @@ export class TableComponent implements AfterViewInit, OnDestroy {
       width: '50vw',
       modal: true,
       closable: true,
-      contentStyle: { overflow: 'auto' },
       focusOnShow: false,
       breakpoints: {
         '960px': '75vw',
