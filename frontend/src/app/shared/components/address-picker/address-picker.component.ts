@@ -97,23 +97,29 @@ export class AddressPickerComponent implements OnInit {
   search(): void {
     const address = this.addressQuery();
     if (!address) return;
-    this.#geo.geocode(address).subscribe(result => {
-      const feat = result?.features?.[0];
-      const lngLat = feat?.geometry?.coordinates;
-      if (!lngLat || lngLat.length < 2) this.popupTitle.set(this.#translateService.instant('ADDRESS_PICKER.POPUP.NOT_FOUND'));
+    this.#geo
+      .geocode(address)
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(result => {
+        const feat = result?.features?.[0];
+        const lngLat = feat?.geometry?.coordinates;
+        if (!lngLat || lngLat.length < 2) this.popupTitle.set(this.#translateService.instant('ADDRESS_PICKER.POPUP.NOT_FOUND'));
 
-      this.prepareOutput(feat);
-      this.markerPosition.set(lngLat);
-      this.posToShow.set(lngLat);
-      this.mapComponent()?.map.flyTo({ center: lngLat, zoom: 15 });
-    });
+        this.prepareOutput(feat);
+        this.markerPosition.set(lngLat);
+        this.posToShow.set(lngLat);
+        this.mapComponent()?.map.flyTo({ center: lngLat, zoom: 15 });
+      });
   }
 
   reverse(lngLat: LngLatLike): void {
-    this.#geo.reverse(lngLat).subscribe(result => {
-      const feat = result?.features?.[0];
-      this.prepareOutput(feat);
-    });
+    this.#geo
+      .reverse(lngLat)
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(result => {
+        const feat = result?.features?.[0];
+        this.prepareOutput(feat);
+      });
   }
 
   prepareOutput(feature: GeocodeFeature): void {

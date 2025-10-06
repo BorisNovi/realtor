@@ -6,6 +6,15 @@
     "SUCCESS": "Sucesso",
     "ERROR": "Erro"
   },
+  "MENU": {
+    "CATALOG": "-",
+    "LIST": "-",
+    "MAP": "-",
+    "SHARING": "-",
+    "LISTINGS": "-",
+    "INFO": "-",
+    "CONTACTS": "-"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Fotos",
@@ -26,6 +35,8 @@
       "CONTACT": "Contato",
       "CONTACT_NAME": "Nome de contato",
       "CONTACT_PHONE": "Telefone de contato",
+      "CREATE_CONTACT": "-",
+      "ADDITIONAL_CONTACT_PHONE": "-",
       "COMMENT": "Comentário",
       "ADDITIONAL_PARAMS": "Parâmetros adicionais",
       "CURRENT_FLOOR": "Andar atual",
@@ -79,7 +90,8 @@
       "HEATING": "Selecione o tipo de aquecimento",
       "FURNISHED": "Selecionar mobiliado",
       "RENOVATION": "Selecionar reforma",
-      "KITCHEN": "Selecionar tipo de cozinha"
+      "KITCHEN": "Selecionar tipo de cozinha",
+      "NOT_SELECTED": "-"
     },
     "PROPERTIES": {
       "PROPERTY_TYPE": {
@@ -292,16 +304,42 @@
       }
     },
     "NOTIFICATION": {
-      "OBJECT_CREATED": "Objeto de imóvel criado com sucesso",
-      "CREATION_FAILED": "Falha ao criar o objeto de imóvel",
-      "OBJECT_UPDATED": "Objeto de imóvel atualizado com sucesso",
+      "CREATED": "Objeto de imóvel criado com sucesso",
+      "CREATE_FAILED": "Falha ao criar o objeto de imóvel",
+      "UPDATED": "Objeto de imóvel atualizado com sucesso",
       "UPDATE_FAILED": "Falha ao atualizar o objeto de imóvel",
       "STATUS_UPDATED": "Status atualizado com sucesso",
       "STATUS_UPDATE_FAILED": "Falha ao atualizar o status",
-      "OBJECT_DELETED": "Objeto de imóvel excluído com sucesso",
-      "DELETEION_FAILED": "Falha ao excluir o objeto de imóvel"
+      "DELETED": "Objeto de imóvel excluído com sucesso",
+      "DELETE_FAILED": "Falha ao excluir o objeto de imóvel"
     }
   }, 
+  "CONTACTS": {
+    "TABLE": {
+      "HEADERS": {
+        "NAME": "-",
+        "PHONE": "-"
+      },
+      "DIALOG": {
+        "ADD": "-",
+        "EDIT": "-",
+        "DELETE_REQUEST_SINGLE": "-"
+      },
+      "ACTIONS": {
+        "EDIT": "-",
+        "DELETE": "-"
+      }
+    },
+    "SEARCH_PLACEHOLDER": "-",
+    "NOTIFICATION": {
+      "CREATED": "-",
+      "CREATE_FAILED": "-",
+      "UPDATED": "-",
+      "UPDATE_FAILED": "-",
+      "DELETED": "-",
+      "DELETE_FAILED": "-"
+    }
+  },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "Cidade, rua, casa ...",
     "TOOLTIP": {

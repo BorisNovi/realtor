@@ -2,6 +2,7 @@ export type { IAddress } from './address.interface';
 export type { ICatalogFilters } from './catalog-filters.interface';
 export type { ICatalogItem } from './catalog-item.interface';
 export type { IContact } from './contact.interface';
+export type { IFetchOptions } from './fetch-options.interface';
 export type { IFieldsetConfig } from './fieldset-config.interface';
 export type { IFingerprintData } from './fingerprint-data.interface';
 export type {

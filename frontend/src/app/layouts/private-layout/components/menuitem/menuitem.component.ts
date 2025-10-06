@@ -1,7 +1,9 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, computed, inject, input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
 import { Subscription, filter } from 'rxjs';
@@ -10,7 +12,7 @@ import { PrivateLayoutService } from '../../shared';
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: '[rx-menuitem]',
-  imports: [CommonModule, RouterModule, RippleModule],
+  imports: [CommonModule, RouterModule, RippleModule, TranslatePipe],
   templateUrl: './menuitem.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
@@ -56,7 +58,7 @@ export class MenuitemComponent implements OnInit, OnDestroy {
   });
 
   constructor() {
-    this.#menuSourceSubscription = this.#layoutService.menuSource$.subscribe(value => {
+    this.#menuSourceSubscription = this.#layoutService.menuSource$.pipe(takeUntilDestroyed()).subscribe(value => {
       Promise.resolve(null).then(() => {
         if (value.routeEvent) {
           this.#active = value.key === this.key() || value.key.startsWith(this.key + '-') ? true : false;
@@ -68,15 +70,20 @@ export class MenuitemComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.#menuResetSubscription = this.#layoutService.resetSource$.subscribe(() => {
+    this.#menuResetSubscription = this.#layoutService.resetSource$.pipe(takeUntilDestroyed()).subscribe(() => {
       this.#active = false;
     });
 
-    this.#router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(params => {
-      if (this.item()?.routerLink) {
-        this.updateActiveStateFromRoute();
-      }
-    });
+    this.#router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe(params => {
+        if (this.item()?.routerLink) {
+          this.updateActiveStateFromRoute();
+        }
+      });
   }
 
   ngOnInit() {
