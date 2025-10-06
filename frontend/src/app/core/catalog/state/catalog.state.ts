@@ -127,9 +127,9 @@ export class CatalogState {
     ctx.patchState({ loading: true });
     return this.#catalogService.createPropertyObject(propertyObject).pipe(
       tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
-      tap(() => ctx.dispatch(new CatalogOperationSuccess('OBJECT_CREATED'))),
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('CREATED'))),
       catchError((error: Error) =>
-        ctx.dispatch(new CatalogOperationFailed(error, 'CREATION_FAILED')).pipe(switchMap(() => throwError(() => error))),
+        ctx.dispatch(new CatalogOperationFailed(error, 'CREATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
       ),
     );
   }
@@ -139,7 +139,7 @@ export class CatalogState {
     ctx.patchState({ loading: true });
     return this.#catalogService.updatePropertyObject(propertyObject).pipe(
       tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
-      tap(() => ctx.dispatch(new CatalogOperationSuccess('OBJECT_UPDATED'))),
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('UPDATED'))),
       catchError((error: Error) =>
         ctx.dispatch(new CatalogOperationFailed(error, 'UPDATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
       ),
@@ -160,9 +160,9 @@ export class CatalogState {
     ctx.patchState({ loading: true });
     return this.#catalogService.deletePropertyObject(idList).pipe(
       tap(() => {
-        ctx.dispatch(new CatalogOperationSuccess('OBJECT_DELETED'));
+        ctx.dispatch(new CatalogOperationSuccess('DELETED'));
       }),
-      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'DELETEION_FAILED'))),
+      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'DELETE_FAILED'))),
     );
   }
 
@@ -187,7 +187,7 @@ export class CatalogState {
       this.#messageService.add({
         severity: 'error',
         summary: this.#translateService.instant('NOTIFICATIONS.ERROR'),
-        detail: this.#translateService.instant(message),
+        detail: this.#translateService.instant('CATALOG.NOTIFICATION.' + message),
         life: 3000,
       });
     }

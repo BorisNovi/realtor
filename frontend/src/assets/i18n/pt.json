@@ -304,14 +304,14 @@
       }
     },
     "NOTIFICATION": {
-      "OBJECT_CREATED": "Objeto de imóvel criado com sucesso",
-      "CREATION_FAILED": "Falha ao criar o objeto de imóvel",
-      "OBJECT_UPDATED": "Objeto de imóvel atualizado com sucesso",
+      "CREATED": "Objeto de imóvel criado com sucesso",
+      "CREATE_FAILED": "Falha ao criar o objeto de imóvel",
+      "UPDATED": "Objeto de imóvel atualizado com sucesso",
       "UPDATE_FAILED": "Falha ao atualizar o objeto de imóvel",
       "STATUS_UPDATED": "Status atualizado com sucesso",
       "STATUS_UPDATE_FAILED": "Falha ao atualizar o status",
-      "OBJECT_DELETED": "Objeto de imóvel excluído com sucesso",
-      "DELETEION_FAILED": "Falha ao excluir o objeto de imóvel"
+      "DELETED": "Objeto de imóvel excluído com sucesso",
+      "DELETE_FAILED": "Falha ao excluir o objeto de imóvel"
     }
   }, 
   "CONTACTS": {
@@ -330,7 +330,15 @@
         "DELETE": "-"
       }
     },
-    "SEARCH_PLACEHOLDER": "-"
+    "SEARCH_PLACEHOLDER": "-",
+    "NOTIFICATION": {
+      "CREATED": "-",
+      "CREATE_FAILED": "-",
+      "UPDATED": "-",
+      "UPDATE_FAILED": "-",
+      "DELETED": "-",
+      "DELETE_FAILED": "-"
+    }
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "Cidade, rua, casa ...",

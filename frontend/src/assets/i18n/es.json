@@ -304,14 +304,14 @@
       }
     },
     "NOTIFICATION": {
-      "OBJECT_CREATED": "El objeto inmobiliario se ha creado correctamente",
-      "CREATION_FAILED": "No se pudo crear el objeto inmobiliario",
-      "OBJECT_UPDATED": "El objeto inmobiliario se ha actualizado correctamente",
+      "CREATED": "El objeto inmobiliario se ha creado correctamente",
+      "CREATE_FAILED": "No se pudo crear el objeto inmobiliario",
+      "UPDATED": "El objeto inmobiliario se ha actualizado correctamente",
       "UPDATE_FAILED": "No se pudo actualizar el objeto inmobiliario",
       "STATUS_UPDATED": "Estado actualizado correctamente",
       "STATUS_UPDATE_FAILED": "No se pudo actualizar el estado",
-      "OBJECT_DELETED": "El objeto inmobiliario se ha eliminado correctamente",
-      "DELETEION_FAILED": "No se pudo eliminar el objeto inmobiliario"
+      "DELETED": "El objeto inmobiliario se ha eliminado correctamente",
+      "DELETE_FAILED": "No se pudo eliminar el objeto inmobiliario"
     }
   },
   "CONTACTS": {
@@ -330,7 +330,15 @@
         "DELETE": "-"
       }
     },
-    "SEARCH_PLACEHOLDER": "-"
+    "SEARCH_PLACEHOLDER": "-",
+    "NOTIFICATION": {
+      "CREATED": "-",
+      "CREATE_FAILED": "-",
+      "UPDATED": "-",
+      "UPDATE_FAILED": "-",
+      "DELETED": "-",
+      "DELETE_FAILED": "-"
+    }
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "Ciudad, calle, casa ...",
