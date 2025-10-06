@@ -1,0 +1,77 @@
+<div class="p-4">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Name -->
+    <rx-input-wrapper
+      [control]="form.get('name')!"
+      [label]="'FORM.LABELS.CONTACT_NAME' | translate"
+      id="contactName"
+      class="col-span-full"
+    >
+      <input
+        id="contactName"
+        pInputText
+        type="text"
+        formControlName="name"
+        [placeholder]="'FORM.PLACEHOLDERS.CONTACT_NAME' | translate"
+        class="w-full"
+      />
+    </rx-input-wrapper>
+
+    <!-- Phone -->
+    <rx-input-wrapper [control]="form.get('phone')!" [label]="'FORM.LABELS.CONTACT_PHONE' | translate" id="contactPhone">
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-phone"></i>
+        </p-inputgroup-addon>
+        <input
+          id="contactPhone"
+          pInputText
+          type="text"
+          formControlName="phone"
+          [placeholder]="'FORM.PLACEHOLDERS.CONTACT_PHONE' | translate"
+          rxWorldPhoneMasks
+          (valid)="validPhone($event)"
+        />
+      </p-inputgroup>
+    </rx-input-wrapper>
+
+    <!-- Additional Phone -->
+    <rx-input-wrapper
+      [control]="form.get('additional_phone')!"
+      [label]="'FORM.LABELS.ADDITIONAL_CONTACT_PHONE' | translate"
+      id="additionalPhone"
+    >
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-phone"></i>
+        </p-inputgroup-addon>
+        <input
+          id="additionalPhone"
+          pInputText
+          type="text"
+          formControlName="additional_phone"
+          [placeholder]="'FORM.PLACEHOLDERS.CONTACT_PHONE' | translate"
+          rxWorldPhoneMasks
+          (valid)="validAddPhone($event)"
+        />
+      </p-inputgroup>
+    </rx-input-wrapper>
+
+    <!-- Buttons -->
+    <div class="md:col-span-2 flex justify-end gap-2 mt-6 sticky bottom-0">
+      <p-button
+        [label]="'FORM.BUTTONS.CANCEL' | translate"
+        type="button"
+        (click)="onCancel()"
+        class="backdrop-blur-[2px]"
+        outlined
+      />
+      <p-button
+        [label]="'FORM.BUTTONS.SAVE' | translate"
+        type="submit"
+        class="p-button-primary backdrop-blur-[2px]"
+        [disabled]="form.invalid"
+      />
+    </div>
+  </form>
+</div>

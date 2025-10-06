@@ -137,7 +137,6 @@
       [label]="'FORM.LABELS.PICK' | translate"
       icon="pi pi-map"
       size="small"
-      showDelay="300"
       [outlined]="true"
       (click)="isPickerOpen.set(true)"
       [disabled]="pickerOpen"
@@ -203,45 +202,37 @@
     <p-divider align="left" type="solid" class="md:col-span-2">
       <b>{{ 'FORM.LABELS.CONTACT' | translate }}</b>
     </p-divider>
-    <ng-container formGroupName="contact">
-      <!-- Name -->
-      <rx-input-wrapper
-        [control]="form.get('contact')?.get('name')!"
-        [label]="'FORM.LABELS.CONTACT_NAME' | translate"
-        id="contactName"
-      >
-        <input
-          id="contactName"
-          pInputText
-          type="text"
-          formControlName="name"
-          [placeholder]="'FORM.PLACEHOLDERS.CONTACT_NAME' | translate"
-          class="w-full"
-        />
-      </rx-input-wrapper>
 
-      <!-- Phone -->
-      <rx-input-wrapper
-        [control]="form.get('contact')?.get('phone')!"
-        [label]="'FORM.LABELS.CONTACT_PHONE' | translate"
-        id="contactPhone"
+    <p-button
+      class="w-fit md:col-start-2 justify-self-end mb-[-2rem]"
+      [label]="'FORM.LABELS.CREATE_CONTACT' | translate"
+      icon="pi pi-plus"
+      size="small"
+      [outlined]="true"
+      (click)="openContactDialog()"
+    />
+    @let contactControl = form.get('contact');
+    <rx-input-wrapper
+      class="w-full md:col-span-2"
+      [control]="contactControl!"
+      [label]="'FORM.LABELS.CONTACT' | translate"
+      id="contact"
+    >
+      <!-- TODO: Временно выбранный элемент засунул в placeholder. Потом убрать, когда будет фикс -->
+      <rx-select
+        [fetchMethod]="contactFetchMethod"
+        [mapToSelectItem]="contactMapToSelect"
+        [valueMapper]="contactValueMapper"
+        formControlName="contact"
+        [placeholder]="
+          (contactControl?.value?.name || ('FORM.PLACEHOLDERS.NOT_SELECTED' | translate)) +
+          ' ' +
+          (contactControl?.value?.phone | worldPhoneMask)
+        "
+        withSearch
       >
-        <p-inputgroup>
-          <p-inputgroup-addon>
-            <i class="pi pi-phone"></i>
-          </p-inputgroup-addon>
-          <input
-            id="contactPhone"
-            pInputText
-            type="text"
-            formControlName="phone"
-            [placeholder]="'FORM.PLACEHOLDERS.CONTACT_PHONE' | translate"
-            rxWorldPhoneMasks
-            (valid)="validPhone($event)"
-          />
-        </p-inputgroup>
-      </rx-input-wrapper>
-    </ng-container>
+      </rx-select>
+    </rx-input-wrapper>
 
     @let commentVisible = isCommentVisible();
     <p-divider align="left" type="solid" class="md:col-span-2">
@@ -259,7 +250,7 @@
         <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">{{
           'FORM.LABELS.COMMENT' | translate
         }}</label>
-        <textarea id="comment" formControlName="comment" [fluid]="true" rows="5" pTextarea [autoResize]="true"></textarea>
+        <textarea pTextarea id="comment" formControlName="comment" [fluid]="true" rows="5"></textarea>
       </div>
     }
 

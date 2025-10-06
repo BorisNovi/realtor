@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, Component, effect, forwardRef, inject, input, signal, WritableSignal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  forwardRef,
+  inject,
+  input,
+  signal,
+  WritableSignal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IFieldsetConfig } from '@shared/interfaces';
@@ -22,6 +33,7 @@ export class FieldsetCheckboxGroupComponent implements ControlValueAccessor {
   readonly fieldsetConfig = input.required<IFieldsetConfig[]>();
 
   readonly #fb = inject(FormBuilder);
+  readonly #destroyRef = inject(DestroyRef);
 
   form: FormGroup = this.#fb.group({});
   readonly initialValue: WritableSignal<any> = signal(null);
@@ -48,7 +60,7 @@ export class FieldsetCheckboxGroupComponent implements ControlValueAccessor {
       group[fieldset.formGroupName] = this.#fb.group(controls);
     });
     this.form = this.#fb.group(group);
-    this.form.valueChanges.subscribe(value => {
+    this.form.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(value => {
       this.onChange(value);
       this.onTouched();
     });

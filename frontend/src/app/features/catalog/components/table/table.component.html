@@ -3,7 +3,7 @@
 
 <div class="card overflow-x-auto relative !p-0 !pb-2">
   @if (loadingS()) {
-    <p-progressbar mode="indeterminate" [style]="{ height: '4px' }" class="w-[101%] h-1 top-0 left-[-4px] absolute" />
+    <p-progressbar mode="indeterminate" [style]="{ height: '4px' }" class="w-[101%] h-1 top-0 left-[-4px] !absolute z-10" />
   }
   @let tableData = tableDataS();
   <p-table

@@ -6,6 +6,15 @@
     "SUCCESS": "Success",
     "ERROR": "Error"
   },
+  "MENU": {
+    "CATALOG": "Catalog",
+    "LIST": "List",
+    "MAP": "Map",
+    "SHARING": "Sharing",
+    "LISTINGS": "Listings",
+    "INFO": "Info",
+    "CONTACTS": "Contacts"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Photos",
@@ -26,6 +35,8 @@
       "CONTACT": "Contact",
       "CONTACT_NAME": "Contact name",
       "CONTACT_PHONE": "Contact phone",
+      "CREATE_CONTACT": "Create contact",
+      "ADDITIONAL_CONTACT_PHONE": "Additional contact phone",
       "COMMENT": "Comment",
       "ADDITIONAL_PARAMS": "Additional params",
       "CURRENT_FLOOR": "Current Floor",
@@ -79,7 +90,8 @@
       "HEATING": "Select heating type",
       "FURNISHED": "Select furnished",
       "RENOVATION": "Select renovation",
-      "KITCHEN": "Select kitchen type"
+      "KITCHEN": "Select kitchen type",
+      "NOT_SELECTED": "Not Selected"
     },
     "PROPERTIES": {
       "PROPERTY_TYPE": {
@@ -292,15 +304,41 @@
       }
     },
       "NOTIFICATION": {
-        "OBJECT_CREATED": "Property object created successfully",
-        "CREATION_FAILED": "Failed to create property object",
-        "OBJECT_UPDATED": "Property object updated successfully",
+        "CREATED": "Property object created successfully",
+        "CREATE_FAILED": "Failed to create property object",
+        "UPDATED": "Property object updated successfully",
         "UPDATE_FAILED": "Failed to update property object",
         "STATUS_UPDATED": "Status updated successfully",
         "STATUS_UPDATE_FAILED": "Failed to update status",
-        "OBJECT_DELETED": "Property object deleted successfully",
-        "DELETEION_FAILED": "Failed to delete property object"
+        "DELETED": "Property object deleted successfully",
+        "DELETE_FAILED": "Failed to delete property object"
       }
+  },
+  "CONTACTS": {
+    "TABLE": {
+      "HEADERS": {
+        "NAME": "Name",
+        "PHONE": "Phone"
+      },
+      "DIALOG": {
+        "ADD": "Add new contact",
+        "EDIT": "Edit contact",
+        "DELETE_REQUEST_SINGLE": "Delete contact?"
+      },
+      "ACTIONS": {
+        "EDIT": "Edit",
+        "DELETE": "Delete"
+      }
+    },
+    "SEARCH_PLACEHOLDER": "Name or phone number",
+    "NOTIFICATION": {
+      "CREATED": "Contact created successfully",
+      "CREATE_FAILED": "Failed to create contact",
+      "UPDATED": "Contact updated successfully",
+      "UPDATE_FAILED": "Failed to update contact",
+      "DELETED": "Contact deleted successfully",
+      "DELETE_FAILED": "Failed to delete contact"
+    }
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "City, Road, House ...",

@@ -8,7 +8,6 @@ export class DeletionConfirmationService {
   readonly #translateService = inject(TranslateService);
 
   confirm(onAccept: () => void): void {
-    console.log('dfdfdf');
     this.#confirmationService.confirm({
       message: this.#translateService.instant('CATALOG.TABLE.DIALOG.DELETE_HINT'),
       header: this.#translateService.instant('CATALOG.TABLE.DIALOG.DELETE_REQUEST_SINGLE'),
