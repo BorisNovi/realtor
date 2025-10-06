@@ -1,21 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SelectComponent } from '@shared/components';
-import { ICatalogFilters, IContact, IFetchOptions, IPagination, ISort } from '@shared/interfaces';
-import { ContactsService } from 'src/app/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'rx-listings',
-  imports: [SelectComponent],
+  imports: [],
   templateUrl: './listings.component.html',
   styleUrl: './listings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListingsComponent {
-  readonly contactsService = inject(ContactsService);
-  fetchMethod = (options: IFetchOptions) => this.contactsService.fetchContacts(options);
-  mapToSelect = (item: IContact) => ({ label: `${item.name} (${item.phone})`, value: item });
-
-  onChange(event: any) {
-    console.log(event);
-  }
 }
