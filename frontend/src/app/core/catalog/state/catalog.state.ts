@@ -108,7 +108,6 @@ export class CatalogState {
 
   @Action(SetCatalogSort)
   setCatalogSort(ctx: StateContext<CatalogStateModel>, { sort }: SetCatalogSort) {
-    console.log(sort);
     ctx.patchState({
       sort,
     });
