@@ -66,12 +66,12 @@ import { AddressFormComponent } from '../address-form/address-form.component';
     ScrollToTopOnShowDirective,
     AddressFormComponent,
     SelectComponent,
-    WorldPhoneMaskPipe
+    WorldPhoneMaskPipe,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [SLIDE],
-  providers: [WorldPhoneMaskPipe]
+  providers: [WorldPhoneMaskPipe],
 })
 export class CreateCatalogItemComponent implements OnInit {
   readonly fileUpload = viewChild.required<FileUpload>('fileUpload');
@@ -88,8 +88,15 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly #worldPhoneMaskPipe = inject(WorldPhoneMaskPipe);
 
   readonly contactFetchMethod = (options: IFetchOptions) => this.contactsService.fetchContacts(options);
-  readonly contactMapToSelect = (item: IContact) => ({ label: `${item?.name} ${this.#worldPhoneMaskPipe.transform(item?.phone)}`, value: item });
-  readonly contactValueMapper = (contact: IContact) => ({ id: contact?.id || null, name: contact?.name || null, phone: contact?.phone || null });
+  readonly contactMapToSelect = (item: IContact) => ({
+    label: `${item?.name} ${this.#worldPhoneMaskPipe.transform(item?.phone)}`,
+    value: item,
+  });
+  readonly contactValueMapper = (contact: IContact) => ({
+    id: contact?.id || null,
+    name: contact?.name || null,
+    phone: contact?.phone || null,
+  });
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
   readonly fieldsetConfig = createItemsFieldsetConfig;

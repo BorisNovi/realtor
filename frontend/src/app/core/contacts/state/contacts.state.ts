@@ -79,8 +79,7 @@ export class ContactsState {
   @Action(FetchContacts)
   fetchContacts(ctx: StateContext<ContactsStateModel>) {
     const { pagination, search, sort } = ctx.getState();
-    if (pagination.first === undefined || pagination.rows === undefined)
-      return;
+    if (pagination.first === undefined || pagination.rows === undefined) return;
 
     ctx.patchState({ loading: true });
 
@@ -106,11 +105,9 @@ export class ContactsState {
 
     return this.#contactsService.createContact(contact).pipe(
       tap((contact: IContact) => ctx.patchState({ contact, loading: false })),
-      tap(() => ctx.dispatch(new ContactsOperationSuccess('CONTACT_CREATED'))),
+      tap(() => ctx.dispatch(new ContactsOperationSuccess('CREATED'))),
       catchError((error: Error) =>
-        ctx
-          .dispatch(new ContactsOperationFailed(error, 'CONTACT_CREATION_FAILED'))
-          .pipe(switchMap(() => throwError(() => error))),
+        ctx.dispatch(new ContactsOperationFailed(error, 'CREATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
       ),
     );
   }
@@ -121,11 +118,9 @@ export class ContactsState {
 
     return this.#contactsService.updateContact(contact).pipe(
       tap((contact: IContact) => ctx.patchState({ contact, loading: false })),
-      tap(() => ctx.dispatch(new ContactsOperationSuccess('CONTACT_UPDATED'))),
+      tap(() => ctx.dispatch(new ContactsOperationSuccess('UPDATED'))),
       catchError((error: Error) =>
-        ctx
-          .dispatch(new ContactsOperationFailed(error, 'CONTACT_UPDATE_FAILED'))
-          .pipe(switchMap(() => throwError(() => error))),
+        ctx.dispatch(new ContactsOperationFailed(error, 'UPDATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
       ),
     );
   }
@@ -135,8 +130,8 @@ export class ContactsState {
     ctx.patchState({ loading: true });
 
     return this.#contactsService.deleteContact(id).pipe(
-      tap(() => ctx.dispatch(new ContactsOperationSuccess('CONTACT_DELETED'))),
-      catchError((error: Error) => ctx.dispatch(new ContactsOperationFailed(error, 'CONTACT_DELETE_FAILED'))),
+      tap(() => ctx.dispatch(new ContactsOperationSuccess('DELETED'))),
+      catchError((error: Error) => ctx.dispatch(new ContactsOperationFailed(error, 'DELETE_FAILED'))),
     );
   }
 
@@ -175,7 +170,7 @@ export class ContactsState {
       this.#messageService.add({
         severity: 'error',
         summary: this.#translateService.instant('NOTIFICATIONS.ERROR'),
-        detail: this.#translateService.instant(message),
+        detail: this.#translateService.instant('CONTACTS.NOTIFICATION.' + message),
         life: 3000,
       });
     }
