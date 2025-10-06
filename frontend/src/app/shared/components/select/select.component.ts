@@ -108,7 +108,6 @@ export class SelectComponent {
   }
 
   #emitValue(value: any | null): void {
-    console.log('emit', value)
     const mapped = this.valueMapper()(value);
     this.#onChange(mapped);
   }
@@ -118,7 +117,6 @@ export class SelectComponent {
       this.selected.set(null);
       return;
     }
-    console.log('vrite', value);
     const mapped = this.mapToSelectItem()(value);
     this.selected.set(mapped);
   }

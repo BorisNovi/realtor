@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit, output, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { GeocodeFeature } from '@shared/interfaces';
 import { IPickerAddress } from '@shared/interfaces/picker-address.interface';
@@ -14,7 +14,6 @@ import { GeocodeService } from 'src/app/core';
 import { getCurrentLocation, normalizeLngLat } from '../../utils';
 import { MapMarkerComponent } from '../map/map-marker.component';
 import { MapComponent } from '../map/map.component';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'rx-address-picker',
@@ -100,7 +99,7 @@ export class AddressPickerComponent implements OnInit {
     if (!address) return;
     this.#geo
       .geocode(address)
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(result => {
         const feat = result?.features?.[0];
         const lngLat = feat?.geometry?.coordinates;
@@ -116,7 +115,7 @@ export class AddressPickerComponent implements OnInit {
   reverse(lngLat: LngLatLike): void {
     this.#geo
       .reverse(lngLat)
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(result => {
         const feat = result?.features?.[0];
         this.prepareOutput(feat);

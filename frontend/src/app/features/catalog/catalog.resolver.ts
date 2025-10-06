@@ -24,7 +24,6 @@ export const catalogResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapsho
       };
 
       if (!Object.keys(paginationFromQuery).length) {
-        console.log('set params to query');
         router.navigate(['/catalog'], {
           queryParams: newQueryParams,
           // queryParamsHandling: 'merge',
