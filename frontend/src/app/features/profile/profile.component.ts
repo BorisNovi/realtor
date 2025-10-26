@@ -1,16 +1,17 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Store } from '@ngxs/store';
+import { ButtonModule } from 'primeng/button';
+import { DividerModule } from 'primeng/divider';
 import { FluidModule } from 'primeng/fluid';
 import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms';
-import { DividerModule } from 'primeng/divider';
-import { Store } from '@ngxs/store';
 import { Logout, Terminate } from 'src/app/core';
 
 @Component({
-  selector: 'app-profile',
+  selector: 'rx-profile',
   imports: [InputTextModule, FluidModule, ButtonModule, FormsModule, DividerModule],
   templateUrl: './profile.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileComponent {
   readonly #store = inject(Store);

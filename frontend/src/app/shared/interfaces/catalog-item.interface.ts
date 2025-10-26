@@ -1,4 +1,5 @@
 import { PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
+import { IAddress } from './address.interface';
 import { IContact } from './contact.interface';
 
 export interface ICatalogItem {
@@ -7,8 +8,7 @@ export interface ICatalogItem {
   propertyType: PropertyType;
   zoningType: ZoningType;
   status: PropertyStatus;
-  address: string;
-  mapLink: string;
+  address: IAddress;
   price: { value: number; currency: string };
   area: number;
   dateAdded: string | Date;

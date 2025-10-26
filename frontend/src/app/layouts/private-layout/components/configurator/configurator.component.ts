@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { PrivateLayoutService } from '../../shared';
 import { ButtonModule } from 'primeng/button';
-import { LanguageSelectService } from 'src/app/core';
 import { TooltipModule } from 'primeng/tooltip';
+import { LanguageSelectService } from 'src/app/core';
+import { PrivateLayoutService } from '../../shared';
 
 @Component({
-  selector: 'app-configurator',
+  selector: 'rx-configurator',
   imports: [ButtonModule, TooltipModule],
   templateUrl: './configurator.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -13,15 +13,6 @@ export interface IPropertyObjectSpecifics {
   renovation?: RenovationStatus;
   furnished?: FurnishedStatus;
   kitchen?: KitchenType;
-  sharedFacilities?: { kitchen: boolean; bathroom: boolean };
 
-  utilities?: {
-    electricity?: boolean;
-    waterSupply?: boolean;
-    naturalGas?: boolean;
-    sewerage?: boolean;
-    internet?: boolean;
-  };
-
-  options: Record<string, object | boolean>;
+  options?: Record<string, object | boolean>;
 }

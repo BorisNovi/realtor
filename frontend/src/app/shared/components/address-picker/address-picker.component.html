@@ -1,0 +1,56 @@
+@let sz = scrollZooomDisabled();
+@let normalizedLL = normalizeLngLat(posToShow());
+
+<div class="relative w-full flex items-center flex-col overflow-hidden rounded-md">
+  <div class="absolute z-10 top-2 flex items-center w-full gap-4 ps-4 pe-2">
+    <p-inputgroup>
+      <input pInputText [placeholder]="'ADDRESS_PICKER.PLACEHOLDER' | translate" [(ngModel)]="addressQuery" />
+      <p-inputgroup-addon>
+        <p-button icon="pi pi-search" severity="secondary" (click)="search()" [disabled]="!addressQuery()" />
+      </p-inputgroup-addon>
+    </p-inputgroup>
+
+    <p-button
+      class="z-10 right-2 bottom-20"
+      icon="pi pi-check"
+      (click)="fillPickedAddress()"
+      [pTooltip]="'ADDRESS_PICKER.TOOLTIP.FILL' | translate"
+      showDelay="300"
+      tooltipPosition="left"
+    />
+  </div>
+
+  <p-button
+    class="absolute z-10 right-2 bottom-20"
+    icon="pi pi-map-marker"
+    [outlined]="true"
+    (click)="updateLocation(true)"
+    [pTooltip]="'ADDRESS_PICKER.TOOLTIP.LOCATE' | translate"
+    showDelay="300"
+    tooltipPosition="left"
+  />
+  <p-button
+    class="absolute z-10 right-2 bottom-40"
+    [icon]="sz ? 'pi pi-lock' : 'pi pi-lock-open'"
+    [outlined]="true"
+    (click)="scrollZooomDisabled.set(!sz)"
+    [pTooltip]="'ADDRESS_PICKER.TOOLTIP.' + (sz ? 'UNLOCK_SCROLL' : 'LOCK_SCROLL') | translate"
+    showDelay="300"
+    tooltipPosition="left"
+  />
+
+  <div class="absolute m-[10px] z-10 bottom-0 left-0 text-sm font-medium text-gray-500">
+    <div>lng: {{ normalizedLL.lng.toString().slice(0, 9) }}</div>
+    <div>lat: {{ normalizedLL.lat.toString().slice(0, 9) }}</div>
+  </div>
+
+  <rx-map class="flex w-full h-[28rem]" [center]="mapCenter()" [zoom]="10" [scrollZoomDisabled]="sz">
+    <rx-map-marker
+      [position]="markerPosition()!"
+      [draggable]="true"
+      (dragEnd)="onMarkerDrag($event)"
+      (markerClick)="(null)"
+      [titlePopup]="popupTitle()"
+    ></rx-map-marker>
+  </rx-map>
+</div>

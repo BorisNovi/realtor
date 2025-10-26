@@ -1,22 +1,23 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 
-import { routes } from './app.routes';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
 import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
 import { withNgxsFormPlugin } from '@ngxs/form-plugin';
 import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
 import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { provideStore } from '@ngxs/store';
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import Aura from '@primeng/themes/aura';
+import { providePrimeNG } from 'primeng/config';
+import { routes } from './app.routes';
 import { authInterceptor, AuthState, CatalogState } from './core';
 
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ContactsState } from './core/contacts/state/contacts.state';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -24,7 +25,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZonelessChangeDetection(),
     provideRouter(
       routes,
       withInMemoryScrolling({
@@ -56,7 +57,7 @@ export const appConfig: ApplicationConfig = {
     MessageService,
     ConfirmationService,
     provideStore(
-      [AuthState, CatalogState],
+      [AuthState, CatalogState, ContactsState],
       withNgxsReduxDevtoolsPlugin(),
       withNgxsFormPlugin(),
       withNgxsRouterPlugin(),

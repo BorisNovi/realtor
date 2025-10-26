@@ -6,6 +6,15 @@
     "SUCCESS": "Sucesso",
     "ERROR": "Erro"
   },
+  "MENU": {
+    "CATALOG": "-",
+    "LIST": "-",
+    "MAP": "-",
+    "SHARING": "-",
+    "LISTINGS": "-",
+    "INFO": "-",
+    "CONTACTS": "-"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Fotos",
@@ -13,13 +22,21 @@
       "PROPERTY_TYPE": "Tipo de propriedade",
       "STATUS": "Estado",
       "ZONING": "Zoneamento",
-      "MAP_LINK": "Link do mapa",
       "AREA": "Área (m²)",
       "ADDRESS": "Endereço",
+      "CITY": "-",
+      "ROAD": "-",
+      "HOUSE": "-",
+      "APARTMENT": "-",
+      "PICK": "-",
+      "POSITION": "-",
       "PRICE": "Preço",
       "CURRENCY": "Moeda",
+      "CONTACT": "Contato",
       "CONTACT_NAME": "Nome de contato",
       "CONTACT_PHONE": "Telefone de contato",
+      "CREATE_CONTACT": "-",
+      "ADDITIONAL_CONTACT_PHONE": "-",
       "COMMENT": "Comentário",
       "ADDITIONAL_PARAMS": "Parâmetros adicionais",
       "CURRENT_FLOOR": "Andar atual",
@@ -30,7 +47,7 @@
       "KITCHEN": "Cozinha",
       "SHARED_FACILITIES": "Instalações compartilhadas",
       "SHARED_KITCHEN": "Cozinha compartilhada",
-      "SHARED_BATHROOM": "Banheiro compartilhado",
+      "BATHROOM": "Banheiro compartilhado",
       "UTILITIES": "Serviços públicos",
       "ELECTRICITY": "Eletricidade",
       "WATER_SUPPLY": "Abastecimento de água",
@@ -58,6 +75,10 @@
       "MAP_LINK": "Inserir link do mapa",
       "AREA": "Inserir área",
       "ADDRESS": "Inserir endereço",
+      "CITY": "-",
+      "ROAD": "-",
+      "HOUSE": "-",
+      "APARTMENT": "-",
       "PRICE": "Inserir preço",
       "CURRENCY": "Ex., USD",
       "CONTACT_NAME": "Inserir nome",
@@ -69,7 +90,8 @@
       "HEATING": "Selecione o tipo de aquecimento",
       "FURNISHED": "Selecionar mobiliado",
       "RENOVATION": "Selecionar reforma",
-      "KITCHEN": "Selecionar tipo de cozinha"
+      "KITCHEN": "Selecionar tipo de cozinha",
+      "NOT_SELECTED": "-"
     },
     "PROPERTIES": {
       "PROPERTY_TYPE": {
@@ -124,9 +146,9 @@
     }
   },
   "AUTH": {
-    "WELCOME": "Bem-vindo ao Realtor!",
+    "WELCOME": "Bem-vindo ao REALTOR-X!",
     "SIGN_IN_TO_CONTINUE": "Faça login para continuar",
-    "JOIN": "Junte-se ao Realtor!",
+    "JOIN": "Junte-se ao REALTOR-X!",
     "SIGN_UP_TO_GET_STARTED": "Cadastre-se para começar",
     "RESET_PASSWORD": "Redefinir senha",
     "ENTER_YOUR_EMAIL_TO_CONTINUE": "Digite seu e-mail para continuar",
@@ -256,6 +278,10 @@
         "NO": "Não"
       }
     },
+    "LABELS": {
+      "ABOUT": "",
+      "OPTIONS": ""
+    },
     "FILTERS": {
       "LABEL": "Filtros",
       "RESET": "Redefinir",
@@ -278,14 +304,63 @@
       }
     },
     "NOTIFICATION": {
-      "OBJECT_CREATED": "Objeto de imóvel criado com sucesso",
-      "CREATION_FAILED": "Falha ao criar o objeto de imóvel",
-      "OBJECT_UPDATED": "Objeto de imóvel atualizado com sucesso",
+      "CREATED": "Objeto de imóvel criado com sucesso",
+      "CREATE_FAILED": "Falha ao criar o objeto de imóvel",
+      "UPDATED": "Objeto de imóvel atualizado com sucesso",
       "UPDATE_FAILED": "Falha ao atualizar o objeto de imóvel",
       "STATUS_UPDATED": "Status atualizado com sucesso",
       "STATUS_UPDATE_FAILED": "Falha ao atualizar o status",
-      "OBJECT_DELETED": "Objeto de imóvel excluído com sucesso",
-      "DELETEION_FAILED": "Falha ao excluir o objeto de imóvel"
+      "DELETED": "Objeto de imóvel excluído com sucesso",
+      "DELETE_FAILED": "Falha ao excluir o objeto de imóvel"
     }
+  }, 
+  "CONTACTS": {
+    "TABLE": {
+      "HEADERS": {
+        "NAME": "-",
+        "PHONE": "-"
+      },
+      "DIALOG": {
+        "ADD": "-",
+        "EDIT": "-",
+        "DELETE_REQUEST_SINGLE": "-"
+      },
+      "ACTIONS": {
+        "EDIT": "-",
+        "DELETE": "-"
+      }
+    },
+    "SEARCH_PLACEHOLDER": "-",
+    "NOTIFICATION": {
+      "CREATED": "-",
+      "CREATE_FAILED": "-",
+      "UPDATED": "-",
+      "UPDATE_FAILED": "-",
+      "DELETED": "-",
+      "DELETE_FAILED": "-"
+    }
+  },
+  "ADDRESS_PICKER": {
+    "PLACEHOLDER": "Cidade, rua, casa ...",
+    "TOOLTIP": {
+      "FILL": "Usar endereço encontrado",
+      "LOCATE": "Localizar posição atual",
+      "UNLOCK_SCROLL": "Ativar zoom com a roda",
+      "LOCK_SCROLL": "Desativar zoom com a roda"
+    },
+    "POPUP": {
+      "DEFAULT": "Endereço geocodificado",
+      "GEO_DISABLED": "Permita acesso à localização ou mova o marcador",
+      "NOT_FOUND": "Nada encontrado",
+      "CITY": "Cidade",
+      "ROAD": "Rua",
+      "HOUSE": "Casa"
+    }
+  },
+  "MAP": {
+    "SHOW_ALL": ""
+  },
+  "PREFIXES": {
+    "APARTMENT": ""
   }
 }

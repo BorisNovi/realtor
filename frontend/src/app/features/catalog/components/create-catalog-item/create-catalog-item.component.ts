@@ -1,14 +1,18 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { FieldsetCheckboxGroupComponent, InputWrapperComponent } from '@shared/components';
+import { SLIDE } from '@shared/animations';
+import {
+  AddressPickerComponent,
+  FieldsetCheckboxGroupComponent,
+  InputWrapperComponent,
+  SelectComponent,
+} from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { createItemsFieldsetConfig } from '@shared/constants/fieldset.configs';
-import { WorldPhoneMasksDirective } from '@shared/directives';
+import { ScrollToTopOnShowDirective } from '@shared/directives';
 import {
   Currency,
   FurnishedStatus,
@@ -19,10 +23,14 @@ import {
   RenovationStatus,
   ZoningType,
 } from '@shared/enums';
-import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
+import { IContact, IFetchOptions } from '@shared/interfaces';
+import { IPickerAddress } from '@shared/interfaces/picker-address.interface';
+import { WorldPhoneMaskPipe } from '@shared/pipes';
+import { clearPhone, getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
+import { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FileUpload, FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -33,11 +41,12 @@ import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
 import { startWith, tap } from 'rxjs';
-import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
+import { ContactsService, CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
+import { CreateContactComponent } from 'src/app/features/contacts';
+import { AddressFormComponent } from '../address-form/address-form.component';
 
 @Component({
   imports: [
-    CommonModule,
     FileUploadModule,
     ReactiveFormsModule,
     InputTextModule,
@@ -49,36 +58,49 @@ import { CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 's
     TextareaModule,
     InputGroupModule,
     InputGroupAddonModule,
-    WorldPhoneMasksDirective,
     MessageModule,
     InputWrapperComponent,
     TranslatePipe,
     FieldsetCheckboxGroupComponent,
+    AddressPickerComponent,
+    ScrollToTopOnShowDirective,
+    AddressFormComponent,
+    SelectComponent,
+    WorldPhoneMaskPipe,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('fadeSlide', [
-      state('void', style({ opacity: 0, height: '0px', marginBottom: '0' })),
-      state('*', style({ opacity: 1, height: '*', marginBottom: '*' })),
-      transition('void <=> *', animate('300ms ease-in-out')),
-    ]),
-  ],
+  animations: [SLIDE],
+  providers: [WorldPhoneMaskPipe],
 })
 export class CreateCatalogItemComponent implements OnInit {
   readonly fileUpload = viewChild.required<FileUpload>('fileUpload');
 
   readonly #ref = inject(DynamicDialogRef);
-  readonly #config = inject(DynamicDialogConfig);
+  readonly config = inject(DynamicDialogConfig);
   readonly #fb = inject(FormBuilder);
   readonly #store = inject(Store);
   readonly #destroyRef = inject(DestroyRef);
   readonly #fileUploadService = inject(FileUploadService);
   readonly #translateService = inject(TranslateService);
+  readonly #dialogService = inject(DialogService);
+  readonly contactsService = inject(ContactsService);
+  readonly #worldPhoneMaskPipe = inject(WorldPhoneMaskPipe);
 
+  readonly contactFetchMethod = (options: IFetchOptions) => this.contactsService.fetchContacts(options);
+  readonly contactMapToSelect = (item: IContact) => ({
+    label: `${item?.name} ${this.#worldPhoneMaskPipe.transform(item?.phone)}`,
+    value: item,
+  });
+  readonly contactValueMapper = (contact: IContact) => ({
+    id: contact?.id || null,
+    name: contact?.name || null,
+    phone: contact?.phone || null,
+  });
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
   readonly fieldsetConfig = createItemsFieldsetConfig;
+  readonly position = signal<LngLatLike>([0, 0]);
 
   form!: FormGroup;
 
@@ -108,23 +130,27 @@ export class CreateCatalogItemComponent implements OnInit {
   );
   readonly currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
 
-  isCommentVisible = !!this.#config.data?.comment || false;
-  isAdditionalParamsVisible = !!this.#config.data?.specifics || false;
+  readonly isCommentVisible = signal(!!this.config.data?.comment || false);
+  readonly isAdditionalParamsVisible = signal(!!this.config.data?.specifics || false);
+  readonly isPickerOpen = signal(false);
+
+  get addressGroup(): FormGroup {
+    return this.form.get('address') as FormGroup;
+  }
 
   ngOnInit(): void {
     this.#initForm();
   }
 
   #initForm(): void {
-    const data = this.#config.data;
+    const data = this.config.data;
 
     this.form = this.#fb.group({
       photos: [data?.photos || []],
       propertyType: [data?.propertyType || null, Validators.required],
       zoningType: [data?.zoningType || null, Validators.required],
       status: [data?.status || null, Validators.required],
-      mapLink: [data?.mapLink || null],
-      address: [data?.address || null, Validators.required],
+      address: this.#fb.group({}),
       area: [data?.area || null, [Validators.required, Validators.min(1)]],
 
       price: this.#fb.group({
@@ -132,11 +158,7 @@ export class CreateCatalogItemComponent implements OnInit {
         value: [data?.price?.value || null, [Validators.required, Validators.min(0)]],
       }),
 
-      contact: this.#fb.group({
-        name: [data?.contact?.name || null, [Validators.required]],
-        phone: [data?.contact?.phone || null, [Validators.required]],
-      }),
-
+      contact: [data?.contact || null, [Validators.required]],
       comment: [data?.comment || null],
 
       specifics: this.#fb.group({
@@ -192,6 +214,15 @@ export class CreateCatalogItemComponent implements OnInit {
     }
   }
 
+  onAddresPickerFill(picked: IPickerAddress | null): void {
+    this.position.set(picked?.coordinates || [0, 0]);
+    const address = this.form.get('address')! as FormGroup;
+    address.get('city')?.setValue(picked?.address.city);
+    address.get('road')?.setValue(picked?.address.road);
+    address.get('house')?.setValue(picked?.address.house_number);
+    address.get('position')?.setValue(picked?.coordinates);
+  }
+
   removePhoto(index: number): void {
     this.photosS.update(currentUrls => {
       const updated = [...currentUrls];
@@ -201,9 +232,18 @@ export class CreateCatalogItemComponent implements OnInit {
     this.form.patchValue({ photos: this.photosS() });
   }
 
-  validPhone(valid: boolean): void {
-    const phoneControl = this.form?.get('contact.phone');
-    phoneControl?.setErrors(valid ? null : { invalidPhone: true });
+  openContactDialog(): void {
+    this.#dialogService.open(CreateContactComponent, {
+      header: this.#translateService.instant('CONTACTS.TABLE.DIALOG.ADD'),
+      appendTo: document.querySelector('.p-dynamic-dialog')!,
+      width: '480px',
+      modal: true,
+      closable: true,
+      focusOnShow: false,
+      breakpoints: {
+        '640px': '90vw',
+      },
+    });
   }
 
   onSubmit(): void {
@@ -213,21 +253,21 @@ export class CreateCatalogItemComponent implements OnInit {
     }
 
     const formData = this.form.value;
-    const cleanPhone = formData.contact.phone?.replace(/\D/g, '') ?? null;
-    const hasId = Boolean(this.#config.data?.id);
+    const position = this.position();
+    const hasId = Boolean(this.config.data?.id);
 
     const payload = hasId
       ? {
-          ...this.#config.data,
+          ...this.config.data,
           ...formData,
-          price: { ...this.#config.data!.price, ...formData.price },
-          contact: { ...this.#config.data!.contact, name: formData.contact.name, phone: cleanPhone },
-          specifics: { ...this.#config.data!.specifics, ...formData.specifics },
+          price: { ...this.config.data!.price, ...formData.price },
+          contact: { ...this.config.data!.contact, name: formData.contact.name, phone: clearPhone(formData.contact.phone) },
+          specifics: { ...this.config.data!.specifics, ...formData.specifics },
           photos: this.photosS(),
         }
       : {
           ...formData,
-          contact: { name: formData.contact.name, phone: cleanPhone },
+          contact: { name: formData.contact.name, phone: clearPhone(formData.contact.phone) },
           photos: this.photosS(),
         };
 
@@ -244,13 +284,5 @@ export class CreateCatalogItemComponent implements OnInit {
 
   onCancel(): void {
     this.#ref.close();
-  }
-
-  toggleComment(): void {
-    this.isCommentVisible = !this.isCommentVisible;
-  }
-
-  toggleAdditionalParams(): void {
-    this.isAdditionalParamsVisible = !this.isAdditionalParamsVisible;
   }
 }

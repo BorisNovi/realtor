@@ -4,7 +4,7 @@ import { MenuItem } from 'primeng/api';
 import { MenuitemComponent } from '../menuitem/menuitem.component';
 
 @Component({
-  selector: 'app-menu',
+  selector: 'rx-menu',
   imports: [MenuitemComponent, RouterModule],
   templateUrl: './menu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,15 +16,19 @@ export class MenuComponent implements OnInit {
     this.model = [
       {
         visible: true,
-        label: 'Main',
+        label: 'MENU.CATALOG',
         items: [
-          { label: 'Catalog', icon: 'pi pi-fw pi-book', routerLink: ['/catalog'] },
-          { label: 'Map', icon: 'pi pi-fw pi-map', routerLink: ['/map'] },
-          { label: 'Listings', icon: 'pi pi-fw pi-list-check', routerLink: ['/listings'] },
+          { label: 'MENU.LIST', icon: 'pi pi-fw pi-list', routerLink: ['catalog/list'], queryParamsHandling: 'preserve' },
+          { label: 'MENU.MAP', icon: 'pi pi-fw pi-map', routerLink: ['catalog/map'], queryParamsHandling: 'preserve' },
         ],
       },
       {
+        label: 'MENU.SHARING',
+        items: [{ label: 'MENU.LISTINGS', icon: 'pi pi-fw pi-list-check', routerLink: ['/listings'] }],
+      },
+      {
         label: 'AI',
+        visible: false,
         items: [
           { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/'], visible: false },
           { label: 'Panel', icon: 'pi pi-fw pi-tablet', routerLink: ['/'] },
@@ -32,7 +36,12 @@ export class MenuComponent implements OnInit {
         ],
       },
       {
+        label: 'MENU.INFO',
+        items: [{ label: 'MENU.CONTACTS', icon: 'pi pi-fw pi-id-card', routerLink: ['/contacts'] }],
+      },
+      {
         label: 'Analytics',
+        visible: false,
         // icon: 'pi pi-fw pi-briefcase',
         // routerLink: ['/pages'],
         items: [
@@ -63,51 +72,6 @@ export class MenuComponent implements OnInit {
                 label: 'Access Denied',
                 icon: 'pi pi-fw pi-lock',
                 routerLink: ['/auth/access'],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        label: 'Hierarchy',
-        visible: false,
-        items: [
-          {
-            label: 'Submenu 1',
-            icon: 'pi pi-fw pi-bookmark',
-            items: [
-              {
-                label: 'Submenu 1.1',
-                icon: 'pi pi-fw pi-bookmark',
-                items: [
-                  { label: 'Submenu 1.1.1', icon: 'pi pi-fw pi-bookmark' },
-                  { label: 'Submenu 1.1.2', icon: 'pi pi-fw pi-bookmark' },
-                  { label: 'Submenu 1.1.3', icon: 'pi pi-fw pi-bookmark' },
-                ],
-              },
-              {
-                label: 'Submenu 1.2',
-                icon: 'pi pi-fw pi-bookmark',
-                items: [{ label: 'Submenu 1.2.1', icon: 'pi pi-fw pi-bookmark' }],
-              },
-            ],
-          },
-          {
-            label: 'Submenu 2',
-            icon: 'pi pi-fw pi-bookmark',
-            items: [
-              {
-                label: 'Submenu 2.1',
-                icon: 'pi pi-fw pi-bookmark',
-                items: [
-                  { label: 'Submenu 2.1.1', icon: 'pi pi-fw pi-bookmark' },
-                  { label: 'Submenu 2.1.2', icon: 'pi pi-fw pi-bookmark' },
-                ],
-              },
-              {
-                label: 'Submenu 2.2',
-                icon: 'pi pi-fw pi-bookmark',
-                items: [{ label: 'Submenu 2.2.1', icon: 'pi pi-fw pi-bookmark' }],
               },
             ],
           },
