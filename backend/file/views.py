@@ -3,21 +3,26 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import FileUpload
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-
+from rest_framework import generics, permissions
 
 class FileUploadView(APIView):
-    """
-    Эндпоинт: POST /file
-    Принимает binary или multipart файл, сохраняет во временную директорию.
-    Возвращает URL файла.
-    """
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        file_obj = request.FILES.get("file")
-        if not file_obj:
-            return Response({"detail": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+        # Проверяем, что файлы вообще пришли
+        if not request.FILES:
+            return Response({"detail": "No files provided"}, status=status.HTTP_400_BAD_REQUEST)
 
-        saved_file = FileUpload.objects.create(file=file_obj)
-        return Response({"url": saved_file.url}, status=status.HTTP_201_CREATED)
+        uploaded_files = []
+
+        # 🔥 Берём файлы именно через getlist, чтобы достать все file0, file1 и т.п.
+        for key in request.FILES:
+            files = request.FILES.getlist(key)
+            for file_obj in files:
+                instance = FileUpload.objects.create(file=file_obj)
+                uploaded_files.append({
+                    "url": instance.file.url,
+                    "name": instance.file.name
+                })
+
+        return Response({"urls": [f["url"] for f in uploaded_files]}, status=status.HTTP_201_CREATED)
