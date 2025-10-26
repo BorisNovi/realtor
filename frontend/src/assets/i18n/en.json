@@ -6,6 +6,15 @@
     "SUCCESS": "Success",
     "ERROR": "Error"
   },
+  "MENU": {
+    "CATALOG": "Catalog",
+    "LIST": "List",
+    "MAP": "Map",
+    "SHARING": "Sharing",
+    "LISTINGS": "Listings",
+    "INFO": "Info",
+    "CONTACTS": "Contacts"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Photos",
@@ -13,13 +22,21 @@
       "PROPERTY_TYPE": "Property Type",
       "STATUS": "Status",
       "ZONING": "Zoning",
-      "MAP_LINK": "Map Link",
       "AREA": "Area (m²)",
       "ADDRESS": "Address",
+      "CITY": "City",
+      "ROAD": "Road",
+      "HOUSE": "House",
+      "APARTMENT": "Apartment",
+      "PICK": "Pick on map",
+      "POSITION": "Position",
       "PRICE": "Price",
       "CURRENCY": "Currency",
+      "CONTACT": "Contact",
       "CONTACT_NAME": "Contact name",
       "CONTACT_PHONE": "Contact phone",
+      "CREATE_CONTACT": "Create contact",
+      "ADDITIONAL_CONTACT_PHONE": "Additional contact phone",
       "COMMENT": "Comment",
       "ADDITIONAL_PARAMS": "Additional params",
       "CURRENT_FLOOR": "Current Floor",
@@ -30,7 +47,7 @@
       "KITCHEN": "Kitchen",
       "SHARED_FACILITIES": "Shared Facilities",
       "SHARED_KITCHEN": "Kitchen",
-      "SHARED_BATHROOM": "Bathroom",
+      "BATHROOM": "Bathroom",
       "UTILITIES": "Utilities",
       "ELECTRICITY": "Electricity",
       "WATER_SUPPLY": "Water Supply",
@@ -58,6 +75,10 @@
       "MAP_LINK": "Enter map link",
       "AREA": "Enter area",
       "ADDRESS": "Enter address",
+      "CITY": "Enter city",
+      "ROAD": "Enter road",
+      "HOUSE": "Enter house number",
+      "APARTMENT": "Enter apartment number",
       "PRICE": "Enter price",
       "CURRENCY": "e.g., USD",
       "CONTACT_NAME": "Enter name",
@@ -69,7 +90,8 @@
       "HEATING": "Select heating type",
       "FURNISHED": "Select furnished",
       "RENOVATION": "Select renovation",
-      "KITCHEN": "Select kitchen type"
+      "KITCHEN": "Select kitchen type",
+      "NOT_SELECTED": "Not Selected"
     },
     "PROPERTIES": {
       "PROPERTY_TYPE": {
@@ -124,9 +146,9 @@
     }
   },
   "AUTH": {
-    "WELCOME": "Welcome to Realtor!",
+    "WELCOME": "Welcome to REALTOR-X!",
     "SIGN_IN_TO_CONTINUE": "Sign in to continue",
-    "JOIN": "Join Realtor!",
+    "JOIN": "Join REALTOR-X!",
     "SIGN_UP_TO_GET_STARTED": "Sign up to get started",
     "RESET_PASSWORD": "Reset Password",
     "ENTER_YOUR_EMAIL_TO_CONTINUE": "Enter your email to continue",
@@ -256,6 +278,10 @@
         "NO": "No"
       }
     },
+    "LABELS": {
+      "ABOUT": "About",
+      "OPTIONS": "Options"
+    },
     "FILTERS": {
       "LABEL": "Filters",
       "RESET": "Reset",
@@ -278,14 +304,63 @@
       }
     },
       "NOTIFICATION": {
-        "OBJECT_CREATED": "Property object created successfully",
-        "CREATION_FAILED": "Failed to create property object",
-        "OBJECT_UPDATED": "Property object updated successfully",
+        "CREATED": "Property object created successfully",
+        "CREATE_FAILED": "Failed to create property object",
+        "UPDATED": "Property object updated successfully",
         "UPDATE_FAILED": "Failed to update property object",
         "STATUS_UPDATED": "Status updated successfully",
         "STATUS_UPDATE_FAILED": "Failed to update status",
-        "OBJECT_DELETED": "Property object deleted successfully",
-        "DELETEION_FAILED": "Failed to delete property object"
+        "DELETED": "Property object deleted successfully",
+        "DELETE_FAILED": "Failed to delete property object"
       }
+  },
+  "CONTACTS": {
+    "TABLE": {
+      "HEADERS": {
+        "NAME": "Name",
+        "PHONE": "Phone"
+      },
+      "DIALOG": {
+        "ADD": "Add new contact",
+        "EDIT": "Edit contact",
+        "DELETE_REQUEST_SINGLE": "Delete contact?"
+      },
+      "ACTIONS": {
+        "EDIT": "Edit",
+        "DELETE": "Delete"
+      }
+    },
+    "SEARCH_PLACEHOLDER": "Name or phone number",
+    "NOTIFICATION": {
+      "CREATED": "Contact created successfully",
+      "CREATE_FAILED": "Failed to create contact",
+      "UPDATED": "Contact updated successfully",
+      "UPDATE_FAILED": "Failed to update contact",
+      "DELETED": "Contact deleted successfully",
+      "DELETE_FAILED": "Failed to delete contact"
+    }
+  },
+  "ADDRESS_PICKER": {
+    "PLACEHOLDER": "City, Road, House ...",
+    "TOOLTIP": {
+      "FILL": "Fill picked address",
+      "LOCATE": "Locate current position",
+      "UNLOCK_SCROLL": "Unlock scroll zoom",
+      "LOCK_SCROLL": "Lock scroll zoom"
+    },
+    "POPUP": {
+      "DEFAULT": "Geocoded address",
+      "GEO_DISABLED": "Allow geoposition or move marker",
+      "NOT_FOUND": "Nothing found",
+      "CITY": "City",
+      "ROAD": "Road",
+      "HOUSE": "House"
+    }
+  },
+  "MAP": {
+    "SHOW_ALL": "Show all"
+  },
+  "PREFIXES": {
+    "APARTMENT": "Ap."
   }
 }

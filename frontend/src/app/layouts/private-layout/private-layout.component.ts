@@ -1,20 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, Renderer2 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
-import { PrivateLayoutService } from './shared';
 import { FooterComponent, SidebarComponent, TopbarComponent } from './components';
+import { PrivateLayoutService } from './shared';
 
 @Component({
-  selector: 'app-private-layout',
+  selector: 'rx-private-layout',
   imports: [RouterOutlet, CommonModule, TopbarComponent, SidebarComponent, FooterComponent],
   templateUrl: './private-layout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrivateLayoutComponent implements OnDestroy {
-  @ViewChild(SidebarComponent) appSidebar!: SidebarComponent;
-  @ViewChild(SidebarComponent) appTopBar!: TopbarComponent;
-
   readonly #layoutService = inject(PrivateLayoutService);
   readonly #renderer = inject(Renderer2);
   readonly #router = inject(Router);
@@ -23,7 +21,7 @@ export class PrivateLayoutComponent implements OnDestroy {
   menuOutsideClickListener: any;
 
   constructor() {
-    this.overlayMenuOpenSubscription = this.#layoutService.overlayOpen$.subscribe(() => {
+    this.overlayMenuOpenSubscription = this.#layoutService.overlayOpen$.pipe(takeUntilDestroyed()).subscribe(() => {
       if (!this.menuOutsideClickListener) {
         this.menuOutsideClickListener = this.#renderer.listen('document', 'click', event => {
           if (this.isOutsideClicked(event)) {
@@ -37,9 +35,14 @@ export class PrivateLayoutComponent implements OnDestroy {
       }
     });
 
-    this.#router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-      this.hideMenu();
-    });
+    this.#router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => {
+        this.hideMenu();
+      });
   }
 
   isOutsideClicked(event: MouseEvent) {

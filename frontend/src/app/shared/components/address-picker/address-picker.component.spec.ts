@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FiltersComponent } from './filters.component';
+import { AddressPickerComponent } from './address-picker.component';
 
-describe('FiltersComponent', () => {
-  let component: FiltersComponent;
-  let fixture: ComponentFixture<FiltersComponent>;
+describe('AddressPickerComponent', () => {
+  let component: AddressPickerComponent;
+  let fixture: ComponentFixture<AddressPickerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FiltersComponent],
+      imports: [AddressPickerComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FiltersComponent);
+    fixture = TestBed.createComponent(AddressPickerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

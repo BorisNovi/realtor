@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { ICatalogFilters, ICatalogItem, IPagination, IPropertyObject, ISort, ITableData } from '@shared/interfaces';
 import { MessageService } from 'primeng/api';
-import { catchError, of, tap } from 'rxjs';
+import { catchError, of, switchMap, tap, throwError } from 'rxjs';
 import { CatalogService } from '../shared';
 import {
   CatalogOperationFailed,
@@ -45,8 +45,8 @@ interface CatalogStateModel {
 @Injectable()
 export class CatalogState {
   readonly #catalogService = inject(CatalogService);
-  readonly messageService = inject(MessageService);
-  readonly translateService = inject(TranslateService);
+  readonly #messageService = inject(MessageService);
+  readonly #translateService = inject(TranslateService);
 
   // Selectors
   @Selector()
@@ -74,12 +74,16 @@ export class CatalogState {
     return filters;
   }
 
+  // Actions
   @Action(FetchCatalog)
   FetchCatalog(ctx: StateContext<CatalogStateModel>) {
     const { filters, pagination, sort } = ctx.getState();
+
+    if (pagination.first === undefined || pagination.rows === undefined) return;
+
     ctx.patchState({ loading: true });
 
-    return this.#catalogService.fetchCatalog(filters, pagination, sort).pipe(
+    return this.#catalogService.fetchCatalog({ filters, pagination, sort }).pipe(
       tap((catalog: ITableData<ICatalogItem>) => ctx.patchState({ catalog, loading: false })),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error))),
     );
@@ -104,7 +108,6 @@ export class CatalogState {
 
   @Action(SetCatalogSort)
   setCatalogSort(ctx: StateContext<CatalogStateModel>, { sort }: SetCatalogSort) {
-    console.log(sort);
     ctx.patchState({
       sort,
     });
@@ -124,8 +127,10 @@ export class CatalogState {
     ctx.patchState({ loading: true });
     return this.#catalogService.createPropertyObject(propertyObject).pipe(
       tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
-      tap(() => ctx.dispatch(new CatalogOperationSuccess('OBJECT_CREATED'))),
-      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'CREATION_FAILED'))),
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('CREATED'))),
+      catchError((error: Error) =>
+        ctx.dispatch(new CatalogOperationFailed(error, 'CREATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
+      ),
     );
   }
 
@@ -134,8 +139,10 @@ export class CatalogState {
     ctx.patchState({ loading: true });
     return this.#catalogService.updatePropertyObject(propertyObject).pipe(
       tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
-      tap(() => ctx.dispatch(new CatalogOperationSuccess('OBJECT_UPDATED'))),
-      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'UPDATE_FAILED'))),
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('UPDATED'))),
+      catchError((error: Error) =>
+        ctx.dispatch(new CatalogOperationFailed(error, 'UPDATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
+      ),
     );
   }
 
@@ -153,19 +160,19 @@ export class CatalogState {
     ctx.patchState({ loading: true });
     return this.#catalogService.deletePropertyObject(idList).pipe(
       tap(() => {
-        ctx.dispatch(new CatalogOperationSuccess('OBJECT_DELETED'));
+        ctx.dispatch(new CatalogOperationSuccess('DELETED'));
       }),
-      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'DELETEION_FAILED'))),
+      catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'DELETE_FAILED'))),
     );
   }
 
   @Action(CatalogOperationSuccess)
   onCatalogOperationSuccess(ctx: StateContext<CatalogStateModel>, { message }: CatalogOperationSuccess) {
     if (message) {
-      this.messageService.add({
+      this.#messageService.add({
         severity: 'success',
-        summary: this.translateService.instant('NOTIFICATIONS.SUCCESS'),
-        detail: this.translateService.instant('CATALOG.NOTIFICATION.' + message),
+        summary: this.#translateService.instant('NOTIFICATIONS.SUCCESS'),
+        detail: this.#translateService.instant('CATALOG.NOTIFICATION.' + message),
         life: 3000,
       });
     }
@@ -177,10 +184,10 @@ export class CatalogState {
   @Action(CatalogOperationFailed)
   onCatalogOperationFailed(ctx: StateContext<CatalogStateModel>, { error, message }: CatalogOperationFailed) {
     if (message) {
-      this.messageService.add({
+      this.#messageService.add({
         severity: 'error',
-        summary: this.translateService.instant('NOTIFICATIONS.ERROR'),
-        detail: this.translateService.instant(message),
+        summary: this.#translateService.instant('NOTIFICATIONS.ERROR'),
+        detail: this.#translateService.instant('CATALOG.NOTIFICATION.' + message),
         life: 3000,
       });
     }

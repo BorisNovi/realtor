@@ -3,11 +3,11 @@ import { IFieldsetConfig } from '@shared/interfaces';
 // TODO: в дальнейшем позволить клиенту самому создавать конфиг черз форму
 export const createItemsFieldsetConfig: IFieldsetConfig[] = [
   {
-    formGroupName: 'sharedFacilities',
+    formGroupName: 'SHARED_FACILITIES',
     label: 'FORM.LABELS.SHARED_FACILITIES',
     fields: [
       { formControlName: 'kitchen', label: 'FORM.LABELS.SHARED_KITCHEN' },
-      { formControlName: 'bathroom', label: 'FORM.LABELS.SHARED_BATHROOM' },
+      { formControlName: 'bathroom', label: 'FORM.LABELS.BATHROOM' },
     ],
   },
   {
@@ -18,7 +18,6 @@ export const createItemsFieldsetConfig: IFieldsetConfig[] = [
       { formControlName: 'waterSupply', label: 'FORM.LABELS.WATER_SUPPLY' },
       { formControlName: 'naturalGas', label: 'FORM.LABELS.NATURAL_GAS' },
       { formControlName: 'sewerage', label: 'FORM.LABELS.SEWERAGE' },
-      { formControlName: 'heating', label: 'FORM.LABELS.HEATING' },
       { formControlName: 'internet', label: 'FORM.LABELS.INTERNET' },
     ],
   },

@@ -4,7 +4,7 @@
       <i class="pi pi-bars"></i>
     </button>
     <a class="layout-topbar-logo" routerLink="/">
-      <span class="text-xs">pace here a logo</span>
+      <!-- <span class="text-xs">pace here a logo</span> -->
       <span>REALTOR-X</span>
     </a>
   </div>
@@ -23,7 +23,7 @@
         >
           <i class="pi pi-palette"></i>
         </button>
-        <app-configurator />
+        <rx-configurator />
       </div> -->
     </div>
 
@@ -52,7 +52,7 @@
         </button>
 
         <button class="layout-topbar-action" (click)="toggleLanguage()">
-          <i [appIcon]="currentLanguage().value" class="w-4"></i>
+          <i [rxIcon]="currentLanguage().value" class="w-4"></i>
           <span>{{ 'TOPBAR.LANGUAGE' | translate }}</span>
         </button>
       </div>

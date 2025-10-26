@@ -65,11 +65,7 @@
     </div>
 
     <!-- Property Type (Select) -->
-    <app-input-wrapper
-      [control]="form.get('propertyType')!"
-      [label]="'FORM.LABELS.PROPERTY_TYPE' | translate"
-      id="propertyType"
-    >
+    <rx-input-wrapper [control]="form.get('propertyType')!" [label]="'FORM.LABELS.PROPERTY_TYPE' | translate" id="propertyType">
       <p-select
         id="propertyType"
         formControlName="propertyType"
@@ -79,10 +75,10 @@
         [placeholder]="'FORM.PLACEHOLDERS.PROPERTY_TYPE' | translate"
         class="w-full"
       />
-    </app-input-wrapper>
+    </rx-input-wrapper>
 
     <!-- Status (Select with Severity) -->
-    <app-input-wrapper [control]="form.get('status')!" [label]="'FORM.LABELS.STATUS' | translate" id="status">
+    <rx-input-wrapper [control]="form.get('status')!" [label]="'FORM.LABELS.STATUS' | translate" id="status">
       <p-select
         id="status"
         formControlName="status"
@@ -91,7 +87,7 @@
         optionValue="value"
         [placeholder]="'FORM.PLACEHOLDERS.STATUS' | translate"
         class="w-full"
-        [ngStyle]="{
+        [style]="{
           'background-color': getStatusBackground(form.controls['status'].value),
         }"
       >
@@ -101,10 +97,10 @@
           </div>
         </ng-template>
       </p-select>
-    </app-input-wrapper>
+    </rx-input-wrapper>
 
     <!-- Zoning Type (Select) -->
-    <app-input-wrapper [control]="form.get('zoningType')!" [label]="'FORM.LABELS.ZONING' | translate" id="zoningType">
+    <rx-input-wrapper [control]="form.get('zoningType')!" [label]="'FORM.LABELS.ZONING' | translate" id="zoningType">
       <p-select
         id="zoningType"
         formControlName="zoningType"
@@ -114,22 +110,10 @@
         [placeholder]="'FORM.PLACEHOLDERS.ZONING' | translate"
         class="w-full"
       />
-    </app-input-wrapper>
-
-    <!-- Map Link -->
-    <app-input-wrapper [control]="form.get('mapLink')!" [label]="'FORM.LABELS.MAP_LINK' | translate" id="mapLink">
-      <input
-        id="mapLink"
-        pInputText
-        type="text"
-        formControlName="mapLink"
-        [placeholder]="'FORM.PLACEHOLDERS.MAP_LINK' | translate"
-        class="w-full"
-      />
-    </app-input-wrapper>
+    </rx-input-wrapper>
 
     <!-- Area -->
-    <app-input-wrapper [control]="form.get('area')!" [label]="'FORM.LABELS.AREA' | translate" id="area">
+    <rx-input-wrapper [control]="form.get('area')!" [label]="'FORM.LABELS.AREA' | translate" id="area">
       <p-inputnumber
         inputId="area"
         [showButtons]="true"
@@ -140,24 +124,39 @@
         [placeholder]="'FORM.PLACEHOLDERS.AREA' | translate"
         class="w-full"
       />
-    </app-input-wrapper>
+    </rx-input-wrapper>
 
     <!-- Address -->
-    <app-input-wrapper [control]="form.get('address')!" [label]="'FORM.LABELS.ADDRESS' | translate" id="address">
-      <input
-        id="address"
-        pInputText
-        type="text"
-        formControlName="address"
-        [placeholder]="'FORM.PLACEHOLDERS.ADDRESS' | translate"
-        class="w-full"
-      />
-    </app-input-wrapper>
+    <p-divider align="left" type="solid" class="md:col-span-2">
+      <b>{{ 'FORM.LABELS.ADDRESS' | translate }}</b>
+    </p-divider>
+
+    @let pickerOpen = isPickerOpen();
+    <p-button
+      class="w-fit md:col-start-2 justify-self-end mb-[-2rem]"
+      [label]="'FORM.LABELS.PICK' | translate"
+      icon="pi pi-map"
+      size="small"
+      [outlined]="true"
+      (click)="isPickerOpen.set(true)"
+      [disabled]="pickerOpen"
+    />
+    <rx-address-form @slide class="md:col-span-2" [form]="addressGroup" [value]="config.data?.address"></rx-address-form>
+
+    <!-- Address Picker -->
+    @if (pickerOpen) {
+      <div @slide [rxScrollToTopOnShow]="pickerOpen" [scrollOffset]="150" class="md:col-span-2">
+        <rx-address-picker (address)="onAddresPickerFill($event); isPickerOpen.set(false)"></rx-address-picker>
+      </div>
+    }
 
     <!-- Price -->
+    <p-divider align="left" type="solid" class="md:col-span-2">
+      <b>{{ 'FORM.LABELS.PRICE' | translate }}</b>
+    </p-divider>
     <ng-container formGroupName="price">
       <!-- Price Currency -->
-      <app-input-wrapper
+      <rx-input-wrapper
         [control]="form.get('price')?.get('currency')!"
         [label]="'FORM.LABELS.CURRENCY' | translate"
         id="currency"
@@ -174,10 +173,10 @@
           placeholder="e.g., USD"
           class="w-full"
         />
-      </app-input-wrapper>
+      </rx-input-wrapper>
 
       <!-- Price Value -->
-      <app-input-wrapper [control]="form.get('price')?.get('value')!" [label]="'FORM.LABELS.PRICE' | translate" id="price">
+      <rx-input-wrapper [control]="form.get('price')?.get('value')!" [label]="'FORM.LABELS.PRICE' | translate" id="price">
         <p-inputgroup>
           <p-inputgroup-addon>
             <i class="pi pi-wallet"></i>
@@ -196,82 +195,84 @@
             class="w-full"
           />
         </p-inputgroup>
-      </app-input-wrapper>
+      </rx-input-wrapper>
     </ng-container>
 
     <!-- Contact -->
-    <ng-container formGroupName="contact">
-      <!-- Name -->
-      <app-input-wrapper
-        [control]="form.get('contact')?.get('name')!"
-        [label]="'FORM.LABELS.CONTACT_NAME' | translate"
-        id="contactName"
-      >
-        <input
-          id="contactName"
-          pInputText
-          type="text"
-          formControlName="name"
-          [placeholder]="'FORM.PLACEHOLDERS.CONTACT_NAME' | translate"
-          class="w-full"
-        />
-      </app-input-wrapper>
+    <p-divider align="left" type="solid" class="md:col-span-2">
+      <b>{{ 'FORM.LABELS.CONTACT' | translate }}</b>
+    </p-divider>
 
-      <!-- Phone -->
-      <app-input-wrapper
-        [control]="form.get('contact')?.get('phone')!"
-        [label]="'FORM.LABELS.CONTACT_PHONE' | translate"
-        id="contactPhone"
+    <p-button
+      class="w-fit md:col-start-2 justify-self-end mb-[-2rem]"
+      [label]="'FORM.LABELS.CREATE_CONTACT' | translate"
+      icon="pi pi-plus"
+      size="small"
+      [outlined]="true"
+      (click)="openContactDialog()"
+    />
+    @let contactControl = form.get('contact');
+    <rx-input-wrapper
+      class="w-full md:col-span-2"
+      [control]="contactControl!"
+      [label]="'FORM.LABELS.CONTACT' | translate"
+      id="contact"
+    >
+      <!-- TODO: Временно выбранный элемент засунул в placeholder. Потом убрать, когда будет фикс -->
+      <rx-select
+        [fetchMethod]="contactFetchMethod"
+        [mapToSelectItem]="contactMapToSelect"
+        [valueMapper]="contactValueMapper"
+        formControlName="contact"
+        [placeholder]="
+          (contactControl?.value?.name || ('FORM.PLACEHOLDERS.NOT_SELECTED' | translate)) +
+          ' ' +
+          (contactControl?.value?.phone | worldPhoneMask)
+        "
+        withSearch
       >
-        <p-inputgroup>
-          <p-inputgroup-addon>
-            <i class="pi pi-phone"></i>
-          </p-inputgroup-addon>
-          <input
-            id="contactPhone"
-            pInputText
-            type="text"
-            formControlName="phone"
-            [placeholder]="'FORM.PLACEHOLDERS.CONTACT_PHONE' | translate"
-            appWorldPhoneMasks
-            (valid)="validPhone($event)"
-          />
-        </p-inputgroup>
-      </app-input-wrapper>
-    </ng-container>
+      </rx-select>
+    </rx-input-wrapper>
 
+    @let commentVisible = isCommentVisible();
     <p-divider align="left" type="solid" class="md:col-span-2">
       <div class="flex items-center justify-between w-full gap-2">
         <b>{{ 'FORM.LABELS.COMMENT' | translate }}</b>
-        <button pButton type="button" class="p-button-text p-button-sm" (click)="toggleComment()">
-          @let icon = isCommentVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
+        <button pButton type="button" class="p-button-text p-button-sm" (click)="isCommentVisible.set(!commentVisible)">
+          @let icon = commentVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
           <i [class]="icon"></i>
         </button>
       </div>
     </p-divider>
 
-    @if (isCommentVisible) {
-      <div class="md:col-span-2" [@fadeSlide]>
+    @if (commentVisible) {
+      <div class="md:col-span-2" @slide>
         <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">{{
           'FORM.LABELS.COMMENT' | translate
         }}</label>
-        <textarea id="comment" formControlName="comment" [fluid]="true" rows="5" pTextarea [autoResize]="true"></textarea>
+        <textarea pTextarea id="comment" formControlName="comment" [fluid]="true" rows="5"></textarea>
       </div>
     }
 
+    @let addParamsVisible = isAdditionalParamsVisible();
     <p-divider align="left" type="solid" class="md:col-span-2">
       <div class="flex items-center justify-between w-full gap-2">
         <b>{{ 'FORM.LABELS.ADDITIONAL_PARAMS' | translate }}</b>
-        <button pButton type="button" class="p-button-text p-button-sm" (click)="toggleAdditionalParams()">
-          @let iconAdditional = isAdditionalParamsVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
+        <button
+          pButton
+          type="button"
+          class="p-button-text p-button-sm"
+          (click)="isAdditionalParamsVisible.set(!addParamsVisible)"
+        >
+          @let iconAdditional = addParamsVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
           <i [class]="iconAdditional"></i>
         </button>
       </div>
     </p-divider>
 
     <!-- Additional Params Section -->
-    @if (isAdditionalParamsVisible) {
-      <div formGroupName="specifics" [@fadeSlide] class="grid md:col-span-2 gap-8">
+    @if (addParamsVisible) {
+      <div formGroupName="specifics" @slide class="grid md:col-span-2 gap-8">
         <div class="grid md:grid-cols-2 gap-4">
           <!-- Floor -->
           <ng-container formGroupName="floor">
@@ -389,7 +390,7 @@
           </div>
         </div>
 
-        <app-fieldset-checkbox-group [fieldsetConfig]="fieldsetConfig" formControlName="options"></app-fieldset-checkbox-group>
+        <rx-fieldset-checkbox-group [fieldsetConfig]="fieldsetConfig" formControlName="options"></rx-fieldset-checkbox-group>
       </div>
     }
 

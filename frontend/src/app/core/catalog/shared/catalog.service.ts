@@ -1,58 +1,39 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { PropertyStatus } from '@shared/enums';
-import { ICatalogFilters, ICatalogItem, IPagination, IPropertyObject, ISort, ITableData } from '@shared/interfaces';
-import { buildHttpParams } from '@shared/utils';
+import { ICatalogFilters, ICatalogItem, IFetchOptions, IPropertyObject, ITableData } from '@shared/interfaces';
 import { Observable } from 'rxjs';
+import { CrudBaseService } from '../../base';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CatalogService {
-  readonly #http = inject(HttpClient);
+export class CatalogService extends CrudBaseService<ICatalogFilters> {
+  constructor() {
+    super(`${environment.apiUrl}`);
+  }
 
-  fetchCatalog(filters: ICatalogFilters, pagination: IPagination, sort: ISort | null): Observable<ITableData<ICatalogItem>> {
-    let params = new HttpParams();
-
-    if (pagination) {
-      params = params!.set('first', String(pagination.first));
-      params = params!.set('rows', String(pagination.rows));
-    }
-
-    if (filters) {
-      params = buildHttpParams(filters, params);
-    }
-
-    if (sort) {
-      params = buildHttpParams(sort, params);
-    }
-
-    return this.#http.get<ITableData<ICatalogItem>>(`${environment.apiUrl}/catalog`, { params });
+  fetchCatalog(options: IFetchOptions<ICatalogFilters>): Observable<ITableData<ICatalogItem>> {
+    return this.fetchList<ITableData<ICatalogItem>>('catalog', options);
   }
 
   fetchPropertyObject(id: number): Observable<IPropertyObject> {
-    return this.#http.get<IPropertyObject>(`${environment.apiUrl}/catalog/${id}`);
+    return this.fetchOne<IPropertyObject>(id, 'property_object');
   }
 
   createPropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
-    return this.#http.post<IPropertyObject>(`${environment.apiUrl}/property_object`, body);
+    return this.create<IPropertyObject>(body, 'property_object');
   }
 
   updatePropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
-    return this.#http.put<IPropertyObject>(`${environment.apiUrl}/catalog`, body);
+    return this.update<IPropertyObject & { id: number }>(body, 'property_object');
   }
 
   updateStatus(id: number, status: PropertyStatus): Observable<IPropertyObject> {
-    const body = { status };
-    return this.#http.patch<IPropertyObject>(`${environment.apiUrl}/catalog/${id}`, body);
+    return this.patch<IPropertyObject>(id, { status }, 'property_object');
   }
 
   deletePropertyObject(ids: number[]): Observable<void> {
-    let params = new HttpParams();
-    if (ids.length) {
-      params = params.set('ids', JSON.stringify(ids));
-    }
-    return this.#http.delete<void>(`${environment.apiUrl}/catalog/delete`, { params });
+    return this.delete(ids, 'catalog/delete');
   }
 }
