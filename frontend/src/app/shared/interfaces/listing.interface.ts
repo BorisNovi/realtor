@@ -1,4 +1,4 @@
-import { IPropertyObject } from "./property-object.interface";
+import { IPropertyObject } from './property-object.interface';
 
 export interface IListing {
   id: number;
