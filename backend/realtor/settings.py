@@ -9,6 +9,12 @@ APPEND_SLASH = False
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Для локальных тестов SMTP (например для проверки отправки писем для сброса пароля)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Вспомогательные директории
+TEMP_UPLOAD_DIR = MEDIA_ROOT / 'temp'
+PROPERTY_MEDIA_DIR = MEDIA_ROOT / 'property'
 
 SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p'
 
@@ -70,7 +76,8 @@ INSTALLED_APPS = [
     'users',                        # Кастомная модель User, основа для других приложений
     'user_auth',                    # Зависит от users (предположительно)
     'catalog',
-    "contacts",                     
+    'contacts',
+    'file',                     
     # 'ai_assistant',                 # Может зависеть от users или user_auth
     # 'listings',                     # Листинги, возможно, зависят от users
     # 'map',                          # Карта, может зависеть от listings или users
@@ -206,3 +213,15 @@ CORS_ALLOW_HEADERS = [
     "origin",
     "x-csrftoken",
 ]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+}
