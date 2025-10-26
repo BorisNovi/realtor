@@ -8,7 +8,7 @@ urlpatterns = [
     path('api/v1/auth/', include('user_auth.urls')),
     path('api/v1/', include('catalog.urls')),
     path('api/v1/contact/', include('contacts.urls')), 
-    path("file/", include("file.urls")),
+    path("api/v1/file/", include("file.urls")),
 ]
 
 if settings.DEBUG:

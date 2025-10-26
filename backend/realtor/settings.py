@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 from decouple import config
 from dotenv import load_dotenv
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 APPEND_SLASH = False
 
@@ -224,4 +225,14 @@ LOGGING = {
         "handlers": ["console"],
         "level": "DEBUG",
     },
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated' if not DEBUG else 'rest_framework.permissions.AllowAny',
+    ]
 }
