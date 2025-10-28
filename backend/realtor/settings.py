@@ -237,3 +237,5 @@ REST_FRAMEWORK = {
     ],
 }
 
+# Не делать автоматический редирект со слэша
+APPEND_SLASH = False
