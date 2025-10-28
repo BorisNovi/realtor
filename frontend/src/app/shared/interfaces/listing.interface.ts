@@ -1,9 +1,7 @@
+import { IEntity } from './entity.interface';
 import { IPropertyObject } from './property-object.interface';
 
-export interface IListing {
-  id: number;
-  dateAdded: string | Date;
-  name: string;
+export interface IListing extends IEntity {
   propertyObjects: IPropertyObject[];
   publicLink: IPublicLink;
   companyName?: string;
