@@ -1,22 +1,21 @@
+# contacts/views.py
+import re
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
-from typing import Optional
-
 from contacts.models import Contact
 from contacts.serializers import ContactSerializer
-import re
-from typing import Optional
 from django.db.models import Q
-
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-from django.db.models import QuerySet
-
 from typing import Optional, List # Для пакетного удаления
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import permissions
 
 class ContactView(APIView):
+    authentication_classes = [JWTAuthentication]  # 🔹 JWT вместо TokenAuthentication
+    permission_classes = [permissions.IsAuthenticated]
+
     def _build_prefix_tsquery(self, text: str) -> SearchQuery:
         """
         Собирает безопасный raw tsquery с префиксами: токен -> token:*

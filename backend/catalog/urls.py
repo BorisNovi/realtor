@@ -1,3 +1,4 @@
+# catalog/urls.py
 from django.urls import path
 from catalog.views.catalog_detail_view import CatalogDetailView
 from catalog.views.create_object_view import PropertyCreateView

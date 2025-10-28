@@ -1,3 +1,4 @@
+# user_auth/urls.py
 from django.urls import path
 from user_auth import views
 from .views.activation_view import PasswordResetActivateView
