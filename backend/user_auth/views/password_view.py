@@ -9,12 +9,15 @@ from django.core.exceptions import ValidationError
 from rest_framework.views import APIView
 from users.models import PasswordResetRequest
 from django.contrib.auth import get_user_model
-
+from rest_framework.permissions import AllowAny  # Для отключения проверки прав
 User = get_user_model()
 
 # ВОССТАНОВЛЕНИЕ ПАРОЛЯ
 logger = logging.getLogger(__name__)
 class PasswordRecoveryView(APIView):
+    authentication_classes = []  # Отключаем JWTAuthentication
+    permission_classes = [AllowAny]  # Разрешаем доступ без аутентификации
+
     def post(self, request):
         email = request.data.get("email")
         

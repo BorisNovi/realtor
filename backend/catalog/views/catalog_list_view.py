@@ -8,6 +8,8 @@ from catalog.serializers.catalog_serializer import CatalogCreateSerializer
 from ..utils.pagination import FrontendPagination
 from itertools import chain
 from catalog.utils.filters import apply_catalog_filters
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import permissions
 
 PROPERTY_MODEL_MAP = {
     'flat': Flat,
@@ -18,6 +20,10 @@ PROPERTY_MODEL_MAP = {
 # Этот класс отвечает за получение списка объектов недвижимости
 # Он использует пагинацию и фильтрацию для формирования ответа
 class CatalogListView(APIView):
+    # 🔹 Используем JWT для аутентификации
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    
     def get(self, request):
         flats = Flat.objects.filter(deleted_at__isnull=True) 
         offices = Office.objects.filter(deleted_at__isnull=True)

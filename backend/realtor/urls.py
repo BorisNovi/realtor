@@ -15,3 +15,6 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Короче, тут ни в начале, ни в конце слэши не нужны. 
+# Они ставятся только в дочерних модулях и только в начале оных.
