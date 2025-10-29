@@ -10,6 +10,7 @@ from users.models import PasswordResetRequest
 from django.core.cache import cache
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model 
+from rest_framework.permissions import AllowAny  # Для отключения проверки прав
 
 User = get_user_model()  # Получаем активную модель пользователя
 
@@ -76,6 +77,9 @@ def _create_user(user_data): # Создаём пользователя в баз
 
 # АКТИВАЦИЯ СБРОСА ПАРОЛЯ
 class PasswordResetActivateView(APIView):
+    authentication_classes = []  # Отключаем JWTAuthentication
+    permission_classes = [AllowAny]  # Разрешаем доступ без аутентификации
+    
     def post(self, request):
         token = request.data.get("token")
         password = request.data.get("password")

@@ -3,10 +3,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import json
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class CatalogBulkDeleteView(APIView):
-    permission_classes = [IsAuthenticated]
+    # 🔹 Используем JWT для аутентификации
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     
     def delete(self, request):
         ids_param = request.query_params.get("ids", "[]")

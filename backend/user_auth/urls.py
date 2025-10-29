@@ -8,11 +8,13 @@ from .views.refresh_view import RefreshTokenView
 from .views.signin_view import SigninView
 
 urlpatterns = [
-    path('sign-up', views.signup, name='signup'),
-    path('sign-up-activate', views.signup_activate, name='sign-up-activate'),  
-    path('sign-in', views.SigninView.as_view(), name='signin'),  
-    path('recover', PasswordRecoveryView.as_view(), name='password-recover'),
-    path('recover-activate', PasswordResetActivateView.as_view(), name='password-reset-activate'),
-    path('refresh', RefreshTokenView.as_view(), name='refresh_token'),
-    path('sessions/check', check_session, name='check_session'),
+    path('/sign-up', views.signup, name='signup'),
+    path('/sign-up-activate', views.signup_activate, name='sign-up-activate'),  
+    path('/sign-in', views.SigninView.as_view(), name='signin'),  
+    path('/recover', PasswordRecoveryView.as_view(), name='password-recover'),
+    path('/recover-activate', PasswordResetActivateView.as_view(), name='password-reset-activate'),
+    path('/refresh', RefreshTokenView.as_view(), name='refresh_token'),
+    path('/sessions/check', check_session, name='check_session'),
 ]
+
+# проверено, все работает. слэши в начале URLов нужны!

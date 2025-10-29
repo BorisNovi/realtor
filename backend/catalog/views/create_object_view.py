@@ -1,12 +1,12 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from catalog.serializers.catalog_serializer import CatalogCreateSerializer
 from catalog.interfaces.property_response import format_property
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class PropertyCreateView(generics.CreateAPIView):
-    serializer_class = CatalogCreateSerializer
-    # permission_classes = [permissions.IsAuthenticated]
+    # 🔹 Используем JWT для аутентификации
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
