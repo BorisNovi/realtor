@@ -43,12 +43,12 @@
       </h1>
     </div>
   </ng-template>
-  <!-- TODO: тру стоит для теста, как будут картинки - убрать -->
-  @if (selected?.photos?.length || true) {
+
+  @if (selected?.photos?.length) {
     <div class="-mr-6 -ml-6">
       <p-galleria
         class="border-transparent!"
-        [value]="images"
+        [value]="imagesTemp()"
         [numVisible]="3"
         [showItemNavigators]="true"
         [circular]="true"
@@ -63,7 +63,6 @@
   }
 
   <div class="mt-4">
-    <p-divider class="font-bold"></p-divider>
     <ul class="space-y-2">
       <li>
         <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}: </span
