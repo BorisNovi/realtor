@@ -5,6 +5,8 @@ from rest_framework import status, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import FileUpload
 
+baseurl = "http://localhost:8000"
+
 class FileUploadView(APIView):
     # 🔹 Используем JWT для аутентификации
     authentication_classes = [JWTAuthentication]
@@ -24,8 +26,9 @@ class FileUploadView(APIView):
                 # Если нужно, можно привязать к пользователю
                 instance = FileUpload.objects.create(file=file_obj)
                 uploaded_files.append({
-                    "url": instance.file.url,
+                    "url": f"{baseurl}{instance.file.url}",
                     "name": instance.file.name
                 })
 
-        return Response({"urls": [f["url"] for f in uploaded_files]}, status=status.HTTP_201_CREATED)
+        return Response([f["url"] for f in uploaded_files], 
+                        status=status.HTTP_201_CREATED)
