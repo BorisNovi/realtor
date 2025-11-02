@@ -1,6 +1,5 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from django.utils import timezone
@@ -9,13 +8,16 @@ from rest_framework.views import APIView
 from users.models import PasswordResetRequest
 from django.core.cache import cache
 from django.db import IntegrityError
+from rest_framework import status, permissions
 from django.contrib.auth import get_user_model 
-from rest_framework.permissions import AllowAny  # Для отключения проверки прав
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 
 User = get_user_model()  # Получаем активную модель пользователя
 
 # АКТИВАЦИЯ РЕГИСТРАЦИИ
 @api_view(['POST'])
+@authentication_classes([])  # если нужно отключить JWT-проверку
+@permission_classes([permissions.AllowAny])  # разрешаем всем
 def signup_activate(request):
     token = request.data.get('token')  # Получаем токен из тела запроса
     if not token:
@@ -77,8 +79,8 @@ def _create_user(user_data): # Создаём пользователя в баз
 
 # АКТИВАЦИЯ СБРОСА ПАРОЛЯ
 class PasswordResetActivateView(APIView):
-    authentication_classes = []  # Отключаем JWTAuthentication
-    permission_classes = [AllowAny]  # Разрешаем доступ без аутентификации
+    authentication_classes = []  # <- отключаем проверку токена
+    permission_classes = [permissions.AllowAny]  # <- любой может вызвать
     
     def post(self, request):
         token = request.data.get("token")

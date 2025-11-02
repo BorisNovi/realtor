@@ -5,7 +5,8 @@ from django.core.mail import send_mail
 from django.core.cache import cache
 import logging
 import uuid
-
+from rest_framework import status, permissions
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from ..serializers import SignupSerializer
 from django.contrib.auth import get_user_model
 
@@ -32,6 +33,8 @@ def extract_error(error):
     return {'message': 'Validation error', 'code': 'validation_error'}
 
 @api_view(['POST'])
+@authentication_classes([])  # если нужно отключить JWT-проверку
+@permission_classes([permissions.AllowAny])  # разрешаем всем
 def signup(request):
     serializer = SignupSerializer(data=request.data)
     if not serializer.is_valid():
