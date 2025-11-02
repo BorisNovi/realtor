@@ -17,19 +17,19 @@ export class ContactsService extends CrudBaseService {
   }
 
   fetchContacts(options: IFetchOptions): Observable<ITableData<IContact>> {
-    return this.fetchList<ITableData<IContact>>('contact/list/', options);
+    return this.fetchList<ITableData<IContact>>('contact/list', options);
   }
 
   fetchContact(id: number): Observable<IContact> {
-    return this.fetchOne<IContact>(id, 'contact/');
+    return this.fetchOne<IContact>(id, 'contact');
   }
 
   createContact(body: IContact): Observable<IContact> {
-    return this.create<IContact>(body, 'contact/');
+    return this.create<IContact>(body, 'contact');
   }
 
   updateContact(body: IContact): Observable<IContact> {
-    return this.update<IContact>(body, 'contact/');
+    return this.update<IContact>(body, 'contact');
   }
 
   // deleteContact(id: number): Observable<void> {
@@ -38,6 +38,6 @@ export class ContactsService extends CrudBaseService {
 
   // TODO: заменить на закомментированный, когда бэк будет сделан
   deleteContact(id: number): Observable<void> {
-    return this.#http.delete<void>(`${environment.apiUrl}/contact/${id}/`);
+    return this.#http.delete<void>(`${environment.apiUrl}/contact/${id}`);
   }
 }
