@@ -35,15 +35,6 @@ export class DetailComponent {
     return CURRENCY_SYMBOLS[key as Currency];
   }
 
-  images: Record<string, string>[] = [
-    { image: 'https://picsum.photos/id/238/1200/1000', thumbnail: 'https://picsum.photos/id/238/100/100' },
-    { image: 'https://picsum.photos/id/237/1200/1000', thumbnail: 'https://picsum.photos/id/237/100/100' },
-    { image: 'https://picsum.photos/id/239/1200/1000', thumbnail: 'https://picsum.photos/id/239/100/100' },
-    { image: 'https://picsum.photos/id/240/1200/1000', thumbnail: 'https://picsum.photos/id/240/100/100' },
-    { image: 'https://picsum.photos/id/241/1200/1000', thumbnail: 'https://picsum.photos/id/241/100/100' },
-    { image: 'https://picsum.photos/id/242/1200/1000', thumbnail: 'https://picsum.photos/id/242/100/100' },
-  ];
-
   readonly galleriaResponsiveOptions: GalleriaResponsiveOptions[] = [
     {
       breakpoint: '1024px',
@@ -66,4 +57,7 @@ export class DetailComponent {
       }))
       .filter(group => group.values.length > 0);
   });
+
+  // TODO: Помтом убрать. Сделанно временно, пока с бэка не возвращаются фото в { image: string; thumbnail: string; }[]
+  readonly imagesTemp = computed(() => this.propertyObject()?.photos.map(p => ({ image: p, thumbnail: p })));
 }

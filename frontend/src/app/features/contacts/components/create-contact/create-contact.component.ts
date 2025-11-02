@@ -87,14 +87,12 @@ export class CreateContactComponent implements OnInit {
       ? {
           ...this.config.data,
           ...formData,
-          contact: {
-            ...this.config.data!.contact,
-            name: formData.name,
-            phone: clearPhone(formData.phone),
-            additional_phone: clearPhone(formData.additional_phone),
-          },
+          phone: clearPhone(formData.phone),
+          additional_phone: clearPhone(formData.additional_phone),
         }
       : { ...formData, phone: clearPhone(formData.phone), additional_phone: clearPhone(formData.additional_phone) };
+
+    console.log(payload);
 
     const action = hasId ? new UpdateContact(payload) : new CreateContact(payload);
 

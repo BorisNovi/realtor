@@ -61,7 +61,12 @@
     <ng-template #body let-item>
       <tr>
         <td class="max-w-[20rem] whitespace-nowrap text-ellipsis overflow-hidden">{{ item.name }}</td>
-        <td class="whitespace-nowrap">{{ item.phone | worldPhoneMask }}</td>
+        <td class="whitespace-nowrap">
+          {{ item.phone | worldPhoneMask }}
+          @if (item.additional_phone) {
+            <div class="text-sm text-gray-500">{{ item.additional_phone | worldPhoneMask }}</div>
+          }
+        </td>
         <td class="whitespace-nowrap">{{ item.dateAdded | date: 'd MM y' }}</td>
         <td>
           <p-button
