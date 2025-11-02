@@ -1,3 +1,4 @@
+# catalog/serializers/catalog_serializer.py
 import logging
 from rest_framework import serializers
 from .flat_serializer import FlatSerializer
@@ -5,10 +6,11 @@ from .office_serializer import OfficeSerializer
 from .land_serializer import LandPlotSerializer
 from contacts.serializers import ContactSerializer
 from .address_serializer import AddressSerializer
+from colorama import init, Fore
 from catalog.parsers.specifics_parser import flatten_specifics
 from file.utils import make_files_permanent
 
-
+init()
 logger = logging.getLogger(__name__)
 
 PROPERTY_SERIALIZER_MAP = {
@@ -20,6 +22,8 @@ PROPERTY_SERIALIZER_MAP = {
 class PriceSerializer(serializers.Serializer):
     value = serializers.DecimalField(max_digits=12, decimal_places=2)
     currency = serializers.CharField(max_length=3)
+
+from djangorestframework_camel_case.util import underscoreize
 
 class CatalogCreateSerializer(serializers.Serializer):
     property_type = serializers.ChoiceField(choices=list(PROPERTY_SERIALIZER_MAP.keys()))
@@ -36,79 +40,96 @@ class CatalogCreateSerializer(serializers.Serializer):
     specifics = serializers.DictField(required=False)
 
     def to_internal_value(self, data):
-        base_fields = super().to_internal_value(data)
+        print(f"{Fore.CYAN}=== RAW DATA ==={Fore.RESET}", data)
+        data = underscoreize(data)
+        print(f"{Fore.GREEN}=== CONVERTED DATA ==={Fore.RESET}", data)
+        try:
+            base_fields = super().to_internal_value(data)
+        except serializers.ValidationError as e:
+            logger.error(f"🔥 ValidationError в to_internal_value: {e.detail}")
+            raise
         known_fields = set(self.fields.keys())
-        extra_fields = {
-            k: v for k, v in data.items() if k not in self.fields
-        }
+        extra_fields = {k: v for k, v in data.items() if k not in self.fields}
         base_fields['extra_fields'] = extra_fields
         return base_fields
+
 
     def create(self, validated_data):
         logger.info("=== [CREATE PROPERTY] Start ===")
 
-        photos = validated_data.pop('photos', [])
-        property_type = validated_data.pop('property_type')
-        contact_data = validated_data.pop('contact', None)
-        price_data = validated_data.pop('price', {})
-        address_data = validated_data.pop('address', {})
-        specifics = validated_data.pop('specifics', {})
-        extra_fields = validated_data.pop('extra_fields', {})
+        try:
+            photos = validated_data.pop('photos', [])
+            property_type = validated_data.pop('property_type')
+            contact_data = validated_data.pop('contact', None)
+            price_data = validated_data.pop('price', {})
+            address_data = validated_data.pop('address', {})
+            specifics = validated_data.pop('specifics', {})
+            extra_fields = validated_data.pop('extra_fields', {})
 
-        # Обработка contact
-        contact = None
-        if contact_data:
-            logger.debug("Создание контакта...")
-            contact_serializer = ContactSerializer(data=contact_data)
-            contact_serializer.is_valid(raise_exception=True)
-            contact = contact_serializer.save()
-            logger.debug(f"Контакт создан: {contact}")
+            # Обработка contact
+            contact = None
+            if contact_data:
+                logger.debug("Создание контакта...")
+                contact_serializer = ContactSerializer(data=contact_data)
+                if not contact_serializer.is_valid():
+                    logger.error(f"🔥 Ошибка контакт-сериализатора: {contact_serializer.errors}")
+                    raise serializers.ValidationError(contact_serializer.errors)
+                contact = contact_serializer.save()
+                logger.debug(f"Контакт создан: {contact}")
 
-        # Преобразуем specifics
-        specifics_flat = flatten_specifics(property_type, specifics)
-        logger.debug(f"Сформированы specifics_flat: {specifics_flat}")
+            # Преобразуем specifics
+            specifics_flat = flatten_specifics(property_type, specifics)
+            logger.debug(f"Сформированы specifics_flat: {specifics_flat}")
 
-        # Собираем данные
-        combined_data = {
-            **extra_fields,
-            **validated_data,
-            **specifics_flat,
-            "price_value": price_data.get("value"),
-            "price_currency": price_data.get("currency"),
-            "address": address_data,
-        }
-        if contact is not None:
-            combined_data["contact"] = contact.id
+            # Собираем данные
+            combined_data = {
+                **extra_fields,
+                **validated_data,
+                **specifics_flat,
+                "price_value": price_data.get("value"),
+                "price_currency": price_data.get("currency"),
+                "address": address_data,
+            }
+            if contact is not None:
+                combined_data["contact"] = contact.id
 
-        logger.info("=== [CREATE PROPERTY] combined_data ===")
-        for k, v in combined_data.items():
-            logger.info(f"{k}: {v} ({type(v)})")
+            logger.info("=== [CREATE PROPERTY] combined_data ===")
+            for k, v in combined_data.items():
+                logger.info(f"{k}: {v} ({type(v)})")
 
-        # Создаём объект нужного типа
-        serializer_class = PROPERTY_SERIALIZER_MAP[property_type]
-        inner_serializer = serializer_class(data=combined_data)
+            # Создаём объект нужного типа
+            serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
+            if not serializer_class:
+                logger.error(f"🔥 Нет сериализатора для property_type={property_type}")
+                raise serializers.ValidationError({"property_type": "Invalid type"})
 
-        if not inner_serializer.is_valid():
-            logger.error(f"🔥 Ошибка сериализатора {serializer_class.__name__}: {inner_serializer.errors}")
-            raise serializers.ValidationError(inner_serializer.errors)
+            inner_serializer = serializer_class(data=combined_data)
+            if not inner_serializer.is_valid():
+                logger.error(f"🔥 Ошибка сериализатора {serializer_class.__name__}: {inner_serializer.errors}")
+                raise serializers.ValidationError(inner_serializer.errors)
 
-        instance = inner_serializer.save()
+            instance = inner_serializer.save()
 
-        # Перемещаем файлы
-        if photos:
-            logger.debug(f"Перемещение {len(photos)} фото...")
-            new_photos = []
-            for url in photos:
-                new_url = make_files_permanent(url, subdir=f'property_{instance.id}')
-                new_photos.append(new_url)
-                logger.debug(f"Файл перемещён: {url} → {new_url}")
+            # Перемещаем файлы
+            if photos:
+                logger.debug(f"Перемещение {len(photos)} фото...")
+                new_photos = []
+                for url in photos:
+                    new_url = make_files_permanent(url, subdir=f'property_{instance.id}')
+                    new_photos.append(new_url)
+                    logger.debug(f"Файл перемещён: {url} → {new_url}")
 
-            instance.photos = new_photos
-            instance.save(update_fields=["photos"])
-            logger.info(f"Фотографии сохранены: {new_photos}")
+                instance.photos = new_photos
+                instance.save(update_fields=["photos"])
+                logger.info(f"Фотографии сохранены: {new_photos}")
 
-        logger.info(f"=== [CREATE PROPERTY] Done. ID={instance.id} ===")
-        return instance
+            logger.info(f"=== [CREATE PROPERTY] Done. ID={instance.id} ===")
+            return instance
+
+        except Exception as e:
+            logger.exception(f"🔥 Ошибка при создании объекта: {e}")
+            raise
+
 
 
     def update(self, instance, validated_data):
