@@ -19,7 +19,6 @@ class RefreshTokenView(APIView):
         if not auth_header:
             return Response({'error': 'Missing Authorization header'}, status=400)
 
-
         if not auth_header.startswith('Bearer '):
             return Response({'error': 'Invalid Authorization header'}, status=status.HTTP_400_BAD_REQUEST)
 
