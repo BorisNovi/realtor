@@ -1,3 +1,4 @@
+# catalog/interfaces/property_response.py
 from catalog.interfaces.address import get_address
 from catalog.interfaces.price import get_price
 from catalog.interfaces.contact import get_contact
