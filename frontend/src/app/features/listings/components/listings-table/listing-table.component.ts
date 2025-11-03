@@ -11,11 +11,13 @@ import {
   output,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { IContact, IPagination } from '@shared/interfaces';
+import { IListing } from '@shared/interfaces/listing.interface';
+import { WorldPhoneMaskPipe } from '@shared/pipes';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -26,35 +28,28 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
-import { debounceTime, map, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { DeletionConfirmationService } from 'src/app/core';
-import { DeleteContact, FetchContact, FetchContacts, SetContactsSearch } from 'src/app/core/contacts/state/contacts.actions';
-import { ContactsState } from 'src/app/core/contacts/state/contacts.state';
-import { CreateContactComponent } from '../create-contact/create-contact.component';
-import { WorldPhoneMaskPipe } from '@shared/pipes';
+import { DeleteListing, FetchListing, ListingsState } from 'src/app/core/listings/state';
 
 @Component({
-  selector: 'rx-contacts-table',
+  selector: 'rx-listings-table',
   imports: [
     FormsModule,
     TableModule,
     ButtonModule,
-    InputTextModule,
-    InputGroupModule,
-    InputGroupAddonModule,
     DatePipe,
     MenuModule,
     ConfirmDialog,
     DynamicDialogModule,
     ProgressBarModule,
     TranslatePipe,
-    WorldPhoneMaskPipe,
   ],
   providers: [DialogService],
-  templateUrl: './contacts-table.component.html',
+  templateUrl: './listing-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContactsTableComponent implements AfterViewInit, OnDestroy {
+export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   readonly pTable = viewChild.required<Table>('pTable');
   readonly menu = viewChild.required<Menu>('menu');
   readonly filtersCount = input<number>();
@@ -71,21 +66,11 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
 
   actionItems: MenuItem[] = [];
 
-  readonly tableDataS = this.#store.selectSignal(ContactsState.contacts);
-  readonly paginationS = this.#store.selectSignal(ContactsState.pagination);
-  readonly loadingS = this.#store.selectSignal(ContactsState.loading);
+  readonly tableDataS = this.#store.selectSignal(ListingsState.listings);
+  readonly paginationS = this.#store.selectSignal(ListingsState.pagination);
+  readonly loadingS = this.#store.selectSignal(ListingsState.loading);
 
   readonly search = model<string>('');
-
-  constructor() {
-    toObservable(this.search)
-      .pipe(
-        debounceTime(500),
-        map(q => q.trim()),
-        takeUntilDestroyed(),
-      )
-      .subscribe(q => this.#store.dispatch([new SetContactsSearch(q), new FetchContacts()]));
-  }
 
   ngAfterViewInit(): void {
     const pagination = this.paginationS();
@@ -93,10 +78,10 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     this.pTable().rows = pagination.rows;
   }
 
-  #setActionItems(item: IContact): void {
+  #setActionItems(item: IListing): void {
     this.actionItems = [
       {
-        label: this.#translateService.instant('CONTACTS.TABLE.ACTIONS.EDIT'),
+        label: this.#translateService.instant('LISTINGS.TABLE.ACTIONS.EDIT'),
         icon: 'pi pi-pencil',
         command: () => this.openItemDialog(item.id),
       },
@@ -104,14 +89,14 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
         separator: true,
       },
       {
-        label: this.#translateService.instant('CONTACTS.TABLE.ACTIONS.DELETE'),
+        label: this.#translateService.instant('LISTINGS.TABLE.ACTIONS.DELETE'),
         icon: 'pi pi-trash',
         command: () => this.deleteItem(item),
       },
     ];
   }
 
-  onActionClick(event: Event, item: IContact): void {
+  onActionClick(event: Event, item: IListing): void {
     this.#setActionItems(item);
     this.menu().toggle(event);
   }
@@ -139,35 +124,35 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
     }
 
     this.#store
-      .dispatch(new FetchContact(id))
+      .dispatch(new FetchListing(id))
       .pipe(
         tap(() => {
-          const contact = this.#store.selectSnapshot(ContactsState.contact);
-          this.openDialog(contact);
+          const listing = this.#store.selectSnapshot(ListingsState.listing);
+          this.openDialog(listing);
         }),
         takeUntilDestroyed(this.#destroyRef),
       )
       .subscribe();
   }
 
-  openDialog(data?: IContact | null): void {
-    this.#ref = this.#dialogService.open(CreateContactComponent, {
-      data: data,
-      header: this.#translateService.instant(data?.id ? 'CONTACTS.TABLE.DIALOG.EDIT' : 'CONTACTS.TABLE.DIALOG.ADD'),
-      width: '480px',
-      modal: true,
-      closable: true,
-      contentStyle: { overflow: 'auto' },
-      focusOnShow: false,
-      breakpoints: {
-        '640px': '90vw',
-      },
-    });
+  openDialog(data?: IListing | null): void {
+    // this.#ref = this.#dialogService.open(CreateListingComponent, {
+    //   data: data,
+    //   header: this.#translateService.instant(data?.id ? 'LISTINGS.TABLE.DIALOG.EDIT' : 'LISTINGS.TABLE.DIALOG.ADD'),
+    //   width: '480px',
+    //   modal: true,
+    //   closable: true,
+    //   contentStyle: { overflow: 'auto' },
+    //   focusOnShow: false,
+    //   breakpoints: {
+    //     '640px': '90vw',
+    //   },
+    // });
   }
 
-  deleteItem(item: IContact): void {
+  deleteItem(item: IListing): void {
     this.#deletionConfirmationService.confirm(() => {
-      this.#store.dispatch(new DeleteContact([item.id]));
+      this.#store.dispatch(new DeleteListing([item.id]));
     });
   }
 
