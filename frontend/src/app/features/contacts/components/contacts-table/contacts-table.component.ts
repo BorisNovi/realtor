@@ -59,7 +59,6 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   readonly menu = viewChild.required<Menu>('menu');
   readonly filtersCount = input<number>();
 
-  readonly filtersOpen = output();
   readonly paginationChange = output<IPagination>();
   readonly sortChange = output<{ sortField: string; sortOrder: string }>();
 
@@ -131,10 +130,6 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
 
   pageChange(event: TablePageEvent): void {
     this.paginationChange.emit(event);
-  }
-
-  onFiltersOpen(): void {
-    this.filtersOpen.emit();
   }
 
   openItemDialog(id?: number): void {

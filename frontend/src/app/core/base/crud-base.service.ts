@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 export abstract class CrudBaseService<F = any> {
   protected readonly http = inject(HttpClient);
 
-  constructor(protected readonly baseUrl: string) {}
+  constructor(protected readonly baseUrl: string) { }
 
   protected buildParams(options?: IFetchOptions<F>): HttpParams {
     let params = new HttpParams();
@@ -36,12 +36,12 @@ export abstract class CrudBaseService<F = any> {
     return this.http.get<TDetail>(`${this.baseUrl}/${endpoint}/${id}`);
   }
 
-  create<TCreate>(body: TCreate, endpoint: string = ''): Observable<TCreate> {
-    return this.http.post<TCreate>(`${this.baseUrl}/${endpoint}`, body);
+  create<TCreate, TResponse = TCreate>(body: TCreate, endpoint: string = ''): Observable<TResponse> {
+    return this.http.post<TResponse>(`${this.baseUrl}/${endpoint}`, body);
   }
 
-  update<TUpdate extends { id: number }>(body: TUpdate, endpoint: string = ''): Observable<TUpdate> {
-    return this.http.put<TUpdate>(`${this.baseUrl}/${endpoint}/${body.id}`, body);
+  update<TUpdate extends { id: number }, TResponse = TUpdate>(body: TUpdate, endpoint: string = ''): Observable<TResponse> {
+    return this.http.put<TResponse>(`${this.baseUrl}/${endpoint}/${body.id}`, body);
   }
 
   delete(id: number, endpoint?: string): Observable<void>;

@@ -2,8 +2,12 @@ import { IEntity } from './entity.interface';
 import { IPropertyObject } from './property-object.interface';
 
 export interface IListing extends IEntity {
-  propertyObjects: IPropertyObject[];
+  PropoertyObjectIds: number[];
   publicLink: IPublicLink;
+}
+
+export interface IListingDetailed extends IListing {
+  propertyObjects: IPropertyObject[];
   companyName?: string;
   companyLogo?: string; // imageURL
 }
