@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { IFetchOptions, ITableData } from '@shared/interfaces';
-import { Observable } from 'rxjs';
+import { IListing, IListingDetailed } from '@shared/interfaces/listing.interface';
 import { CrudBaseService } from '../../base';
 
 @Injectable({
@@ -12,27 +12,23 @@ export class ListingsService extends CrudBaseService {
     super(`${environment.apiUrl}`);
   }
 
-  fetchListings(options: IFetchOptions): Observable<ITableData<any>> {
-    return this.fetchList<ITableData<any>>('listings/list', options);
+  fetchListings(options: IFetchOptions) {
+    return this.fetchList<ITableData<IListing>>('listings/list', options);
   }
 
-  fetchListing(id: number): Observable<any> {
-    return this.fetchOne<any>(id, 'listing');
+  fetchListing(id: number) {
+    return this.fetchOne<IListingDetailed>(id, 'listing');
   }
 
-  createListing(body: any): Observable<any> {
-    return this.create<any>(body, 'listing');
+  createListing(body: IListing) {
+    return this.create<IListing, IListingDetailed>(body, 'listing');
+  }
+  // Удаляем и добавляем объекты тоже через этот метод
+  updateListing(body: IListing) {
+    return this.update<IListing, IListingDetailed>(body, 'listing');
   }
 
-  addObjectToListing(body: any): Observable<any> {
-    return this.create<any>(body, 'listing/add_object');
-  }
-
-  updateListing(body: any): Observable<any> {
-    return this.update<any>(body, 'listing');
-  }
-
-  deleteListing(id: number): Observable<void> {
-    return this.delete(id, 'listing');
+  deleteListing(ids: number[]) {
+    return this.delete(ids, 'listing');
   }
 }
