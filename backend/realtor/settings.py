@@ -86,19 +86,35 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    # ✅ Аутентификация — добавляем JWT, плюс твой кастомный BearerTokenAuthentication
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_RENDERER_CLASSES': (
-        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
-    ),
-    'DEFAULT_PARSER_CLASSES': (
-        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
-        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
-    ),
+        'file.auth.BearerTokenAuthentication',
+    ],
+
+    # ✅ Разрешения (новая версия) — оставляем IsAuthenticated по умолчанию
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    # Пагинация
     'DEFAULT_PAGINATION_CLASS': 'catalog.utils.pagination.FrontendPagination',
     'PAGE_SIZE': 10,
+
+    # ============== ЗАКОММЕНТИРОВАНО, ПОТОМУ ЧТО БОЛЬШЕ НЕ АКТУАЛЬНО ==============
+    # ==============    ЗАМЕНЕНО БИБОТЕКАМИ ДЛЯ РАБОТЫ С CAMEL CASE   ==============
+    # Рендереры — чтобы API возвращал camelCase JSON
+    # 'DEFAULT_RENDERER_CLASSES': (
+    #     'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+    #     'rest_framework.renderers.BrowsableAPIRenderer',
+    # ),
+
+    # Парсеры — чтобы принимать camelCase JSON и multipart                   
+    # 'DEFAULT_PARSER_CLASSES': (                                            
+    #     'djangorestframework_camel_case.parser.CamelCaseJSONParser',       
+    #     'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',  
+    # ),
+
 }
 
 SIMPLE_JWT = {
@@ -107,10 +123,6 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,                   # Новый refresh-токен при каждом обновлении
     "BLACKLIST_AFTER_ROTATION": True,                # Старый refresh-токен аннулируется
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-#     "AUTH_TOKEN_CLASSES": (
-#     "rest_framework_simplejwt.tokens.AccessToken",
-#     "rest_framework_simplejwt.tokens.RefreshToken",
-# ),
     "TOKEN_BLACKLIST_ENABLED": True,                 # Включаем Blacklist
 }
 
@@ -222,15 +234,8 @@ LOGGING = {
     },
 }
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'file.auth.BearerTokenAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',  # можно убрать
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-}
+
+
 
 # Не делать автоматический редирект со слэша
 APPEND_SLASH = False

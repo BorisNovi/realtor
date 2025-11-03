@@ -1,14 +1,13 @@
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from django.core.mail import send_mail
-from django.core.cache import cache
 import logging
 import uuid
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
-from ..serializers import SignupSerializer
+from django.core.cache import cache
+from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
+from ..serializers import SignupSerializer
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -73,7 +72,7 @@ def signup(request):
     if existing_user:
         if existing_user.is_active:
             logger.info(f"Signup attempt for already active user: {email}")
-            # Возвращаем тот же ответ, но ничего не отправляем и не сохраняем
+
             return Response(
                 {'message': 'If this email is registered, you will receive a confirmation email.'},
                 status=HTTP_202_ACCEPTED
