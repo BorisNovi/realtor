@@ -129,7 +129,7 @@ export class ContactsState {
   deleteContacts(ctx: StateContext<ContactsStateModel>, { id }: DeleteContact) {
     ctx.patchState({ loading: true });
 
-    return this.#contactsService.deleteContact(id).pipe(
+    return this.#contactsService.deleteContact([id]).pipe(
       tap(() => ctx.dispatch(new ContactsOperationSuccess('DELETED'))),
       catchError((error: Error) => ctx.dispatch(new ContactsOperationFailed(error, 'DELETE_FAILED'))),
     );
