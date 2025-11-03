@@ -4,7 +4,12 @@
     <ng-container [ngTemplateOutlet]="headerTpl"></ng-container>
   </div>
   <div class="md:w-[50%] h-fit mb-4 md:sticky md:top-24">
-    <p-galleria class="border-transparent!" [value]="imagesTemp()" [responsiveOptions]="galleriaResponsiveOptions" [numVisible]="5">
+    <p-galleria
+      class="border-transparent!"
+      [value]="imagesTemp()"
+      [responsiveOptions]="galleriaResponsiveOptions"
+      [numVisible]="5"
+    >
       <ng-template #item let-item>
         <img [src]="item.image" style="width: 100%" alt="image" />
       </ng-template>

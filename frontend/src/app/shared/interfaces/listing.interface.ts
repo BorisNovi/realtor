@@ -2,7 +2,7 @@ import { IEntity } from './entity.interface';
 import { IPropertyObject } from './property-object.interface';
 
 export interface IListing extends IEntity {
-  PropoertyObjectIds: number[];
+  propoertyObjectIds: number[];
   publicLink: IPublicLink;
 }
 

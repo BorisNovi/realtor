@@ -1,4 +1,4 @@
-import { IEntity } from "./entity.interface";
+import { IEntity } from './entity.interface';
 
 export interface ISessionUser {
   user: IUser;

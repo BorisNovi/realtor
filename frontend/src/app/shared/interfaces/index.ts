@@ -11,7 +11,7 @@ export type {
   GeocodeFeature,
   GeocodeFeatureCollection,
   GeocodeGeometry,
-  GeocodeProperties
+  GeocodeProperties,
 } from './geocoder.interface';
 export type { ILanguageOption } from './language-option.interface';
 export type { IPagination } from './pagination.interface';

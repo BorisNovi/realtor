@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 export abstract class CrudBaseService<F = any> {
   protected readonly http = inject(HttpClient);
 
-  constructor(protected readonly baseUrl: string) { }
+  constructor(protected readonly baseUrl: string) {}
 
   protected buildParams(options?: IFetchOptions<F>): HttpParams {
     let params = new HttpParams();

@@ -41,7 +41,7 @@ export class UpdateContact {
 
 export class DeleteContact {
   static readonly type = '[Contacts] Delete Contact';
-  constructor(public readonly id: number) {}
+  constructor(public readonly ids: number[]) {}
 }
 
 export class ContactsOperationSuccess {
