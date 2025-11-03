@@ -46,7 +46,7 @@ class CatalogCreateSerializer(serializers.Serializer):
         try:
             base_fields = super().to_internal_value(data)
         except serializers.ValidationError as e:
-            logger.error(f"🔥 ValidationError в to_internal_value: {e.detail}")
+            logger.error(f"❌ ValidationError в to_internal_value: {e.detail}")
             raise
         known_fields = set(self.fields.keys())
         extra_fields = {k: v for k, v in data.items() if k not in self.fields}
@@ -72,7 +72,7 @@ class CatalogCreateSerializer(serializers.Serializer):
                 logger.debug("Создание контакта...")
                 contact_serializer = ContactSerializer(data=contact_data)
                 if not contact_serializer.is_valid():
-                    logger.error(f"🔥 Ошибка контакт-сериализатора: {contact_serializer.errors}")
+                    logger.error(f"❌ Ошибка контакт-сериализатора: {contact_serializer.errors}")
                     raise serializers.ValidationError(contact_serializer.errors)
                 contact = contact_serializer.save()
                 logger.debug(f"Контакт создан: {contact}")
@@ -100,12 +100,12 @@ class CatalogCreateSerializer(serializers.Serializer):
             # Создаём объект нужного типа
             serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
             if not serializer_class:
-                logger.error(f"🔥 Нет сериализатора для property_type={property_type}")
+                logger.error(f"❌ Нет сериализатора для property_type={property_type}")
                 raise serializers.ValidationError({"property_type": "Invalid type"})
 
             inner_serializer = serializer_class(data=combined_data)
             if not inner_serializer.is_valid():
-                logger.error(f"🔥 Ошибка сериализатора {serializer_class.__name__}: {inner_serializer.errors}")
+                logger.error(f"❌ Ошибка сериализатора {serializer_class.__name__}: {inner_serializer.errors}")
                 raise serializers.ValidationError(inner_serializer.errors)
 
             instance = inner_serializer.save()
@@ -127,10 +127,8 @@ class CatalogCreateSerializer(serializers.Serializer):
             return instance
 
         except Exception as e:
-            logger.exception(f"🔥 Ошибка при создании объекта: {e}")
+            logger.exception(f"❌ Ошибка при создании объекта: {e}")
             raise
-
-
 
     def update(self, instance, validated_data):
         contact_data = validated_data.pop('contact', None)

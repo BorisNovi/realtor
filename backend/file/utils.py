@@ -4,6 +4,8 @@ import shutil
 from django.conf import settings
 import logging
 
+baseurl = "http://localhost:8000"
+
 logger = logging.getLogger(__name__)
 
 def make_files_permanent(temp_url: str, subdir: str) -> str:
@@ -11,9 +13,11 @@ def make_files_permanent(temp_url: str, subdir: str) -> str:
     Перемещает файл из /media/temp/... в /media/property/{subdir}/...
     Возвращает новый URL.
     """
-    # Абсолютный путь к исходному файлу
-    temp_path = os.path.join(settings.BASE_DIR, temp_url.lstrip("/"))
-    # Конечная директория: media/property/<subdir>
+    # Оставляем путь относительно MEDIA_ROOT
+    if temp_url.startswith("http://") or temp_url.startswith("https://"):
+        temp_url = temp_url.split("/media/")[-1]  # берем путь после /media/
+
+    temp_path = os.path.join(settings.MEDIA_ROOT, temp_url)
     permanent_dir = os.path.join(settings.MEDIA_ROOT, 'property', subdir)
     os.makedirs(permanent_dir, exist_ok=True)
 
@@ -28,7 +32,8 @@ def make_files_permanent(temp_url: str, subdir: str) -> str:
     else:
         logger.warning(f"⚠️ Файл не найден: {temp_path}")
 
-    # Возвращаем относительный URL для сохранения в БД
-    new_url = f"/media/property/{subdir}/{filename}"
+    # Возвращаем URL для БД
+    new_url = f"{baseurl}/media/property/{subdir}/{filename}"
     return new_url
+
 
