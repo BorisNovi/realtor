@@ -13,7 +13,7 @@ export class ListingsService extends CrudBaseService {
   }
 
   fetchListings(options: IFetchOptions) {
-    return this.fetchList<ITableData<IListing>>('listings/list', options);
+    return this.fetchList<ITableData<IListing>>('listing/list', options);
   }
 
   fetchListing(id: number) {
