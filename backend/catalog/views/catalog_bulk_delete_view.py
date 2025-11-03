@@ -1,10 +1,10 @@
-from catalog.models import Flat, Office, LandPlot
+import json
+from rest_framework import status
+from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-import json
-from rest_framework import permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from catalog.models import Flat, Office, LandPlot
 
 class CatalogBulkDeleteView(APIView):
     # 🔹 Используем JWT для аутентификации
