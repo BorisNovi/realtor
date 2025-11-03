@@ -1,30 +1,27 @@
 # contacts/views.py
+import json
 import re
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import permissions
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from contacts.models import Contact
-from contacts.serializers import ContactSerializer
 from django.db.models import Q
+from contacts.serializers import ContactSerializer
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from typing import Optional, List # Для пакетного удаления
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework import permissions
 
+# Контроллер для контактов с поддержкой поиска, пагинации, сортировки и CRUD операций
+# Использует PostgreSQL full-text search с префиксным поиском и fallback на icontains
 class ContactView(APIView):
-    authentication_classes = [JWTAuthentication]  # 🔹 JWT вместо TokenAuthentication
+    authentication_classes = [JWTAuthentication]  
     permission_classes = [permissions.IsAuthenticated]
 
     def _build_prefix_tsquery(self, text: str) -> SearchQuery:
-        """
-        Собирает безопасный raw tsquery с префиксами: токен -> token:*
-        Пример: "анаст на" -> "анаст:* & на:*"
-        Убирает небуквенно-цифровые символы (чтобы не поломать raw tsquery).
-        """
         tokens = re.findall(r'\w+', text, flags=re.UNICODE)
         if not tokens:
-            # fallback на обычный plainto_tsquery
             return SearchQuery(text)
         raw = ' & '.join(f"{token}:*" for token in tokens)
         return SearchQuery(raw, search_type='raw')
@@ -101,37 +98,27 @@ class ContactView(APIView):
             return Response(ContactSerializer(contact).data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request: Request, pk: Optional[int] = None) -> Response:
-        ids_param: Optional[str] = request.query_params.get("ids")
-        deleted_count: int = 0
+    # Пакетное удаление контактов по списку ID через form-data
+    # Ожидает JSON-массив ID в поле "ids" тела запроса
+    def delete(self, request):
+        ids_param = request.data.get("ids", "[]")
+        try:
+            if isinstance(ids_param, str):
+                ids = json.loads(ids_param)
+            else:
+                ids = ids_param
+        except json.JSONDecodeError:
+            return Response({"detail": "Invalid JSON"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Удаление пачкой
-        if ids_param:
-            try:
-                ids: List[int] = [int(x) for x in ids_param.split(",") if x.strip().isdigit()]
-            except ValueError:
-                return Response({"detail": "Invalid ids parameter."}, status=status.HTTP_400_BAD_REQUEST)
+        # конвертируем строки в int
+        try:
+            ids = [int(x) for x in ids]
+        except (TypeError, ValueError):
+            return Response({"detail": "Invalid ID list"}, status=status.HTTP_400_BAD_REQUEST)
 
-            if not ids:
-                return Response({"detail": "No valid ids provided."}, status=status.HTTP_400_BAD_REQUEST)
+        qs = Contact.objects.filter(id__in=ids)
+        deleted_count = qs.count()
+        qs.delete()
 
-            qs = Contact.objects.filter(pk__in=ids)
-            deleted_count = qs.count()
-            qs.delete()
-            return Response({"deleted": deleted_count}, status=status.HTTP_200_OK)
-
-        # Удаление по pk (одиночный режим)
-        if pk is not None:
-            try:
-                contact = Contact.objects.get(pk=pk)
-            except Contact.DoesNotExist:
-                return Response({"detail": "Contact not found."}, status=status.HTTP_404_NOT_FOUND)
-            contact.delete()
-            deleted_count = 1
-            return Response({"deleted": deleted_count}, status=status.HTTP_200_OK)
-
-        return Response(
-            {"detail": "Specify either pk in URL or ids query param."},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response({"deleted": deleted_count}, status=status.HTTP_200_OK)
 
