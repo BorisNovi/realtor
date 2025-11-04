@@ -48,6 +48,9 @@
           {{ 'LISTINGS.TABLE.HEADERS.DATE' | translate }}
           <p-sortIcon field="dateAdded" />
         </th>
+        <th class="min-w-[8rem]">
+          {{ 'LISTINGS.TABLE.HEADERS.LINK_AVAILABLE' | translate }}
+        </th>
         <th class="w-[0%]"></th>
       </tr>
     </ng-template>
@@ -58,6 +61,7 @@
           {{ item.propoertyObjectIds.length }}
         </td>
         <td class="whitespace-nowrap">{{ item.dateAdded | date: 'd MM y' }}</td>
+        <td class="whitespace-nowrap">{{ item.publicLink.available }}</td>
         <td>
           <p-button
             icon="pi pi-ellipsis-v"
@@ -66,6 +70,21 @@
             text
             rounded
           />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="5">
+          <div class="flex flex-col items-center gap-4">
+            <div>{{ 'LISTINGS.TABLE.EMPTY' | translate }}</div>
+            <p-button
+              [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+              [outlined]="true"
+              icon="pi pi-plus"
+              (click)="openItemDialog()"
+            />
+          </div>
         </td>
       </tr>
     </ng-template>

@@ -37,6 +37,8 @@
       "CONTACT_PHONE": "Contact phone",
       "CREATE_CONTACT": "Create contact",
       "ADDITIONAL_CONTACT_PHONE": "Additional contact phone",
+      "LISTING_NAME": "Listing name",
+      "LINK_AVAILABLE": "Available by link",
       "COMMENT": "Comment",
       "ADDITIONAL_PARAMS": "Additional params",
       "CURRENT_FLOOR": "Current Floor",
@@ -81,8 +83,9 @@
       "APARTMENT": "Enter apartment number",
       "PRICE": "Enter price",
       "CURRENCY": "e.g., USD",
-      "CONTACT_NAME": "Enter name",
+      "CONTACT_NAME": "Enter contact name",
       "CONTACT_PHONE": "Enter phone",
+      "LISTING_NAME": "Enter listing name",
       "UPLOAD_PHOTOS": "Drag and drop files to here to upload",
       "CURRENT_FLOOR": "Enter current floor",
       "TOTAL_FLOORS": "Enter total floors",
@@ -276,7 +279,8 @@
       "CONFIRM_DIALOG": {
         "YES": "Yes",
         "NO": "No"
-      }
+      },
+      "EMPTY": "There are no property. You can add first"
     },
     "LABELS": {
       "ABOUT": "About",
@@ -320,15 +324,16 @@
         "NAME": "Name",
         "PHONE": "Phone"
       },
-      "DIALOG": {
-        "ADD": "Add new contact",
-        "EDIT": "Edit contact",
-        "DELETE_REQUEST_SINGLE": "Delete contact?"
-      },
       "ACTIONS": {
         "EDIT": "Edit",
         "DELETE": "Delete"
-      }
+      },
+      "EMPTY": "There are no contacts. You can add first"
+    },
+    "DIALOG": {
+      "ADD": "Add new contact",
+      "EDIT": "Edit contact",
+      "DELETE_REQUEST_SINGLE": "Delete contact?"
     },
     "SEARCH_PLACEHOLDER": "Name or phone number",
     "NOTIFICATION": {
@@ -338,6 +343,34 @@
       "UPDATE_FAILED": "Failed to update contact",
       "DELETED": "Contact deleted successfully",
       "DELETE_FAILED": "Failed to delete contact"
+    }
+  },
+  "LISTINGS" : {
+    "TABLE": {
+      "HEADERS": {
+        "NAME": "Name",
+        "QUANTITY": "Objects quantity",
+        "DATE": "Date",
+        "LINK_AVAILABLE": "Available by link"
+      },
+      "EMPTY": "There are no listings. You can add first"
+    },
+    "DIALOG": {
+      "ADD": "Add new listing",
+      "EDIT": "Edit listing",
+      "DELETE_REQUEST_SINGLE": "Delete listing?"
+    },
+    "LINK_STATUS": {
+      "AVAILABLE": "Available",
+      "UNAVAILABLE": "Unavailable"
+    },
+    "NOTIFICATION": {
+      "CREATED": "Listing created successfully",
+      "CREATE_FAILED": "Failed to create listing",
+      "UPDATED": "Listing updated successfully",
+      "UPDATE_FAILED": "Failed to update listing",
+      "DELETED": "Listing deleted successfully",
+      "DELETE_FAILED": "Failed to delete listing"
     }
   },
   "ADDRESS_PICKER": {

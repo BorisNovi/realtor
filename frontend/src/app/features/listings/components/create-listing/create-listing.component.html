@@ -1,0 +1,54 @@
+<div class="p-4">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Name -->
+    <rx-input-wrapper
+      [control]="form.get('name')!"
+      [label]="'FORM.LABELS.LISTING_NAME' | translate"
+      id="listingName"
+      class="col-span-full"
+    >
+      <input
+        id="listingName"
+        pInputText
+        type="text"
+        formControlName="name"
+        [placeholder]="'FORM.PLACEHOLDERS.LISTING_NAME' | translate"
+        class="w-full"
+      />
+    </rx-input-wrapper>
+
+    <!-- Public link available -->
+    <rx-input-wrapper
+      [control]="form.get('linkAvailable')!"
+      [label]="'FORM.LABELS.LINK_AVAILABLE' | translate"
+      id="linkAvailable"
+      class="col-span-full"
+    >
+      <p-togglebutton
+        id="linkAvailable"
+        formControlName="linkAvailable"
+        [onLabel]="'LISTINGS.LINK_STATUS.AVAILABLE' | translate"
+        [offLabel]="'LISTINGS.LINK_STATUS.UNAVAILABLE' | translate"
+        onIcon="pi pi-lock-open"
+        offIcon="pi pi-lock"
+      />
+    </rx-input-wrapper>
+
+    <!-- Buttons -->
+    <div class="md:col-span-2 flex justify-end gap-2 mt-6 sticky bottom-0">
+      <p-button
+        [label]="'FORM.BUTTONS.CANCEL' | translate"
+        type="button"
+        (click)="onCancel()"
+        class="backdrop-blur-[2px]"
+        outlined
+      />
+      <p-button
+        [label]="'FORM.BUTTONS.SAVE' | translate"
+        type="submit"
+        class="p-button-primary backdrop-blur-[2px]"
+        [disabled]="form.invalid"
+      />
+    </div>
+  </form>
+</div>

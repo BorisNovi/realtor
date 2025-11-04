@@ -79,5 +79,20 @@
         </td>
       </tr>
     </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="4">
+          <div class="flex flex-col items-center gap-4">
+            <div>{{ 'CONTACTS.TABLE.EMPTY' | translate }}</div>
+            <p-button
+              [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+              [outlined]="true"
+              icon="pi pi-plus"
+              (click)="openItemDialog()"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
   </p-table>
 </div>

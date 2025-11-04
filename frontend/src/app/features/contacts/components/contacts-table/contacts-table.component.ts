@@ -153,7 +153,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   openDialog(data?: IContact | null): void {
     this.#ref = this.#dialogService.open(CreateContactComponent, {
       data: data,
-      header: this.#translateService.instant(data?.id ? 'CONTACTS.TABLE.DIALOG.EDIT' : 'CONTACTS.TABLE.DIALOG.ADD'),
+      header: this.#translateService.instant(data?.id ? 'CONTACTS.DIALOG.EDIT' : 'CONTACTS.DIALOG.ADD'),
       width: '480px',
       modal: true,
       closable: true,
@@ -166,9 +166,12 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   }
 
   deleteItem(item: IContact): void {
-    this.#deletionConfirmationService.confirm(() => {
-      this.#store.dispatch(new DeleteContact([item.id]));
-    });
+    this.#deletionConfirmationService.confirm(
+      () => {
+        this.#store.dispatch(new DeleteContact([item.id]));
+      },
+      { header: 'CONTACTS.DIALOG.DELETE_REQUEST_SINGLE' },
+    );
   }
 
   ngOnDestroy(): void {
