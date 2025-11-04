@@ -7,10 +7,10 @@ export class DeletionConfirmationService {
   readonly #confirmationService = inject(ConfirmationService);
   readonly #translateService = inject(TranslateService);
 
-  confirm(onAccept: () => void): void {
+  confirm(onAccept: () => void, options?: IDeletionConfirmationOptions): void {
     this.#confirmationService.confirm({
-      message: this.#translateService.instant('CATALOG.TABLE.DIALOG.DELETE_HINT'),
-      header: this.#translateService.instant('CATALOG.TABLE.DIALOG.DELETE_REQUEST_SINGLE'),
+      message: this.#translateService.instant(options?.message || 'CATALOG.TABLE.DIALOG.DELETE_HINT'),
+      header: this.#translateService.instant(options?.header || 'CATALOG.TABLE.DIALOG.DELETE_REQUEST_SINGLE'),
       icon: 'pi pi-info-circle',
 
       rejectButtonProps: {
@@ -28,4 +28,9 @@ export class DeletionConfirmationService {
       },
     });
   }
+}
+
+interface IDeletionConfirmationOptions {
+  message?: string;
+  header?: string;
 }

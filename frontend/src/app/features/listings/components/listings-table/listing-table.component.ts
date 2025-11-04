@@ -15,22 +15,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { IContact, IPagination } from '@shared/interfaces';
+import { IPagination } from '@shared/interfaces';
 import { IListing } from '@shared/interfaces/listing.interface';
-import { WorldPhoneMaskPipe } from '@shared/pipes';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { tap } from 'rxjs';
 import { DeletionConfirmationService } from 'src/app/core';
 import { DeleteListing, FetchListing, ListingsState } from 'src/app/core/listings/state';
+import { CreateListingComponent } from '../create-listing/create-listing.component';
 
 @Component({
   selector: 'rx-listings-table',
@@ -136,24 +133,27 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   }
 
   openDialog(data?: IListing | null): void {
-    // this.#ref = this.#dialogService.open(CreateListingComponent, {
-    //   data: data,
-    //   header: this.#translateService.instant(data?.id ? 'LISTINGS.TABLE.DIALOG.EDIT' : 'LISTINGS.TABLE.DIALOG.ADD'),
-    //   width: '480px',
-    //   modal: true,
-    //   closable: true,
-    //   contentStyle: { overflow: 'auto' },
-    //   focusOnShow: false,
-    //   breakpoints: {
-    //     '640px': '90vw',
-    //   },
-    // });
+    this.#ref = this.#dialogService.open(CreateListingComponent, {
+      data: data,
+      header: this.#translateService.instant(data?.id ? 'LISTINGS.DIALOG.EDIT' : 'LISTINGS.DIALOG.ADD'),
+      width: '480px',
+      modal: true,
+      closable: true,
+      contentStyle: { overflow: 'auto' },
+      focusOnShow: false,
+      breakpoints: {
+        '640px': '90vw',
+      },
+    });
   }
 
   deleteItem(item: IListing): void {
-    this.#deletionConfirmationService.confirm(() => {
-      this.#store.dispatch(new DeleteListing([item.id]));
-    });
+    this.#deletionConfirmationService.confirm(
+      () => {
+        this.#store.dispatch(new DeleteListing([item.id]));
+      },
+      { header: 'LISTINGS.DIALOG.DELETE_REQUEST_SINGLE' },
+    );
   }
 
   ngOnDestroy(): void {
