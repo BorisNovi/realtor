@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from catalog.models import Flat, Office, LandPlot
 
+# Удаление объектов недвижимости (пакетное). 
 class CatalogBulkDeleteView(APIView):
     # 🔹 Используем JWT для аутентификации
     authentication_classes = [JWTAuthentication]
