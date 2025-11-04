@@ -98,22 +98,16 @@ class ContactView(APIView):
             return Response(ContactSerializer(contact).data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # Пакетное удаление контактов по списку ID через form-data
+    # Удаление контактов (пакетное) через form-data
     # Ожидает JSON-массив ID в поле "ids" тела запроса
     def delete(self, request):
-        ids_param = request.data.get("ids", "[]")
+        ids_param = request.query_params.get("ids", "[]")
         try:
-            if isinstance(ids_param, str):
-                ids = json.loads(ids_param)
-            else:
-                ids = ids_param
+            ids = json.loads(ids_param)
         except json.JSONDecodeError:
             return Response({"detail": "Invalid JSON"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # конвертируем строки в int
-        try:
-            ids = [int(x) for x in ids]
-        except (TypeError, ValueError):
+        if not isinstance(ids, list):
             return Response({"detail": "Invalid ID list"}, status=status.HTTP_400_BAD_REQUEST)
 
         qs = Contact.objects.filter(id__in=ids)
