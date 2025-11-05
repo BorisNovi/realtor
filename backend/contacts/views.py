@@ -115,4 +115,3 @@ class ContactView(APIView):
         qs.delete()
 
         return Response({"deleted": deleted_count}, status=status.HTTP_200_OK)
-
