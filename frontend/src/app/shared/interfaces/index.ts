@@ -14,6 +14,7 @@ export type {
   GeocodeProperties,
 } from './geocoder.interface';
 export type { ILanguageOption } from './language-option.interface';
+export type { IListing, IListingRequest, IPublicLinkUpdate } from './listing.interface';
 export type { IPagination } from './pagination.interface';
 export type { IPhoneMaskConfig } from './phone-mask-config.interface';
 export type { IPropertyObject, IPropertyObjectSpecifics } from './property-object.interface';

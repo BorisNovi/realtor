@@ -370,7 +370,9 @@
       "UPDATED": "Подборка успешно обновлена",
       "UPDATE_FAILED": "Не удалось обновить подборку",
       "DELETED": "Подборка успешно удалена",
-      "DELETE_FAILED": "Не удалось удалить подборку"
+      "DELETE_FAILED": "Не удалось удалить подборку",
+      "LINK_AVAILABILITY_CHANGED": "Доступ по ссылке изменен",
+      "LINK_AVAILABILITY_FAILED": "Не удалось изменить доступ по ссылке"
     }
   },
   "ADDRESS_PICKER": {

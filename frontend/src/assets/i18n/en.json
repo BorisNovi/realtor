@@ -370,7 +370,9 @@
       "UPDATED": "Listing updated successfully",
       "UPDATE_FAILED": "Failed to update listing",
       "DELETED": "Listing deleted successfully",
-      "DELETE_FAILED": "Failed to delete listing"
+      "DELETE_FAILED": "Failed to delete listing",
+      "LINK_AVAILABILITY_CHANGED": "Link availability changed",
+      "LINK_AVAILABILITY_FAILED": "Link availability changing failed"
     }
   },
   "ADDRESS_PICKER": {

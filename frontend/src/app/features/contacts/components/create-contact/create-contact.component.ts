@@ -3,7 +3,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { SLIDE } from '@shared/animations';
 import { InputWrapperComponent } from '@shared/components';
 import { WorldPhoneMasksDirective } from '@shared/directives';
 import { IContact } from '@shared/interfaces';
@@ -29,7 +28,6 @@ import { CreateContact, UpdateContact } from 'src/app/core';
   ],
   templateUrl: './create-contact.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [SLIDE],
 })
 export class CreateContactComponent implements OnInit {
   readonly #ref = inject(DynamicDialogRef);
