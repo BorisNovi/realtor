@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/v1', include('catalog.urls')),
     path('api/v1/contact', include('contacts.urls')), 
     path("api/v1/file", include("file.urls")),
+    path("api/v1/listing", include("listings.urls")),
 ]
 
 if settings.DEBUG:
