@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
-import { IFetchOptions, ITableData } from '@shared/interfaces';
-import { IListing, IListingDetailed } from '@shared/interfaces/listing.interface';
+import { IFetchOptions, IListing, IListingRequest, IPublicLinkUpdate, ITableData } from '@shared/interfaces';
 import { CrudBaseService } from '../../base';
 
 @Injectable({
@@ -17,15 +16,19 @@ export class ListingsService extends CrudBaseService {
   }
 
   fetchListing(id: number) {
-    return this.fetchOne<IListingDetailed>(id, 'listing');
+    return this.fetchOne<IListing>(id, 'listing');
   }
 
-  createListing(body: IListing) {
-    return this.create<IListing, IListingDetailed>(body, 'listing');
+  createListing(body: IListingRequest) {
+    return this.create<IListingRequest, IListing>(body, 'listing');
   }
   // Удаляем и добавляем объекты тоже через этот метод
-  updateListing(body: IListing) {
-    return this.update<IListing, IListingDetailed>(body, 'listing');
+  updateListing(body: IListingRequest) {
+    return this.update<IListingRequest, IListing>(body, 'listing');
+  }
+
+  changeListingAvailability(id: number, publicLink: IPublicLinkUpdate) {
+    return this.patch<IListingRequest, IListing>(id, { publicLink }, 'listing');
   }
 
   deleteListing(ids: number[]) {

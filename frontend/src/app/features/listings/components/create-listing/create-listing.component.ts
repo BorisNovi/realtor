@@ -3,9 +3,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { SLIDE } from '@shared/animations';
 import { InputWrapperComponent } from '@shared/components';
-import { IListing } from '@shared/interfaces/listing.interface';
+import { IListing } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -17,7 +16,6 @@ import { CreateListing, UpdateListing } from 'src/app/core/listings/state';
   imports: [ReactiveFormsModule, ButtonModule, InputTextModule, InputWrapperComponent, TranslatePipe, ToggleButton],
   templateUrl: './create-listing.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [SLIDE],
 })
 export class CreateListingComponent implements OnInit {
   readonly #ref = inject(DynamicDialogRef);
@@ -51,7 +49,9 @@ export class CreateListingComponent implements OnInit {
     const formData = this.form.value;
     const hasId = Boolean(this.config.data?.id);
 
-    const payload = hasId ? { ...this.config.data, ...formData } : formData;
+    const payload = hasId
+      ? { ...this.config.data, ...formData, publicLink: { linkAvailable: formData.linkAvailable } }
+      : { ...formData, publicLink: { linkAvailable: formData.linkAvailable } };
     const action = hasId ? new UpdateListing(payload) : new CreateListing(payload);
 
     this.#store

@@ -1,5 +1,4 @@
-import { IPagination, ISort } from '@shared/interfaces';
-import { IListing } from '@shared/interfaces/listing.interface';
+import { IListingRequest, IPagination, IPublicLinkUpdate, ISort } from '@shared/interfaces';
 
 export class FetchListings {
   static readonly type = '[Listing] Fetch Listings';
@@ -22,12 +21,20 @@ export class FetchListing {
 
 export class CreateListing {
   static readonly type = '[Listings] Create Listing';
-  constructor(public readonly listing: IListing) {}
+  constructor(public readonly listing: IListingRequest) {}
 }
 
 export class UpdateListing {
   static readonly type = '[Listings] Update Listing';
-  constructor(public readonly listing: IListing) {}
+  constructor(public readonly listing: IListingRequest) {}
+}
+
+export class ChangeListingAvaliability {
+  static readonly type = '[Listings] Change Listing Avaliability';
+  constructor(
+    public readonly id: number,
+    public readonly publicLink: IPublicLinkUpdate,
+  ) {}
 }
 
 export class DeleteListing {

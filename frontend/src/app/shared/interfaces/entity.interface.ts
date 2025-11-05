@@ -1,5 +1,5 @@
 export interface IEntity {
   id: number;
-  dateAdded: string | Date;
+  dateAdded?: string | Date;
   name: string;
 }

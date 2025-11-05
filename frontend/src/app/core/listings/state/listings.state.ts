@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { IPagination, ISort, ITableData } from '@shared/interfaces';
-import { IListing, IListingDetailed } from '@shared/interfaces/listing.interface';
+import { IListing, IPagination, ISort, ITableData } from '@shared/interfaces';
 import { MessageService } from 'primeng/api';
 import { catchError, of, switchMap, tap, throwError } from 'rxjs';
 import { ListingsService } from '../shared';
 import {
+  ChangeListingAvaliability,
   CreateListing,
   DeleteListing,
   FetchListing,
@@ -21,7 +21,7 @@ import {
 interface ListingsStateModel {
   listings: ITableData<IListing>;
   sort: ISort | null;
-  listing: IListingDetailed | null;
+  listing: IListing | null;
   loading: boolean;
   pagination: IPagination;
 }
@@ -102,7 +102,7 @@ export class ListingsState {
   fetchListing(ctx: StateContext<ListingsStateModel>, { id }: FetchListing) {
     ctx.patchState({ loading: true });
     return this.#listingsService.fetchListing(id).pipe(
-      tap((listing: IListingDetailed) => ctx.patchState({ listing, loading: false })),
+      tap((listing: IListing) => ctx.patchState({ listing, loading: false })),
       catchError((error: Error) => ctx.dispatch(new ListingsOperationFailed(error))),
     );
   }
@@ -111,7 +111,7 @@ export class ListingsState {
   createListing(ctx: StateContext<ListingsStateModel>, { listing }: CreateListing) {
     ctx.patchState({ loading: true });
     return this.#listingsService.createListing(listing).pipe(
-      tap((listing: IListingDetailed) => ctx.patchState({ listing, loading: false })),
+      tap((listing: IListing) => ctx.patchState({ listing, loading: false })),
       tap(() => ctx.dispatch(new ListingsOperationSuccess('CREATED'))),
       catchError((error: Error) =>
         ctx.dispatch(new ListingsOperationFailed(error, 'CREATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
@@ -123,10 +123,23 @@ export class ListingsState {
   updateListing(ctx: StateContext<ListingsStateModel>, { listing }: UpdateListing) {
     ctx.patchState({ loading: true });
     return this.#listingsService.updateListing(listing).pipe(
-      tap((listing: IListingDetailed) => ctx.patchState({ listing, loading: false })),
+      tap((listing: IListing) => ctx.patchState({ listing, loading: false })),
       tap(() => ctx.dispatch(new ListingsOperationSuccess('UPDATED'))),
       catchError((error: Error) =>
         ctx.dispatch(new ListingsOperationFailed(error, 'UPDATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
+      ),
+    );
+  }
+
+  @Action(ChangeListingAvaliability)
+  changeListingAvaliability(ctx: StateContext<ListingsStateModel>, { id, publicLink }: ChangeListingAvaliability) {
+    return this.#listingsService.changeListingAvailability(id, publicLink).pipe(
+      tap((listing: IListing) => ctx.patchState({ listing, loading: false })),
+      tap(() => ctx.dispatch(new ListingsOperationSuccess('LINK_AVAILABILITY_CHANGED'))),
+      catchError((error: Error) =>
+        ctx
+          .dispatch(new ListingsOperationFailed(error, 'LINK_AVAILABILITY_FAILED'))
+          .pipe(switchMap(() => throwError(() => error))),
       ),
     );
   }

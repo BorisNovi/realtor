@@ -36,11 +36,11 @@ export abstract class CrudBaseService<F = any> {
     return this.http.get<TDetail>(`${this.baseUrl}/${endpoint}/${id}`);
   }
 
-  create<TCreate, TResponse = TCreate>(body: TCreate, endpoint: string = ''): Observable<TResponse> {
+  create<TRequest, TResponse = TRequest>(body: TRequest, endpoint: string = ''): Observable<TResponse> {
     return this.http.post<TResponse>(`${this.baseUrl}/${endpoint}`, body);
   }
 
-  update<TUpdate extends { id: number }, TResponse = TUpdate>(body: TUpdate, endpoint: string = ''): Observable<TResponse> {
+  update<TRequest extends { id: number }, TResponse = TRequest>(body: TRequest, endpoint: string = ''): Observable<TResponse> {
     return this.http.put<TResponse>(`${this.baseUrl}/${endpoint}/${body.id}`, body);
   }
 
@@ -56,7 +56,7 @@ export abstract class CrudBaseService<F = any> {
     return this.http.delete<void>(`${this.baseUrl}/${endpoint}`, { params });
   }
 
-  patch<TPatch>(id: number, body: Partial<TPatch>, endpoint: string = ''): Observable<TPatch> {
-    return this.http.patch<TPatch>(`${this.baseUrl}/${endpoint}/${id}`, body);
+  patch<TRequest, TResponse = TRequest>(id: number, body: Partial<TRequest>, endpoint: string = ''): Observable<TResponse> {
+    return this.http.patch<TResponse>(`${this.baseUrl}/${endpoint}/${id}`, body);
   }
 }
