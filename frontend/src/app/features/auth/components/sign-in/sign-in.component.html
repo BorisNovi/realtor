@@ -91,11 +91,11 @@
             </span>
             <span class="font-medium ml-2">
               {{ 'AUTH.DONT_HAVE_ACCOUNT_TEXT' | translate }}
-              <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-up']">{{ 'AUTH.SIGN_UP_LINK' | translate }}</a>
+              <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-up']">{{ 'AUTH.SIGN_UP' | translate }}</a>
             </span>
           </div>
           <p-button
-            [label]="'AUTH.SIGN_IN_BUTTON' | translate"
+            [label]="'AUTH.SIGN_IN' | translate"
             styleClass="w-full"
             type="submit"
             [disabled]="form.invalid"

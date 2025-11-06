@@ -36,7 +36,7 @@ export class CreateListingComponent implements OnInit {
     this.form = this.#fb.group({
       // TODO: добавить читаемый текст ошибок
       name: [data?.name || null, [Validators.required, Validators.maxLength(50)]],
-      linkAvailable: [data?.publicLink.available || true],
+      linkAvailable: [data?.publicLink?.available || true],
     });
   }
 
@@ -50,8 +50,8 @@ export class CreateListingComponent implements OnInit {
     const hasId = Boolean(this.config.data?.id);
 
     const payload = hasId
-      ? { ...this.config.data, ...formData, publicLink: { linkAvailable: formData.linkAvailable } }
-      : { ...formData, publicLink: { linkAvailable: formData.linkAvailable } };
+      ? { ...this.config.data, name: formData.name, publicLink: { linkAvailable: formData.linkAvailable } }
+      : { name: formData.name, publicLink: { linkAvailable: formData.linkAvailable } };
     const action = hasId ? new UpdateListing(payload) : new CreateListing(payload);
 
     this.#store

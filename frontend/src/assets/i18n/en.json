@@ -15,6 +15,12 @@
     "INFO": "Info",
     "CONTACTS": "Contacts"
   },
+  "ACTIONS": {
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "CANCEL": "Cancel",
+    "SAVE": "Save"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Photos",
@@ -142,10 +148,6 @@
       "MIN": "{{label}} must be at least {{min}}",
       "MAX": "{{label}} must not exceed {{max}}",
       "INVALID": "{{label}} is invalid"
-    },
-    "BUTTONS": {
-      "CANCEL": "Cancel",
-      "SAVE": "Save"
     }
   },
   "AUTH": {
@@ -177,14 +179,11 @@
     "PASSWORD_CONFIRMATION_MISMATCH_ERROR": "Passwords do not match.",
     "FORGOT_PASSWORD_LINK": "Forgot password?",
     "DONT_HAVE_ACCOUNT_TEXT": "Don't have an account?",
-    "SIGN_UP_LINK": "Sign-up",
-    "SIGN_IN_BUTTON": "Sign In",
+    "SIGN_UP": "Sign Up",
+    "SIGN_IN": "Sign In",
     "ALREADY_HAVE_ACCOUNT_TEXT": "Already have an account?",
-    "SIGN_IN_LINK": "Sign in",
-    "SIGN_UP_BUTTON": "Sign Up",
     "BACK_TO_TEXT": "Back to",
     "SEND_BUTTON": "Send",
-    "SAVE_BUTTON": "Save",
     "NOTIFICATION": {
       "SESSION_EXPIRED": {
         "SUMMARY": "Session expired",
@@ -258,20 +257,14 @@
       "BUTTONS": {
         "ADD": "Add",
         "FILTERS": "Filters",
-        "ADD_TO_LISTING": "Add to listing",
-        "DELETE": "Delete"
+        "ADD_TO_LISTING": "Add to listing"
       },
       "FOOTER": {
         "SELECTED": "Selected {{count}}"
       },
-      "ACTIONS": {
-        "EDIT": "Edit",
-        "DELETE": "Delete"
-      },
       "DIALOG": {
         "ADD": "Add new item",
         "EDIT": "Edit item",
-        "CANCEL": "Cancel",
         "DELETE_REQUEST_SINGLE": "Delete item?",
         "DELETE_REQUEST_MANY": "Delete items?",
         "DELETE_HINT": "Attention! This action is irreversible!"
@@ -323,10 +316,6 @@
       "HEADERS": {
         "NAME": "Name",
         "PHONE": "Phone"
-      },
-      "ACTIONS": {
-        "EDIT": "Edit",
-        "DELETE": "Delete"
       },
       "EMPTY": "There are no contacts. You can add first"
     },

@@ -15,6 +15,12 @@
     "INFO": "Инфо",
     "CONTACTS": "Контакты"
   },
+  "ACTIONS": {
+    "EDIT": "Изменить",
+    "DELETE": "Удалить",
+    "CANCEL": "Отмена",
+    "SAVE": "Сохранить"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Фото",
@@ -142,10 +148,6 @@
       "MIN": "{{label}} должно быть не менее {{min}}",
       "MAX": "{{label}} не должно превышать {{max}}",
       "INVALID": "Поле {{label}} некорректно"
-    },
-    "BUTTONS": {
-      "CANCEL": "Отмена",
-      "SAVE": "Сохранить"
     }
   },
   "AUTH": {
@@ -177,14 +179,11 @@
     "PASSWORD_CONFIRMATION_MISMATCH_ERROR": "Пароли не совпадают.",
     "FORGOT_PASSWORD_LINK": "Забыли пароль?",
     "DONT_HAVE_ACCOUNT_TEXT": "Нет аккаунта?",
-    "SIGN_UP_LINK": "Зарегистрироваться",
-    "SIGN_IN_BUTTON": "Войти",
+    "SIGN_UP": "Зарегистрироваться",
+    "SIGN_IN": "Войти",
     "ALREADY_HAVE_ACCOUNT_TEXT": "Уже есть аккаунт?",
-    "SIGN_IN_LINK": "Войти",
-    "SIGN_UP_BUTTON": "Зарегистрироваться",
     "BACK_TO_TEXT": "Назад к",
     "SEND_BUTTON": "Отправить",
-    "SAVE_BUTTON": "Сохранить",
     "NOTIFICATION": {
       "SESSION_EXPIRED": {
         "SUMMARY": "Сессия истекла",
@@ -258,20 +257,14 @@
       "BUTTONS": {
         "ADD": "Добавить",
         "FILTERS": "Фильтры",
-        "ADD_TO_LISTING": "Добавить в подборку",
-        "DELETE": "Удалить"
+        "ADD_TO_LISTING": "Добавить в подборку"
       },
       "FOOTER": {
         "SELECTED": "Выбрано {{count}}"
       },
-      "ACTIONS": {
-        "EDIT": "Редактировать",
-        "DELETE": "Удалить"
-      },
       "DIALOG": {
         "ADD": "Добавить новый объект",
         "EDIT": "Редактировать объект",
-        "CANCEL": "Отмена",
         "DELETE_REQUEST_SINGLE": "Удалить объект?",
         "DELETE_REQUEST_MANY": "Удалить объекты?",
         "DELETE_HINT": "Внимание! Это дейстиве необратимо!"
@@ -323,10 +316,6 @@
       "HEADERS": {
         "NAME": "Имя",
         "PHONE": "Телефон"
-      },
-      "ACTIONS": {
-        "EDIT": "Изменить",
-        "DELETE": "Удалить"
       },
       "EMPTY": "Контактов нет. Вы можете добавить первый"
     },
