@@ -1,7 +1,7 @@
 <p-menu #menu [popup]="true" [model]="actionItems"></p-menu>
 <p-confirm-dialog />
 
-<div class="card overflow-x-auto relative !p-0 !pb-2">
+<div class="card overflow-x-auto relative !p-0">
   @if (loadingS()) {
     <p-progressbar mode="indeterminate" [style]="{ height: '4px' }" class="w-[101%] h-1 top-0 left-[-4px] !absolute z-10" />
   }
@@ -152,7 +152,7 @@
               />
               <p-button
                 severity="danger"
-                [label]="'CATALOG.TABLE.BUTTONS.DELETE' | translate"
+                [label]="'ACTIONS.DELETE' | translate"
                 icon="pi pi-trash"
                 outlined
                 (onClick)="deleteItems(selectedItems)"

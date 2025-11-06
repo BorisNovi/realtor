@@ -125,7 +125,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
         },
       },
       {
-        label: this.#translateService.instant('CATALOG.TABLE.ACTIONS.EDIT'),
+        label: this.#translateService.instant('ACTIONS.EDIT'),
         icon: 'pi pi-pencil',
         command: () => {
           this.openItemDialog(item.id);
@@ -135,7 +135,7 @@ export class TableComponent implements AfterViewInit, OnDestroy {
         separator: true,
       },
       {
-        label: this.#translateService.instant('CATALOG.TABLE.ACTIONS.DELETE'),
+        label: this.#translateService.instant('ACTIONS.DELETE'),
         icon: 'pi pi-trash',
         command: () => {
           this.deleteItems([item]);

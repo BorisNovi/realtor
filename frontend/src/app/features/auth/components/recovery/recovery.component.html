@@ -79,11 +79,11 @@
         <div class="flex items-center justify-between mt-2 mb-8 gap-8">
           <span class="font-medium ml-2">
             {{ 'AUTH.BACK_TO_TEXT' | translate }}
-            <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-in']">{{ 'AUTH.SIGN_IN_LINK' | translate }}</a>
+            <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-in']">{{ 'AUTH.SIGN_IN' | translate }}</a>
           </span>
         </div>
         <p-button
-          [label]="'AUTH.SAVE_BUTTON' | translate"
+          [label]="'ACTIONS.SAVE' | translate"
           styleClass="w-full"
           type="submit"
           [disabled]="form.invalid || !this.token"

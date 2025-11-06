@@ -14,12 +14,12 @@ export class DeletionConfirmationService {
       icon: 'pi pi-info-circle',
 
       rejectButtonProps: {
-        label: this.#translateService.instant('CATALOG.TABLE.DIALOG.CANCEL'),
+        label: this.#translateService.instant('ACTIONS.CANCEL'),
         severity: 'secondary',
         outlined: true,
       },
       acceptButtonProps: {
-        label: this.#translateService.instant('CATALOG.TABLE.ACTIONS.DELETE'),
+        label: this.#translateService.instant('ACTIONS.DELETE'),
         severity: 'danger',
       },
 

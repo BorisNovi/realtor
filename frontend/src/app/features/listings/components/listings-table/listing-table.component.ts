@@ -5,17 +5,16 @@ import {
   Component,
   DestroyRef,
   inject,
-  input,
   model,
   OnDestroy,
-  output,
   viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { IListing, IPagination } from '@shared/interfaces';
+import { LISTINGS_PAGINATION_KEY } from '@shared/constants';
+import { IListing, ISort } from '@shared/interfaces';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -24,8 +23,15 @@ import { Menu, MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { tap } from 'rxjs';
-import { DeletionConfirmationService } from 'src/app/core';
-import { DeleteListing, FetchListing, ListingsState } from 'src/app/core/listings/state';
+import { DeletionConfirmationService, QueryParamsService } from 'src/app/core';
+import {
+  DeleteListing,
+  FetchListing,
+  FetchListings,
+  ListingsState,
+  SetListingsPagination,
+  SetListingsSort,
+} from 'src/app/core/listings/state';
 import { CreateListingComponent } from '../create-listing/create-listing.component';
 
 @Component({
@@ -48,10 +54,6 @@ import { CreateListingComponent } from '../create-listing/create-listing.compone
 export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   readonly pTable = viewChild.required<Table>('pTable');
   readonly menu = viewChild.required<Menu>('menu');
-  readonly filtersCount = input<number>();
-
-  readonly paginationChange = output<IPagination>();
-  readonly sortChange = output<{ sortField: string; sortOrder: string }>();
 
   #ref!: DynamicDialogRef | null;
   readonly #dialogService = inject(DialogService);
@@ -59,6 +61,7 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   readonly #translateService = inject(TranslateService);
   readonly #destroyRef = inject(DestroyRef);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
+  readonly #queryParamsService = inject(QueryParamsService);
 
   actionItems: MenuItem[] = [];
 
@@ -74,10 +77,14 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
     this.pTable().rows = pagination.rows;
   }
 
+  onSortChange(event: ISort): void {
+    this.#store.dispatch([new SetListingsSort(event), new FetchListings()]);
+  }
+
   #setActionItems(item: IListing): void {
     this.actionItems = [
       {
-        label: this.#translateService.instant('LISTINGS.TABLE.ACTIONS.EDIT'),
+        label: this.#translateService.instant('ACTIONS.EDIT'),
         icon: 'pi pi-pencil',
         command: () => this.openItemDialog(item.id),
       },
@@ -85,7 +92,7 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
         separator: true,
       },
       {
-        label: this.#translateService.instant('LISTINGS.TABLE.ACTIONS.DELETE'),
+        label: this.#translateService.instant('ACTIONS.DELETE'),
         icon: 'pi pi-trash',
         command: () => this.deleteItem(item),
       },
@@ -98,8 +105,10 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   }
 
   onLazyLoad(event: TableLazyLoadEvent): void {
-    if (typeof event.sortField === 'string' && typeof event.sortOrder === 'number')
-      this.sortChange.emit({ sortField: event.sortField, sortOrder: event.sortOrder === 1 ? 'asc' : 'desc' });
+    if (typeof event.sortField === 'string' && typeof event.sortOrder === 'number') {
+      const sort = { sortField: event.sortField, sortOrder: event.sortOrder === 1 ? 'asc' : 'desc' };
+      this.#store.dispatch([new SetListingsSort(sort), new FetchListings()]);
+    }
 
     // Используется, чтобы перебить переключение пагинации при сортировке
     if (this.pTable) {
@@ -110,7 +119,8 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   }
 
   pageChange(event: TablePageEvent): void {
-    this.paginationChange.emit(event);
+    this.#queryParamsService.updateQueryParams(event, LISTINGS_PAGINATION_KEY);
+    this.#store.dispatch([new SetListingsPagination(event), new FetchListings()]);
   }
 
   openItemDialog(id?: number): void {

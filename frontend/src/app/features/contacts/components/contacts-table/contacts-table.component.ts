@@ -5,7 +5,6 @@ import {
   Component,
   DestroyRef,
   inject,
-  input,
   model,
   OnDestroy,
   output,
@@ -16,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { IContact, IPagination } from '@shared/interfaces';
+import { WorldPhoneMaskPipe } from '@shared/pipes';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -31,7 +31,6 @@ import { DeletionConfirmationService } from 'src/app/core';
 import { DeleteContact, FetchContact, FetchContacts, SetContactsSearch } from 'src/app/core/contacts/state/contacts.actions';
 import { ContactsState } from 'src/app/core/contacts/state/contacts.state';
 import { CreateContactComponent } from '../create-contact/create-contact.component';
-import { WorldPhoneMaskPipe } from '@shared/pipes';
 
 @Component({
   selector: 'rx-contacts-table',
@@ -57,7 +56,6 @@ import { WorldPhoneMaskPipe } from '@shared/pipes';
 export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   readonly pTable = viewChild.required<Table>('pTable');
   readonly menu = viewChild.required<Menu>('menu');
-  readonly filtersCount = input<number>();
 
   readonly paginationChange = output<IPagination>();
   readonly sortChange = output<{ sortField: string; sortOrder: string }>();
@@ -96,7 +94,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   #setActionItems(item: IContact): void {
     this.actionItems = [
       {
-        label: this.#translateService.instant('CONTACTS.TABLE.ACTIONS.EDIT'),
+        label: this.#translateService.instant('ACTIONS.EDIT'),
         icon: 'pi pi-pencil',
         command: () => this.openItemDialog(item.id),
       },
@@ -104,7 +102,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
         separator: true,
       },
       {
-        label: this.#translateService.instant('CONTACTS.TABLE.ACTIONS.DELETE'),
+        label: this.#translateService.instant('ACTIONS.DELETE'),
         icon: 'pi pi-trash',
         command: () => this.deleteItem(item),
       },
