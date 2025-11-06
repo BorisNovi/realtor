@@ -98,7 +98,7 @@ class ContactView(APIView):
             return Response(ContactSerializer(contact).data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # Удаление контактов (пакетное) через form-data
+    # Удаление контактов (пакетное) 
     # Ожидает JSON-массив ID в поле "ids" тела запроса
     def delete(self, request):
         ids_param = request.query_params.get("ids", "[]")
