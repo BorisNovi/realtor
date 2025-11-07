@@ -9,6 +9,7 @@ from .address_serializer import AddressSerializer
 from colorama import init, Fore
 from catalog.parsers.specifics_parser import flatten_specifics
 from file.utils import make_files_permanent
+from djangorestframework_camel_case.util import underscoreize
 
 init()
 logger = logging.getLogger(__name__)
@@ -22,8 +23,6 @@ PROPERTY_SERIALIZER_MAP = {
 class PriceSerializer(serializers.Serializer):
     value = serializers.DecimalField(max_digits=12, decimal_places=2)
     currency = serializers.CharField(max_length=3)
-
-from djangorestframework_camel_case.util import underscoreize
 
 class CatalogCreateSerializer(serializers.Serializer):
     property_type = serializers.ChoiceField(choices=list(PROPERTY_SERIALIZER_MAP.keys()))
