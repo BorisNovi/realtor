@@ -1,25 +1,55 @@
-<p-select
-  [ngModel]="selected()"
-  (ngModelChange)="selected.set($event)"
-  [options]="items()"
-  appendTo="body"
-  [virtualScroll]="true"
-  [virtualScrollItemSize]="38"
-  [virtualScrollOptions]="options"
-  [loading]="loading()"
-  (onShow)="onShow()"
-  [placeholder]="placeholder()"
-  [filter]="withSearch()"
-  [emptyMessage]="emptyMessage()"
-  [showClear]="true"
-  class="w-full"
->
-  <ng-template #filter>
-    <p-inputgroup>
-      <p-inputgroup-addon>
-        <i class="pi pi-search"></i>
-      </p-inputgroup-addon>
-      <input pInputText [(ngModel)]="search" />
-    </p-inputgroup>
-  </ng-template>
-</p-select>
+@if (!multiple()) {
+  <p-select
+    [ngModel]="selected()"
+    (ngModelChange)="selected.set($event)"
+    [options]="items()"
+    appendTo="body"
+    [virtualScroll]="true"
+    [virtualScrollItemSize]="38"
+    [virtualScrollOptions]="options"
+    dataKey="id"
+    [loading]="loading()"
+    (onShow)="onShow()"
+    [placeholder]="placeholder()"
+    [filter]="withSearch()"
+    [emptyMessage]="emptyMessage()"
+    [showClear]="true"
+    class="w-full"
+  >
+    <ng-template #filter>
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-search"></i>
+        </p-inputgroup-addon>
+        <input pInputText [(ngModel)]="search" />
+      </p-inputgroup>
+    </ng-template>
+  </p-select>
+} @else {
+  <p-multi-select
+    [ngModel]="selectedMulti()"
+    (ngModelChange)="selectedMulti.set($event)"
+    [options]="items()"
+    appendTo="body"
+    [virtualScroll]="true"
+    [virtualScrollItemSize]="38"
+    [virtualScrollOptions]="options"
+    dataKey="id"
+    [loading]="loading()"
+    (onPanelShow)="onShow()"
+    [placeholder]="placeholder()"
+    [filter]="withSearch()"
+    [emptyMessage]="emptyMessage()"
+    display="chip"
+    class="w-full"
+  >
+    <ng-template #filter>
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-search"></i>
+        </p-inputgroup-addon>
+        <input pInputText [(ngModel)]="search" />
+      </p-inputgroup>
+    </ng-template>
+  </p-multi-select>
+}

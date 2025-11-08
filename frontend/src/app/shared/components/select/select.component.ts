@@ -6,13 +6,14 @@ import { ScrollerOptions, SelectItem } from 'primeng/api';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputText } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { debounceTime, map, Observable, skip, startWith, Subject, switchMap, tap, withLatestFrom } from 'rxjs';
 
 @Component({
   selector: 'rx-select',
   standalone: true,
-  imports: [SelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule],
+  imports: [SelectModule, MultiSelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,16 +32,19 @@ export class SelectComponent {
   readonly mapToSelectItem = input.required<(item: any) => SelectItem>();
   readonly valueMapper = input<(item: any) => any>(v => v);
   readonly pageSize = input(25);
+  readonly multiple = input(false, { transform: v => v === '' || !!v });
   readonly withSearch = input(false, { transform: v => v === '' || !!v });
   readonly placeholder = input('Select item');
   readonly emptyMessage = input('');
 
   readonly selected = model<SelectItem | null>(null);
+  readonly selectedMulti = model<SelectItem[]>([]);
   readonly items = signal<SelectItem[]>([]);
   readonly loading = signal(false);
   readonly search = signal<any>('');
   readonly #loadPage$ = new Subject<IPagination>();
   #totalOnServer = 0;
+  #initialItemsLoaded = false;
 
   #onChange: (value: any) => void = () => {};
   #onTouched: () => void = () => {};
@@ -86,6 +90,12 @@ export class SelectComponent {
       .subscribe(selectItem => {
         this.#emitValue(selectItem);
       });
+
+    toObservable(this.selectedMulti)
+      .pipe(skip(1), takeUntilDestroyed(this.#destroyRef))
+      .subscribe(selectItems => {
+        if (this.multiple()) this.#emitValue(selectItems);
+      });
   }
 
   readonly options: ScrollerOptions = {
@@ -95,8 +105,11 @@ export class SelectComponent {
   };
 
   onShow(): void {
-    if (this.items().length) return;
+    if (this.items().length && !this.#initialItemsLoaded) return;
+    if (this.#initialItemsLoaded) this.items.set([]);
+
     this.#loadPage$.next({ first: 0, rows: this.pageSize() });
+    this.#initialItemsLoaded = false;
   }
 
   #onScroll(event: { first: number; last: number }): void {
@@ -113,12 +126,21 @@ export class SelectComponent {
   }
 
   writeValue(value: any): void {
-    if (value === undefined || value === null) {
-      this.selected.set(null);
-      return;
+    if (value === undefined || value === null) return;
+
+    if (this.multiple()) {
+      const mapped = Array.isArray(value) ? value.map(v => this.mapToSelectItem()(v)) : [];
+      this.selectedMulti.set(mapped);
+
+      const currentValues = this.items().map(i => i.value);
+      const missing = mapped.filter(i => !currentValues.includes(i.value));
+      if (missing.length) this.items.update(curr => [...curr, ...missing]);
+    } else {
+      const mapped = this.mapToSelectItem()(value);
+      this.selected.set(mapped);
+      if (!this.items().some(i => i.value === mapped.value)) this.items.update(curr => [...curr, mapped]);
     }
-    const mapped = this.mapToSelectItem()(value);
-    this.selected.set(mapped);
+    if (this.items().length > 0) this.#initialItemsLoaded = true;
   }
 
   registerOnChange(fn: any): void {

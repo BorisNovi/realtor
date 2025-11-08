@@ -66,7 +66,6 @@ import { AddressFormComponent } from '../address-form/address-form.component';
     ScrollToTopOnShowDirective,
     AddressFormComponent,
     SelectComponent,
-    WorldPhoneMaskPipe,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -91,6 +90,7 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly contactMapToSelect = (item: IContact) => ({
     label: `${item?.name} ${this.#worldPhoneMaskPipe.transform(item?.phone)}`,
     value: item,
+    id: item.id,
   });
   readonly contactValueMapper = (contact: IContact) => ({
     id: contact?.id || null,

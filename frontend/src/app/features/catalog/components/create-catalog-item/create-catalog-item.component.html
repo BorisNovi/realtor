@@ -218,17 +218,12 @@
       [label]="'FORM.LABELS.CONTACT' | translate"
       id="contact"
     >
-      <!-- TODO: Временно выбранный элемент засунул в placeholder. Потом убрать, когда будет фикс -->
       <rx-select
         [fetchMethod]="contactFetchMethod"
         [mapToSelectItem]="contactMapToSelect"
         [valueMapper]="contactValueMapper"
         formControlName="contact"
-        [placeholder]="
-          (contactControl?.value?.name || ('FORM.PLACEHOLDERS.NOT_SELECTED' | translate)) +
-          ' ' +
-          (contactControl?.value?.phone | worldPhoneMask)
-        "
+        [placeholder]="'FORM.PLACEHOLDERS.NOT_SELECTED' | translate"
         withSearch
       >
       </rx-select>
