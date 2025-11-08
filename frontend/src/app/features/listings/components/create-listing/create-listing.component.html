@@ -17,6 +17,25 @@
       />
     </rx-input-wrapper>
 
+    @let objectsControl = form.get('objects');
+    <rx-input-wrapper
+      class="w-full md:col-span-2"
+      [control]="objectsControl!"
+      [label]="'FORM.LABELS.OBJECTS' | translate"
+      id="objects"
+    >
+      <rx-select
+        [fetchMethod]="catalogFetchMethod"
+        [mapToSelectItem]="catalogMapToSelect"
+        [valueMapper]="catalogValueMapper"
+        formControlName="objects"
+        [placeholder]="'FORM.PLACEHOLDERS.NOT_SELECTED' | translate"
+        multiple
+        withSearch
+      >
+      </rx-select>
+    </rx-input-wrapper>
+
     <!-- Public link available -->
     <rx-input-wrapper
       [control]="form.get('linkAvailable')!"
