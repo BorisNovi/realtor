@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { PropertyStatus } from '@shared/enums';
 import { ICatalogFilters, ICatalogItem, IFetchOptions, IPropertyObject, ITableData } from '@shared/interfaces';
-import { Observable } from 'rxjs';
 import { CrudBaseService } from '../../base';
 
 @Injectable({

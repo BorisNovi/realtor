@@ -24,16 +24,16 @@
       [label]="'FORM.LABELS.OBJECTS' | translate"
       id="objects"
     >
-      <rx-select
-        [fetchMethod]="catalogFetchMethod"
-        [mapToSelectItem]="catalogMapToSelect"
+      <rx-multiselect
+        [fetch]="catalogFetchMethod"
+        [mapToSelect]="catalogMapToSelect"
         [valueMapper]="catalogValueMapper"
         formControlName="objects"
         [placeholder]="'FORM.PLACEHOLDERS.NOT_SELECTED' | translate"
         multiple
         withSearch
       >
-      </rx-select>
+      </rx-multiselect>
     </rx-input-wrapper>
 
     <!-- Public link available -->

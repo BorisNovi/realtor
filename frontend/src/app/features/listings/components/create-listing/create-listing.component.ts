@@ -3,8 +3,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { InputWrapperComponent, SelectComponent } from '@shared/components';
-import { ICatalogItem, IFetchOptions, IListing } from '@shared/interfaces';
+import { InputWrapperComponent, MultiselectComponent } from '@shared/components';
+import { ICatalogItem, IFetchOptions } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -21,7 +21,7 @@ import { CreateListing, UpdateListing } from 'src/app/core/listings/state';
     InputWrapperComponent,
     TranslatePipe,
     ToggleButton,
-    SelectComponent,
+    MultiselectComponent,
   ],
   templateUrl: './create-listing.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
