@@ -8,7 +8,7 @@ import {
   AddressPickerComponent,
   FieldsetCheckboxGroupComponent,
   InputWrapperComponent,
-  SelectComponent,
+  SelectSingleComponent,
 } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { createItemsFieldsetConfig } from '@shared/constants/fieldset.configs';
@@ -65,7 +65,7 @@ import { AddressFormComponent } from '../address-form/address-form.component';
     AddressPickerComponent,
     ScrollToTopOnShowDirective,
     AddressFormComponent,
-    SelectComponent,
+    SelectSingleComponent,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

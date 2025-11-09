@@ -218,15 +218,8 @@
       [label]="'FORM.LABELS.CONTACT' | translate"
       id="contact"
     >
-      <rx-select
-        [fetchMethod]="contactFetchMethod"
-        [mapToSelectItem]="contactMapToSelect"
-        [valueMapper]="contactValueMapper"
-        formControlName="contact"
-        [placeholder]="'FORM.PLACEHOLDERS.NOT_SELECTED' | translate"
-        withSearch
-      >
-      </rx-select>
+      <rx-select-single [fetch]="contactFetchMethod" [mapToSelect]="contactMapToSelect" formControlName="contact" withSearch>
+      </rx-select-single>
     </rx-input-wrapper>
 
     @let commentVisible = isCommentVisible();
