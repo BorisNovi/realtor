@@ -74,7 +74,8 @@
       "ELEVATOR": "Лифт",
       "BALCONY": "Балкон",
       "GARDEN": "Сад",
-      "GARAGE": "Гараж"
+      "GARAGE": "Гараж",
+      "PROPERTY_OBJECTS": "Объекты недвижимости"
     },
     "PLACEHOLDERS": {
       "PROPERTY_TYPE": "Выберите тип недвижимости",
@@ -100,7 +101,8 @@
       "FURNISHED": "Выберите меблировку",
       "RENOVATION": "Выберите тип ремонта",
       "KITCHEN": "Выберите тип кухни",
-      "NOT_SELECTED": "Не выбран"
+      "NOT_SELECTED": "Не выбран",
+      "SELECTED_COUNT": "Выбрано {count}"
     },
     "PROPERTIES": {
       "PROPERTY_TYPE": {

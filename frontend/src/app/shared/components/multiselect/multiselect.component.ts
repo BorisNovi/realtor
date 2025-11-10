@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, forwardRef, input, model } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { IFetchOptions, ITableData } from '@shared/interfaces';
 import { SelectItem } from 'primeng/api';
 import { InputGroup } from 'primeng/inputgroup';
@@ -13,7 +14,7 @@ import { BaseSelect } from 'src/app/core';
 @Component({
   selector: 'rx-multiselect',
   standalone: true,
-  imports: [MultiSelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule],
+  imports: [MultiSelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule, TranslatePipe],
   templateUrl: 'multiselect.component.html',
 
   changeDetection: ChangeDetectionStrategy.OnPush,

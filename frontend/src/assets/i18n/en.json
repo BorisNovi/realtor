@@ -74,7 +74,8 @@
       "ELEVATOR": "Elevator",
       "BALCONY": "Balcony",
       "GARDEN": "Garden",
-      "GARAGE": "Garage"
+      "GARAGE": "Garage",
+      "PROPERTY_OBJECTS": "Property objects"
     },
     "PLACEHOLDERS": {
       "PROPERTY_TYPE": "Select Property Type",
@@ -100,7 +101,8 @@
       "FURNISHED": "Select furnished",
       "RENOVATION": "Select renovation",
       "KITCHEN": "Select kitchen type",
-      "NOT_SELECTED": "Not Selected"
+      "NOT_SELECTED": "Not Selected",
+      "SELECTED_COUNT": "{count} items selected"
     },
     "PROPERTIES": {
       "PROPERTY_TYPE": {
