@@ -10,6 +10,7 @@
       <input
         id="listingName"
         pInputText
+        [pAutoFocus]="true"
         type="text"
         formControlName="name"
         [placeholder]="'FORM.PLACEHOLDERS.LISTING_NAME' | translate"
@@ -21,7 +22,7 @@
     <rx-input-wrapper
       class="w-full md:col-span-2"
       [control]="objectsControl!"
-      [label]="'FORM.LABELS.OBJECTS' | translate"
+      [label]="'FORM.LABELS.PROPERTY_OBJECTS' | translate"
       id="objects"
     >
       <rx-multiselect

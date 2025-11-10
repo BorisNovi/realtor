@@ -145,11 +145,10 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
     this.#ref = this.#dialogService.open(CreateListingComponent, {
       data: data,
       header: this.#translateService.instant(data?.id ? 'LISTINGS.DIALOG.EDIT' : 'LISTINGS.DIALOG.ADD'),
-      width: '480px',
+      width: '620px',
       modal: true,
       closable: true,
       contentStyle: { overflow: 'auto' },
-      focusOnShow: false,
       breakpoints: {
         '640px': '90vw',
       },
