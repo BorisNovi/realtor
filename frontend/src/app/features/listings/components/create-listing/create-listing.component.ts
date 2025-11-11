@@ -88,7 +88,7 @@ export class CreateListingComponent implements OnInit {
       ? {
           ...this.config.data,
           name: formData.name,
-          property_object_ids: formData.objects.map((obj: IPropertyObject) => obj.id),
+          property_object_ids: formData.objects,
           publicLink: { linkAvailable: formData.linkAvailable },
         }
       : { name: formData.name, property_object_ids: formData.objects, publicLink: { linkAvailable: formData.linkAvailable } };
