@@ -3,12 +3,11 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   inject,
   model,
   OnDestroy,
   output,
-  viewChild,
+  viewChild
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -26,9 +25,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
-import { debounceTime, map, tap } from 'rxjs';
+import { debounceTime, map } from 'rxjs';
 import { DeletionConfirmationService } from 'src/app/core';
-import { DeleteContact, FetchContact, FetchContacts, SetContactsSearch } from 'src/app/core/contacts/state/contacts.actions';
+import { DeleteContact, FetchContacts, SetContactsSearch } from 'src/app/core/contacts/state/contacts.actions';
 import { ContactsState } from 'src/app/core/contacts/state/contacts.state';
 import { CreateContactComponent } from '../create-contact/create-contact.component';
 
@@ -64,7 +63,6 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   readonly #dialogService = inject(DialogService);
   readonly #store = inject(Store);
   readonly #translateService = inject(TranslateService);
-  readonly #destroyRef = inject(DestroyRef);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
 
   actionItems: MenuItem[] = [];
@@ -96,7 +94,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
       {
         label: this.#translateService.instant('ACTIONS.EDIT'),
         icon: 'pi pi-pencil',
-        command: () => this.openItemDialog(item.id),
+        command: () => this.openDialog(item),
       },
       {
         separator: true,
@@ -128,24 +126,6 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
 
   pageChange(event: TablePageEvent): void {
     this.paginationChange.emit(event);
-  }
-
-  openItemDialog(id?: number): void {
-    if (id === undefined || id < 0) {
-      this.openDialog();
-      return;
-    }
-
-    this.#store
-      .dispatch(new FetchContact(id))
-      .pipe(
-        tap(() => {
-          const contact = this.#store.selectSnapshot(ContactsState.contact);
-          this.openDialog(contact);
-        }),
-        takeUntilDestroyed(this.#destroyRef),
-      )
-      .subscribe();
   }
 
   openDialog(data?: IContact | null): void {

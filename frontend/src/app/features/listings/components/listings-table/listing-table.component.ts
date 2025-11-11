@@ -3,13 +3,11 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   inject,
   model,
   OnDestroy,
-  viewChild,
+  viewChild
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
@@ -22,15 +20,13 @@ import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dy
 import { Menu, MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
-import { tap } from 'rxjs';
 import { DeletionConfirmationService, QueryParamsService } from 'src/app/core';
 import {
   DeleteListing,
-  FetchListing,
   FetchListings,
   ListingsState,
   SetListingsPagination,
-  SetListingsSort,
+  SetListingsSort
 } from 'src/app/core/listings/state';
 import { CreateListingComponent } from '../create-listing/create-listing.component';
 
@@ -59,7 +55,6 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   readonly #dialogService = inject(DialogService);
   readonly #store = inject(Store);
   readonly #translateService = inject(TranslateService);
-  readonly #destroyRef = inject(DestroyRef);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
   readonly #queryParamsService = inject(QueryParamsService);
 
@@ -86,7 +81,7 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
       {
         label: this.#translateService.instant('ACTIONS.EDIT'),
         icon: 'pi pi-pencil',
-        command: () => this.openItemDialog(item.id),
+        command: () => this.openDialog(item),
       },
       {
         separator: true,
@@ -121,24 +116,6 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   pageChange(event: TablePageEvent): void {
     this.#queryParamsService.updateQueryParams(event, LISTINGS_PAGINATION_KEY);
     this.#store.dispatch([new SetListingsPagination(event), new FetchListings()]);
-  }
-
-  openItemDialog(id?: number): void {
-    if (id === undefined || id < 0) {
-      this.openDialog();
-      return;
-    }
-
-    this.#store
-      .dispatch(new FetchListing(id))
-      .pipe(
-        tap(() => {
-          const listing = this.#store.selectSnapshot(ListingsState.listing);
-          this.openDialog(listing);
-        }),
-        takeUntilDestroyed(this.#destroyRef),
-      )
-      .subscribe();
   }
 
   openDialog(data?: IListing | null): void {

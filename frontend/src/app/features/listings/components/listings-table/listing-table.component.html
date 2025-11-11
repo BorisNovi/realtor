@@ -32,7 +32,7 @@
           [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
           [outlined]="true"
           icon="pi pi-plus"
-          (click)="openItemDialog()"
+          (click)="openDialog()"
         />
       </div>
     </ng-template>
@@ -58,7 +58,7 @@
       <tr>
         <td class="max-w-[20rem] whitespace-nowrap text-ellipsis overflow-hidden">{{ item.name }}</td>
         <td class="whitespace-nowrap">
-          {{ item?.propoertyObjectIds?.length }}
+          {{ item?.propertyObjectIds?.length }}
         </td>
         <td class="whitespace-nowrap">{{ item?.dateAdded | date: 'd MM y' }}</td>
         <td class="whitespace-nowrap">{{ item?.publicLink?.available }}</td>
@@ -82,7 +82,7 @@
               [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
               [outlined]="true"
               icon="pi pi-plus"
-              (click)="openItemDialog()"
+              (click)="openDialog()"
             />
           </div>
         </td>
