@@ -3,7 +3,7 @@ from rest_framework import serializers
 from listings.models import Listing
 from djangorestframework_camel_case.util import underscoreize
 from catalog.models import BaseProperty, Flat 
-from catalog.serializers.flat_serializer import FlatSerializer
+from .flat_test_serializer import FlatTestSerializer
 
 class ListingSerializer(serializers.ModelSerializer):
     # принимаем список ID вручную
@@ -14,18 +14,19 @@ class ListingSerializer(serializers.ModelSerializer):
     # поле для развёрнутых объектов. 
     property_objects = serializers.SerializerMethodField(read_only=True)
     
-    # удобненько конвертируем ключи camelCase → snake_case
-    def to_internal_value(self, data):
-        print(f"{Fore.CYAN}=== RAW DATA ==={Fore.RESET} \n", data)
-        data = underscoreize(data)
-        print(f"{Fore.GREEN}=== CONVERTED DATA ==={Fore.RESET} \n", data)
-        return super().to_internal_value(data)
+    # удобненько конвертируем ключи camelCase → snake_case 
+    # ======= (ЗАМЕНЕНО НАСТРОЙКАМИ ДЖАНГО) =========
+    # def to_internal_value(self, data):
+    #     print(f"{Fore.CYAN}=== RAW DATA ==={Fore.RESET} \n", data)
+    #     # data = underscoreize(data)
+    #     print(f"{Fore.GREEN}=== CONVERTED DATA ==={Fore.RESET} \n", data)
+    #     return super().to_internal_value(data)
 
     # Обращаемся к таблице за искомыми объектами:
     def get_property_objects(self, obj):
         # на текущий момент берём только квартиры
         flats = Flat.objects.filter(id__in=obj.property_object_ids)
-        return FlatSerializer(flats, many=True).data
+        return FlatTestSerializer(flats, many=True).data
         # TODO: ДОБАВЬ ОСТАЛЬНЫЕ ПОТОМ
 
     class Meta:

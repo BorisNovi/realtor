@@ -105,16 +105,16 @@ REST_FRAMEWORK = {
     # ============== ЗАКОММЕНТИРОВАНО, ПОТОМУ ЧТО БОЛЬШЕ НЕ АКТУАЛЬНО ==============
     # ==============    ЗАМЕНЕНО БИБОТЕКАМИ ДЛЯ РАБОТЫ С CAMEL CASE   ==============
     # Рендереры — чтобы API возвращал camelCase JSON
-    # 'DEFAULT_RENDERER_CLASSES': (
-    #     'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
-    #     'rest_framework.renderers.BrowsableAPIRenderer',
-    # ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
 
     # Парсеры — чтобы принимать camelCase JSON и multipart                   
-    # 'DEFAULT_PARSER_CLASSES': (                                            
-    #     'djangorestframework_camel_case.parser.CamelCaseJSONParser',       
-    #     'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',  
-    # ),
+    'DEFAULT_PARSER_CLASSES': (                                            
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',       
+        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',  
+    ),
 
 }
 
