@@ -25,7 +25,7 @@ import { BaseSelect } from 'src/app/core';
   ],
 })
 export class SelectSingleComponent extends BaseSelect {
-  readonly fetch = input.required<(options: IFetchOptions) => Observable<ITableData<any>>>();
+  readonly fetcher = input.required<(options: IFetchOptions) => Observable<ITableData<any>>>();
   readonly mapToSelect = input.required<(item: any) => SelectItem>();
   readonly valueMapper = input<(item: any) => any>(v => v);
   readonly placeholder = input('Select item');
@@ -45,7 +45,7 @@ export class SelectSingleComponent extends BaseSelect {
   }
 
   protected override fetchMethod(options: IFetchOptions) {
-    return this.fetch()(options);
+    return this.fetcher()(options);
   }
 
   protected override mapToSelectItem(item: any): SelectItem {
