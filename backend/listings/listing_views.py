@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework import permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from listings.models import Listing
-from listings.serializers import ListingSerializer
+from listings.listing_serializers import ListingSerializer
 from typing import Optional
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db.models import Q
@@ -77,9 +77,8 @@ class ListingsView(APIView):
                 queryset = queryset.filter(
                     Q(name__icontains=search) | Q(phone__icontains=search)
                 )
-        # если search не указан — queryset остаётся all()
 
-        # Сортировка (если указана фронтом — она перекрывает order_by("-rank"))
+        # Сортировка
         if sort_field in ["name"]: # TODO: Добавь другие поля по необходимости
             direction = "-" if sort_order.lower() == "desc" else ""
             queryset = queryset.order_by(f"{direction}{sort_field}")
