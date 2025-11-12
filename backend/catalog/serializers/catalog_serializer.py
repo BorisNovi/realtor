@@ -1,24 +1,25 @@
 # catalog/serializers/catalog_serializer.py
 import logging
+import os
 from rest_framework import serializers
 from .flat_serializer import FlatSerializer
-from .office_serializer import OfficeSerializer
-from .land_serializer import LandPlotSerializer
-from contacts.serializers import ContactSerializer
-from .address_serializer import AddressSerializer
+from contacts.contact_serializers import ContactSerializer
 from colorama import init, Fore
-from catalog.parsers.specifics_parser import flatten_specifics
-from file.utils import make_files_permanent
-from djangorestframework_camel_case.util import underscoreize
+from file.file_utils import make_files_permanent
 
 init()
 logger = logging.getLogger(__name__)
 
 PROPERTY_SERIALIZER_MAP = {
     'flat': FlatSerializer,
-    'office': OfficeSerializer,
-    'landplot': LandPlotSerializer,
 }
+
+class AddressSerializer(serializers.Serializer):
+    city = serializers.CharField()
+    road = serializers.CharField()
+    house = serializers.CharField()
+    apartment = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    position = serializers.JSONField(required=False, allow_null=True)
 
 class PriceSerializer(serializers.Serializer):
     value = serializers.DecimalField(max_digits=12, decimal_places=2)
@@ -38,127 +39,166 @@ class CatalogCreateSerializer(serializers.Serializer):
     contact = ContactSerializer(required=False, allow_null=True, default=None)
     specifics = serializers.DictField(required=False)
 
-    def to_internal_value(self, data):
-        print(f"{Fore.CYAN}=== RAW DATA ==={Fore.RESET}", data)
-        data = underscoreize(data)
-        print(f"{Fore.GREEN}=== CONVERTED DATA ==={Fore.RESET}", data)
-        try:
-            base_fields = super().to_internal_value(data)
-        except serializers.ValidationError as e:
-            logger.error(f"❌ ValidationError в to_internal_value: {e.detail}")
-            raise
-        known_fields = set(self.fields.keys())
-        extra_fields = {k: v for k, v in data.items() if k not in self.fields}
-        base_fields['extra_fields'] = extra_fields
-        return base_fields
-
-
     def create(self, validated_data):
         logger.info("=== [CREATE PROPERTY] Start ===")
+        logger.info(f"Validated data: {validated_data}")
 
-        try:
-            photos = validated_data.pop('photos', [])
-            property_type = validated_data.pop('property_type')
-            contact_data = validated_data.pop('contact', None)
-            price_data = validated_data.pop('price', {})
-            address_data = validated_data.pop('address', {})
-            specifics = validated_data.pop('specifics', {})
-            extra_fields = validated_data.pop('extra_fields', {})
+        photos = validated_data.pop('photos', [])
+        property_type = validated_data.pop('property_type')
+        contact_data = validated_data.pop('contact', None)
+        price_data = validated_data.pop('price', {})
+        address_data = validated_data.pop('address', {})
+        specifics = validated_data.pop('specifics', {})
 
-            # Обработка contact
-            contact = None
-            if contact_data:
-                logger.debug("Создание контакта...")
-                contact_serializer = ContactSerializer(data=contact_data)
-                if not contact_serializer.is_valid():
-                    logger.error(f"❌ Ошибка контакт-сериализатора: {contact_serializer.errors}")
-                    raise serializers.ValidationError(contact_serializer.errors)
-                contact = contact_serializer.save()
-                logger.debug(f"Контакт создан: {contact}")
+        # Извлечение вложенных данных
+        options = specifics.get("options", {})
+        shared_facilities = options.get("shared_facilities", {})  # Исправлено с sharedFacilities
+        utilities = options.get("utilities", {})
+        other = options.get("other", {})
 
-            # Преобразуем specifics
-            specifics_flat = flatten_specifics(property_type, specifics)
-            logger.debug(f"Сформированы specifics_flat: {specifics_flat}")
+        # Обработка контакта
+        contact = None
+        if contact_data:
+            contact_serializer = ContactSerializer(data=contact_data)
+            contact_serializer.is_valid(raise_exception=True)
+            contact = contact_serializer.save()
 
-            # Собираем данные
-            combined_data = {
-                **extra_fields,
-                **validated_data,
-                **specifics_flat,
-                "price_value": price_data.get("value"),
-                "price_currency": price_data.get("currency"),
-                "address": address_data,
-            }
-            if contact is not None:
-                combined_data["contact"] = contact.id
+        # Формируем данные для модели
+        combined_data = {
+            **validated_data,
+            "price_value": price_data.get("value"),
+            "price_currency": price_data.get("currency"),
+            "address": address_data,
+            "rooms": specifics.get("rooms"),
+            "floor_current": specifics.get("floor", {}).get("current"),
+            "floor_full": specifics.get("floor", {}).get("full"),
+            "kitchen_type": specifics.get("kitchen"),
+            "heating": specifics.get("heating"),
+            "furnished": specifics.get("furnished"),
+            "renovation": specifics.get("renovation"),
+            # Shared Facilities
+            "shared_kitchen": shared_facilities.get("shared_kitchen", False),
+            "shared_bathroom": shared_facilities.get("shared_bathroom", False),
+            # Utilities
+            "electricity": utilities.get("electricity", False),
+            "water_supply": utilities.get("water_supply", False),  # Исправлено с waterSupply
+            "natural_gas": utilities.get("natural_gas", False),  # Исправлено с naturalGas
+            "sewerage": utilities.get("sewerage", False),
+            "internet": utilities.get("internet", False),
+            # Other
+            "bath": other.get("bath", False),
+            "shower": other.get("shower", False),
+            "air_conditioning": other.get("air_conditioning", False),  # Исправлено с airConditioning
+            "fireplace": other.get("fireplace", False),
+            "beautiful_view": other.get("beautiful_view", False),  # Исправлено с beautifulView
+            "new_building": other.get("new_building", False),  # Исправлено с newBuilding
+            "elevator": other.get("elevator", False),
+            "parking": other.get("parking", False),
+            "balcony": other.get("balcony", False),
+            "garden": other.get("garden", False),
+            "garage": other.get("garage", False),
+        }
 
-            logger.info("=== [CREATE PROPERTY] combined_data ===")
-            for k, v in combined_data.items():
-                logger.info(f"{k}: {v} ({type(v)})")
+        logger.info(f"Combined data: {combined_data}")
 
-            # Создаём объект нужного типа
-            serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
-            if not serializer_class:
-                logger.error(f"❌ Нет сериализатора для property_type={property_type}")
-                raise serializers.ValidationError({"property_type": "Invalid type"})
+        if contact is not None:
+            combined_data["contact"] = contact.id
 
-            inner_serializer = serializer_class(data=combined_data)
-            if not inner_serializer.is_valid():
-                logger.error(f"❌ Ошибка сериализатора {serializer_class.__name__}: {inner_serializer.errors}")
-                raise serializers.ValidationError(inner_serializer.errors)
+        # Создаём объект нужного типа
+        serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
+        if not serializer_class:
+            raise serializers.ValidationError({"property_type": "Invalid type"})
 
-            instance = inner_serializer.save()
+        inner_serializer = serializer_class(data=combined_data)
+        inner_serializer.is_valid(raise_exception=True)
+        instance = inner_serializer.save()
 
-            # Перемещаем файлы
-            if photos:
-                logger.debug(f"Перемещение {len(photos)} фото...")
-                new_photos = []
-                for url in photos:
-                    new_url = make_files_permanent(url, subdir=f'property_{instance.id}')
-                    new_photos.append(new_url)
-                    logger.debug(f"Файл перемещён: {url} → {new_url}")
+        # Перемещаем фото
+        if photos:
+            new_photos = []
+            for url in photos:
+                new_url = make_files_permanent(url, subdir=f'property_{instance.id}')
+                new_photos.append(new_url)
+            instance.photos = new_photos
+            instance.save(update_fields=["photos"])
 
-                instance.photos = new_photos
-                instance.save(update_fields=["photos"])
-                logger.info(f"Фотографии сохранены: {new_photos}")
-
-            logger.info(f"=== [CREATE PROPERTY] Done. ID={instance.id} ===")
-            return instance
-
-        except Exception as e:
-            logger.exception(f"❌ Ошибка при создании объекта: {e}")
-            raise
+        logger.info(f"=== [CREATE PROPERTY] Done. ID={instance.id} ===")
+        return instance
 
     def update(self, instance, validated_data):
+        # Контакт
         contact_data = validated_data.pop('contact', None)
         if contact_data:
-            contact_serializer = ContactSerializer(instance=instance.contact, data=contact_data)
+            if instance.contact:
+                contact_serializer = ContactSerializer(instance=instance.contact, data=contact_data)
+            else:
+                contact_serializer = ContactSerializer(data=contact_data)
             contact_serializer.is_valid(raise_exception=True)
             contact = contact_serializer.save()
             instance.contact = contact
 
+        # Цена
         price_data = validated_data.pop('price', {})
         if price_data:
             instance.price_value = price_data.get('value', instance.price_value)
             instance.price_currency = price_data.get('currency', instance.price_currency)
 
+        # Остальные поля
         specifics = validated_data.pop('specifics', {})
-        property_type = getattr(instance, 'property_type', None)
-        specifics_flat = flatten_specifics(property_type, specifics)
+        for attr, value in {**validated_data, **specifics}.items():
+            if attr not in ['property_type', 'id', 'photos']:
+                setattr(instance, attr, value)
 
-        extra_fields = validated_data.pop('extra_fields', {})
-        forbidden_fields = ['property_type', 'id']
-
-        for attr, value in {**validated_data, **specifics_flat, **extra_fields}.items():
-            if attr in forbidden_fields:
-                continue
-            setattr(instance, attr, value)
-
+        # Фото оставляем без изменений на этом этапе
         instance.save()
         return instance
 
+    # === TO REPRESENTATION ===
     def to_representation(self, instance):
-        for property_type, serializer_class in PROPERTY_SERIALIZER_MAP.items():
-            if isinstance(instance, serializer_class.Meta.model):
-                return serializer_class(instance).data
-        return super().to_representation(instance)
+        data = super().to_representation(instance)
+        return {
+            "id": data.get("id"),
+            "photos": data.get("photos", []),
+            "propertyType": "flat",
+            "zoningType": data.get("zoning_type"),
+            "status": data.get("status"),
+            "address": {...},
+            "price": {...},
+            "area": float(data.get("area", 0)) if data.get("area") else None,
+            "dateAdded": data.get("date_added"),
+            "contact": {...},
+            "comment": data.get("comment"),
+            "specifies": {
+                "rooms": data.get("rooms"),
+                "floor": {"current": data.get("floor_current"), "full": data.get("floor_full")},
+                "renovation": data.get("renovation"),
+                "furnished": data.get("furnished"),
+                "kitchen": data.get("kitchen_type"),
+                "heating": data.get("heating"),
+                "sharedFacilities": {
+                    "kitchen": data.get("shared_kitchen"),
+                    "bathroom": data.get("shared_bathroom"),
+                },
+                "utilities": {
+                    "electricity": data.get("electricity"),
+                    "waterSupply": data.get("water_supply"),
+                    "naturalGas": data.get("natural_gas"),
+                    "sewerage": data.get("sewerage"),
+                    "internet": data.get("internet"),
+                },
+                "options": {
+                    "bath": data.get("bath"),
+                    "shower": data.get("shower"),
+                    "airConditioning": data.get("air_conditioning"),
+                    "fireplace": data.get("fireplace"),
+                    "beautifulView": data.get("beautiful_view"),
+                    "newBuilding": data.get("new_building"),
+                    "elevator": data.get("elevator"),
+                    "parking": data.get("parking"),
+                    "balcony": data.get("balcony"),
+                    "garden": data.get("garden"),
+                    "garage": data.get("garage"),
+                },
+            },
+        }
+

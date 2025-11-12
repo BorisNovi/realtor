@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
-from catalog.models import Flat, Office, LandPlot
+from catalog.models import Flat
 
 class Command(BaseCommand):
     help = "Удаляет объекты, мягко удалённые более X времени назад"
@@ -10,7 +10,7 @@ class Command(BaseCommand):
         threshold = timezone.now() - timedelta(days=7) # Заменить на нужное время, например, timedelta(days=30) для 30 дней
         total = 0
 
-        for model in [Flat, Office, LandPlot]:
+        for model in [Flat]:
             old = model.objects.filter(is_deleted=True, deleted_at__lt=threshold)
             count = old.count()
             if count:
