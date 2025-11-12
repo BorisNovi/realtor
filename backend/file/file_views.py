@@ -8,9 +8,12 @@ from .models import FileUpload
 baseurl = "http://localhost:8000"
 
 class FileUploadView(APIView):
-    # 🔹 Используем JWT для аутентификации
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]  
+    # permission_classes = [permissions.IsAuthenticated]
+
+    # Тестовая среда
+    authentication_classes = []  
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         # Проверяем, что файлы пришли

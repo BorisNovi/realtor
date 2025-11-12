@@ -4,7 +4,7 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from catalog.models import Flat, Office, LandPlot
+from catalog.models import Flat
 
 # Удаление объектов недвижимости (пакетное). 
 class CatalogBulkDeleteView(APIView):
@@ -22,7 +22,7 @@ class CatalogBulkDeleteView(APIView):
         if not isinstance(ids, list):
             return Response({"detail": "Invalid ID list"}, status=status.HTTP_400_BAD_REQUEST)
 
-        for model in [Flat, Office, LandPlot]:
+        for model in [Flat]:
             items = model.objects.filter(id__in=ids, is_deleted=False)
             for item in items:
                 item.soft_delete()

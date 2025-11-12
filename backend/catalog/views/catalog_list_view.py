@@ -1,8 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from catalog.interfaces.property_response import format_list_property
-from catalog.models import Flat, Office, LandPlot
+from catalog.models import Flat
 from catalog.serializers.catalog_serializer import PROPERTY_SERIALIZER_MAP
 from catalog.serializers.catalog_serializer import CatalogCreateSerializer
 from ..utils.pagination import FrontendPagination
@@ -13,8 +12,6 @@ from rest_framework import permissions
 
 PROPERTY_MODEL_MAP = {
     'flat': Flat,
-    'office': Office,
-    'landplot': LandPlot,
 }
 
 # Этот класс отвечает за получение списка объектов недвижимости
@@ -26,11 +23,9 @@ class CatalogListView(APIView):
     
     def get(self, request):
         flats = Flat.objects.filter(deleted_at__isnull=True) 
-        offices = Office.objects.filter(deleted_at__isnull=True)
-        lands = LandPlot.objects.filter(deleted_at__isnull=True)
         
         # TODO: Добавить прочие типы недвижимости
-        combined = sorted(chain(flats, offices, lands), key=lambda obj: obj.date_added, reverse=True) 
+        combined = sorted(chain(flats), key=lambda obj: obj.date_added, reverse=True) 
 
         filtered = apply_catalog_filters(combined, request.query_params)
         paginator = FrontendPagination()

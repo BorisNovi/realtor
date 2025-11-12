@@ -7,26 +7,34 @@ class PropertyStatus(models.TextChoices):
     RESERVED = 'reserved', 
     RENTED = 'rented', 
 
-
 class BaseProperty(models.Model):
+    PROPERTY_TYPE = None  # <-- дочкам задаём конкретный тип
+
     def soft_delete(self):
         self.is_deleted = True
         self.deleted_at = timezone.now()
         self.save()
+
+    @property # Виртуальное/вычисляемое поле
+    def property_type(self):
+        """Возвращает тип объекта недвижимости"""
+        return self.PROPERTY_TYPE
     
     photos = models.JSONField(default=list)
-    
     address = models.JSONField()
-
     price_value = models.DecimalField(max_digits=12, decimal_places=2)
     price_currency = models.CharField(max_length=3, default="USD")
-
     area = models.DecimalField(max_digits=7, decimal_places=2)
     date_added = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10, choices=PropertyStatus.choices, default=PropertyStatus.AVAILABLE)
-
+    contact = models.ForeignKey(
+        Contact,
+        on_delete=models.CASCADE,
+        related_name="%(class)ss",
+        null=True,
+        blank=True
+    )
     comment = models.TextField(blank=True, null=True)
-
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
@@ -35,26 +43,16 @@ class BaseProperty(models.Model):
 
 # Модель для квартир
 class Flat(BaseProperty):
+    PROPERTY_TYPE = "flat"
+
     # specifics
     rooms = models.IntegerField(null=True, blank=True)
-
-    # specifics.floor
     floor_current = models.PositiveIntegerField(null=True, blank=True)
     floor_full = models.PositiveIntegerField(null=True, blank=True)
-
-    # specifics.kitchen
     kitchen_type = models.CharField(max_length=50, null=True, blank=True)
-    
-    # specifics.zoning
     zoning_type = models.CharField(max_length=50, null=True, blank=True)
-    
-    # specifics.heating (тип, не булево)
     heating = models.CharField(max_length=50, null=True, blank=True)
-
-    # specifics.furnished
     furnished = models.CharField(max_length=50, null=True, blank=True)
-
-    # specifics.renovation
     renovation = models.CharField(max_length=50, null=True, blank=True)
 
     # specifics.sharedFacilities
@@ -82,58 +80,3 @@ class Flat(BaseProperty):
     balcony = models.BooleanField(default=False)
     garden = models.BooleanField(default=False)
     garage = models.BooleanField(default=False)
-
-    # === CONTACT ===
-    contact = models.ForeignKey(
-        Contact,
-        on_delete=models.CASCADE,
-        related_name="flats",
-        null=True,
-        blank=True
-    )
-
-    def __str__(self):
-        return f"Квартира – {self.address} ({self.price_value} {self.price_currency})"
-    
-    @property
-    def property_type(self):
-        return "flat"
-
-class Office(BaseProperty):
-    """ Модель для офисов """
-    floor = models.PositiveIntegerField()
-    open_space = models.BooleanField(default=False)
-    meeting_rooms = models.PositiveIntegerField(default=0)
-    contact = models.ForeignKey(
-        Contact, 
-        on_delete=models.CASCADE, 
-        related_name="offices", 
-        null=True, 
-        blank=True)
-
-
-    def __str__(self):
-        return f"Офис – {self.address} ({self.price_value} {self.price_currency})"
-    @property
-    def property_type(self):
-        return "office"
-
-class LandPlot(BaseProperty):
-    """ Модель для земельных участков """
-    is_agricultural = models.BooleanField(default=False)
-    has_communications = models.BooleanField(default=False)
-    contact = models.ForeignKey(
-        Contact, 
-        on_delete=models.CASCADE, 
-        related_name="landlots", 
-        null=True, 
-        blank=True)
-
-
-    def __str__(self):
-        return f"Земельный участок – {self.address} ({self.price_value} {self.price_currency})"
-    @property
-    def property_type(self):
-        return "landplot"
-
-

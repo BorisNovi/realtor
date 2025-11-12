@@ -9,7 +9,7 @@ from rest_framework import permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from contacts.models import Contact
 from django.db.models import Q
-from contacts.serializers import ContactSerializer
+from contacts.contact_serializers import ContactSerializer
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from typing import Optional, List # Для пакетного удаления
 

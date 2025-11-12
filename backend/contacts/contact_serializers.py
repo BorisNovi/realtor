@@ -14,20 +14,16 @@ class ContactSerializer(serializers.ModelSerializer):
         fields = ['id', 'dateAdded', 'name', 'phone', 'additional_phone']
 
     def validate_name(self, value):
-        # Валидируем, чтобы имя не превышало 50 символов
         if len(value) > 50:
             raise serializers.ValidationError("Name must be at most 50 characters long.")
         return value
 
-
     def validate_phone(self, value):
-        # Валидируем, чтобы номер телефона содержал только цифры
         if not re.match(r'^\d+$', value):
             raise serializers.ValidationError("Phone number must contain only digits.")
         return value
 
     def validate_additional_phone(self, value):
-        # Если указан дополнительный телефон, проверяем на цифры
         if value and not re.match(r'^\d+$', value):
             raise serializers.ValidationError("Additional phone number must contain only digits.")
         return value
