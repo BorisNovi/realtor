@@ -1,14 +1,7 @@
 import { DatePipe } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  model,
-  OnDestroy,
-  viewChild
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject, model, OnDestroy, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { LISTINGS_PAGINATION_KEY } from '@shared/constants';
@@ -26,7 +19,7 @@ import {
   FetchListings,
   ListingsState,
   SetListingsPagination,
-  SetListingsSort
+  SetListingsSort,
 } from 'src/app/core/listings/state';
 import { CreateListingComponent } from '../create-listing/create-listing.component';
 
@@ -34,6 +27,7 @@ import { CreateListingComponent } from '../create-listing/create-listing.compone
   selector: 'rx-listings-table',
   imports: [
     FormsModule,
+    RouterLink,
     TableModule,
     ButtonModule,
     DatePipe,
@@ -42,6 +36,7 @@ import { CreateListingComponent } from '../create-listing/create-listing.compone
     DynamicDialogModule,
     ProgressBarModule,
     TranslatePipe,
+    RouterLink,
   ],
   providers: [DialogService],
   templateUrl: './listing-table.component.html',
