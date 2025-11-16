@@ -26,7 +26,7 @@ import { CreateListing, UpdateListing } from 'src/app/core/listings/state';
     TranslatePipe,
     ToggleButton,
     MultiselectComponent,
-],
+  ],
   templateUrl: './create-listing.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -47,7 +47,7 @@ export class CreateListingComponent implements OnInit {
       ${this.#translateService.instant('FORM.PROPERTIES.PROPERTY_TYPE.' + item?.propertyType)}
       ${item?.address?.city} ${item?.area} m² —
       ${item?.price?.value}
-      ${this.getCurrencySymbol((item?.price)?.currency)}
+      ${this.getCurrencySymbol(item?.price?.currency)}
     `,
     value: item,
     id: item.id,

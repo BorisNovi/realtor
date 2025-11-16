@@ -41,7 +41,7 @@
           [outlined]="true"
           icon="pi pi-filter"
           (click)="onFiltersOpen()"
-          [badge]="filtersCount()?.toString()"
+          [badge]="filtersCount().toString()"
         />
       </div>
     </ng-template>
@@ -64,7 +64,7 @@
       </tr>
     </ng-template>
     <ng-template #body let-item>
-      <tr (click)="onRowClick(item)" class="cursor-pointer">
+      <tr class="cursor-pointer" [routerLink]="['../', item.id]">
         <td>
           <p-tableCheckbox [value]="item" (click)="$event.stopPropagation()" />
         </td>

@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   inject,
   input,
@@ -12,12 +13,12 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { CURRENCY_SYMBOLS } from '@shared/constants';
+import { CATALOG_PAGINATION_KEY, CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency, PropertyStatus } from '@shared/enums';
-import { ICatalogItem, IPagination, IPropertyObject } from '@shared/interfaces';
+import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -34,15 +35,21 @@ import {
   CatalogState,
   DeletePropertyObjects,
   DeletionConfirmationService,
+  FetchCatalog,
   FetchPropertyObject,
+  QueryParamsService,
+  SetCatalogPagination,
+  SetCatalogSort,
   UpdateStatus,
 } from 'src/app/core';
+import { CatalogFiltersService } from '../../catalog-filters.service';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
 @Component({
   selector: 'rx-table',
   imports: [
     FormsModule,
+    RouterLink,
     TableModule,
     TagModule,
     ButtonModule,
@@ -56,27 +63,24 @@ import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalo
     TranslatePipe,
   ],
   providers: [DialogService],
-  templateUrl: './table.component.html',
+  templateUrl: './catalog-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TableComponent implements AfterViewInit, OnDestroy {
+export class CatalogTableComponent implements AfterViewInit, OnDestroy {
   readonly pTable = viewChild.required<Table>('pTable');
   readonly menu = viewChild.required<Menu>('menu');
-  readonly filtersCount = input<number>();
-
-  readonly filtersOpen = output();
-  readonly paginationChange = output<IPagination>();
-  readonly sortChange = output<{ sortField: string; sortOrder: string }>();
 
   #ref!: DynamicDialogRef | null;
   readonly #dialogService = inject(DialogService);
   readonly #store = inject(Store);
   readonly #confirmationService = inject(ConfirmationService);
   readonly #translateService = inject(TranslateService);
-  readonly #router = inject(Router);
   readonly #destroyRef = inject(DestroyRef);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
+  readonly #queryParamsService = inject(QueryParamsService);
+  readonly #filtersService = inject(CatalogFiltersService);
 
+  readonly filtersCount = computed(() => this.#filtersService.currentCount);
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
   statuses: { label: string; value: string }[] = [];
@@ -149,13 +153,10 @@ export class TableComponent implements AfterViewInit, OnDestroy {
     this.menu().toggle(event);
   }
 
-  onRowClick(item: ICatalogItem): void {
-    this.#router.navigate(['catalog', item.id]);
-  }
-
   onLazyLoad(event: TableLazyLoadEvent): void {
     if (typeof event.sortField === 'string' && typeof event.sortOrder === 'number') {
-      this.sortChange.emit({ sortField: event.sortField, sortOrder: event.sortOrder === 1 ? 'asc' : 'desc' });
+      const sort = { sortField: event.sortField, sortOrder: event.sortOrder === 1 ? 'asc' : 'desc' };
+      this.#store.dispatch([new SetCatalogSort(sort), new FetchCatalog()]);
     }
 
     // Используется, чтобы перебить переключение пагинации при сортировке
@@ -167,11 +168,12 @@ export class TableComponent implements AfterViewInit, OnDestroy {
   }
 
   pageChange(event: TablePageEvent): void {
-    this.paginationChange.emit(event);
+    this.#queryParamsService.updateQueryParams(event, CATALOG_PAGINATION_KEY);
+    this.#store.dispatch([new SetCatalogPagination(event), new FetchCatalog()]);
   }
 
   onFiltersOpen(): void {
-    this.filtersOpen.emit();
+    this.#filtersService.openFilters();
   }
 
   openItemDialog(id?: number): void {
