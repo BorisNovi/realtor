@@ -9,8 +9,9 @@ from catalog.models import Flat
 # Удаление объектов недвижимости (пакетное). 
 class CatalogBulkDeleteView(APIView):
     # 🔹 Используем JWT для аутентификации
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     
     def delete(self, request):
         ids_param = request.query_params.get("ids", "[]")

@@ -102,8 +102,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'catalog.utils.pagination.FrontendPagination',
     'PAGE_SIZE': 10,
 
-    # ============== ЗАКОММЕНТИРОВАНО, ПОТОМУ ЧТО БОЛЬШЕ НЕ АКТУАЛЬНО ==============
-    # ==============    ЗАМЕНЕНО БИБОТЕКАМИ ДЛЯ РАБОТЫ С CAMEL CASE   ==============
     # Рендереры — чтобы API возвращал camelCase JSON
     'DEFAULT_RENDERER_CLASSES': (
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',

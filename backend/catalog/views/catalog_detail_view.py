@@ -6,13 +6,14 @@ from catalog.views.catalog_list_view import PROPERTY_MODEL_MAP
 from rest_framework import permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-# Этот класс отвечает за получение, обновление и изменение данных об объектах недвижимости
-# Он использует сериализатор CatalogCreateSerializer для валидации и сохранения данных
-
+# Вьюха для одного объекта недвижимости
 class CatalogDetailView(APIView):
+    """Отвечает за получение и обновление объектов недвижимости по их первичному ключу (pk)."""
+
     # 🔹 Используем JWT для аутентификации
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     # Получает объект недвижимости по первичному ключу (pk)
     # Позволяет обновлять его данные и изменять статус

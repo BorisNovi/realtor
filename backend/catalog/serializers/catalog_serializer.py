@@ -1,11 +1,13 @@
 # catalog/serializers/catalog_serializer.py
 import logging
-import os
+from colorama import init, Fore
+from file.file_utils import make_files_permanent
 from rest_framework import serializers
 from .flat_serializer import FlatSerializer
 from contacts.contact_serializers import ContactSerializer
-from colorama import init, Fore
-from file.file_utils import make_files_permanent
+from .catalog_address_serializer import AddressSerializer
+from .catalog_price_serializer import PriceSerializer 
+from contacts.models import Contact
 
 init()
 logger = logging.getLogger(__name__)
@@ -14,18 +16,8 @@ PROPERTY_SERIALIZER_MAP = {
     'flat': FlatSerializer,
 }
 
-class AddressSerializer(serializers.Serializer):
-    city = serializers.CharField()
-    road = serializers.CharField()
-    house = serializers.CharField()
-    apartment = serializers.CharField(required=False, allow_null=True, allow_blank=True)
-    position = serializers.JSONField(required=False, allow_null=True)
-
-class PriceSerializer(serializers.Serializer):
-    value = serializers.DecimalField(max_digits=12, decimal_places=2)
-    currency = serializers.CharField(max_length=3)
-
 class CatalogCreateSerializer(serializers.Serializer):
+    # Поля из BaseProperty
     property_type = serializers.ChoiceField(choices=list(PROPERTY_SERIALIZER_MAP.keys()))
     photos = serializers.ListField(child=serializers.CharField(), required=False)
     status = serializers.CharField()
@@ -52,7 +44,7 @@ class CatalogCreateSerializer(serializers.Serializer):
 
         # Извлечение вложенных данных
         options = specifics.get("options", {})
-        shared_facilities = options.get("shared_facilities", {})  # Исправлено с sharedFacilities
+        shared_facilities = options.get("shared_facilities", {})  # Исправлено с sharedFacilities!!! Ломалась десериализация.
         utilities = options.get("utilities", {})
         other = options.get("other", {})
 
@@ -127,15 +119,50 @@ class CatalogCreateSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         # Контакт
+        print("=== UPDATE PROPERTY START ===")
+        print("validated_data:", validated_data)
+
+        # Забираем данные контакта
         contact_data = validated_data.pop('contact', None)
+        print("contact_data:", contact_data)
+
         if contact_data:
-            if instance.contact:
-                contact_serializer = ContactSerializer(instance=instance.contact, data=contact_data)
+            new_name = contact_data.get("name")
+            new_phone = contact_data.get("phone")
+
+            print("Requested contact name:", new_name)
+            print("Requested contact phone:", new_phone)
+
+            # Пытаемся найти существующий контакт
+            existing_contact = Contact.objects.filter(
+                name=new_name,
+                phone=new_phone
+            ).first()
+
+            print("existing_contact:", existing_contact)
+
+            if existing_contact:
+                print("=== FOUND EXISTING CONTACT, REASSIGNING ===")
+                instance.contact = existing_contact
+
             else:
-                contact_serializer = ContactSerializer(data=contact_data)
-            contact_serializer.is_valid(raise_exception=True)
-            contact = contact_serializer.save()
-            instance.contact = contact
+                print("=== NO EXISTING CONTACT FOUND, UPDATING CURRENT ===")
+
+                # Если текущего контакта нет – создаём новый
+                if instance.contact:
+                    contact_serializer = ContactSerializer(
+                        instance=instance.contact,
+                        data=contact_data,
+                        partial=True
+                    )
+                else:
+                    contact_serializer = ContactSerializer(
+                        data=contact_data
+                    )
+
+                contact_serializer.is_valid(raise_exception=True)
+                new_contact = contact_serializer.save()
+                instance.contact = new_contact
 
         # Цена
         price_data = validated_data.pop('price', {})
@@ -154,6 +181,8 @@ class CatalogCreateSerializer(serializers.Serializer):
         return instance
 
     # === TO REPRESENTATION ===
+    # Преобразование данных для вывода. 
+    # TODO: ПОКА ЧТО ТОЛЬКО ДЛЯ КВАРТИР. ПОТОМ НАДО БУДЕТ РАЗБИТЬ ПО КЛАССАМ!!!
     def to_representation(self, instance):
         data = super().to_representation(instance)
         return {
