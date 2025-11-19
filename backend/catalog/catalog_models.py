@@ -22,6 +22,7 @@ class BaseProperty(models.Model):
     
     photos = models.JSONField(default=list)
     address = models.JSONField()
+    zoning_type = models.CharField(max_length=50, null=True, blank=True)
     price_value = models.DecimalField(max_digits=12, decimal_places=2)
     price_currency = models.CharField(max_length=3, default="USD")
     area = models.DecimalField(max_digits=7, decimal_places=2)
@@ -50,7 +51,6 @@ class Flat(BaseProperty):
     floor_current = models.PositiveIntegerField(null=True, blank=True)
     floor_full = models.PositiveIntegerField(null=True, blank=True)
     kitchen_type = models.CharField(max_length=50, null=True, blank=True)
-    zoning_type = models.CharField(max_length=50, null=True, blank=True)
     heating = models.CharField(max_length=50, null=True, blank=True)
     furnished = models.CharField(max_length=50, null=True, blank=True)
     renovation = models.CharField(max_length=50, null=True, blank=True)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from catalog.models import Flat
+from catalog.catalog_models import Flat
 
 class FlatTestSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
-from catalog.models import Flat
+from catalog.catalog_models import Flat
 
 class Command(BaseCommand):
     help = "Удаляет объекты, мягко удалённые более X времени назад"
