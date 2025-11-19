@@ -16,10 +16,14 @@ from typing import Optional, List # Для пакетного удаления
 # Контроллер для контактов с поддержкой поиска, пагинации, сортировки и CRUD операций
 # Использует PostgreSQL full-text search с префиксным поиском и fallback на icontains
 class ContactView(APIView):
-    authentication_classes = [JWTAuthentication]  
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [JWTAuthentication]  
+    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def _build_prefix_tsquery(self, text: str) -> SearchQuery:
+        """Строит префиксный tsquery из входного текста для full-text поиска.
+        Разбивает текст на токены и формирует запрос с использованием :* для префиксного поиска."""
+        
         tokens = re.findall(r'\w+', text, flags=re.UNICODE)
         if not tokens:
             return SearchQuery(text)

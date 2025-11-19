@@ -6,7 +6,6 @@ from .models import Contact
 import re
 
 class ContactSerializer(serializers.ModelSerializer):
-    # Делаем dateAdded read-only и форматируем в ISO 8601
     dateAdded = serializers.DateTimeField(read_only=True, format="%Y-%m-%dT%H:%M:%SZ")
 
     class Meta:

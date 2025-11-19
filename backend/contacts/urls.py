@@ -1,6 +1,6 @@
 # contacts/urls.py
 from django.urls import path
-from .views import ContactView
+from .contact_views import ContactView
 
 urlpatterns = [
     path('', ContactView.as_view(), name='contact-create'),                # создание контакта

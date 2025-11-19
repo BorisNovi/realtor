@@ -8,7 +8,7 @@ class PropertyStatus(models.TextChoices):
     RENTED = 'rented', 
 
 class BaseProperty(models.Model):
-    PROPERTY_TYPE = None  # <-- дочкам задаём конкретный тип
+    PROPERTY_TYPE = None
 
     def soft_delete(self):
         self.is_deleted = True
