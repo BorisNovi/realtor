@@ -2,7 +2,7 @@ from colorama import Fore
 from rest_framework import serializers
 from listings.models import Listing
 from djangorestframework_camel_case.util import underscoreize
-from catalog.models import BaseProperty, Flat 
+from catalog.catalog_models import BaseProperty, Flat 
 from .flat_test_serializer import FlatTestSerializer
 
 class ListingSerializer(serializers.ModelSerializer):

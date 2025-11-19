@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from catalog.models import Flat
+from catalog.catalog_models import Flat
 from ..utils.pagination import FrontendPagination
 from itertools import chain
 from catalog.utils.filters import apply_catalog_filters

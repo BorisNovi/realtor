@@ -19,6 +19,7 @@ PROPERTY_SERIALIZER_MAP = {
 class CatalogCreateSerializer(serializers.Serializer):
     # Поля из BaseProperty
     property_type = serializers.ChoiceField(choices=list(PROPERTY_SERIALIZER_MAP.keys()))
+    zoning_type = serializers.ChoiceField(choices=['residential', 'commercial', 'agricultural', 'mixed'], required=True, allow_null=False)
     photos = serializers.ListField(child=serializers.CharField(), required=False)
     status = serializers.CharField()
     address = AddressSerializer()
@@ -36,6 +37,7 @@ class CatalogCreateSerializer(serializers.Serializer):
         logger.info(f"Validated data: {validated_data}")
 
         photos = validated_data.pop('photos', [])
+        zoning_type = validated_data.pop('zoning_type')
         property_type = validated_data.pop('property_type')
         contact_data = validated_data.pop('contact', None)
         price_data = validated_data.pop('price', {})
@@ -58,6 +60,7 @@ class CatalogCreateSerializer(serializers.Serializer):
         # Формируем данные для модели
         combined_data = {
             **validated_data,
+            "zoning_type": zoning_type,
             "price_value": price_data.get("value"),
             "price_currency": price_data.get("currency"),
             "address": address_data,
@@ -179,55 +182,3 @@ class CatalogCreateSerializer(serializers.Serializer):
         # Фото оставляем без изменений на этом этапе
         instance.save()
         return instance
-
-    # === TO REPRESENTATION ===
-    # Преобразование данных для вывода. 
-    # TODO: ПОКА ЧТО ТОЛЬКО ДЛЯ КВАРТИР. ПОТОМ НАДО БУДЕТ РАЗБИТЬ ПО КЛАССАМ!!!
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        return {
-            "id": data.get("id"),
-            "photos": data.get("photos", []),
-            "propertyType": "flat",
-            "zoningType": data.get("zoning_type"),
-            "status": data.get("status"),
-            "address": {...},
-            "price": {...},
-            "area": float(data.get("area", 0)) if data.get("area") else None,
-            "dateAdded": data.get("date_added"),
-            "contact": {...},
-            "comment": data.get("comment"),
-            "specifies": {
-                "rooms": data.get("rooms"),
-                "floor": {"current": data.get("floor_current"), "full": data.get("floor_full")},
-                "renovation": data.get("renovation"),
-                "furnished": data.get("furnished"),
-                "kitchen": data.get("kitchen_type"),
-                "heating": data.get("heating"),
-                "sharedFacilities": {
-                    "kitchen": data.get("shared_kitchen"),
-                    "bathroom": data.get("shared_bathroom"),
-                },
-                "utilities": {
-                    "electricity": data.get("electricity"),
-                    "waterSupply": data.get("water_supply"),
-                    "naturalGas": data.get("natural_gas"),
-                    "sewerage": data.get("sewerage"),
-                    "internet": data.get("internet"),
-                },
-                "options": {
-                    "bath": data.get("bath"),
-                    "shower": data.get("shower"),
-                    "airConditioning": data.get("air_conditioning"),
-                    "fireplace": data.get("fireplace"),
-                    "beautifulView": data.get("beautiful_view"),
-                    "newBuilding": data.get("new_building"),
-                    "elevator": data.get("elevator"),
-                    "parking": data.get("parking"),
-                    "balcony": data.get("balcony"),
-                    "garden": data.get("garden"),
-                    "garage": data.get("garage"),
-                },
-            },
-        }
-

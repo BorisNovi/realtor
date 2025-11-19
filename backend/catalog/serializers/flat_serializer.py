@@ -1,6 +1,6 @@
 # catalog/serializers/flat_serializer.py
 from rest_framework import serializers
-from catalog.models import Flat
+from catalog.catalog_models import Flat
 
 # Сериализатор для квартир
 class FlatSerializer(serializers.ModelSerializer):
