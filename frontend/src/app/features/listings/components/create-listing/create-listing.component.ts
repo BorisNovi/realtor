@@ -88,7 +88,7 @@ export class CreateListingComponent implements OnInit {
           propertyObjectIds: formData.objects.map((obj: IPropertyObject) => obj.id),
           publicLink: { linkAvailable: formData.linkAvailable },
         }
-      : { name: formData.name, propertyObjectIds: formData.objects, publicLink: { linkAvailable: formData.linkAvailable } };
+      : { name: formData.name, propertyObjectIds: formData.objects.map((obj: IPropertyObject) => obj.id), publicLink: { linkAvailable: formData.linkAvailable } };
     const action = hasId ? new UpdateListing(payload) : new CreateListing(payload);
 
     this.#store
