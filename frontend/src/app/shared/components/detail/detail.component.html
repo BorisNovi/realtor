@@ -11,10 +11,10 @@
       [numVisible]="5"
     >
       <ng-template #item let-item>
-        <img [src]="item.image" style="width: 100%" alt="image" />
+        <img [src]="item.image" class="w-full h-[500px] object-contain" alt="image" />
       </ng-template>
       <ng-template #thumbnail let-item>
-        <img [src]="item.thumbnail" alt="thumbnail" />
+        <img [src]="item.thumbnail" class="h-[100px] object-contain" alt="thumbnail" />
       </ng-template>
     </p-galleria>
   </div>
