@@ -6,6 +6,8 @@ from .catalog_address_serializer import AddressSerializer
 # Используется в CatalogListView
 class CatalogListSerializer(serializers.Serializer):
     # Поля из BaseProperty. 
+    # Если что-то добавляешь, не забудь добавить в to_representation
+    
     id = serializers.IntegerField(read_only=True)
     property_type = serializers.CharField(read_only=True)
     zoning_type = serializers.CharField(read_only=True)
