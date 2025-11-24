@@ -234,7 +234,7 @@ export class CreateCatalogItemComponent implements OnInit {
 
   openContactDialog(): void {
     this.#dialogService.open(CreateContactComponent, {
-      header: this.#translateService.instant('CONTACTS.TABLE.DIALOG.ADD'),
+      header: this.#translateService.instant('CONTACTS.DIALOG.ADD'),
       appendTo: document.querySelector('.p-dynamic-dialog')!,
       width: '480px',
       modal: true,
@@ -253,7 +253,6 @@ export class CreateCatalogItemComponent implements OnInit {
     }
 
     const formData = this.form.value;
-    const position = this.position();
     const hasId = Boolean(this.config.data?.id);
 
     const payload = hasId

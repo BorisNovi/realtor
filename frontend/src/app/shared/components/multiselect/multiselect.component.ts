@@ -32,6 +32,7 @@ export class MultiselectComponent extends BaseSelect {
   readonly valueMapper = input<(item: any[]) => any[]>(v => v);
   readonly placeholder = input('Select items');
   readonly emptyMessage = input('');
+  readonly withSearch = input(false, { transform: v => v === '' || !!v });
 
   readonly selectedMulti = model<SelectItem[]>([]);
 

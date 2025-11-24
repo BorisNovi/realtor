@@ -15,12 +15,14 @@
   [showClear]="true"
   class="w-full"
 >
-  <ng-template #filter>
-    <p-inputgroup>
-      <p-inputgroup-addon>
-        <i class="pi pi-search"></i>
-      </p-inputgroup-addon>
-      <input pInputText [(ngModel)]="search" />
-    </p-inputgroup>
-  </ng-template>
+  @if (withSearch()) {
+    <ng-template #filter>
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-search"></i>
+        </p-inputgroup-addon>
+        <input pInputText [(ngModel)]="search" />
+      </p-inputgroup>
+    </ng-template>
+  }
 </p-select>
