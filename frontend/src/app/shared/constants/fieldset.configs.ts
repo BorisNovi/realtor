@@ -3,7 +3,7 @@ import { IFieldsetConfig } from '@shared/interfaces';
 // TODO: в дальнейшем позволить клиенту самому создавать конфиг черз форму
 export const createItemsFieldsetConfig: IFieldsetConfig[] = [
   {
-    formGroupName: 'SHARED_FACILITIES',
+    formGroupName: 'sharedFacilities',
     label: 'FORM.LABELS.SHARED_FACILITIES',
     fields: [
       { formControlName: 'kitchen', label: 'FORM.LABELS.SHARED_KITCHEN' },

@@ -30,6 +30,7 @@ export class SelectSingleComponent extends BaseSelect {
   readonly valueMapper = input<(item: any) => any>(v => v);
   readonly placeholder = input('Select item');
   readonly emptyMessage = input('');
+  readonly withSearch = input(false, { transform: v => v === '' || !!v });
 
   readonly selected = model<SelectItem | null>(null);
 
