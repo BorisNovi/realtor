@@ -47,13 +47,13 @@ class Flat(BaseProperty):
     PROPERTY_TYPE = "flat"
 
     # specifics
-    rooms = models.IntegerField(null=True, blank=True, default=False)
-    floor_current = models.PositiveIntegerField(null=True, blank=True, default=False)
-    floor_full = models.PositiveIntegerField(null=True, blank=True, default=False)
-    kitchen_type = models.CharField(max_length=50, null=True, blank=True, default=False)
-    heating = models.CharField(max_length=50, null=True, blank=True, default=False)
-    furnished = models.CharField(max_length=50, null=True, blank=True, default=False)
-    renovation = models.CharField(max_length=50, null=True, blank=True, default=False)
+    rooms = models.IntegerField(null=True, blank=True)
+    floor_current = models.PositiveIntegerField(null=True, blank=True)
+    floor_full = models.PositiveIntegerField(null=True, blank=True)
+    kitchen_type = models.CharField(max_length=50, null=True, blank=True)
+    heating = models.CharField(max_length=50, null=True, blank=True)
+    furnished = models.CharField(max_length=50, null=True, blank=True)
+    renovation = models.CharField(max_length=50, null=True, blank=True)
 
     # specifics.sharedFacilities
     shared_kitchen = models.BooleanField(default=False)

@@ -8,6 +8,7 @@ class CatalogListSerializer(serializers.Serializer):
     # Поля из BaseProperty. 
     id = serializers.IntegerField(read_only=True)
     property_type = serializers.CharField(read_only=True)
+    zoning_type = serializers.CharField(read_only=True)
     photos = serializers.ListField(child=serializers.CharField(), read_only=True)
     address = AddressSerializer(read_only=True)
     contact = ContactSerializer(read_only=True)
@@ -34,6 +35,7 @@ class CatalogListSerializer(serializers.Serializer):
             "id": base["id"],
             "photos": base["photos"],
             "propertyType": base["property_type"],
+            "zoningType": base["zoning_type"],
             "status": base["status"],
             "address": base["address"],
             "price": base["price"],

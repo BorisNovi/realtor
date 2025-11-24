@@ -35,7 +35,7 @@ class CatalogCreateSerializer(serializers.Serializer):
     # === СОЗДАНИЕ ОБЪЕКТА ===
     def create(self, validated_data):
         logger.info("=== [CREATE PROPERTY] Получена команда на создание объекта... ===")
-        logger.info(f"Validated data: {validated_data}")
+        logger.info(f"Полученная Validated data: {validated_data}")
 
         photos = validated_data.pop('photos', [])
         zoning_type = validated_data.pop('zoning_type')
@@ -43,13 +43,13 @@ class CatalogCreateSerializer(serializers.Serializer):
         contact_data = validated_data.pop('contact', None)
         price_data = validated_data.pop('price', {})
         address_data = validated_data.pop('address', {})
-        specifics = validated_data.pop('specifics', {})
+        specifics = validated_data.pop('specifics', {}) or {}
 
         # Извлечение вложенных данных
-        options = specifics.get("options", {})
-        shared_facilities = options.get("shared_facilities", {})  # Исправлено с sharedFacilities!!! Ломалась десериализация.
-        utilities = options.get("utilities", {})
-        other = options.get("other", {})
+        options = specifics.get("options", {}) or {}
+        shared_facilities = options.get("shared_facilities", {}) or {} # Исправлено с sharedFacilities!!! Ломалась десериализация.
+        utilities = options.get("utilities", {}) or {}
+        other = options.get("other", {}) or {}
 
         # Обработка контакта
         contact = None
