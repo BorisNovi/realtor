@@ -12,12 +12,12 @@ from contacts.models import Contact
 init()
 logger = logging.getLogger(__name__)
 
-PROPERTY_SERIALIZER_MAP = {
+PROPERTY_SERIALIZER_MAP = { # TODO: Добавить другие типы 
     'flat': FlatSerializer,
 }
 
 class CatalogCreateSerializer(serializers.Serializer):
-    # Поля из BaseProperty
+    # Поля из BaseProperty общие для всех, плюс специфичные
     property_type = serializers.ChoiceField(choices=list(PROPERTY_SERIALIZER_MAP.keys()))
     zoning_type = serializers.ChoiceField(choices=['residential', 'commercial', 'agricultural', 'mixed'], required=True, allow_null=False)
     photos = serializers.ListField(child=serializers.CharField(), required=False)
@@ -32,8 +32,9 @@ class CatalogCreateSerializer(serializers.Serializer):
     contact = ContactSerializer(required=False, allow_null=True, default=None)
     specifics = serializers.DictField(required=False)
 
+    # === СОЗДАНИЕ ОБЪЕКТА ===
     def create(self, validated_data):
-        logger.info("=== [CREATE PROPERTY] Start ===")
+        logger.info("=== [CREATE PROPERTY] Получена команда на создание объекта... ===")
         logger.info(f"Validated data: {validated_data}")
 
         photos = validated_data.pop('photos', [])
@@ -120,9 +121,10 @@ class CatalogCreateSerializer(serializers.Serializer):
         logger.info(f"=== [CREATE PROPERTY] Done. ID={instance.id} ===")
         return instance
 
+    # === ОБНОВЛЕНИЕ ОБЪЕКТА ===
     def update(self, instance, validated_data):
         # Контакт
-        print("=== UPDATE PROPERTY START ===")
+        print("=== ПРОЦЕСС ОБНОВЛЕНИЯ ОБЪЕКТА НАЧАТ ===")
         print("validated_data:", validated_data)
 
         # Забираем данные контакта
@@ -133,8 +135,8 @@ class CatalogCreateSerializer(serializers.Serializer):
             new_name = contact_data.get("name")
             new_phone = contact_data.get("phone")
 
-            print("Requested contact name:", new_name)
-            print("Requested contact phone:", new_phone)
+            print("Фронт запросил контакт с именем:", new_name)
+            print("И телефоном:", new_phone)
 
             # Пытаемся найти существующий контакт
             existing_contact = Contact.objects.filter(
@@ -145,11 +147,11 @@ class CatalogCreateSerializer(serializers.Serializer):
             print("existing_contact:", existing_contact)
 
             if existing_contact:
-                print("=== FOUND EXISTING CONTACT, REASSIGNING ===")
+                print("=== НАЙДЕН СУЩЕСТВУЮЩИЙ КОНТАКТ, ПЕРЕНАЗНАЧАЕМ ===")
                 instance.contact = existing_contact
 
             else:
-                print("=== NO EXISTING CONTACT FOUND, UPDATING CURRENT ===")
+                print("=== СУЩЕСТВУЮЩИЙ КОНТАКТ НЕ НАЙДЕН, СОЗДАЕМ НОВЫЙ ===")
 
                 # Если текущего контакта нет – создаём новый
                 if instance.contact:
@@ -179,6 +181,40 @@ class CatalogCreateSerializer(serializers.Serializer):
             if attr not in ['property_type', 'id', 'photos']:
                 setattr(instance, attr, value)
 
-        # Фото оставляем без изменений на этом этапе
+        # === РАБОТА С ФОТО ===
+        """ Обработка фото при обновлении объекта:
+        - Фронт присылает полный список фото, которые должны остаться на объекте.
+        - Фото, которые не присланы фронтом, считаем удалёнными.
+        - Новые фото (временные URL) делаем постоянными."""
+
+        new_photos_from_front = validated_data.pop("photos", None)
+
+        if new_photos_from_front is not None:
+            # Существующие фото на объекте
+            old_photos = instance.photos or []
+
+            # Фото, которые фронт хочет оставить
+            photos_to_keep = [p for p in new_photos_from_front if p in old_photos]
+
+            # Фото, которые фронт НЕ ПРИСЛАЛ → считаем удалёнными
+            photos_to_remove = [p for p in old_photos if p not in new_photos_from_front]
+
+            # Определяем новые временные фото (не из old_photos)
+            temporary_new_photos = [p for p in new_photos_from_front if p not in old_photos]
+
+            # Обработка новых временных фото
+            processed_new_photos = []
+            for url in temporary_new_photos:
+                # делаем постоянным
+                new_url = make_files_permanent(url, subdir=f'property_{instance.id}')
+                processed_new_photos.append(new_url)
+
+            # Итоговый набор фото
+            final_photos = photos_to_keep + processed_new_photos
+
+            # Применяем изменения
+            instance.photos = final_photos
+            print(Fore.YELLOW + f"Updated photos. Kept: {photos_to_keep}, Removed: {photos_to_remove}, Added: {processed_new_photos}" + Fore.RESET)
+
         instance.save()
         return instance
