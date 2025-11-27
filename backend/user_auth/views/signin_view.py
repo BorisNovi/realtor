@@ -4,11 +4,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from ..serializers import SigninSerializer
 from rest_framework.views import APIView
-from rest_framework import status, permissions, authentication
+from rest_framework import status, permissions
 
 class SigninView(APIView):
-    authentication_classes = []  # <- отключаем проверку токена
-    permission_classes = [permissions.AllowAny]  # <- любой может вызвать
+    authentication_classes = [] 
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         serializer = SigninSerializer(data=request.data)
