@@ -1,23 +1,22 @@
+import os
 from datetime import timedelta
 from pathlib import Path
-import os
 from decouple import config
-from dotenv import load_dotenv
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from dotenv import load_dotenv
 
+DEBUG = True
 APPEND_SLASH = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Для локальных тестов SMTP (например для проверки отправки писем для сброса пароля)
+SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p'
 
+# Настройки для работы с медиа-файлами
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
-# Вспомогательные директории
 TEMP_UPLOAD_DIR = MEDIA_ROOT / 'temp'
 PROPERTY_MEDIA_DIR = MEDIA_ROOT / 'property'
-
-SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p'
 
 ALLOWED_HOSTS = ['*']
 
@@ -56,7 +55,6 @@ else:
     }
     print("Redis is not enabled. Using local cache.")
 
-DEBUG = True
 
 INSTALLED_APPS = [
     # Встроенные приложения Django (основные зависимости сначала)
@@ -87,13 +85,11 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    # ✅ Аутентификация — добавляем JWT, плюс твой кастомный BearerTokenAuthentication
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'file.auth.BearerTokenAuthentication',
     ],
 
-    # ✅ Разрешения (новая версия) — оставляем IsAuthenticated по умолчанию
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
@@ -113,7 +109,6 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',       
         'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',  
     ),
-
 }
 
 SIMPLE_JWT = {
@@ -186,15 +181,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
 STATIC_URL = 'static/'
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Настройки CORS
@@ -232,9 +222,3 @@ LOGGING = {
         "level": "DEBUG",
     },
 }
-
-
-
-
-# Не делать автоматический редирект со слэша
-APPEND_SLASH = False
