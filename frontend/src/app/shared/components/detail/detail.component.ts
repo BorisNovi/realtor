@@ -3,7 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency } from '@shared/enums';
 import { IPropertyObject } from '@shared/interfaces';
-import { CamelToUpperSnakePipe, WorldPhoneMaskPipe } from '@shared/pipes';
+import { CamelToUpperSnakePipe, NotEmptyPipe, WorldPhoneMaskPipe } from '@shared/pipes';
 import { getPropertyStatusSeverity } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
 import { GalleriaModule, GalleriaResponsiveOptions } from 'primeng/galleria';
@@ -12,7 +12,16 @@ import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'rx-detail',
-  imports: [ButtonModule, GalleriaModule, ImageModule, TagModule, TranslatePipe, WorldPhoneMaskPipe, CamelToUpperSnakePipe],
+  imports: [
+    ButtonModule,
+    GalleriaModule,
+    ImageModule,
+    TagModule,
+    TranslatePipe,
+    WorldPhoneMaskPipe,
+    CamelToUpperSnakePipe,
+    NotEmptyPipe,
+  ],
   styles: `
     ::ng-deep {
       p-galleria .p-galleria {

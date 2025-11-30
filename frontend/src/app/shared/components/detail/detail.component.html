@@ -60,11 +60,12 @@
     </div>
 
     <!-- Comment -->
-    @let comment = pObject?.comment;
-    <div class="card">
-      <h5>{{ 'FORM.LABELS.COMMENT' | translate }}</h5>
-      <span>{{ comment }}</span>
-    </div>
+    @if (pObject?.comment; as comment) {
+      <div class="card">
+        <h5>{{ 'FORM.LABELS.COMMENT' | translate }}</h5>
+        <span>{{ comment }}</span>
+      </div>
+    }
 
     <!-- Specifics -->
     @let specifics = pObject?.specifics;
@@ -87,51 +88,59 @@
         </li>
         <li>
           <span class="text-gray-500">{{ 'FORM.LABELS.HEATING' | translate }}: </span
-          ><span>{{ specifics?.heating || '—' }}</span>
+          ><span>{{ specifics?.heating ? ('FORM.PROPERTIES.HEATING_TYPE.' + specifics?.heating | translate) : '—' }}</span>
         </li>
         <li>
           <span class="text-gray-500">{{ 'FORM.LABELS.RENOVATION' | translate }}: </span
-          ><span>{{ 'FORM.PROPERTIES.RENOVATION_STATUS.' + specifics?.renovation | translate }}</span>
+          ><span>{{
+            specifics?.renovation ? ('FORM.PROPERTIES.RENOVATION_STATUS.' + specifics?.renovation | translate) : '—'
+          }}</span>
         </li>
         <li>
           <span class="text-gray-500">{{ 'FORM.LABELS.FURNISHED' | translate }}: </span
-          ><span>{{ 'FORM.PROPERTIES.FURNISHED_STATUS.' + specifics?.furnished | translate }}</span>
+          ><span>{{
+            specifics?.furnished ? ('FORM.PROPERTIES.FURNISHED_STATUS.' + specifics?.furnished | translate) : '—'
+          }}</span>
         </li>
         <li>
           <span class="text-gray-500">{{ 'FORM.LABELS.KITCHEN' | translate }}: </span
-          ><span>{{ 'FORM.PROPERTIES.KITCHEN_TYPE.' + specifics?.kitchen | translate }}</span>
+          ><span>{{ specifics?.kitchen ? ('FORM.PROPERTIES.KITCHEN_TYPE.' + specifics?.kitchen | translate) : '—' }}</span>
         </li>
       </ul>
     </div>
 
     <!-- Options -->
-    <div class="card">
-      <h5>{{ 'CATALOG.LABELS.OPTIONS' | translate }}</h5>
-      <ul class="columns-1 sm:columns-2 gap-4 space-y-2">
-        @for (group of optionsArray(); track group.category) {
-          <li class="pb-4 break-inside-avoid">
-            <strong>{{ 'FORM.LABELS.' + group.category | camelToUpperSnake | translate }}</strong>
-            <ul class="pl-4 pt-2 space-y-1 list-disc">
-              @for (opt of group.values; track opt[0]) {
-                <li>
-                  <span>{{ 'FORM.LABELS.' + opt[0] | camelToUpperSnake | translate }}</span>
-                </li>
-              }
-            </ul>
-          </li>
-        }
-      </ul>
-    </div>
+    @if (optionsArray() | notEmpty; as options) {
+      <div class="card">
+        <h5>{{ 'CATALOG.LABELS.OPTIONS' | translate }}</h5>
+        <ul class="columns-1 sm:columns-2 gap-4 space-y-2">
+          @for (group of options; track group.category) {
+            <li class="pb-4 break-inside-avoid">
+              <strong>{{ 'FORM.LABELS.' + group.category | camelToUpperSnake | translate }}</strong>
+              <ul class="pl-4 pt-2 space-y-1 list-disc">
+                @for (opt of group.values; track opt[0]) {
+                  <li>
+                    <span>{{ 'FORM.LABELS.' + opt[0] | camelToUpperSnake | translate }}</span>
+                  </li>
+                }
+              </ul>
+            </li>
+          }
+        </ul>
+      </div>
+    }
 
     <!-- Contact -->
     <div class="card">
       <h5>{{ 'FORM.LABELS.CONTACT' | translate }}</h5>
       <ul class="space-y-1">
         <li>
-          <span class="text-gray-500">Contact person: </span><span>{{ pObject?.contact?.name || '—' }}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.CONTACT_NAME' | translate }}: </span
+          ><span>{{ pObject?.contact?.name || '—' }}</span>
         </li>
         <li>
-          <span class="text-gray-500">Contact phone: </span><span>{{ pObject?.contact?.phone | worldPhoneMask }}</span>
+          <span class="text-gray-500">{{ 'FORM.LABELS.CONTACT_PHONE' | translate }}: </span
+          ><span>{{ pObject?.contact?.phone | worldPhoneMask }}</span>
         </li>
       </ul>
     </div>

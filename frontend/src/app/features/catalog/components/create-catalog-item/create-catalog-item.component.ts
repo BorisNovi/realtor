@@ -168,7 +168,7 @@ export class CreateCatalogItemComponent implements OnInit {
           full: [data?.specifics?.floor?.full || null, Validators.min(1)],
         }),
         kitchen: [data?.specifics?.kitchen || null],
-        heating: [data?.specifics?.utilities?.heating || null],
+        heating: [data?.specifics?.heating || null],
         furnished: [data?.specifics?.furnished || null],
         renovation: [data?.specifics?.renovation || null],
 
