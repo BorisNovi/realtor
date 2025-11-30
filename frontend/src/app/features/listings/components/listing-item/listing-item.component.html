@@ -1,1 +1,70 @@
-listing item
+<p-confirm-dialog />
+
+@let listing = item();
+<h1 class="font-semibold text-3xl mb-4">
+  {{ listing?.name }}
+</h1>
+
+@if (mode() === Mode.Edit) {
+  <div class="card flex flex-wrap justify-between content-center gap-4">
+    <div class="flex flex-wrap w-full sm:w-fit gap-4">
+      <p-button
+        class="w-full sm:w-auto"
+        styleClass="w-[inherit]"
+        [label]="'LISTINGS.ACTIONS.ADD_OBJECT' | translate"
+        icon="pi pi-plus"
+      />
+      <p-button
+        class="w-full sm:w-auto"
+        styleClass="w-[inherit]"
+        [label]="'LISTINGS.ACTIONS.DELETE_LISTING' | translate"
+        severity="danger"
+        icon="pi pi-trash"
+        (onClick)="deleteListing()"
+      />
+    </div>
+    <p-inputgroup class="w-full sm:!w-fit">
+      <p-togglebutton
+        class="w-[50%] sm:w-auto"
+        [(ngModel)]="linkAvailable"
+        (onChange)="changeAvaliability($event.checked)"
+        [onLabel]="'LISTINGS.LINK_STATUS.AVAILABLE' | translate"
+        [offLabel]="'LISTINGS.LINK_STATUS.UNAVAILABLE' | translate"
+        onIcon="pi pi-lock-open"
+        offIcon="pi pi-lock"
+      />
+      <p-inputgroup-addon class="w-[50%] sm:w-auto">
+        <p-button
+          class="w-full sm:w-auto"
+          styleClass="w-[inherit]"
+          [label]="'LISTINGS.ACTIONS.COPY_LINK' | translate"
+          severity="info"
+          icon="pi pi-link"
+          [disabled]="!linkAvailable()"
+          (click)="copyLink()"
+        />
+      </p-inputgroup-addon>
+    </p-inputgroup>
+  </div>
+}
+
+@if (listing?.propertyObjects | notEmpty; as objects) {
+  @for (pObject of objects; track pObject.id) {
+    <p-divider @slide align="left" type="solid" class="font-bold">{{ $index + 1 }}</p-divider>
+    <rx-detail @slide class="block" [propertyObject]="pObject">
+      @if (mode() === Mode.Edit) {
+        <p-divider align="left" type="solid" class="md:col-span-2"></p-divider>
+        <div class="flex gap-4 justify-between">
+          <p-button
+            [label]="'LISTINGS.ACTIONS.DELETE_OBJECT' | translate"
+            severity="danger"
+            icon="pi pi-trash"
+            (click)="deleteItem(pObject.id)"
+          />
+        </div>
+      }
+    </rx-detail>
+  }
+} @else {
+  Empty
+}

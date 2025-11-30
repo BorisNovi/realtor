@@ -108,11 +108,11 @@ export class ListingsState {
   }
 
   @Action(CreateListing)
-  createListing(ctx: StateContext<ListingsStateModel>, { listing }: CreateListing) {
+  createListing(ctx: StateContext<ListingsStateModel>, { listing, opts }: CreateListing) {
     ctx.patchState({ loading: true });
     return this.#listingsService.createListing(listing).pipe(
       tap((listing: IListing) => ctx.patchState({ listing, loading: false })),
-      tap(() => ctx.dispatch(new ListingsOperationSuccess('CREATED'))),
+      tap(() => ctx.dispatch(new ListingsOperationSuccess('CREATED', opts?.getList))),
       catchError((error: Error) =>
         ctx.dispatch(new ListingsOperationFailed(error, 'CREATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
       ),
@@ -120,11 +120,11 @@ export class ListingsState {
   }
 
   @Action(UpdateListing)
-  updateListing(ctx: StateContext<ListingsStateModel>, { listing }: UpdateListing) {
+  updateListing(ctx: StateContext<ListingsStateModel>, { listing, opts }: UpdateListing) {
     ctx.patchState({ loading: true });
     return this.#listingsService.updateListing(listing).pipe(
       tap((listing: IListing) => ctx.patchState({ listing, loading: false })),
-      tap(() => ctx.dispatch(new ListingsOperationSuccess('UPDATED'))),
+      tap(() => ctx.dispatch(new ListingsOperationSuccess('UPDATED', opts?.getList))),
       catchError((error: Error) =>
         ctx.dispatch(new ListingsOperationFailed(error, 'UPDATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
       ),
@@ -132,10 +132,10 @@ export class ListingsState {
   }
 
   @Action(ChangeListingAvaliability)
-  changeListingAvaliability(ctx: StateContext<ListingsStateModel>, { id, publicLink }: ChangeListingAvaliability) {
+  changeListingAvaliability(ctx: StateContext<ListingsStateModel>, { id, publicLink, opts }: ChangeListingAvaliability) {
     return this.#listingsService.changeListingAvailability(id, publicLink).pipe(
       tap((listing: IListing) => ctx.patchState({ listing, loading: false })),
-      tap(() => ctx.dispatch(new ListingsOperationSuccess('LINK_AVAILABILITY_CHANGED'))),
+      tap(() => ctx.dispatch(new ListingsOperationSuccess('LINK_AVAILABILITY_CHANGED', opts?.getList))),
       catchError((error: Error) =>
         ctx
           .dispatch(new ListingsOperationFailed(error, 'LINK_AVAILABILITY_FAILED'))
@@ -145,18 +145,18 @@ export class ListingsState {
   }
 
   @Action(DeleteListing)
-  deleteListing(ctx: StateContext<ListingsStateModel>, { idList }: DeleteListing) {
+  deleteListing(ctx: StateContext<ListingsStateModel>, { idList, opts }: DeleteListing) {
     ctx.patchState({ loading: true });
     return this.#listingsService.deleteListing(idList).pipe(
       tap(() => {
-        ctx.dispatch(new ListingsOperationSuccess('DELETED'));
+        ctx.dispatch(new ListingsOperationSuccess('DELETED', opts?.getList));
       }),
       catchError((error: Error) => ctx.dispatch(new ListingsOperationFailed(error, 'DELETE_FAILED'))),
     );
   }
 
   @Action(ListingsOperationSuccess)
-  onListingsOperationSuccess(ctx: StateContext<ListingsStateModel>, { message }: ListingsOperationSuccess) {
+  onListingsOperationSuccess(ctx: StateContext<ListingsStateModel>, { message, getList }: ListingsOperationSuccess) {
     if (message) {
       this.#messageService.add({
         severity: 'success',
@@ -166,7 +166,8 @@ export class ListingsState {
       });
     }
 
-    ctx.dispatch(new FetchListings());
+    if (getList)
+      ctx.dispatch(new FetchListings());
     return ctx.patchState({ loading: false });
   }
 
