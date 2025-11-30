@@ -21,12 +21,18 @@ export class FetchListing {
 
 export class CreateListing {
   static readonly type = '[Listings] Create Listing';
-  constructor(public readonly listing: IListingRequest) {}
+  constructor(
+    public readonly listing: IListingRequest,
+    public readonly opts?: { getList: boolean },
+  ) {}
 }
 
 export class UpdateListing {
   static readonly type = '[Listings] Update Listing';
-  constructor(public readonly listing: IListingRequest) {}
+  constructor(
+    public readonly listing: IListingRequest,
+    public readonly opts?: { getList: boolean },
+  ) {}
 }
 
 export class ChangeListingAvaliability {
@@ -34,17 +40,24 @@ export class ChangeListingAvaliability {
   constructor(
     public readonly id: number,
     public readonly publicLink: IPublicLinkUpdate,
+    public readonly opts?: { getList: boolean },
   ) {}
 }
 
 export class DeleteListing {
   static readonly type = '[Listings] Delete Listings';
-  constructor(public readonly idList: number[]) {}
+  constructor(
+    public readonly idList: number[],
+    public readonly opts?: { getList: boolean },
+  ) {}
 }
 
 export class ListingsOperationSuccess {
   public static readonly type = '[Listings] ListingsOperationSuccess';
-  constructor(public readonly message?: string) {}
+  constructor(
+    public readonly message?: string,
+    public readonly getList?: boolean,
+  ) {}
 }
 
 export class ListingsOperationFailed {

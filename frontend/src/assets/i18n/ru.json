@@ -337,6 +337,12 @@
     }
   },
    "LISTINGS" : {
+    "ACTIONS": {
+      "ADD_OBJECT": "Добавить объект в подборку",
+      "DELETE_OBJECT": "Удалить из подборки",
+      "DELETE_LISTING": "Удалить подборку",
+      "COPY_LINK": "Копировать ссылку"
+    },
     "TABLE": {
       "HEADERS": {
         "NAME": "Название подборки",
@@ -363,7 +369,8 @@
       "DELETED": "Подборка успешно удалена",
       "DELETE_FAILED": "Не удалось удалить подборку",
       "LINK_AVAILABILITY_CHANGED": "Доступ по ссылке изменен",
-      "LINK_AVAILABILITY_FAILED": "Не удалось изменить доступ по ссылке"
+      "LINK_AVAILABILITY_FAILED": "Не удалось изменить доступ по ссылке",
+      "LINK_COPIED": "Публичная ссылка скопирована в буфер обмена"
     }
   },
   "ADDRESS_PICKER": {

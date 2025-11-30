@@ -1,0 +1,12 @@
+:host {
+  ::ng-deep {
+    p-divider {
+      --p-divider-content-background: var(--surface-ground);
+    }
+
+    .p-togglebutton {
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0;
+    }
+  }
+}

@@ -16,9 +16,11 @@ import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalo
   imports: [DetailComponent, Divider, Button, TranslatePipe, BreadcrumbModule, ConfirmDialog],
   providers: [DialogService],
   styles: `
-    ::ng-deep {
-      p-breadcrumb .p-breadcrumb {
-        background-color: transparent;
+    :host {
+      ::ng-deep {
+        p-breadcrumb .p-breadcrumb {
+          background-color: transparent;
+        }
       }
     }
   `,

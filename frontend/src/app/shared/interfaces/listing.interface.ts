@@ -2,7 +2,7 @@ import { IEntity } from './entity.interface';
 import { IPropertyObject } from './property-object.interface';
 
 export interface IListing extends IEntity {
-  propoertyObjectIds: number[];
+  propertyObjectIds: number[];
   propertyObjects: IPropertyObject[];
   companyName?: string; // Изменяется в настройках профиля
   companyLogo?: string; // Изменяется в настройках профиля
@@ -10,7 +10,7 @@ export interface IListing extends IEntity {
 }
 
 export interface IListingRequest extends IEntity {
-  propoertyObjectIds?: number[];
+  propertyObjectIds?: number[];
   publicLink?: IPublicLinkUpdate;
 }
 

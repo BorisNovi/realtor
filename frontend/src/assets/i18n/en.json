@@ -337,6 +337,12 @@
     }
   },
   "LISTINGS" : {
+    "ACTIONS": {
+      "ADD_OBJECT": "Add object to listing",
+      "DELETE_OBJECT": "Delete from listing",
+      "DELETE_LISTING": "Delete listing",
+      "COPY_LINK": "Copy link"
+    },
     "TABLE": {
       "HEADERS": {
         "NAME": "Name",
@@ -363,7 +369,8 @@
       "DELETED": "Listing deleted successfully",
       "DELETE_FAILED": "Failed to delete listing",
       "LINK_AVAILABILITY_CHANGED": "Link availability changed",
-      "LINK_AVAILABILITY_FAILED": "Link availability changing failed"
+      "LINK_AVAILABILITY_FAILED": "Link availability changing failed",
+      "LINK_COPIED": "Public link copied to clipboard"
     }
   },
   "ADDRESS_PICKER": {
