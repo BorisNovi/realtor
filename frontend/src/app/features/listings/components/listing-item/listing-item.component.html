@@ -13,6 +13,7 @@
         styleClass="w-[inherit]"
         [label]="'LISTINGS.ACTIONS.ADD_OBJECT' | translate"
         icon="pi pi-plus"
+        (onClick)="openObjectsSelector($event)"
       />
       <p-button
         class="w-full sm:w-auto"
@@ -59,7 +60,7 @@
             [label]="'LISTINGS.ACTIONS.DELETE_OBJECT' | translate"
             severity="danger"
             icon="pi pi-trash"
-            (click)="deleteItem(pObject.id)"
+            (onClick)="deleteItem(pObject.id)"
           />
         </div>
       }
@@ -68,3 +69,18 @@
 } @else {
   Empty
 }
+
+<p-popover #objectsSelector (onShow)="objectSelectShown.set(true)" (onHide)="objectSelectShown.set(false)">
+  <rx-select
+    [fetcher]="catalogFetchMethod"
+    [itemTpl]="itemTemplate"
+    [mapToSelect]="catalogMapToSelect"
+    [disabledIds]="listing?.propertyObjectIds ?? []"
+    [open]="objectSelectShown()"
+    (valueClick)="onObjectClick($event)"
+  ></rx-select>
+</p-popover>
+
+<ng-template #itemTemplate let-item let-disabled="disabled">
+  <div class="row" [class.disabled]="disabled">{{ item.label }}</div>
+</ng-template>

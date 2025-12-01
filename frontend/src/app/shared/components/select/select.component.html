@@ -1,55 +1,15 @@
-@if (!multiple()) {
-  <p-select
-    [ngModel]="selected()"
-    (ngModelChange)="selected.set($event)"
-    [options]="items()"
-    appendTo="body"
-    [virtualScroll]="true"
-    [virtualScrollItemSize]="38"
-    [virtualScrollOptions]="options"
-    dataKey="id"
-    [loading]="loading()"
-    (onShow)="onShow()"
-    [placeholder]="placeholder()"
-    [filter]="withSearch()"
-    [emptyMessage]="emptyMessage()"
-    [showClear]="true"
-    class="w-full"
+<cdk-virtual-scroll-viewport itemSize="36" class="rx-select-viewport" (scrolledIndexChange)="onScrolled()">
+  <div
+    *cdkVirtualFor="let item of items(); trackBy: trackByValue"
+    class="row"
+    [class.disabled]="isDisabled(item)"
+    [class.selected]="isSelected(item)"
+    (click)="toggle(item); valueClick.emit(item)"
   >
-    <ng-template #filter>
-      <p-inputgroup>
-        <p-inputgroup-addon>
-          <i class="pi pi-search"></i>
-        </p-inputgroup-addon>
-        <input pInputText [(ngModel)]="search" />
-      </p-inputgroup>
-    </ng-template>
-  </p-select>
-} @else {
-  <p-multi-select
-    [ngModel]="selectedMulti()"
-    (ngModelChange)="selectedMulti.set($event)"
-    [options]="items()"
-    appendTo="body"
-    [virtualScroll]="true"
-    [virtualScrollItemSize]="38"
-    [virtualScrollOptions]="options"
-    dataKey="id"
-    [loading]="loading()"
-    (onPanelShow)="onShow()"
-    [placeholder]="placeholder()"
-    [filter]="withSearch()"
-    [emptyMessage]="emptyMessage()"
-    display="chip"
-    class="w-full"
-  >
-    <ng-template #filter>
-      <p-inputgroup>
-        <p-inputgroup-addon>
-          <i class="pi pi-search"></i>
-        </p-inputgroup-addon>
-        <input pInputText [(ngModel)]="search" />
-      </p-inputgroup>
-    </ng-template>
-  </p-multi-select>
+    <ng-container *ngTemplateOutlet="itemTpl(); context: { $implicit: item, disabled: isDisabled(item) }"></ng-container>
+  </div>
+</cdk-virtual-scroll-viewport>
+
+@if (loading()) {
+  <div class="loader">Loading…</div>
 }

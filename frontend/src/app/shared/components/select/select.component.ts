@@ -1,153 +1,114 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, forwardRef, inject, input, model, signal } from '@angular/core';
+import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input, model, output, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { IFetchOptions, IPagination, ITableData } from '@shared/interfaces';
-import { ScrollerOptions, SelectItem } from 'primeng/api';
-import { InputGroup } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputText } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { SelectModule } from 'primeng/select';
-import { debounceTime, map, Observable, skip, startWith, Subject, switchMap, tap, withLatestFrom } from 'rxjs';
+import { IFetchOptions, ITableData } from '@shared/interfaces';
+import { Subject, switchMap, tap } from 'rxjs';
+
+export interface RxSelectItem {
+  label: string;
+  value: any;
+}
 
 @Component({
   selector: 'rx-select',
   standalone: true,
-  imports: [SelectModule, MultiSelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule],
+  imports: [ScrollingModule, NgTemplateOutlet],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SelectComponent),
-      multi: true,
-    },
-  ],
 })
-export class SelectComponent {
-  readonly #destroyRef = inject(DestroyRef);
-
-  readonly fetchMethod = input.required<(options: IFetchOptions) => Observable<ITableData<any>>>();
-  readonly mapToSelectItem = input.required<(item: any) => SelectItem>();
-  readonly valueMapper = input<(item: any) => any>(v => v);
-  readonly pageSize = input(25);
+export class SelectComponent<T = any> {
+  readonly fetcher = input.required<(o: IFetchOptions) => any>();
+  readonly mapToSelect = input.required<(src: T) => RxSelectItem>();
+  readonly itemTpl = input<any>();
+  readonly disabledIds = input<any[]>([]);
+  readonly selectable = input(false, { transform: v => v === '' || !!v });
   readonly multiple = input(false, { transform: v => v === '' || !!v });
-  readonly withSearch = input(false, { transform: v => v === '' || !!v });
-  readonly placeholder = input('Select item');
-  readonly emptyMessage = input('');
+  readonly open = input<boolean>(false);
 
-  readonly selected = model<SelectItem | null>(null);
-  readonly selectedMulti = model<SelectItem[]>([]);
-  readonly items = signal<SelectItem[]>([]);
+  readonly value = model<RxSelectItem[]>([]);
+  readonly valueClick = output<RxSelectItem>();
+
+  readonly items = signal<RxSelectItem[]>([]);
   readonly loading = signal(false);
-  readonly search = signal<any>('');
-  readonly #loadPage$ = new Subject<IPagination>();
-  #totalOnServer = 0;
-  #initialItemsLoaded = false;
+  readonly pageSize = signal(10);
 
-  #onChange: (value: any) => void = () => {};
-  #onTouched: () => void = () => {};
+  private readonly loadPage$ = new Subject<{ first: number; rows: number }>();
+  private total = 0;
+  private initialLoaded = false;
+
+  viewport = viewChild(CdkVirtualScrollViewport);
 
   constructor() {
-    toObservable(this.search)
+    this.loadPage$
       .pipe(
-        skip(1),
-        debounceTime(500),
-        map(q => q.trim()),
-        takeUntilDestroyed(this.#destroyRef),
-      )
-      .subscribe(() => {
-        this.items.set([]);
-        this.#loadPage$.next({ first: 0, rows: this.pageSize() });
-      });
-
-    this.#loadPage$
-      .pipe(
-        withLatestFrom(
-          toObservable(this.search).pipe(
-            map(q => q.trim()),
-            startWith(''),
-          ),
-        ),
         tap(() => this.loading.set(true)),
-        switchMap(([pagination, search]) =>
-          this.fetchMethod()({ pagination, search }).pipe(
-            tap(res => {
-              this.#totalOnServer = res.total;
-              const newItems = res.items.map(this.mapToSelectItem());
-              this.items.update(current => [...current, ...newItems]);
+        switchMap(pagination =>
+          this.fetcher()({ pagination } as IFetchOptions).pipe(
+            tap((res: ITableData<T>) => {
+              this.total = res.total;
+              const mapped = res.items.map(i => this.mapToSelect()(i));
+              this.items.update(curr => [...curr, ...mapped]);
               this.loading.set(false);
+              this.initialLoaded = true;
             }),
           ),
         ),
-        takeUntilDestroyed(this.#destroyRef),
+        takeUntilDestroyed(),
       )
       .subscribe();
 
-    toObservable(this.selected)
-      .pipe(skip(1), takeUntilDestroyed(this.#destroyRef))
-      .subscribe(selectItem => {
-        this.#emitValue(selectItem);
-      });
-
-    toObservable(this.selectedMulti)
-      .pipe(skip(1), takeUntilDestroyed(this.#destroyRef))
-      .subscribe(selectItems => {
-        if (this.multiple()) this.#emitValue(selectItems);
-      });
+    toObservable(this.open)
+      .pipe(
+        takeUntilDestroyed(),
+        tap(isOpen => {
+          if (isOpen) this.onShow();
+        }),
+      )
+      .subscribe();
   }
 
-  readonly options: ScrollerOptions = {
-    showLoader: true,
-    step: this.pageSize(),
-    onScrollIndexChange: this.#onScroll.bind(this),
-  };
+  trackByValue = (_: number, item: RxSelectItem) => item.value;
+  isDisabled = (i: RxSelectItem) => this.disabledIds().includes(i.value.id);
+  isSelected = (i: RxSelectItem) =>
+    this.multiple() ? this.value().some(x => x.value === i.value) : this.value()[0]?.value === i.value;
 
   onShow(): void {
-    if (this.items().length && !this.#initialItemsLoaded) return;
-    if (this.#initialItemsLoaded) this.items.set([]);
+    setTimeout(() => this.viewport()?.checkViewportSize(), 0);
 
-    this.#loadPage$.next({ first: 0, rows: this.pageSize() });
-    this.#initialItemsLoaded = false;
+    if (this.items().length && this.initialLoaded) return;
+
+    this.items.set([]);
+    this.loadPage$.next({ first: 0, rows: this.pageSize() });
   }
 
-  #onScroll(event: { first: number; last: number }): void {
-    if (this.loading() || this.items().length >= this.#totalOnServer) return;
+  onScrolled(): void {
+    const view = this.viewport();
+    if (!view) return;
 
-    const threshold = 5;
-    if (event.last >= this.items().length - threshold)
-      this.#loadPage$.next({ first: this.items().length, rows: this.pageSize() });
+    const end = view.getRenderedRange().end;
+    const total = this.items().length;
+
+    if (!this.loading() && total < this.total && end >= total - 5) this.loadPage$.next({ first: total, rows: this.pageSize() });
   }
 
-  #emitValue(value: any | null): void {
-    const mapped = this.valueMapper()(value);
-    this.#onChange(mapped);
-  }
-
-  writeValue(value: any): void {
-    if (value === undefined || value === null) return;
+  toggle(item: RxSelectItem): void {
+    if (this.isDisabled(item) || !this.selectable()) return;
 
     if (this.multiple()) {
-      const mapped = Array.isArray(value) ? value.map(v => this.mapToSelectItem()(v)) : [];
-      this.selectedMulti.set(mapped);
-
-      const currentValues = this.items().map(i => i.value);
-      const missing = mapped.filter(i => !currentValues.includes(i.value));
-      if (missing.length) this.items.update(curr => [...curr, ...missing]);
-    } else {
-      const mapped = this.mapToSelectItem()(value);
-      this.selected.set(mapped);
-      if (!this.items().some(i => i.value === mapped.value)) this.items.update(curr => [...curr, mapped]);
+      const exists = this.value().some(v => v.value === item.value);
+      this.value.update(exists ? curr => curr.filter(x => x.value !== item.value) : curr => [...curr, item]);
+      return;
     }
-    if (this.items().length > 0) this.#initialItemsLoaded = true;
+
+    const current = this.value()[0];
+    if (current?.value === item.value) this.value.set([]);
+    else this.value.set([item]);
   }
 
-  registerOnChange(fn: any): void {
-    this.#onChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.#onTouched = fn;
+  onItemClick(item: RxSelectItem): void {
+    if (this.isDisabled(item)) return;
+    this.valueClick.emit(item);
   }
 }

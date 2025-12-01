@@ -166,8 +166,7 @@ export class ListingsState {
       });
     }
 
-    if (getList)
-      ctx.dispatch(new FetchListings());
+    if (getList) ctx.dispatch(new FetchListings());
     return ctx.patchState({ loading: false });
   }
 

@@ -1,10 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, linkedSignal, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, linkedSignal, OnDestroy, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { SLIDE } from '@shared/animations';
-import { DetailComponent } from '@shared/components';
+import { DetailComponent, SelectComponent } from '@shared/components';
+import { CURRENCY_SYMBOLS } from '@shared/constants';
+import { Currency } from '@shared/enums';
+import { ICatalogItem, IFetchOptions } from '@shared/interfaces';
 import { NotEmptyPipe } from '@shared/pipes';
 import { MessageService } from 'primeng/api';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
@@ -14,8 +17,9 @@ import { Divider } from 'primeng/divider';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { Popover, PopoverModule } from 'primeng/popover';
 import { ToggleButton } from 'primeng/togglebutton';
-import { DeletionConfirmationService } from 'src/app/core';
+import { CatalogService, DeletionConfirmationService } from 'src/app/core';
 import { ChangeListingAvaliability, DeleteListing, ListingsState, UpdateListing } from 'src/app/core/listings/state';
 
 @Component({
@@ -32,6 +36,8 @@ import { ChangeListingAvaliability, DeleteListing, ListingsState, UpdateListing 
     ConfirmDialog,
     NotEmptyPipe,
     ToggleButton,
+    PopoverModule,
+    SelectComponent,
   ],
   providers: [DialogService],
   animations: [SLIDE],
@@ -44,16 +50,36 @@ export class ListingItemComponent implements OnDestroy {
   readonly #dialogService = inject(DialogService);
   readonly #translateService = inject(TranslateService);
   readonly #messageService = inject(MessageService);
+  readonly #catalogService = inject(CatalogService);
   readonly #router = inject(Router);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
 
+  readonly objectsSelector = viewChild<Popover>('objectsSelector');
+
   readonly mode = signal<Mode>(Mode.Edit);
+  readonly objectSelectShown = signal(false);
 
   readonly item = this.#store.selectSignal(ListingsState.listing);
-  readonly linkAvailable = linkedSignal(() => this.item()?.publicLink);
+  readonly linkAvailable = linkedSignal(() => this.item()?.publicLink?.available);
+
+  readonly catalogFetchMethod = (options: IFetchOptions) => this.#catalogService.fetchCatalog(options);
+  readonly catalogMapToSelect = (item: ICatalogItem) => ({
+    label: `
+      ${this.#translateService.instant('FORM.PROPERTIES.PROPERTY_TYPE.' + item?.propertyType)}
+      ${item?.address?.city} ${item?.area} m² —
+      ${item?.price?.value}
+      ${this.getCurrencySymbol(item?.price?.currency)}
+    `,
+    value: item,
+    id: item.id,
+  });
 
   Mode = Mode;
   #ref!: DynamicDialogRef | null;
+
+  getCurrencySymbol(key: string): string {
+    return CURRENCY_SYMBOLS[key as Currency];
+  }
 
   deleteListing(): void {
     this.#deletionConfirmationService.confirm(
@@ -74,8 +100,19 @@ export class ListingItemComponent implements OnDestroy {
     });
   }
 
-  openAddDialog(): void {
-    // TODO: добавление недвижимости в подборку
+  openObjectsSelector(event: Event): void {
+    this.objectsSelector()?.toggle(event);
+  }
+
+  onObjectClick(event: any): void {
+    const id = event.value.id;
+    const listing = this.item();
+    if (!listing) return;
+
+    const ids = listing.propertyObjectIds ?? [];
+    if (ids.includes(id)) return;
+
+    this.#store.dispatch(new UpdateListing({ ...listing, propertyObjectIds: [...ids, id] }, { getList: false }));
   }
 
   changeAvaliability(available: boolean | undefined): void {
