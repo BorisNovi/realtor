@@ -93,18 +93,22 @@ class ListingsView(APIView):
             status=status.HTTP_200_OK
         )
 
-    # Обновление существующего листинга ../listing/<int:pk>
-    def put(self, request: Request, pk: int) -> Response:
+    # Частичное обновление листинга ../listing/<int:pk>
+    def patch(self, request: Request, pk: int) -> Response:
         try:
             listing = Listing.objects.get(pk=pk)
         except Listing.DoesNotExist:
             return Response({"detail": "Listing not found."}, status=status.HTTP_404_NOT_FOUND)
 
+        # partial=True — обновляем только переданные поля
         serializer = ListingSerializer(listing, data=request.data, partial=True)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
     # Удаление листинга ../listing?ids=[1,2,3]
     # Ожидает JSON-массив ID в поле "ids" тела запроса

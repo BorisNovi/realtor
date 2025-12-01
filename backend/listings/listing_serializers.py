@@ -61,8 +61,8 @@ class ListingSerializer(serializers.ModelSerializer):
         return value
 
     def validate_property_object_ids(self, ids):
-        if not ids:
-            raise serializers.ValidationError("Список объектов не может быть пустым.")
+        # if not ids:
+        #     raise serializers.ValidationError("Список объектов не может быть пустым.")
 
         existing = list(Flat.objects.filter(id__in=ids).values_list("id", flat=True))
 
