@@ -61,7 +61,13 @@
           {{ item?.propertyObjectIds?.length }}
         </td>
         <td class="whitespace-nowrap">{{ item?.dateAdded | date: 'd MM y' }}</td>
-        <td class="whitespace-nowrap">{{ item?.publicLink?.available }}</td>
+        <td class="whitespace-nowrap">
+          <rx-link-switch
+            [publicLink]="item?.publicLink"
+            (publicLinkChange)="changeAvaliability(item, $event?.available)"
+            [disabled]="loadingS()"
+          ></rx-link-switch>
+        </td>
         <td>
           <p-button
             icon="pi pi-ellipsis-v"

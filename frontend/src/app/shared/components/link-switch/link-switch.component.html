@@ -1,0 +1,26 @@
+<p-inputgroup class="w-full sm:!w-fit">
+  <p-togglebutton
+    class="w-[45%] sm:w-36"
+    [(ngModel)]="linkAvailable"
+    (onChange)="
+      this.publicLink.set({ url: publicLink()?.url, available: $event.checked ?? false });
+      $event.originalEvent.stopPropagation()
+    "
+    [onLabel]="'LISTINGS.LINK_STATUS.AVAILABLE' | translate"
+    [offLabel]="'LISTINGS.LINK_STATUS.UNAVAILABLE' | translate"
+    [disabled]="disabled()"
+    onIcon="pi pi-lock-open"
+    offIcon="pi pi-lock"
+  />
+  <p-inputgroup-addon class="w-[55%] sm:w-auto">
+    <p-button
+      class="w-full sm:w-auto"
+      styleClass="w-[inherit]"
+      [label]="'LISTINGS.ACTIONS.COPY_LINK' | translate"
+      severity="info"
+      icon="pi pi-link"
+      [disabled]="!linkAvailable()"
+      (click)="copyLink(); $event.stopPropagation()"
+    />
+  </p-inputgroup-addon>
+</p-inputgroup>
