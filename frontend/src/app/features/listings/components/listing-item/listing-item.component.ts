@@ -1,24 +1,19 @@
-import { ChangeDetectionStrategy, Component, inject, linkedSignal, OnDestroy, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { SLIDE } from '@shared/animations';
-import { DetailComponent, SelectComponent } from '@shared/components';
+import { DetailComponent, LinkSwitchComponent, SelectComponent } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency } from '@shared/enums';
 import { ICatalogItem, IFetchOptions } from '@shared/interfaces';
 import { NotEmptyPipe } from '@shared/pipes';
-import { MessageService } from 'primeng/api';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Divider } from 'primeng/divider';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputGroup } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Popover, PopoverModule } from 'primeng/popover';
-import { ToggleButton } from 'primeng/togglebutton';
 import { CatalogService, DeletionConfirmationService } from 'src/app/core';
 import { ChangeListingAvaliability, DeleteListing, ListingsState, UpdateListing } from 'src/app/core/listings/state';
 
@@ -26,20 +21,16 @@ import { ChangeListingAvaliability, DeleteListing, ListingsState, UpdateListing 
   selector: 'rx-catalog-item',
   imports: [
     FormsModule,
-    InputGroup,
-    InputGroupAddonModule,
     DetailComponent,
     Divider,
     Button,
     TranslatePipe,
-    BreadcrumbModule,
     ConfirmDialog,
     NotEmptyPipe,
-    ToggleButton,
     PopoverModule,
     SelectComponent,
+    LinkSwitchComponent,
   ],
-  providers: [DialogService],
   animations: [SLIDE],
   templateUrl: './listing-item.component.html',
   styleUrl: './listing-item.component.scss',
@@ -47,9 +38,7 @@ import { ChangeListingAvaliability, DeleteListing, ListingsState, UpdateListing 
 })
 export class ListingItemComponent implements OnDestroy {
   readonly #store = inject(Store);
-  readonly #dialogService = inject(DialogService);
   readonly #translateService = inject(TranslateService);
-  readonly #messageService = inject(MessageService);
   readonly #catalogService = inject(CatalogService);
   readonly #router = inject(Router);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
@@ -60,7 +49,7 @@ export class ListingItemComponent implements OnDestroy {
   readonly objectSelectShown = signal(false);
 
   readonly item = this.#store.selectSignal(ListingsState.listing);
-  readonly linkAvailable = linkedSignal(() => this.item()?.publicLink?.available);
+  readonly loading = this.#store.selectSignal(ListingsState.loading);
 
   readonly catalogFetchMethod = (options: IFetchOptions) => this.#catalogService.fetchCatalog(options);
   readonly catalogMapToSelect = (item: ICatalogItem) => ({
@@ -93,7 +82,7 @@ export class ListingItemComponent implements OnDestroy {
 
   deleteItem(id: number): void {
     const listing = this.item();
-    if (!listing) return;
+    if (!listing || this.loading()) return;
     const ids = listing?.propertyObjectIds.filter(objectId => objectId !== id);
     this.#deletionConfirmationService.confirm(() => {
       this.#store.dispatch(new UpdateListing({ ...listing, propertyObjectIds: ids }, { getList: false }));
@@ -107,7 +96,7 @@ export class ListingItemComponent implements OnDestroy {
   onObjectClick(event: any): void {
     const id = event.value.id;
     const listing = this.item();
-    if (!listing) return;
+    if (!listing || this.loading()) return;
 
     const ids = listing.propertyObjectIds ?? [];
     if (ids.includes(id)) return;
@@ -117,17 +106,6 @@ export class ListingItemComponent implements OnDestroy {
 
   changeAvaliability(available: boolean | undefined): void {
     this.#store.dispatch(new ChangeListingAvaliability(this.item()!.id, { available: available ?? false }));
-  }
-
-  copyLink(): void {
-    navigator.clipboard.writeText(this.item()?.publicLink?.url || '');
-
-    this.#messageService.add({
-      severity: 'success',
-      summary: this.#translateService.instant('NOTIFICATIONS.SUCCESS'),
-      detail: this.#translateService.instant('LISTINGS.NOTIFICATION.LINK_COPIED'),
-      life: 3000,
-    });
   }
 
   ngOnDestroy(): void {

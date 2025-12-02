@@ -133,6 +133,7 @@ export class ListingsState {
 
   @Action(ChangeListingAvaliability)
   changeListingAvaliability(ctx: StateContext<ListingsStateModel>, { id, publicLink, opts }: ChangeListingAvaliability) {
+    ctx.patchState({ loading: true });
     return this.#listingsService.changeListingAvailability(id, publicLink).pipe(
       tap((listing: IListing) => ctx.patchState({ listing, loading: false })),
       tap(() => ctx.dispatch(new ListingsOperationSuccess('LINK_AVAILABILITY_CHANGED', opts?.getList))),

@@ -18,7 +18,7 @@ export interface IPublicLinkUpdate {
   available: boolean;
 }
 
-interface IPublicLink {
+export interface IPublicLink {
   url?: string;
   available: boolean;
 }

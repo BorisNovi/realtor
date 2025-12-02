@@ -15,6 +15,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { DeletionConfirmationService, QueryParamsService } from 'src/app/core';
 import {
+  ChangeListingAvaliability,
   DeleteListing,
   FetchListings,
   ListingsState,
@@ -22,6 +23,7 @@ import {
   SetListingsSort,
 } from 'src/app/core/listings/state';
 import { CreateListingComponent } from '../create-listing/create-listing.component';
+import { LinkSwitchComponent } from '@shared/components';
 
 @Component({
   selector: 'rx-listings-table',
@@ -37,6 +39,7 @@ import { CreateListingComponent } from '../create-listing/create-listing.compone
     ProgressBarModule,
     TranslatePipe,
     RouterLink,
+    LinkSwitchComponent,
   ],
   providers: [DialogService],
   templateUrl: './listing-table.component.html',
@@ -134,6 +137,10 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
       },
       { header: 'LISTINGS.DIALOG.DELETE_REQUEST_SINGLE' },
     );
+  }
+
+  changeAvaliability(item: IListing, available: boolean | undefined): void {
+    this.#store.dispatch(new ChangeListingAvaliability(item.id, { available: available ?? false }));
   }
 
   ngOnDestroy(): void {

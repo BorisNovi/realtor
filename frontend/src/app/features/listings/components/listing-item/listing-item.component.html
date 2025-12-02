@@ -24,28 +24,11 @@
         (onClick)="deleteListing()"
       />
     </div>
-    <p-inputgroup class="w-full sm:!w-fit">
-      <p-togglebutton
-        class="w-[50%] sm:w-auto"
-        [(ngModel)]="linkAvailable"
-        (onChange)="changeAvaliability($event.checked)"
-        [onLabel]="'LISTINGS.LINK_STATUS.AVAILABLE' | translate"
-        [offLabel]="'LISTINGS.LINK_STATUS.UNAVAILABLE' | translate"
-        onIcon="pi pi-lock-open"
-        offIcon="pi pi-lock"
-      />
-      <p-inputgroup-addon class="w-[50%] sm:w-auto">
-        <p-button
-          class="w-full sm:w-auto"
-          styleClass="w-[inherit]"
-          [label]="'LISTINGS.ACTIONS.COPY_LINK' | translate"
-          severity="info"
-          icon="pi pi-link"
-          [disabled]="!linkAvailable()"
-          (click)="copyLink()"
-        />
-      </p-inputgroup-addon>
-    </p-inputgroup>
+    <rx-link-switch
+      [publicLink]="listing?.publicLink"
+      (publicLinkChange)="changeAvaliability($event?.available)"
+      [disabled]="loading()"
+    ></rx-link-switch>
   </div>
 }
 
