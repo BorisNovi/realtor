@@ -1,5 +1,6 @@
 # listings/listing_serializers.py
 
+import secrets
 from colorama import Fore
 from listings.models import Listing
 from catalog.catalog_models import Flat 
@@ -73,12 +74,14 @@ class ListingSerializer(serializers.ModelSerializer):
         return ids
 
     # -------------------- ЛОГИКА ГЕНЕРАЦИИ PUBLIC LINK --------------------
-
+    
     def _generate_public_link(self, listing: Listing) -> dict:
+        token = secrets.token_urlsafe(8)
+        
         base = "https://realtor-x.com/listing"
         return {
             "available": True,
-            "url": f"{base}/{listing.id}"
+            "url": f"{base}/{token}"
         }
 
     # -------------------- СОЗДАНИЕ --------------------

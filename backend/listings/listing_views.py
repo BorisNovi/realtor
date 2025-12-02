@@ -12,6 +12,8 @@ from listings.listing_serializers import ListingSerializer
 from typing import Optional
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
+
 
 # Контроллер для листингов с поддержкой создания листинга
 class ListingsView(APIView):
@@ -109,7 +111,22 @@ class ListingsView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
+    # Обновление листинга ../listing/<int:pk>
+    def put(self, request: Request, pk: int) -> Response:
+        try:
+            listing = Listing.objects.get(pk=pk)
+        except Listing.DoesNotExist:
+            return Response({"detail": "Listing not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        # partial=True — обновляем только переданные поля
+        serializer = ListingSerializer(listing, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     # Удаление листинга ../listing?ids=[1,2,3]
     # Ожидает JSON-массив ID в поле "ids" тела запроса
     def delete(self, request) -> Response:
@@ -127,3 +144,33 @@ class ListingsView(APIView):
         qs.delete()
 
         return Response({"deleted": deleted_count}, status=status.HTTP_200_OK)
+    
+
+def remove_contacts(obj):
+    if isinstance(obj, dict):
+        obj.pop("contact", None)  # удаляем поле, если есть
+        for value in obj.values():
+            remove_contacts(value)  # рекурсивно проходим по значениям
+    elif isinstance(obj, list):
+        for item in obj:
+            remove_contacts(item)  # рекурсивно проходим по списку
+
+# публичный контроллер для получения одного листинга по публичной ссылке ../listing/public/<int:pk>
+class PublicListingRedirectView(APIView):
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, token: str):
+        # Пытаемся найти листинг по токену
+        listing = get_object_or_404(Listing, public_link__url__endswith=f"/{token}")
+
+        # Проверяем доступность
+        if not listing.public_link.get("available", False):
+            return Response({"detail": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ListingSerializer(listing)
+        data = serializer.data
+
+        remove_contacts(data)
+
+        return Response(data, status=status.HTTP_200_OK)
