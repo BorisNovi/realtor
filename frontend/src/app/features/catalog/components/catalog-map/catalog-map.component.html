@@ -1,6 +1,5 @@
 <p-confirmDialog></p-confirmDialog>
 
-@let data = tableDataS();
 <div class="relative h-full rounded-md overflow-hidden bg-[var(--surface-card)]">
   <div class="flex justify-end w-full gap-4 px-4 py-3 absolute z-10 backdrop-brightness-50">
     <p-button [label]="'MAP.SHOW_ALL' | translate" [outlined]="true" icon="pi pi-expand" (click)="showAll()" />
@@ -12,24 +11,7 @@
       [badge]="filtersService.currentCount.toString()"
     />
   </div>
-  <rx-map class="flex w-full h-[51.4rem]" [bounds]="fitBounds()" [zoom]="6">
-    @for (item of data.items; track item.id) {
-      @if (item.address.position; as position) {
-        <rx-map-marker
-          [position]="position"
-          [color]="getStatusColor(item.status, 'color')"
-          [titlePopup]="[
-            { name: 'ADDRESS_PICKER.POPUP.CITY' | translate, value: item.address.city },
-            { name: 'ADDRESS_PICKER.POPUP.ROAD' | translate, value: item.address.road },
-            { name: 'ADDRESS_PICKER.POPUP.HOUSE' | translate, value: item.address.house },
-          ]"
-          (markerClick)="onMarkerClick(item)"
-          popupBehavior="hover"
-          clickable
-        ></rx-map-marker>
-      }
-    }
-  </rx-map>
+  <rx-map class="flex w-full h-[51.4rem]" [bounds]="fitBounds()" [zoom]="6" [images]="mapImages"></rx-map>
 </div>
 
 @let selected = selectedItem();
