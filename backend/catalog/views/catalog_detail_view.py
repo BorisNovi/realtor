@@ -13,6 +13,7 @@ class CatalogDetailView(APIView):
     # 🔹 Используем JWT для аутентификации
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     # Получает объект недвижимости по первичному ключу (pk)

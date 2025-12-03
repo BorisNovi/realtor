@@ -16,6 +16,50 @@ PROPERTY_SERIALIZER_MAP = { # TODO: Добавить другие типы
     'flat': FlatSerializer,
 }
 
+def prepare_property_data(validated_data):
+    """Возвращает распарсенные поля, готовые к применению к модели"""
+    specifics = validated_data.pop('specifics', {}) or {}
+
+    options = specifics.get("options", {}) or {}
+    shared_facilities = options.get("shared_facilities", {}) or {}
+    utilities = options.get("utilities", {}) or {}
+    other = options.get("other", {}) or {}
+
+    # Общие поля
+    data = {
+        "rooms": specifics.get("rooms"),
+        "floor_current": specifics.get("floor", {}).get("current"),
+        "floor_full": specifics.get("floor", {}).get("full"),
+        "kitchen_type": specifics.get("kitchen"),
+        "heating": specifics.get("heating"),
+        "furnished": specifics.get("furnished"),
+        "renovation": specifics.get("renovation"),
+        # Shared Facilities
+        "shared_kitchen": shared_facilities.get("shared_kitchen", False),
+        "shared_bathroom": shared_facilities.get("shared_bathroom", False),
+        # Utilities
+        "electricity": utilities.get("electricity", False),
+        "water_supply": utilities.get("water_supply", False),
+        "natural_gas": utilities.get("natural_gas", False),
+        "sewerage": utilities.get("sewerage", False),
+        "internet": utilities.get("internet", False),
+        # Other
+        "bath": other.get("bath", False),
+        "shower": other.get("shower", False),
+        "air_conditioning": other.get("air_conditioning", False),
+        "fireplace": other.get("fireplace", False),
+        "beautiful_view": other.get("beautiful_view", False),
+        "new_building": other.get("new_building", False),
+        "elevator": other.get("elevator", False),
+        "parking": other.get("parking", False),
+        "balcony": other.get("balcony", False),
+        "garden": other.get("garden", False),
+        "garage": other.get("garage", False),
+    }
+
+    return data
+
+
 class CatalogCreateSerializer(serializers.Serializer):
     # Поля из BaseProperty общие для всех, плюс специфичные
     property_type = serializers.ChoiceField(choices=list(PROPERTY_SERIALIZER_MAP.keys()))
@@ -35,70 +79,29 @@ class CatalogCreateSerializer(serializers.Serializer):
     # === СОЗДАНИЕ ОБЪЕКТА ===
     def create(self, validated_data):
         logger.info("=== [CREATE PROPERTY] Получена команда на создание объекта... ===")
-        logger.info(f"Полученная Validated data: {validated_data}")
+        logger.info(f"Validated data: {validated_data}")
 
         photos = validated_data.pop('photos', [])
-        zoning_type = validated_data.pop('zoning_type')
         property_type = validated_data.pop('property_type')
         contact_data = validated_data.pop('contact', None)
         price_data = validated_data.pop('price', {})
         address_data = validated_data.pop('address', {})
-        specifics = validated_data.pop('specifics', {}) or {}
 
-        # Извлечение вложенных данных
-        options = specifics.get("options", {}) or {}
-        shared_facilities = options.get("shared_facilities", {}) or {} # Исправлено с sharedFacilities!!! Ломалась десериализация.
-        utilities = options.get("utilities", {}) or {}
-        other = options.get("other", {}) or {}
+        # Подготавливаем поля из specifics и остальных данных
+        combined_data = prepare_property_data(validated_data)
 
-        # Обработка контакта
+        # Добавляем контакт
         contact = None
         if contact_data:
             contact_serializer = ContactSerializer(data=contact_data)
             contact_serializer.is_valid(raise_exception=True)
             contact = contact_serializer.save()
-
-        # Формируем данные для модели
-        combined_data = {
-            **validated_data,
-            "zoning_type": zoning_type,
-            "price_value": price_data.get("value"),
-            "price_currency": price_data.get("currency"),
-            "address": address_data,
-            "rooms": specifics.get("rooms"),
-            "floor_current": specifics.get("floor", {}).get("current"),
-            "floor_full": specifics.get("floor", {}).get("full"),
-            "kitchen_type": specifics.get("kitchen"),
-            "heating": specifics.get("heating"),
-            "furnished": specifics.get("furnished"),
-            "renovation": specifics.get("renovation"),
-            # Shared Facilities
-            "shared_kitchen": shared_facilities.get("shared_kitchen", False),
-            "shared_bathroom": shared_facilities.get("shared_bathroom", False),
-            # Utilities
-            "electricity": utilities.get("electricity", False),
-            "water_supply": utilities.get("water_supply", False),  # Исправлено с waterSupply
-            "natural_gas": utilities.get("natural_gas", False),  # Исправлено с naturalGas
-            "sewerage": utilities.get("sewerage", False),
-            "internet": utilities.get("internet", False),
-            # Other
-            "bath": other.get("bath", False),
-            "shower": other.get("shower", False),
-            "air_conditioning": other.get("air_conditioning", False),  # Исправлено с airConditioning
-            "fireplace": other.get("fireplace", False),
-            "beautiful_view": other.get("beautiful_view", False),  # Исправлено с beautifulView
-            "new_building": other.get("new_building", False),  # Исправлено с newBuilding
-            "elevator": other.get("elevator", False),
-            "parking": other.get("parking", False),
-            "balcony": other.get("balcony", False),
-            "garden": other.get("garden", False),
-            "garage": other.get("garage", False),
-        }
-
-        logger.info(f"Combined data: {combined_data}")
-
-        if contact is not None:
             combined_data["contact"] = contact.id
+
+        # Добавляем price и address
+        combined_data["price_value"] = price_data.get("value")
+        combined_data["price_currency"] = price_data.get("currency")
+        combined_data["address"] = address_data
 
         # Создаём объект нужного типа
         serializer_class = PROPERTY_SERIALIZER_MAP.get(property_type)
@@ -109,65 +112,38 @@ class CatalogCreateSerializer(serializers.Serializer):
         inner_serializer.is_valid(raise_exception=True)
         instance = inner_serializer.save()
 
-        # Перемещаем фото
+        # Работа с фото
         if photos:
-            new_photos = []
-            for url in photos:
-                new_url = make_files_permanent(url, subdir=f'property_{instance.id}')
-                new_photos.append(new_url)
+            new_photos = [make_files_permanent(url, subdir=f'property_{instance.id}') for url in photos]
             instance.photos = new_photos
             instance.save(update_fields=["photos"])
 
         logger.info(f"=== [CREATE PROPERTY] Done. ID={instance.id} ===")
         return instance
 
+
     # === ОБНОВЛЕНИЕ ОБЪЕКТА ===
     def update(self, instance, validated_data):
-        # Контакт
-        print("=== ПРОЦЕСС ОБНОВЛЕНИЯ ОБЪЕКТА НАЧАТ ===")
+        print("=== [UPDATE PROPERTY] Начало обновления ===")
         print("validated_data:", validated_data)
 
-        # Забираем данные контакта
+        # Контакт
         contact_data = validated_data.pop('contact', None)
-        print("contact_data:", contact_data)
-
         if contact_data:
-            new_name = contact_data.get("name")
-            new_phone = contact_data.get("phone")
-
-            print("Фронт запросил контакт с именем:", new_name)
-            print("И телефоном:", new_phone)
-
-            # Пытаемся найти существующий контакт
             existing_contact = Contact.objects.filter(
-                name=new_name,
-                phone=new_phone
+                name=contact_data.get("name"),
+                phone=contact_data.get("phone")
             ).first()
 
-            print("existing_contact:", existing_contact)
-
             if existing_contact:
-                print("=== НАЙДЕН СУЩЕСТВУЮЩИЙ КОНТАКТ, ПЕРЕНАЗНАЧАЕМ ===")
                 instance.contact = existing_contact
-
             else:
-                print("=== СУЩЕСТВУЮЩИЙ КОНТАКТ НЕ НАЙДЕН, СОЗДАЕМ НОВЫЙ ===")
-
-                # Если текущего контакта нет – создаём новый
                 if instance.contact:
-                    contact_serializer = ContactSerializer(
-                        instance=instance.contact,
-                        data=contact_data,
-                        partial=True
-                    )
+                    contact_serializer = ContactSerializer(instance=instance.contact, data=contact_data, partial=True)
                 else:
-                    contact_serializer = ContactSerializer(
-                        data=contact_data
-                    )
-
+                    contact_serializer = ContactSerializer(data=contact_data)
                 contact_serializer.is_valid(raise_exception=True)
-                new_contact = contact_serializer.save()
-                instance.contact = new_contact
+                instance.contact = contact_serializer.save()
 
         # Цена
         price_data = validated_data.pop('price', {})
@@ -175,46 +151,28 @@ class CatalogCreateSerializer(serializers.Serializer):
             instance.price_value = price_data.get('value', instance.price_value)
             instance.price_currency = price_data.get('currency', instance.price_currency)
 
-        # Остальные поля
-        specifics = validated_data.pop('specifics', {})
-        for attr, value in {**validated_data, **specifics}.items():
-            if attr not in ['property_type', 'id', 'photos']:
-                setattr(instance, attr, value)
+        # Адрес (можно через сериализатор, если нужен)
+        address_data = validated_data.pop('address', None)
+        if address_data:
+            instance.address.update(address_data)
 
-        # === РАБОТА С ФОТО ===
-        """ Обработка фото при обновлении объекта:
-        - Фронт присылает полный список фото, которые должны остаться на объекте.
-        - Фото, которые не присланы фронтом, считаем удалёнными.
-        - Новые фото (временные URL) делаем постоянными."""
+        # Подготавливаем остальные поля через функцию
+        combined_data = prepare_property_data(validated_data)
+        for attr, value in combined_data.items():
+            setattr(instance, attr, value)
 
+        # Работа с фото
         new_photos_from_front = validated_data.pop("photos", None)
-
         if new_photos_from_front is not None:
-            # Существующие фото на объекте
             old_photos = instance.photos or []
-
-            # Фото, которые фронт хочет оставить
             photos_to_keep = [p for p in new_photos_from_front if p in old_photos]
-
-            # Фото, которые фронт НЕ ПРИСЛАЛ → считаем удалёнными
-            photos_to_remove = [p for p in old_photos if p not in new_photos_from_front]
-
-            # Определяем новые временные фото (не из old_photos)
             temporary_new_photos = [p for p in new_photos_from_front if p not in old_photos]
-
-            # Обработка новых временных фото
-            processed_new_photos = []
-            for url in temporary_new_photos:
-                # делаем постоянным
-                new_url = make_files_permanent(url, subdir=f'property_{instance.id}')
-                processed_new_photos.append(new_url)
-
-            # Итоговый набор фото
+            processed_new_photos = [make_files_permanent(url, subdir=f'property_{instance.id}') for url in temporary_new_photos]
             final_photos = photos_to_keep + processed_new_photos
-
-            # Применяем изменения
             instance.photos = final_photos
-            print(Fore.YELLOW + f"Updated photos. Kept: {photos_to_keep}, Removed: {photos_to_remove}, Added: {processed_new_photos}" + Fore.RESET)
+            print(Fore.YELLOW + f"Updated photos. Kept: {photos_to_keep}, Added: {processed_new_photos}" + Fore.RESET)
 
         instance.save()
+        print(f"=== [UPDATE PROPERTY] Done. ID={instance.id} ===")
         return instance
+
