@@ -91,8 +91,8 @@ export class MapComponent implements AfterViewInit {
       type: 'geojson',
       data,
       cluster: true,
-      clusterRadius: 30,
-      clusterMaxZoom: 12,
+      clusterRadius: 20,
+      clusterMaxZoom: 15,
     });
 
     const onSourceData = () => {
@@ -109,7 +109,6 @@ export class MapComponent implements AfterViewInit {
             'circle-stroke-color': '#4D82F0',
             'circle-stroke-width': 5,
             'circle-stroke-opacity': 0.7,
-
             'circle-radius': ['step', ['get', 'point_count'], 18, 20, 24, 50, 30],
           },
         });
@@ -130,21 +129,6 @@ export class MapComponent implements AfterViewInit {
       }
 
       if (!map.getLayer(`${id}-unclustered-point`)) {
-        // TODO: убрать, когда будут иконки
-        // map.addLayer({
-        //   id: `${id}-unclustered-point`,
-        //   type: 'circle',
-        //   source: id,
-        //   filter: ['!', ['has', 'point_count']],
-        //   paint: {
-        //     'circle-radius': 8,
-        //     'circle-color': ['get', 'color'],
-        //     'circle-stroke-color': ['get', 'color'],
-        //     'circle-stroke-width': 3,
-        //     'circle-stroke-opacity': .7,
-        //   }
-        // });
-
         map.addLayer({
           id: `${id}-unclustered-point`,
           type: 'symbol',
@@ -152,7 +136,7 @@ export class MapComponent implements AfterViewInit {
           filter: ['!', ['has', 'point_count']],
           layout: {
             'icon-image': ['get', 'marker_type'],
-            'icon-size': 0.2,
+            'icon-size': 0.25,
             'icon-allow-overlap': false,
           },
         });

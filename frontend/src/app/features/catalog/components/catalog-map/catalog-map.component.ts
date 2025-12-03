@@ -123,26 +123,25 @@ export class CatalogMapComponent implements AfterViewInit {
 
   // Можно переделать в массив
   readonly mapImages = {
-    marker: 'assets/map-images/marker.png',
-    flat_available: 'assets/map-images/marker.png',
-    flat_reserved: 'assets/flat_reserved.png',
-    flat_rented: 'assets/flat_rented.png',
+    flat_available: 'assets/map-icons/flat_available.png',
+    flat_reserved: 'assets/map-icons/flat_reserved.png',
+    flat_rented: 'assets/map-icons/flat_rented.png',
 
-    house_available: 'test',
-    house_reserved: 'test',
-    house_rented: 'test',
+    house_available: 'assets/map-icons/house_available.png',
+    house_reserved: 'assets/map-icons/house_reserved.png',
+    house_rented: 'assets/map-icons/house_rented.png',
 
-    room_available: 'test',
-    room_reserved: 'test',
-    room_rented: 'test',
+    room_available: 'assets/map-icons/room_available.png',
+    room_reserved: 'assets/map-icons/room_reserved.png',
+    room_rented: 'assets/map-icons/room_rented.png',
 
-    office_available: 'test',
-    office_reserved: 'test',
-    office_rented: 'test',
+    office_available: 'assets/map-icons/office_available.png',
+    office_reserved: 'assets/map-icons/office_reserved.png',
+    office_rented: 'assets/map-icons/office_rented.png',
 
-    land_available: 'test',
-    land_reserved: 'test',
-    land_rented: 'test',
+    land_available: 'assets/map-icons/land_available.png',
+    land_reserved: 'assets/map-icons/land_reserved.png',
+    land_rented: 'assets/map-icons/land_rented.png',
   };
 
   constructor() {
