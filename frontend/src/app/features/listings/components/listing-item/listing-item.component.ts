@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal, viewChild } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { SLIDE } from '@shared/animations';
@@ -14,6 +15,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Divider } from 'primeng/divider';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Popover, PopoverModule } from 'primeng/popover';
+import { map } from 'rxjs';
 import { CatalogService, DeletionConfirmationService } from 'src/app/core';
 import { ChangeListingAvaliability, DeleteListing, ListingsState, UpdateListing } from 'src/app/core/listings/state';
 
@@ -42,10 +44,12 @@ export class ListingItemComponent implements OnDestroy {
   readonly #catalogService = inject(CatalogService);
   readonly #router = inject(Router);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
+  readonly #route = inject(ActivatedRoute);
+
+  readonly mode = toSignal(this.#route.data.pipe(map(data => data['mode'] || Mode.Edit)));
 
   readonly objectsSelector = viewChild<Popover>('objectsSelector');
 
-  readonly mode = signal<Mode>(Mode.Edit);
   readonly objectSelectShown = signal(false);
 
   readonly item = this.#store.selectSignal(ListingsState.listing);
@@ -115,7 +119,7 @@ export class ListingItemComponent implements OnDestroy {
   }
 }
 
-enum Mode {
+export enum Mode {
   Edit = 'edit',
   Share = 'share',
 }

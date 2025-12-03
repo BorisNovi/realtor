@@ -11,7 +11,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   return store.select(AuthState.isAuthenticated).pipe(
     map(isAuthenticated => {
       if (!isAuthenticated) {
-        router.navigate(['/auth/sign-in']);
+        router.navigate(['/public']);
         return false;
       }
       return true;
