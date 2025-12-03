@@ -3,12 +3,12 @@
     margin-bottom: 1rem;
   }
 
-  ::ng-deep {
-    p-galleria .p-galleria {
-      border-color: transparent !important;
-      border-radius: 0;
-    }
+  .galeria {
+    border-radius: 0;
+    border: none;
+  }
 
+  ::ng-deep {
     .maplibregl-popup {
       &-content {
         padding: 5px;
