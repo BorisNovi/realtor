@@ -1,16 +1,30 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { SLIDE } from '@shared/animations';
 import { MapComponent } from '@shared/components';
-import { MapMarkerComponent } from '@shared/components/map/map-marker.component';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency } from '@shared/enums';
 import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
-import { getPropertyStatusColor, getPropertyStatusSeverity } from '@shared/utils/property-status-severity.util';
-import { LngLatBoundsLike } from 'maplibre-gl';
+import { CamelToUpperSnakePipe, WorldPhoneMaskPipe } from '@shared/pipes';
+import {
+  getMapPropertyStatusColor,
+  getPropertyStatusColor,
+  getPropertyStatusSeverity,
+} from '@shared/utils/property-status-severity.util';
+import GeoJSON from 'geojson';
+import maplibregl, { LngLatBoundsLike, LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DividerModule } from 'primeng/divider';
@@ -19,17 +33,15 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GalleriaModule } from 'primeng/galleria';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TagModule } from 'primeng/tag';
-import { tap } from 'rxjs';
+import { distinctUntilChanged, skip, tap } from 'rxjs';
 import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchPropertyObject } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
-import { CamelToUpperSnakePipe, WorldPhoneMaskPipe } from '@shared/pipes';
 
 @Component({
   selector: 'rx-catalog-map',
   imports: [
     MapComponent,
-    MapMarkerComponent,
     FormsModule,
     ButtonModule,
     TranslatePipe,
@@ -44,21 +56,11 @@ import { CamelToUpperSnakePipe, WorldPhoneMaskPipe } from '@shared/pipes';
   ],
   providers: [DialogService],
   templateUrl: './catalog-map.component.html',
-  styles: `
-    ::ng-deep {
-      p-galleria .p-galleria {
-        border-color: transparent !important;
-        border-radius: 0;
-      }
-    }
-    .card {
-      margin-bottom: 1rem;
-    }
-  `,
+  styleUrl: './catalog-map.component.scss',
   animations: [SLIDE],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CatalogMapComponent {
+export class CatalogMapComponent implements AfterViewInit {
   readonly mapComponent = viewChild(MapComponent);
 
   readonly #store = inject(Store);
@@ -118,6 +120,127 @@ export class CatalogMapComponent {
       }))
       .filter(group => group.values.length > 0);
   });
+
+  // Можно переделать в массив
+  readonly mapImages = {
+    marker: 'assets/map-images/marker.png',
+    flat_available: 'assets/map-images/marker.png',
+    flat_reserved: 'assets/flat_reserved.png',
+    flat_rented: 'assets/flat_rented.png',
+
+    house_available: 'test',
+    house_reserved: 'test',
+    house_rented: 'test',
+
+    room_available: 'test',
+    room_reserved: 'test',
+    room_rented: 'test',
+
+    office_available: 'test',
+    office_reserved: 'test',
+    office_rented: 'test',
+
+    land_available: 'test',
+    land_reserved: 'test',
+    land_rented: 'test',
+  };
+
+  constructor() {
+    toObservable(this.tableDataS)
+      .pipe(takeUntilDestroyed(), skip(1), distinctUntilChanged())
+      .subscribe(() => this.#setData());
+  }
+
+  ngAfterViewInit(): void {
+    const map = this.mapComponent()?.map;
+    if (!map) return;
+
+    map.on('load', () => this.#setData());
+
+    // Cluster zoom
+    map.on('click', 'objects-clusters', async e => {
+      const features = map.queryRenderedFeatures(e.point, {
+        layers: ['objects-clusters'],
+      });
+      const source = map.getSource('objects') as maplibregl.GeoJSONSource;
+      try {
+        const zoom = await source.getClusterExpansionZoom(features[0].properties?.['cluster_id']);
+        map.easeTo({ center: (features[0].geometry as GeoJSON.Point).coordinates as LngLatLike, zoom });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    // Popup create and open
+    let hoverPopup: maplibregl.Popup | null = null;
+    map.on('mouseenter', 'objects-unclustered-point', e => {
+      map.getCanvas().style.cursor = 'pointer';
+      const item = JSON.parse(e.features?.[0].properties['raw']) as IPropertyObject;
+
+      if (hoverPopup) {
+        hoverPopup.remove();
+        hoverPopup = null;
+      }
+
+      hoverPopup = new maplibregl.Popup({ closeButton: false, closeOnMove: true })
+        .setLngLat(e.lngLat)
+        .setHTML(
+          `
+          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.CITY')}</strong>: ${item.address.city}</div>
+          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.ROAD')}</strong>: ${item.address.road}</div>
+          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.HOUSE')}</strong>: ${item.address.house}</div>
+          `,
+        )
+        .addTo(map);
+    });
+
+    // Popup close
+    map.on('mouseout', 'objects-unclustered-point', () => {
+      map.getCanvas().style.cursor = '';
+      if (hoverPopup) {
+        hoverPopup.remove();
+        hoverPopup = null;
+      }
+    });
+
+    // Drawer with details open
+    map.on('click', 'objects-unclustered-point', e => {
+      const item = JSON.parse(e.features?.[0].properties['raw']) as IPropertyObject;
+      this.onMarkerClick(item);
+    });
+  }
+
+  #setData(): void {
+    const features: GeoJSON.Feature[] = this.tableDataS()
+      .items.map(item => {
+        const pos = item.address?.position;
+        if (Array.isArray(pos) && pos.length === 2) {
+          const coordinates = pos as GeoJSON.Position;
+
+          return {
+            type: 'Feature',
+            id: item.id,
+            geometry: {
+              type: 'Point',
+              coordinates,
+            },
+            properties: {
+              id: item.id,
+              color: getMapPropertyStatusColor(item.status),
+              marker_type: `${item.propertyType.toLowerCase()}_${item.status.toLowerCase()}`,
+              raw: item,
+            },
+          } as GeoJSON.Feature;
+        }
+        return null;
+      })
+      .filter((f): f is GeoJSON.Feature => f !== null);
+
+    this.mapComponent()?.addClusteredSource('objects', {
+      type: 'FeatureCollection',
+      features,
+    });
+  }
 
   showAll() {
     const map = this.mapComponent()?.map;
