@@ -182,6 +182,6 @@ export class ListingsState {
       });
     }
     ctx.patchState({ loading: false });
-    return of(error);
+    return of(throwError(() => error));
   }
 }

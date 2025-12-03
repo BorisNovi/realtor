@@ -1,1 +1,1 @@
-export { listingsRoutes } from './listings.routes';
+export { listingsRoutes, publicListingsRoutes } from './listings.routes';

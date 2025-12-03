@@ -395,5 +395,14 @@
   },
   "PREFIXES": {
     "APARTMENT": "Ap."
+  },
+  "NOT_FOUND": {
+    "LABEL": "Not Found",
+    "DESCRIPTION": "Requested resource is not available.",
+    "SOLUTION": "Solution Center",
+    "SOLUTION_DESCRIPTION": "Report bug",
+    "LOG_IN": "Login in app",
+    "LOG_IN_DESCRIPTION": "For realtors and staff",
+    "GO_TO_MAIN": "Go to main"
   }
 }
