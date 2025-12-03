@@ -154,7 +154,10 @@ export class CatalogMapComponent implements AfterViewInit {
     const map = this.mapComponent()?.map;
     if (!map) return;
 
-    map.on('load', () => this.#setData());
+    map.on('load', () => {
+      // For slow PCs
+      new Promise<void>(resolve => map.once('idle', resolve)).then(() => this.#setData());
+    });
 
     // Cluster zoom
     map.on('click', 'objects-clusters', async e => {
