@@ -18,7 +18,9 @@ from typing import Optional, List # Для пакетного удаления
 class ContactView(APIView):
     # authentication_classes = [JWTAuthentication]  
     # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
+    
 
     def _build_prefix_tsquery(self, text: str) -> SearchQuery:
         """Строит префиксный tsquery из входного текста для full-text поиска.
