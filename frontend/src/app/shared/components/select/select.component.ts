@@ -23,6 +23,7 @@ export class SelectComponent<T = any> {
   readonly mapToSelect = input.required<(src: T) => RxSelectItem>();
   readonly itemTpl = input<any>();
   readonly disabledIds = input<any[]>([]);
+  readonly disableFn = input<(item: RxSelectItem, value: RxSelectItem[]) => boolean>();
   readonly selectable = input(false, { transform: v => v === '' || !!v });
   readonly multiple = input(false, { transform: v => v === '' || !!v });
   readonly open = input<boolean>(false);
@@ -70,7 +71,13 @@ export class SelectComponent<T = any> {
   }
 
   trackByValue = (_: number, item: RxSelectItem) => item.value;
-  isDisabled = (i: RxSelectItem) => this.disabledIds().includes(i.value.id);
+  isDisabled = (i: RxSelectItem) => {
+    const fn = this.disableFn();
+    const byIds = this.disabledIds().includes(i.value.id);
+    const byFn = fn ? fn(i, this.value()) : false;
+
+    return byIds || byFn;
+  };
   isSelected = (i: RxSelectItem) =>
     this.multiple() ? this.value().some(x => x.value === i.value) : this.value()[0]?.value === i.value;
 
@@ -109,6 +116,7 @@ export class SelectComponent<T = any> {
 
   onItemClick(item: RxSelectItem): void {
     if (this.isDisabled(item)) return;
+
     this.valueClick.emit(item);
   }
 }

@@ -58,7 +58,9 @@
         <th class="min-w-32" pSortableColumn="area">
           {{ 'CATALOG.TABLE.HEADERS.AREA' | translate }} <p-sortIcon field="area" />
         </th>
-        <th class="min-w-32">{{ 'CATALOG.TABLE.HEADERS.DATE' | translate }}</th>
+        <th class="min-w-32" pSortableColumn="dateAdded">
+          {{ 'CATALOG.TABLE.HEADERS.DATE' | translate }} <p-sortIcon field="dateAdded" />
+        </th>
         <th class="min-w-44">{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}</th>
         <th class="min-w-16"></th>
       </tr>
@@ -90,7 +92,7 @@
         </td>
         <td>{{ item.price.value | number }} {{ getCurrencySymbol(item.price.currency) }}</td>
         <td>{{ item.area }} m²</td>
-        <td>{{ item.dateAdded | date: 'd MM y' }}</td>
+        <td>{{ item.dateAdded | date: 'dd.MM.y' }}</td>
         <td
           [pEditableColumn]="{ id: item.id, value: item.status }"
           pEditableColumnField="status"

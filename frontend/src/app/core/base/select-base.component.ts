@@ -10,7 +10,7 @@ export abstract class BaseSelect<T = any> {
   protected readonly items = signal<SelectItem[]>([]);
   protected readonly loading = signal(false);
   protected readonly search = signal('');
-  protected readonly pageSize = signal(25);
+  protected readonly pageSize = signal(10);
 
   protected readonly loadPage$ = new Subject<IPagination>();
   protected totalOnServer = 0;

@@ -33,7 +33,7 @@ interface CatalogStateModel {
   defaults: {
     catalog: { items: [], total: 0 },
     filters: {},
-    sort: null,
+    sort: { sortField: 'dateAdded', sortOrder: 'desc' },
     propertyObject: null,
     pagination: {
       first: 0,
@@ -108,6 +108,7 @@ export class CatalogState {
 
   @Action(SetCatalogSort)
   setCatalogSort(ctx: StateContext<CatalogStateModel>, { sort }: SetCatalogSort) {
+    console.log('sort', sort);
     ctx.patchState({
       sort,
     });

@@ -40,7 +40,7 @@ import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
-import { startWith, tap } from 'rxjs';
+import { startWith, take, tap } from 'rxjs';
 import { ContactsService, CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
 import { CreateContactComponent } from 'src/app/features/contacts';
 import { AddressFormComponent } from '../address-form/address-form.component';
@@ -86,7 +86,8 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly contactsService = inject(ContactsService);
   readonly #worldPhoneMaskPipe = inject(WorldPhoneMaskPipe);
 
-  readonly contactFetchMethod = (options: IFetchOptions) => this.contactsService.fetchContacts(options);
+  readonly contactFetchMethod = (options: IFetchOptions) =>
+    this.contactsService.fetchContacts({ ...options, sort: { sortField: 'dateAdded', sortOrder: 'desc' } });
   readonly contactMapToSelect = (item: IContact) => ({
     label: `${item?.name} ${this.#worldPhoneMaskPipe.transform(item?.phone)}`,
     value: item,
@@ -233,7 +234,7 @@ export class CreateCatalogItemComponent implements OnInit {
   }
 
   openContactDialog(): void {
-    this.#dialogService.open(CreateContactComponent, {
+    const dialogRef = this.#dialogService.open(CreateContactComponent, {
       header: this.#translateService.instant('CONTACTS.DIALOG.ADD'),
       appendTo: document.querySelector('.p-dynamic-dialog')!,
       width: '480px',
@@ -244,6 +245,10 @@ export class CreateCatalogItemComponent implements OnInit {
         '640px': '90vw',
       },
     });
+
+    dialogRef.onClose
+      .pipe(take(1), takeUntilDestroyed(this.#destroyRef))
+      .subscribe(result => this.form.get('contact')?.setValue(result));
   }
 
   onSubmit(): void {
