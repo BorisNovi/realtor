@@ -1,12 +1,12 @@
 <cdk-virtual-scroll-viewport itemSize="36" class="rx-select-viewport" (scrolledIndexChange)="onScrolled()">
   <div
     *cdkVirtualFor="let item of items(); trackBy: trackByValue"
-    class="row"
+    class="container"
     [class.disabled]="isDisabled(item)"
     [class.selected]="isSelected(item)"
-    (click)="toggle(item); valueClick.emit(item)"
+    (click)="toggle(item); onItemClick(item)"
   >
-    <ng-container *ngTemplateOutlet="itemTpl(); context: { $implicit: item, disabled: isDisabled(item) }"></ng-container>
+    <ng-container *ngTemplateOutlet="itemTpl(); context: { $implicit: item }"></ng-container>
   </div>
 </cdk-virtual-scroll-viewport>
 

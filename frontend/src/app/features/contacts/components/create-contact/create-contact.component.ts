@@ -12,8 +12,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
-import { tap } from 'rxjs';
-import { CreateContact, UpdateContact } from 'src/app/core';
+import { switchMap, tap } from 'rxjs';
+import { ContactsState, CreateContact, UpdateContact } from 'src/app/core';
 
 @Component({
   imports: [
@@ -86,7 +86,8 @@ export class CreateContactComponent implements OnInit {
     this.#store
       .dispatch(action)
       .pipe(
-        tap(() => this.#ref.close(payload)),
+        switchMap(() => this.#store.select(ContactsState.contact)),
+        tap(contact => this.#ref.close(contact)),
         takeUntilDestroyed(this.#destroyRef),
       )
       .subscribe();

@@ -16,7 +16,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
-import { debounceTime, map } from 'rxjs';
+import { debounceTime, map, skip } from 'rxjs';
 import { DeletionConfirmationService } from 'src/app/core';
 import { DeleteContact, FetchContacts, SetContactsSearch } from 'src/app/core/contacts/state/contacts.actions';
 import { ContactsState } from 'src/app/core/contacts/state/contacts.state';
@@ -67,6 +67,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   constructor() {
     toObservable(this.search)
       .pipe(
+        skip(1),
         debounceTime(500),
         map(q => q.trim()),
         takeUntilDestroyed(),

@@ -30,7 +30,7 @@ interface ListingsStateModel {
   name: 'listings',
   defaults: {
     listings: { items: [], total: 0 },
-    sort: null,
+    sort: { sortField: 'dateAdded', sortOrder: 'desc' },
     listing: null,
     pagination: {
       first: 0,
