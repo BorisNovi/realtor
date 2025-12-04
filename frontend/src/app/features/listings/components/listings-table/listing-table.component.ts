@@ -133,7 +133,7 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   deleteItem(item: IListing): void {
     this.#deletionConfirmationService.confirm(
       () => {
-        this.#store.dispatch(new DeleteListing([item.id]));
+        this.#store.dispatch(new DeleteListing([item.id], { getList: true }));
       },
       { header: 'LISTINGS.DIALOG.DELETE_REQUEST_SINGLE' },
     );
