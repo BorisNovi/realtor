@@ -3,7 +3,7 @@ import logging
 from colorama import init, Fore
 from file.file_utils import make_files_permanent
 from rest_framework import serializers
-from .flat_serializer import FlatSerializer
+from .flat_serializer import FlatSerializer, prepare_property_data
 from contacts.contact_serializers import ContactSerializer
 from .catalog_address_serializer import AddressSerializer
 from .catalog_price_serializer import PriceSerializer 
@@ -15,49 +15,6 @@ logger = logging.getLogger(__name__)
 PROPERTY_SERIALIZER_MAP = { # TODO: Добавить другие типы 
     'flat': FlatSerializer,
 }
-
-def prepare_property_data(validated_data):
-    """Возвращает распарсенные поля, готовые к применению к модели"""
-    specifics = validated_data.pop('specifics', {}) or {}
-
-    options = specifics.get("options", {}) or {}
-    shared_facilities = options.get("shared_facilities", {}) or {}
-    utilities = options.get("utilities", {}) or {}
-    other = options.get("other", {}) or {}
-
-    # Общие поля
-    data = {
-        "rooms": specifics.get("rooms"),
-        "floor_current": specifics.get("floor", {}).get("current"),
-        "floor_full": specifics.get("floor", {}).get("full"),
-        "kitchen_type": specifics.get("kitchen"),
-        "heating": specifics.get("heating"),
-        "furnished": specifics.get("furnished"),
-        "renovation": specifics.get("renovation"),
-        # Shared Facilities
-        "shared_kitchen": shared_facilities.get("shared_kitchen", False),
-        "shared_bathroom": shared_facilities.get("shared_bathroom", False),
-        # Utilities
-        "electricity": utilities.get("electricity", False),
-        "water_supply": utilities.get("water_supply", False),
-        "natural_gas": utilities.get("natural_gas", False),
-        "sewerage": utilities.get("sewerage", False),
-        "internet": utilities.get("internet", False),
-        # Other
-        "bath": other.get("bath", False),
-        "shower": other.get("shower", False),
-        "air_conditioning": other.get("air_conditioning", False),
-        "fireplace": other.get("fireplace", False),
-        "beautiful_view": other.get("beautiful_view", False),
-        "new_building": other.get("new_building", False),
-        "elevator": other.get("elevator", False),
-        "parking": other.get("parking", False),
-        "balcony": other.get("balcony", False),
-        "garden": other.get("garden", False),
-        "garage": other.get("garage", False),
-    }
-
-    return data
 
 
 class CatalogCreateSerializer(serializers.Serializer):
