@@ -46,6 +46,17 @@ class CatalogCreateSerializer(serializers.Serializer):
 
         # Подготавливаем поля из specifics и остальных данных
         combined_data = prepare_property_data(validated_data)
+        # Добавляем все общие поля BaseProperty
+        combined_data.update({
+            "area": validated_data.get("area"),
+            "title": validated_data.get("title"),
+            "map_link": validated_data.get("map_link"),
+            "comment": validated_data.get("comment"),
+            "date_added": validated_data.get("date_added"),
+            "zoning_type": validated_data.get("zoning_type"),
+            "status": validated_data.get("status"),
+        })
+
 
         # Добавляем контакт
         contact = None
@@ -113,10 +124,20 @@ class CatalogCreateSerializer(serializers.Serializer):
         if address_data:
             instance.address.update(address_data)
 
-        # Подготавливаем остальные поля через функцию
-        combined_data = prepare_property_data(validated_data)
-        for attr, value in combined_data.items():
-            setattr(instance, attr, value)
+        # Остальные BaseProperty-поля
+        base_fields = ['area', 'title', 'map_link', 'comment', 'date_added', 'zoning_type', 'status']
+        for field in base_fields:
+            if field in validated_data:
+                setattr(instance, field, validated_data[field])
+
+        # --- Специфичные поля ---
+        specifics_data = validated_data.get('specifics', {})
+        if specifics_data:
+            combined_data = prepare_property_data(validated_data.copy())
+            for attr, value in combined_data.items():
+                if hasattr(instance, attr):
+                    setattr(instance, attr, value)
+
 
         # Работа с фото
         new_photos_from_front = validated_data.pop("photos", None)
