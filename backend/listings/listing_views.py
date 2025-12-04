@@ -147,16 +147,18 @@ class ListingsView(APIView):
     
 
 def remove_contacts(obj):
+    """Рекурсивно удаляет поле "contact" из вложенных структур данных. 
+    Применяется перед отправкой публичной подборки клиенту."""
     if isinstance(obj, dict):
-        obj.pop("contact", None)  # удаляем поле, если есть
+        obj.pop("contact", None) 
         for value in obj.values():
-            remove_contacts(value)  # рекурсивно проходим по значениям
+            remove_contacts(value)  
     elif isinstance(obj, list):
         for item in obj:
-            remove_contacts(item)  # рекурсивно проходим по списку
+            remove_contacts(item) 
 
 # публичный контроллер для получения одного листинга по публичной ссылке ../listing/public/<int:pk>
-class PublicListingRedirectView(APIView):
+class PublicListingView(APIView):
     authentication_classes = []
     permission_classes = [permissions.AllowAny]
 

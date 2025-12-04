@@ -12,6 +12,7 @@ class ContactSerializer(serializers.ModelSerializer):
         model = Contact
         fields = ['id', 'dateAdded', 'name', 'phone', 'additional_phone']
 
+    # Валидация контакта
     def validate_name(self, value):
         if len(value) > 50:
             raise serializers.ValidationError("Name must be at most 50 characters long.")
@@ -27,6 +28,7 @@ class ContactSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Additional phone number must contain only digits.")
         return value
 
+    # Создание контакта с проверкой уникальности по номеру телефона
     def create(self, validated_data):
         phone = validated_data.get('phone')
         name = validated_data.get('name')
@@ -45,6 +47,7 @@ class ContactSerializer(serializers.ModelSerializer):
             # Создаём новый контакт
             return Contact.objects.create(**validated_data)
 
+    # Обновление контакта с проверкой уникальности по номеру телефона
     def update(self, instance, validated_data):
         new_phone = validated_data.get('phone', instance.phone)
 

@@ -22,9 +22,10 @@ class ListingSerializer(serializers.ModelSerializer):
     def get_property_objects(self, obj):
         # на текущий момент берём только квартиры
         flats = Flat.objects.filter(id__in=obj.property_object_ids)
-        return FlatSerializer(flats, many=True).data
         # TODO: ДОБАВЬ ОСТАЛЬНЫЕ ПОТОМ
+        return FlatSerializer(flats, many=True).data
 
+    # Отдает фронту
     class Meta:
         model = Listing
         fields = ['id', 
@@ -33,7 +34,8 @@ class ListingSerializer(serializers.ModelSerializer):
                   'property_objects', 
                   'company_name', 
                   'company_logo', 
-                  'public_link'
+                  'public_link',
+                  'date_added',
                   ] 
 
 
