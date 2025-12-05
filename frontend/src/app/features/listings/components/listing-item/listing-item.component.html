@@ -53,7 +53,12 @@
   Empty
 }
 
-<p-popover #objectsSelector (onShow)="objectSelectShown.set(true)" (onHide)="objectSelectShown.set(false)">
+<p-popover
+  #objectsSelector
+  (onShow)="objectSelectShown.set(true)"
+  (onHide)="objectSelectShown.set(false)"
+  styleClass="w-[300px]"
+>
   <rx-select
     [fetcher]="catalogFetchMethod"
     [itemTpl]="itemTemplate"

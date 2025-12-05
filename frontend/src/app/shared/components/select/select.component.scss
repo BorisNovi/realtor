@@ -2,7 +2,7 @@
   --row-height: 36px;
   .rx-select-viewport {
     height: calc(var(--row-height) * 6);
-    width: 300px;
+    width: 100%;
     overflow: auto;
     display: block;
   }
