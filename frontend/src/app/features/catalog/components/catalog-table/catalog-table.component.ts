@@ -42,6 +42,7 @@ import {
 } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
+import { AddToListingComponent } from '../add-to-listing/add-to-listing.component';
 
 @Component({
   selector: 'rx-table',
@@ -121,17 +122,12 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
       {
         label: this.#translateService.instant('CATALOG.TABLE.BUTTONS.ADD_TO_LISTING'),
         icon: 'pi pi-list-check',
-        command: () => {
-          // TODO: на этапе подборок это реализуется
-          console.debug(`Add to listing item with id: ${item.id}`);
-        },
+        command: () => this.openAddToListingDialog(item.id),
       },
       {
         label: this.#translateService.instant('ACTIONS.EDIT'),
         icon: 'pi pi-pencil',
-        command: () => {
-          this.openItemDialog(item.id);
-        },
+        command: () => this.openItemDialog(item.id),
       },
       {
         separator: true,
@@ -139,9 +135,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
       {
         label: this.#translateService.instant('ACTIONS.DELETE'),
         icon: 'pi pi-trash',
-        command: () => {
-          this.deleteItems([item]);
-        },
+        command: () => this.deleteItems([item]),
       },
     ];
   }
@@ -194,6 +188,19 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
         takeUntilDestroyed(this.#destroyRef),
       )
       .subscribe();
+  }
+
+  openAddToListingDialog(id: number): void {
+    this.#ref = this.#dialogService.open(AddToListingComponent, {
+      data: id,
+      header: this.#translateService.instant('LISTINGS.ACTIONS.ADD_OBJECT'),
+      width: '370px',
+      height: '300px',
+      dismissableMask: true,
+      modal: true,
+      closable: true,
+      focusOnShow: false,
+    });
   }
 
   openDialog(data?: IPropertyObject): void {

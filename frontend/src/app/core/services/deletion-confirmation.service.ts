@@ -9,6 +9,7 @@ export class DeletionConfirmationService {
 
   confirm(onAccept: () => void, options?: IDeletionConfirmationOptions): void {
     this.#confirmationService.confirm({
+      dismissableMask: true,
       message: this.#translateService.instant(options?.message || 'CATALOG.TABLE.DIALOG.DELETE_HINT'),
       header: this.#translateService.instant(options?.header || 'CATALOG.TABLE.DIALOG.DELETE_REQUEST_SINGLE'),
       icon: 'pi pi-info-circle',

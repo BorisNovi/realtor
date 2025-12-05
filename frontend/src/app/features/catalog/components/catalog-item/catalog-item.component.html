@@ -22,7 +22,12 @@
     </div>
   </rx-detail>
 
-  <p-popover #listingsSelector (onShow)="listingSelectShown.set(true)" (onHide)="listingSelectShown.set(false)">
+  <p-popover
+    #listingsSelector
+    (onShow)="listingSelectShown.set(true)"
+    (onHide)="listingSelectShown.set(false)"
+    styleClass="w-[300px]"
+  >
     <rx-select
       [fetcher]="listingsFetchMethod"
       [itemTpl]="itemTemplate"

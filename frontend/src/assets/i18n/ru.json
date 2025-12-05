@@ -336,7 +336,7 @@
       "DELETE_FAILED": "Не удалось удалить контакт"
     }
   },
-   "LISTINGS" : {
+  "LISTINGS": {
     "ACTIONS": {
       "ADD_OBJECT": "Добавить объект в подборку",
       "DELETE_OBJECT": "Удалить из подборки",
