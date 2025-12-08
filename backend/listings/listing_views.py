@@ -14,6 +14,11 @@ from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
+# Маппинг camelCase -> snake_case
+CAMEL_TO_SNAKE = {
+    "name": "name",
+    "dateAdded": "date_added",
+}
 
 # Контроллер для листингов с поддержкой создания листинга
 class ListingsView(APIView):
@@ -42,52 +47,47 @@ class ListingsView(APIView):
     
     # Получение списка листингов ../listing/list c поддержкой поиска, пагинации и сортировки
     def get(self, request: Request, pk: Optional[int] = None) -> Response:
-        
-        # Получение одного листинга по pk ../listing/<int:pk>
+        # Получение одного листинга
         if pk is not None:
-            try:
-                listing = Listing.objects.get(pk=pk)
-            except Listing.DoesNotExist:
-                return Response({"detail": "Listing not found."}, status=status.HTTP_404_NOT_FOUND)
+            listing = get_object_or_404(Listing, pk=pk)
             serializer = ListingSerializer(listing)
             return Response(serializer.data)
-        
-        # Список для расширенного варианта ответа (search, pagination, sorting)
-        search: Optional[str] = request.query_params.get("search")
-        first: int = int(request.query_params.get("first", 0))
-        rows: int = int(request.query_params.get("rows", 10))
-        sort_field: Optional[str] = request.query_params.get("sortField")
-        sort_order: str = request.query_params.get("sortOrder", "asc")
 
-        # Формируем базовый queryset
+        # Параметры поиска и сортировки
+        search = request.query_params.get("search")
+        first = int(request.query_params.get("first", 0))
+        rows = int(request.query_params.get("rows", 10))
+        sort_field_camel = request.query_params.get("sortField")
+        sort_order = request.query_params.get("sortOrder", "asc")
+
+        # Базовый queryset
         queryset = Listing.objects.all()
+
+        # Full-text поиск
         if search:
             tsquery = self._build_prefix_tsquery(search)
-            vector = SearchVector("name") # TODO: Добавь другие поля по необходимости
+            vector = SearchVector("name")  # можно добавить другие поля
             fts_qs = (
                 queryset
                 .annotate(search_vector=vector)
-                .filter(search_vector=tsquery)  # фильтр по tsquery
+                .filter(search_vector=tsquery)
                 .annotate(rank=SearchRank(vector, tsquery))
                 .order_by("-rank")
             )
+            queryset = fts_qs if fts_qs.exists() else queryset.filter(
+                Q(name__icontains=search) | Q(phone__icontains=search)
+            )
 
-            # если fulltext ничего не вернуло — fallback на substring (icontains)
-            if fts_qs.exists():
-                queryset = fts_qs
-            else:
-                queryset = queryset.filter(
-                    Q(name__icontains=search) | Q(phone__icontains=search)
-                )
-
-        # Сортировка
-        if sort_field in ["name"]: # TODO: Добавь другие поля по необходимости
+        # Сортировка с маппингом
+        sort_field = CAMEL_TO_SNAKE.get(sort_field_camel)
+        if sort_field:
             direction = "-" if sort_order.lower() == "desc" else ""
             queryset = queryset.order_by(f"{direction}{sort_field}")
         else:
-            # Дефолтная сортировка по дате добавления (по убыванию)
-            queryset = queryset.order_by("-date_added")  # или "-created_at", если у тебя такое поле
+            # дефолтная сортировка по дате добавления
+            queryset = queryset.order_by("-date_added")
 
+        # пагинация подборок
         total_count: int = queryset.count()
         paginated_queryset = queryset[first:first + rows]
         serializer = ListingSerializer(paginated_queryset, many=True)
@@ -160,14 +160,14 @@ def remove_contacts(obj):
         for item in obj:
             remove_contacts(item) 
 
-# публичный контроллер для получения одного листинга по публичной ссылке ../listing/public/<int:pk>
+# публичный контроллер для получения одного листинга по токену
 class PublicListingView(APIView):
     authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, token: str):
-        # Пытаемся найти листинг по токену
-        listing = get_object_or_404(Listing, public_link__url__endswith=f"/{token}")
+        # Ищем листинг с нужным токеном
+        listing = get_object_or_404(Listing, public_link__token=token)
 
         # Проверяем доступность
         if not listing.public_link.get("available", False):
@@ -179,3 +179,4 @@ class PublicListingView(APIView):
         remove_contacts(data)
 
         return Response(data, status=status.HTTP_200_OK)
+

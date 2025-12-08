@@ -10,28 +10,34 @@ class ContactSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contact
-        fields = ['id', 'dateAdded', 'name', 'phone', 'additional_phone']
+        fields = ['id', 'dateAdded', 'name', 'phone', 'additional_phone', 'comment']
 
     # Валидация контакта
     def validate_name(self, value):
         if len(value) > 50:
-            raise serializers.ValidationError("Name must be at most 50 characters long.")
+            raise serializers.ValidationError("Куда ты, блядь, разогнался?) У нас разрешено только 50 символов.")
         return value
 
     def validate_phone(self, value):
         if not re.match(r'^\d+$', value):
-            raise serializers.ValidationError("Phone number must contain only digits.")
+            raise serializers.ValidationError("Вводи цифры, а не хуйню.")
         return value
 
     def validate_additional_phone(self, value):
         if value and not re.match(r'^\d+$', value):
-            raise serializers.ValidationError("Additional phone number must contain only digits.")
+            raise serializers.ValidationError("Вводи цифры, а не хуйню.")
+        return value
+    
+    def validate_comment(self, value):
+        if len(value) > 200:
+            raise serializers.ValidationError("Ты досье решил сочинить?) Для заметок у нас разрешено только 200 символов.")
         return value
 
     # Создание контакта с проверкой уникальности по номеру телефона
     def create(self, validated_data):
         phone = validated_data.get('phone')
         name = validated_data.get('name')
+        comment = validated_data.get('comment')
 
         try:
             # Ищем существующий контакт по номеру
@@ -63,5 +69,6 @@ class ContactSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name', instance.name)
         instance.phone = new_phone
         instance.additional_phone = validated_data.get('additional_phone', instance.additional_phone)
+        instance.comment = validated_data.get('comment', instance.comment)
         instance.save()
         return instance
