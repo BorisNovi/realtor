@@ -18,18 +18,40 @@ class CatalogListView(APIView):
     # 🔹 Используем JWT для аутентификации
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
     
     def get(self, request):
         flats = Flat.objects.filter(deleted_at__isnull=True) 
-        
-        combined = sorted(chain(flats), key=lambda obj: obj.date_added, reverse=True) 
+        # offices = Office.objects.filter(deleted_at__isnull=True)
+        # lands = Land.objects.filter(deleted_at__isnull=True)
 
+        combined = list(chain(flats, 
+                            #   offices, lands
+                              ))
+
+        # Фильтры
         filtered = apply_catalog_filters(combined, request.query_params)
+
+        # Сортировка
+        sort_field: str = request.query_params.get("sortField", None)
+        sort_order: str = request.query_params.get("sortOrder", "desc")
+        reverse = sort_order.lower() == "desc"
+
+        def get_sort_value(obj):
+            # Проверяем наличие атрибута, иначе None
+            if sort_field and hasattr(obj, sort_field):
+                return getattr(obj, sort_field)
+            return getattr(obj, "date_added", None)  # дефолтное поле
+
+        filtered.sort(key=get_sort_value, reverse=reverse)
+
+        # Пагинация
         paginator = FrontendPagination()
         paginated_qs = paginator.paginate_queryset(filtered, request)
-
+        
         serialized = CatalogListSerializer(paginated_qs, many=True).data
-
         return paginator.get_paginated_response(serialized)
+
+
 

@@ -38,29 +38,25 @@ class ListingSerializer(serializers.ModelSerializer):
                   'date_added',
                   ] 
 
-
     # -------------------- ВАЛИДАЦИИ --------------------
-
     def validate_name(self, value):
         value = value.strip()
 
-        if len(value) < 3:
-            raise serializers.ValidationError("Название должно быть не короче 3 символов.")
-        if len(value) > 100:
-            raise serializers.ValidationError("Название должно быть не длиннее 100 символов.")
+        # if len(value) > 100:
+        #     raise serializers.ValidationError("Название должно быть не длиннее 100 символов.")
 
-        qs = Listing.objects.filter(name=value)
-        if self.instance:
-            qs = qs.exclude(pk=self.instance.pk)
+        # qs = Listing.objects.filter(name=value)
+        # if self.instance:
+        #     qs = qs.exclude(pk=self.instance.pk)
 
-        if qs.exists():
-            raise serializers.ValidationError("Такое название уже используется.")
+        # if qs.exists():
+        #     raise serializers.ValidationError("Такое название уже используется.")
 
         return value
 
     def validate_company_logo(self, value):
         if value and not value.startswith("http"):
-            raise serializers.ValidationError("company_logo должен быть валидным URL.")
+            raise serializers.ValidationError("Блядь, дай мне нормальную ссылку на лого, а не хуйню.")
         return value
 
     def validate_property_object_ids(self, ids):
@@ -73,39 +69,39 @@ class ListingSerializer(serializers.ModelSerializer):
         return ids
 
     # -------------------- ЛОГИКА ГЕНЕРАЦИИ PUBLIC LINK --------------------
-    
-    def _generate_public_link(self, listing: Listing) -> dict:
-        token = secrets.token_urlsafe(8)
-        
-        base = "https://realtor-x.com/listing"
+    def _generate_token(self) -> str:
+        """Генерируем токен для листинга."""
+        return secrets.token_urlsafe(8)
+
+    def _get_public_link(self, listing: Listing, available=True) -> dict:
+        """Возвращает объект public_link с токеном и статусом."""
+        # Если токен уже есть, берём его, иначе генерируем
+        token = listing.public_link.get("token") if listing.public_link else self._generate_token()
         return {
-            "available": True,
-            "url": f"{base}/{token}"
+            "available": available,
+            "token": token
         }
 
     # -------------------- СОЗДАНИЕ --------------------
-
     def create(self, validated_data):
         public = validated_data.pop("public_link", {})
         listing = super().create(validated_data)
 
-        if public.get("available") in (True, "True", "true", 1, "1"):
-            listing.public_link = self._generate_public_link(listing)
-            listing.save()
+        available = public.get("available") in (True, "True", "true", 1, "1")
+        listing.public_link = self._get_public_link(listing, available=available)
+        listing.save()
 
         return listing
 
     # -------------------- ОБНОВЛЕНИЕ --------------------
-
     def update(self, instance, validated_data):
         public = validated_data.pop("public_link", None)
         listing = super().update(instance, validated_data)
 
         if public is not None:
-            if public.get("available") in (True, "True", "true", 1, "1"):
-                listing.public_link = self._generate_public_link(listing)
-            else:
-                listing.public_link = {"available": False}
+            available = public.get("available") in (True, "True", "true", 1, "1")
+            listing.public_link = self._get_public_link(listing, available=available)
             listing.save()
 
         return listing
+
