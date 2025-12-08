@@ -84,6 +84,9 @@ class ListingsView(APIView):
         if sort_field in ["name"]: # TODO: Добавь другие поля по необходимости
             direction = "-" if sort_order.lower() == "desc" else ""
             queryset = queryset.order_by(f"{direction}{sort_field}")
+        else:
+            # Дефолтная сортировка по дате добавления (по убыванию)
+            queryset = queryset.order_by("-date_added")  # или "-created_at", если у тебя такое поле
 
         total_count: int = queryset.count()
         paginated_queryset = queryset[first:first + rows]
@@ -145,7 +148,7 @@ class ListingsView(APIView):
 
         return Response({"deleted": deleted_count}, status=status.HTTP_200_OK)
     
-
+# Удаление контакта перед отправкой публичной подборки
 def remove_contacts(obj):
     """Рекурсивно удаляет поле "contact" из вложенных структур данных. 
     Применяется перед отправкой публичной подборки клиенту."""

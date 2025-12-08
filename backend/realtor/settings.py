@@ -71,10 +71,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',  # Blacklist зависит от simplejwt
     'corsheaders',                  # CORS для API, независим
 
-    # Ваши приложения (в порядке возможных зависимостей)
+    # Мои приложения (в порядке возможных зависимостей)
     'users',                        # Кастомная модель User, основа для других приложений
     'user_auth',                    # Зависит от users (предположительно)
-    'catalog',
+    # 'catalog',
+    'catalog.apps.CatalogConfig',
     'contacts',
     'file',
     'listings',                     

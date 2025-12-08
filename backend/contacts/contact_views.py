@@ -75,6 +75,9 @@ class ContactView(APIView):
         if sort_field in ["name", "dateAdded"]:
             direction = "-" if sort_order.lower() == "desc" else ""
             queryset = queryset.order_by(f"{direction}{sort_field}")
+        else:
+            # Дефолтная сортировка по дате добавления (по убыванию)
+            queryset = queryset.order_by("-dateAdded") 
 
         total_count: int = queryset.count()
         paginated_queryset = queryset[first:first + rows]
