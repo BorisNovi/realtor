@@ -12,6 +12,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
 import { switchMap, tap } from 'rxjs';
 import { ContactsState, CreateContact, UpdateContact } from 'src/app/core';
 
@@ -22,6 +23,7 @@ import { ContactsState, CreateContact, UpdateContact } from 'src/app/core';
     InputTextModule,
     InputGroupModule,
     InputGroupAddonModule,
+    TextareaModule,
     WorldPhoneMasksDirective,
     InputWrapperComponent,
     TranslatePipe,
@@ -50,6 +52,7 @@ export class CreateContactComponent implements OnInit {
       name: [data?.name || null, [Validators.required, Validators.maxLength(50)]],
       phone: [data?.phone || null, [Validators.required]],
       additional_phone: [data?.additional_phone || null],
+      comment: [data?.comment || null]
     });
   }
 
