@@ -37,8 +37,9 @@ export class LinkSwitchComponent {
 
   copyLink(): void {
     const publicLink = this.publicLink();
-    if (!publicLink || !publicLink?.url) return;
-    navigator.clipboard.writeText(this.publicLink()?.url || '');
+    if (!publicLink || !publicLink?.token) return;
+
+    navigator.clipboard.writeText(`${window.location.origin}/public/listings/?token=${this.publicLink()?.token}` || '');
 
     this.#messageService.add({
       severity: 'success',

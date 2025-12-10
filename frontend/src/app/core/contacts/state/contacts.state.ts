@@ -34,7 +34,7 @@ interface ContactsStateModel {
     contacts: { items: [], total: 0 },
     // filters: {},
     search: '',
-    sort: { sortField: 'dateAdded', sortOrder: 'desc' },
+    sort: null,
     contact: null,
     pagination: {
       first: 0,

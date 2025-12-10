@@ -33,7 +33,7 @@ interface CatalogStateModel {
   defaults: {
     catalog: { items: [], total: 0 },
     filters: {},
-    sort: { sortField: 'dateAdded', sortOrder: 'desc' },
+    sort: null,
     propertyObject: null,
     pagination: {
       first: 0,
