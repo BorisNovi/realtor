@@ -51,8 +51,8 @@ export class CreateContactComponent implements OnInit {
       // TODO: добавить читаемый текст ошибок
       name: [data?.name || null, [Validators.required, Validators.maxLength(50)]],
       phone: [data?.phone || null, [Validators.required]],
-      additional_phone: [data?.additional_phone || null],
-      comment: [data?.comment || null]
+      additionalPhone: [data?.additionalPhone || null],
+      comment: [data?.comment || null, [Validators.maxLength(200)]],
     });
   }
 
@@ -62,7 +62,7 @@ export class CreateContactComponent implements OnInit {
   }
 
   validAddPhone(valid: boolean): void {
-    const phoneControl = this.form?.get('additional_phone');
+    const phoneControl = this.form?.get('additionalPhone');
     phoneControl?.setErrors(valid ? null : { invalidPhone: true });
   }
 
@@ -80,9 +80,9 @@ export class CreateContactComponent implements OnInit {
           ...this.config.data,
           ...formData,
           phone: clearPhone(formData.phone),
-          additional_phone: clearPhone(formData.additional_phone),
+          additionalPhone: clearPhone(formData.additionalPhone),
         }
-      : { ...formData, phone: clearPhone(formData.phone), additional_phone: clearPhone(formData.additional_phone) };
+      : { ...formData, phone: clearPhone(formData.phone), additionalPhone: clearPhone(formData.additionalPhone) };
 
     const action = hasId ? new UpdateContact(payload) : new CreateContact(payload);
 

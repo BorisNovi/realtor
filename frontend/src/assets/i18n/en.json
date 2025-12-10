@@ -149,6 +149,7 @@
       "REQUIRED": "{{label}} is required",
       "MIN": "{{label}} must be at least {{min}}",
       "MAX": "{{label}} must not exceed {{max}}",
+      "MAXLENGTH": "Should be shorter than {{max}}",
       "INVALID": "{{label}} is invalid"
     }
   },
