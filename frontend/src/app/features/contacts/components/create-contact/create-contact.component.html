@@ -57,6 +57,15 @@
       </p-inputgroup>
     </rx-input-wrapper>
 
+    <!-- Comment -->
+    <rx-input-wrapper
+      [control]="form.get('comment')!"
+      [label]="'FORM.LABELS.COMMENT' | translate"
+      id="additionalPhone"
+    >
+      <textarea pTextarea id="comment" formControlName="comment" [fluid]="true" rows="5"></textarea>
+    </rx-input-wrapper>
+
     <!-- Buttons -->
     <div class="md:col-span-2 flex justify-end gap-2 mt-6 sticky bottom-0">
       <p-button
