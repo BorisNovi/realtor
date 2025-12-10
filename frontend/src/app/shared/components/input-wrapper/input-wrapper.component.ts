@@ -41,6 +41,9 @@ export class InputWrapperComponent implements AfterContentInit {
     if (errors['max']) {
       return this.#translateService.instant('FORM.ERRORS.MAX', { label, max: errors['max'].max });
     }
+    if (errors['maxlength']) {
+      return this.#translateService.instant('FORM.ERRORS.MAXLENGTH', { max: errors['maxlength'].requiredLength });
+    }
     return this.#translateService.instant('FORM.ERRORS.INVALID', { label });
   });
 

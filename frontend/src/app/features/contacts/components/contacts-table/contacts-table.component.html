@@ -51,6 +51,9 @@
         <th class="min-w-[12rem]">
           {{ 'CONTACTS.TABLE.HEADERS.PHONE' | translate }}
         </th>
+        <th class="min-w-[18rem]">
+          {{ 'FORM.LABELS.COMMENT' | translate }}
+        </th>
         <th class="min-w-[8rem]" pSortableColumn="dateAdded">
           {{ 'CATALOG.TABLE.HEADERS.DATE' | translate }}
           <p-sortIcon field="dateAdded" />
@@ -63,10 +66,11 @@
         <td class="max-w-[20rem] whitespace-nowrap text-ellipsis overflow-hidden">{{ item.name }}</td>
         <td class="whitespace-nowrap">
           {{ item.phone | worldPhoneMask }}
-          @if (item.additional_phone) {
-            <div class="text-sm text-gray-500">{{ item.additional_phone | worldPhoneMask }}</div>
+          @if (item.additionalPhone) {
+            <div class="text-sm text-gray-500">{{ item.additionalPhone | worldPhoneMask }}</div>
           }
         </td>
+        <td class="text-sm text-gray-300">{{ item.comment }}</td>
         <td class="whitespace-nowrap">{{ item.dateAdded | date: 'dd.MM.y' }}</td>
         <td>
           <p-button
