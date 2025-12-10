@@ -19,6 +19,6 @@ export interface IPublicLinkUpdate {
 }
 
 export interface IPublicLink {
-  url?: string;
+  token?: string;
   available: boolean;
 }

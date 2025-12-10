@@ -86,8 +86,7 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly contactsService = inject(ContactsService);
   readonly #worldPhoneMaskPipe = inject(WorldPhoneMaskPipe);
 
-  readonly contactFetchMethod = (options: IFetchOptions) =>
-    this.contactsService.fetchContacts({ ...options, sort: { sortField: 'dateAdded', sortOrder: 'desc' } });
+  readonly contactFetchMethod = (options: IFetchOptions) => this.contactsService.fetchContacts(options);
   readonly contactMapToSelect = (item: IContact) => ({
     label: `${item?.name} ${this.#worldPhoneMaskPipe.transform(item?.phone)}`,
     value: item,
