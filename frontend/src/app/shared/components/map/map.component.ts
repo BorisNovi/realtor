@@ -136,7 +136,7 @@ export class MapComponent implements AfterViewInit {
           filter: ['!', ['has', 'point_count']],
           layout: {
             'icon-image': ['get', 'marker_type'],
-            'icon-size': 0.25,
+            'icon-size': 0.1,
             'icon-allow-overlap': false,
           },
         });
