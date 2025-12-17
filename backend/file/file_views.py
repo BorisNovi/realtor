@@ -3,9 +3,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from file.serializers import FileUploadSerializer
 from .models import FileUpload
 
-baseurl = "http://localhost:8000"
+baseurl = "http://localhost:8000" # TODO: В будущем заменить на продакшен URL
+MAX_FILES = 25                    # Допустимое Количество изображений на 1 объект недвижимости 
 
 class FileUploadView(APIView):
     # authentication_classes = [JWTAuthentication]  
@@ -16,22 +19,29 @@ class FileUploadView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        # Проверяем, что файлы пришли
         if not request.FILES:
-            return Response({"detail": "No files provided"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "А где?"},
+                status=status.HTTP_400_BAD_REQUEST # Тут валидируется наличие файлов, если обращаемся именно к этому эндпоинту. 
+            )
 
-        uploaded_files = []
+        total_files = sum(len(request.FILES.getlist(key)) for key in request.FILES)
+        if total_files > MAX_FILES:
+            return Response(
+                {"detail": f"В таком количестве себе члены в жопу суй, а в один объект можно пихать только {MAX_FILES} изображений"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # Берём файлы через getlist, чтобы достать все file0, file1 и т.п.
+        uploaded_urls = []
+
         for key in request.FILES:
-            files = request.FILES.getlist(key)
-            for file_obj in files:
-                # Если нужно, можно привязать к пользователю
-                instance = FileUpload.objects.create(file=file_obj)
-                uploaded_files.append({
-                    "url": f"{baseurl}{instance.file.url}",
-                    "name": instance.file.name
-                })
+            for file_obj in request.FILES.getlist(key):
+                serializer = FileUploadSerializer(data={"file": file_obj})
+                serializer.is_valid(raise_exception=True)
+                instance = serializer.save()
 
-        return Response([f["url"] for f in uploaded_files], 
-                        status=status.HTTP_201_CREATED)
+                uploaded_urls.append(instance.url)
+
+        return Response(uploaded_urls, status=status.HTTP_201_CREATED)
+
+
