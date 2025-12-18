@@ -144,6 +144,22 @@ export class MapComponent implements AfterViewInit {
     };
 
     map.on('sourcedata', onSourceData);
+
+    // map.on('moveend', (event) => {
+    //   const bounds = map.getBounds()
+
+    //   const sw = bounds.getSouthWest()
+    //   const ne = bounds.getNorthEast()
+
+    //   const box = {
+    //     minLng: sw.lng,
+    //     minLat: sw.lat,
+    //     maxLng: ne.lng,
+    //     maxLat: ne.lat,
+    //   }
+
+    //   console.log(box)
+    // })
   }
 
   async #addImages(icons: Record<string, string>) {

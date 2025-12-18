@@ -13,3 +13,9 @@ export interface ICatalogItem extends IEntity {
   area: number;
   contact: IContact;
 }
+
+export interface ICatalogMapItem extends IEntity {
+  propertyType: PropertyType;
+  status: PropertyStatus;
+  address: IAddress;
+}

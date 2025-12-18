@@ -19,3 +19,12 @@ export interface ICatalogFilters {
     max?: number | null;
   };
 }
+
+export interface ICatalogMapFilters extends ICatalogFilters {
+  box: {
+    minLng: number,
+    minLat: number,
+    maxLng: number,
+    maxLat: number,
+  }
+}
