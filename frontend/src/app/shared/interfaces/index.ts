@@ -1,5 +1,5 @@
 export type { IAddress } from './address.interface';
-export type { ICatalogFilters } from './catalog-filters.interface';
+export type { ICatalogFilters, ICatalogMapFilters } from './catalog-filters.interface';
 export type { ICatalogItem } from './catalog-item.interface';
 export type { IContact } from './contact.interface';
 export type { IEntity } from './entity.interface';
@@ -11,7 +11,7 @@ export type {
   GeocodeFeature,
   GeocodeFeatureCollection,
   GeocodeGeometry,
-  GeocodeProperties,
+  GeocodeProperties
 } from './geocoder.interface';
 export type { ILanguageOption } from './language-option.interface';
 export type { IListing, IListingRequest, IPublicLinkUpdate } from './listing.interface';
