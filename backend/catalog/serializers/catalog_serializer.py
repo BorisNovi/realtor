@@ -8,6 +8,7 @@ from contacts.contact_serializers import ContactSerializer
 from .catalog_address_serializer import AddressSerializer
 from .catalog_price_serializer import PriceSerializer 
 from contacts.models import Contact
+from realtor.settings import MAX_FILES
 
 init()
 logger = logging.getLogger(__name__)
@@ -32,6 +33,14 @@ class CatalogCreateSerializer(serializers.Serializer):
     date_added = serializers.DateTimeField(required=False)
     contact = ContactSerializer(required=False, allow_null=True, default=None)
     specifics = serializers.DictField(required=False)
+
+    # ВАЛИДАЦИЯ КОЛИЧЕСТВА ФОТО
+    def validate_photos(self, value):
+        if len(value) > MAX_FILES:
+            raise serializers.ValidationError(
+                f"В таком количестве себе члены в жопу суй, а в один объект можно пихать только {MAX_FILES} изображений"
+            )
+        return value
 
     # === СОЗДАНИЕ ОБЪЕКТА ===
     def create(self, validated_data):

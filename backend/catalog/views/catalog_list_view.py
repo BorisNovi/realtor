@@ -15,7 +15,6 @@ PROPERTY_MODEL_MAP = {
 # Этот класс отвечает за получение списка объектов недвижимости
 # Он использует пагинацию и фильтрацию для формирования ответа
 class CatalogListView(APIView):
-    # 🔹 Используем JWT для аутентификации
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [permissions.IsAuthenticated]
     authentication_classes = []
