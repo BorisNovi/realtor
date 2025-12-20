@@ -21,7 +21,7 @@ class BaseProperty(models.Model):
         return self.PROPERTY_TYPE
     
     photos = models.JSONField(default=list)
-    address = models.JSONField()
+    address = models.JSONField() # [lng, lat]
     zoning_type = models.CharField(max_length=50, null=True, blank=True)
     price_value = models.DecimalField(max_digits=12, decimal_places=2)
     price_currency = models.CharField(max_length=3, default="USD")

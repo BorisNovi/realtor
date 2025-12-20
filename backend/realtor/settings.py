@@ -4,22 +4,24 @@ from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
 
-# Максимально допустимый размер файла для сервера (10 МБ)   
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
-
 DEBUG = True
 APPEND_SLASH = False
 
+BASE_URL = "http://localhost:8000"                # Базовый URL (для формирования полных ссылок на файлы и т.д.)
+
+# Настройки для работы с загружаемыми файлами    
+MAX_FILES = 2                                     # Допустимое Количество изображений на 1 объект недвижимости
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024    # Максимально допустимый размер файла для сервера (10 МБ)
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024    # Максимально допустимый размер загружаемого файла (10 МБ)
+BASE_DIR = Path(__file__).resolve().parent.parent # Корневая директория проекта
+MEDIA_URL = '/media/'                             # URL для доступа к медиафайлам
+MEDIA_ROOT = BASE_DIR / 'media'                   # Физический путь к медиафайлам
+TEMP_UPLOAD_DIR = MEDIA_ROOT / 'temp'             # Временная директория для загружаемых файлов
+PROPERTY_MEDIA_DIR = MEDIA_ROOT / 'property'      # Директория для постоянного хранения файлов объектов недвижимости
+
+# Настройки электронной почты (для отправки писем)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # TODO: Для локальных тестов SMTP ОК, но потом нужна боевая хрень.
 SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p'
-
-# Настройки для работы с медиа-файлами
-BASE_DIR = Path(__file__).resolve().parent.parent
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-TEMP_UPLOAD_DIR = MEDIA_ROOT / 'temp'
-PROPERTY_MEDIA_DIR = MEDIA_ROOT / 'property'
 
 ALLOWED_HOSTS = ['*']
 
