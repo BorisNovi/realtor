@@ -210,6 +210,7 @@ export class CreateCatalogItemComponent implements OnInit {
           error: err => {
             const errorMessage = err?.message || 'File upload failed';
             this.uploadErrorS.set(errorMessage);
+            files.length = 0;
             console.error('File upload failed:', err);
           },
         });

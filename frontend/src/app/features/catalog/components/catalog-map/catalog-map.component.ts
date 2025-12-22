@@ -34,7 +34,7 @@ import { GalleriaModule } from 'primeng/galleria';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TagModule } from 'primeng/tag';
 import { distinctUntilChanged, skip, tap } from 'rxjs';
-import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchPropertyObject } from 'src/app/core';
+import { CatalogService, CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchPropertyObject } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
@@ -69,6 +69,7 @@ export class CatalogMapComponent implements AfterViewInit {
   readonly #translateService = inject(TranslateService);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
   readonly #dialogService = inject(DialogService);
+  // readonly #catalogService = inject(CatalogService); // TODO: для проверки, убрать потом
 
   readonly tableDataS = this.#store.selectSignal(CatalogState.catalog);
   readonly getStatusColor = getPropertyStatusColor;
@@ -210,6 +211,11 @@ export class CatalogMapComponent implements AfterViewInit {
       const item = JSON.parse(e.features?.[0].properties['raw']) as IPropertyObject;
       this.onMarkerClick(item);
     });
+  }
+
+  onMapBoxChange(box: any): void {
+    // console.log(box);
+    // this.#catalogService.fetchCatalogMap({filters: { box }}).subscribe((d) => console.log(d))
   }
 
   #setData(): void {
