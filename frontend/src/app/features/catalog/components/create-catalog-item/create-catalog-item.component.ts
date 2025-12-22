@@ -106,6 +106,8 @@ export class CreateCatalogItemComponent implements OnInit {
 
   readonly photosS = signal<string[]>([]);
   readonly uploadErrorS = signal<string | null>(null);
+  readonly maxImageSize = 4194304; // 4mb
+  readonly imagesLimit = 25;
 
   readonly propertyTypes = mapEnumToOptions(PropertyType, value =>
     this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_TYPE.${value}`),
