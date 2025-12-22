@@ -18,7 +18,7 @@ export class CatalogService extends CrudBaseService<ICatalogFilters> {
   }
 
   fetchCatalogMap(options: IFetchOptions<ICatalogMapFilters>) {
-    return this.fetchList<ITableData<ICatalogMapItem>>('catalog_map', options);
+    return this.fetchList<ITableData<ICatalogMapItem>>('catalog/catalog_map', options);
   }
 
   fetchPropertyObject(id: number) {

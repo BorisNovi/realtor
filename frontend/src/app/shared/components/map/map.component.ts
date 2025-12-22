@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, output, signal } from '@angular/core';
 import { environment } from '@environments/environment';
 import maplibregl, { LngLatBoundsLike, LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
@@ -17,6 +17,7 @@ export class MapComponent implements AfterViewInit {
   readonly zoom = input<number>(3);
   readonly images = input<Record<string, string>>({});
   readonly scrollZoomDisabled = input(false, { transform: v => v === '' || !!v });
+  readonly currentBox = output<{ minLng: number, minLat: number, maxLng: number, maxLat: number }>();
 
   readonly #host: ElementRef<HTMLElement> = inject(ElementRef);
   readonly layoutService = inject(PrivateLayoutService);
@@ -75,6 +76,13 @@ export class MapComponent implements AfterViewInit {
     this.#mapS.set(map);
     this.mapReady$.next(map);
     this.#addImages(this.images());
+
+    map.on('moveend', () => {
+      const bounds = map.getBounds();
+      const sw = bounds.getSouthWest();
+      const ne = bounds.getNorthEast();
+      this.currentBox.emit({ minLng: sw.lng, minLat: sw.lat, maxLng: ne.lng, maxLat: ne.lat });
+    });
   }
 
   addClusteredSource(id: string, data: GeoJSON.FeatureCollection) {
@@ -144,22 +152,6 @@ export class MapComponent implements AfterViewInit {
     };
 
     map.on('sourcedata', onSourceData);
-
-    // map.on('moveend', (event) => {
-    //   const bounds = map.getBounds()
-
-    //   const sw = bounds.getSouthWest()
-    //   const ne = bounds.getNorthEast()
-
-    //   const box = {
-    //     minLng: sw.lng,
-    //     minLat: sw.lat,
-    //     maxLng: ne.lng,
-    //     maxLat: ne.lat,
-    //   }
-
-    //   console.log(box)
-    // })
   }
 
   async #addImages(icons: Record<string, string>) {
