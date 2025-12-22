@@ -12,7 +12,8 @@
         (uploadHandler)="onUpload($event)"
         [multiple]="true"
         accept="image/*"
-        maxFileSize="4000000"
+        [maxFileSize]="maxImageSize"
+        [fileLimit]="imagesLimit"
         mode="advanced"
       >
         <ng-template #header let-files let-chooseCallback="chooseCallback">
