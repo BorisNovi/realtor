@@ -3,38 +3,48 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from catalog.catalog_models import Flat
-from catalog.serializers.catalog_list_serializer import CatalogListSerializer
+from itertools import chain
+from catalog.serializers.catalog_map_serializer import CatalogMapSerializer
 from catalog.utils.filters import apply_catalog_filters
 from rest_framework import permissions
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+# Карта соответствия типов недвижимости и моделей
+PROPERTY_MODEL_MAP = {
+    'flat': Flat,
+}
 
 # Получение объектов недвижимости в заданных координатах при работе с картой.
 class CatalogMapView(APIView):
-    """Возвращает объекты в квадрате, заданном координатами."""
-
-    print('Получен запрос на объекты в квадрате по координатам.')
-
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
     authentication_classes = []
     permission_classes = [permissions.AllowAny]
-
+    
     def get(self, request):
-        # параметры фронта в camelCase
-        required = ("lngMin", "lngMax", "latMin", "latMax")
-        if not all(p in request.query_params for p in required):
-            return Response({"detail": "Missing map bounds"}, status=400)
-
-        lng_min = float(request.query_params["lngMin"])
-        lng_max = float(request.query_params["lngMax"])
-        lat_min = float(request.query_params["latMin"])
-        lat_max = float(request.query_params["latMax"])
-
-        # все объекты
         flats = Flat.objects.filter(deleted_at__isnull=True)
-        combined = list(flats)  # если будут другие модели, добавим через chain
+        # offices = Office.objects.filter(deleted_at__isnull=True)
+        # lands = Land.objects.filter(deleted_at__isnull=True)
 
-        # фильтры фронта
+        combined = list(chain(flats,
+                              # offices, lands
+                              ))
+
+        # Получаем координаты квадрата
+        lng_min = request.query_params.get("lngMin") or request.query_params.get("box.minLng")
+        lng_max = request.query_params.get("lngMax") or request.query_params.get("box.maxLng")
+        lat_min = request.query_params.get("latMin") or request.query_params.get("box.minLat")
+        lat_max = request.query_params.get("latMax") or request.query_params.get("box.maxLat")
+
+        if not all([lng_min, lng_max, lat_min, lat_max]):
+            return Response({"detail": "Союз развалили, и запрос тоже"}, status=400)
+
+        lng_min, lng_max, lat_min, lat_max = map(float, [lng_min, lng_max, lat_min, lat_max])
+
+        # Применяем обычные фильтры каталога
         filtered = apply_catalog_filters(combined, request.query_params)
 
-        # фильтр по квадрату
+        # Фильтруем по координатам
         def in_bounds(obj):
             pos = obj.address.get("position")
             if not pos or len(pos) < 2:
@@ -44,6 +54,23 @@ class CatalogMapView(APIView):
 
         filtered = list(filter(in_bounds, filtered))
 
-        # сериализуем через существующий CatalogListSerializer
-        serialized = CatalogListSerializer(filtered, many=True).data
-        return Response(serialized)
+        # Сортировка
+        sort_field: str = request.query_params.get("sortField", None)
+        sort_order: str = request.query_params.get("sortOrder", "desc")
+        reverse = sort_order.lower() == "desc"
+
+        def get_sort_value(obj):
+            if sort_field and hasattr(obj, sort_field):
+                return getattr(obj, sort_field)
+            return getattr(obj, "date_added", None)
+
+        filtered.sort(key=get_sort_value, reverse=reverse)
+
+        serializer = CatalogMapSerializer(filtered, many=True)
+        total_count = len(filtered)
+
+        
+        return Response({
+            "items": serializer.data,
+            "total": total_count
+        })
