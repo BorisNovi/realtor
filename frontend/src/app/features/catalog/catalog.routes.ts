@@ -10,7 +10,6 @@ export const catalogRoutes: Routes = [
     path: 'catalog',
     title: 'Catalog',
     component: CatalogComponent,
-    resolve: { data: catalogResolver },
     children: [
       {
         path: '',
@@ -20,6 +19,7 @@ export const catalogRoutes: Routes = [
       {
         path: 'list',
         component: CatalogTableComponent,
+        resolve: { data: catalogResolver },
       },
       {
         path: 'map',

@@ -1,4 +1,4 @@
-import { PropertyType, ZoningType, PropertyStatus, Currency } from '@shared/enums';
+import { Currency, PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
 
 export interface ICatalogFilters {
   search?: string;
@@ -18,13 +18,4 @@ export interface ICatalogFilters {
     min?: number | null;
     max?: number | null;
   };
-}
-
-export interface ICatalogMapFilters extends ICatalogFilters {
-  box: {
-    minLng: number,
-    minLat: number,
-    maxLng: number,
-    maxLat: number,
-  }
 }

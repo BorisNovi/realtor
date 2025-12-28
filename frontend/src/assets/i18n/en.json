@@ -392,7 +392,7 @@
     }
   },
   "MAP": {
-    "SHOW_ALL": "Show all"
+    "LOCATE": "Current location"
   },
   "PREFIXES": {
     "APARTMENT": "Ap."
