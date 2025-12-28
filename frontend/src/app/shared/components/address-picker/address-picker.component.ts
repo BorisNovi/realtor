@@ -11,7 +11,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputText } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { GeocodeService } from 'src/app/core';
-import { getCurrentLocation, normalizeLngLat } from '../../utils';
+import { getCurrentLocation, MapHelper } from '../../utils';
 import { MapMarkerComponent } from '../map/map-marker.component';
 import { MapComponent } from '../map/map.component';
 
@@ -48,7 +48,7 @@ export class AddressPickerComponent implements OnInit {
   readonly pickedAddress = signal<IPickerAddress | null>(null);
   readonly address = output<IPickerAddress | null>();
 
-  readonly normalizeLngLat = normalizeLngLat;
+  readonly normalizeLngLat = MapHelper.normalizeLngLat;
 
   ngOnInit(): void {
     this.updateLocation();

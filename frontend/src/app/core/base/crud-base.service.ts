@@ -14,7 +14,7 @@ export abstract class CrudBaseService<F = any> {
 
     if (!options) return params;
 
-    const { filters, pagination, sort, search } = options;
+    const { filters, pagination, sort, search, query } = options;
 
     if (pagination) {
       params = params.set('first', String(pagination.first));
@@ -22,8 +22,9 @@ export abstract class CrudBaseService<F = any> {
     }
     if (filters) params = buildHttpParams(filters, params);
     if (sort) params = buildHttpParams(sort, params);
+    if (query) params = buildHttpParams(query, params);
     if (search) params = params.set('search', search);
-
+    
     return params;
   }
 

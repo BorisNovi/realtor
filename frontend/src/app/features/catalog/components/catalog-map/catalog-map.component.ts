@@ -16,15 +16,15 @@ import { SLIDE } from '@shared/animations';
 import { MapComponent } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency } from '@shared/enums';
-import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
+import { ICatalogItem, IMapBox, IPropertyObject } from '@shared/interfaces';
 import { CamelToUpperSnakePipe, WorldPhoneMaskPipe } from '@shared/pipes';
+import { getCurrentLocation, MapHelper } from '@shared/utils';
 import {
   getMapPropertyStatusColor,
-  getPropertyStatusColor,
-  getPropertyStatusSeverity,
+  getPropertyStatusSeverity
 } from '@shared/utils/property-status-severity.util';
 import GeoJSON from 'geojson';
-import maplibregl, { LngLatBoundsLike, LngLatLike } from 'maplibre-gl';
+import maplibregl, { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DividerModule } from 'primeng/divider';
@@ -34,7 +34,7 @@ import { GalleriaModule } from 'primeng/galleria';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TagModule } from 'primeng/tag';
 import { distinctUntilChanged, skip, tap } from 'rxjs';
-import { CatalogService, CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchPropertyObject } from 'src/app/core';
+import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchCatalogMap, FetchPropertyObject } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
@@ -69,10 +69,8 @@ export class CatalogMapComponent implements AfterViewInit {
   readonly #translateService = inject(TranslateService);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
   readonly #dialogService = inject(DialogService);
-  // readonly #catalogService = inject(CatalogService); // TODO: для проверки, убрать потом
 
-  readonly tableDataS = this.#store.selectSignal(CatalogState.catalog);
-  readonly getStatusColor = getPropertyStatusColor;
+  readonly tableDataS = this.#store.selectSignal(CatalogState.mapCatalog);
   readonly selectedItem = signal<ICatalogItem | null>(null);
   readonly drawerOpen = signal(false);
 
@@ -88,27 +86,6 @@ export class CatalogMapComponent implements AfterViewInit {
 
   // TODO: Помтом убрать. Сделанно временно, пока с бэка не возвращаются фото в { image: string; thumbnail: string; }[]
   readonly imagesTemp = computed(() => this.selectedItem()?.photos.map(p => ({ image: p, thumbnail: p })));
-
-  readonly fitBounds = computed<LngLatBoundsLike | undefined>(() => {
-    const positions = this.tableDataS()
-      .items.map(i => i.address?.position)
-      .filter((pos): pos is [number, number] => Array.isArray(pos) && pos.length === 2);
-
-    if (positions.length === 0) return;
-
-    const lons = positions.map(p => p[0]);
-    const lats = positions.map(p => p[1]);
-
-    const minLng = Math.min(...lons);
-    const maxLng = Math.max(...lons);
-    const minLat = Math.min(...lats);
-    const maxLat = Math.max(...lats);
-
-    return [
-      [minLng, minLat],
-      [maxLng, maxLat],
-    ];
-  });
 
   readonly optionsArray = computed(() => {
     const options = this.detailedSelected()?.specifics?.options;
@@ -145,9 +122,11 @@ export class CatalogMapComponent implements AfterViewInit {
     land_rented: 'assets/map-icons/land_rented.png',
   };
 
+  readonly minMapZoom = MapHelper.ZOOM_CITY;
+
   constructor() {
     toObservable(this.tableDataS)
-      .pipe(takeUntilDestroyed(), skip(1), distinctUntilChanged())
+      .pipe(takeUntilDestroyed(), skip(2), distinctUntilChanged())
       .subscribe(() => this.#setData());
   }
 
@@ -155,9 +134,16 @@ export class CatalogMapComponent implements AfterViewInit {
     const map = this.mapComponent()?.map;
     if (!map) return;
 
+    map.setMinZoom(MapHelper.ZOOM_CITY);
+
     map.on('load', () => {
+      getCurrentLocation()
+        .then(lngLat => {map.setCenter(lngLat), map.setZoom(12)})
+        .catch(err => console.warn('Could not get position:', err));
+
       // For slow PCs
-      new Promise<void>(resolve => map.once('idle', resolve)).then(() => this.#setData());
+      new Promise<void>(resolve => map.once('idle', resolve))
+        .then(() => this.#setData());
     });
 
     // Cluster zoom
@@ -213,9 +199,8 @@ export class CatalogMapComponent implements AfterViewInit {
     });
   }
 
-  onMapBoxChange(box: any): void {
-    // console.log(box);
-    // this.#catalogService.fetchCatalogMap({filters: { box }}).subscribe((d) => console.log(d))
+  onMapBoxChange(box: IMapBox): void {
+    this.#store.dispatch(new FetchCatalogMap(box));
   }
 
   #setData(): void {
@@ -250,10 +235,10 @@ export class CatalogMapComponent implements AfterViewInit {
     });
   }
 
-  showAll() {
-    const map = this.mapComponent()?.map;
-    const bounds = this.fitBounds();
-    if (bounds && map) map.fitBounds(bounds, { maxZoom: 17, padding: 100 });
+  updateLocation(): void {
+    getCurrentLocation()
+      .then(lngLat => this.mapComponent()?.map.flyTo({ center: lngLat, zoom: MapHelper.ZOOM_DISTRICT }))
+      .catch(err =>console.warn('Could not get position:', err));
   }
 
   onMarkerClick(item: ICatalogItem): void {

@@ -1,5 +1,5 @@
 export type { IAddress } from './address.interface';
-export type { ICatalogFilters, ICatalogMapFilters } from './catalog-filters.interface';
+export type { ICatalogFilters } from './catalog-filters.interface';
 export type { ICatalogItem } from './catalog-item.interface';
 export type { IContact } from './contact.interface';
 export type { IEntity } from './entity.interface';
@@ -15,6 +15,7 @@ export type {
 } from './geocoder.interface';
 export type { ILanguageOption } from './language-option.interface';
 export type { IListing, IListingRequest, IPublicLinkUpdate } from './listing.interface';
+export type { IMapBox } from './map-box.interface';
 export type { IPagination } from './pagination.interface';
 export type { IPhoneMaskConfig } from './phone-mask-config.interface';
 export type { IPropertyObject, IPropertyObjectSpecifics } from './property-object.interface';

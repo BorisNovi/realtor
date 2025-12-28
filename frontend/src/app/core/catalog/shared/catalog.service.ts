@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { PropertyStatus } from '@shared/enums';
-import { ICatalogFilters, ICatalogItem, ICatalogMapFilters, IFetchOptions, IPropertyObject, ITableData } from '@shared/interfaces';
+import { ICatalogFilters, ICatalogItem, IFetchOptions, IMapBox, IPropertyObject, ITableData } from '@shared/interfaces';
 import { ICatalogMapItem } from '@shared/interfaces/catalog-item.interface';
 import { CrudBaseService } from '../../base';
 
@@ -17,8 +17,8 @@ export class CatalogService extends CrudBaseService<ICatalogFilters> {
     return this.fetchList<ITableData<ICatalogItem>>('catalog', options);
   }
 
-  fetchCatalogMap(options: IFetchOptions<ICatalogMapFilters>) {
-    return this.fetchList<ITableData<ICatalogMapItem>>('catalog/catalog_map', options);
+  fetchCatalogMap(options: IFetchOptions<ICatalogFilters>, box: IMapBox) {
+    return this.fetchList<ITableData<ICatalogMapItem>>('catalog/catalog_map', { ...options, query: { box } });
   }
 
   fetchPropertyObject(id: number) {

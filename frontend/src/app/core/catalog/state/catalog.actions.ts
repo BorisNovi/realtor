@@ -1,8 +1,13 @@
 import { PropertyStatus } from '@shared/enums';
-import { ICatalogFilters, IPagination, IPropertyObject, ISort } from '@shared/interfaces';
+import { ICatalogFilters, IMapBox, IPagination, IPropertyObject, ISort } from '@shared/interfaces';
 
 export class FetchCatalog {
   static readonly type = '[Catalog] Fetch Catalog';
+}
+
+export class FetchCatalogMap {
+  static readonly type = '[Catalog] Fetch Catalog Map';
+  constructor(public readonly box: IMapBox) {}
 }
 
 export class SetCatalogPagination {
