@@ -34,7 +34,7 @@ import { GalleriaModule } from 'primeng/galleria';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TagModule } from 'primeng/tag';
 import { distinctUntilChanged, skip, tap } from 'rxjs';
-import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchCatalogMap, FetchPropertyObject } from 'src/app/core';
+import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchCatalogMap, FetchPropertyObject, StorageService } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
@@ -69,6 +69,7 @@ export class CatalogMapComponent implements AfterViewInit {
   readonly #translateService = inject(TranslateService);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
   readonly #dialogService = inject(DialogService);
+  readonly #storageService = inject(StorageService);
 
   readonly tableDataS = this.#store.selectSignal(CatalogState.mapCatalog);
   readonly selectedItem = signal<ICatalogItem | null>(null);
@@ -122,7 +123,7 @@ export class CatalogMapComponent implements AfterViewInit {
     land_rented: 'assets/map-icons/land_rented.png',
   };
 
-  readonly minMapZoom = MapHelper.ZOOM_CITY;
+  readonly minMapZoom = Number(this.#storageService.getItem('catalog-map-zoom')) ||  MapHelper.ZOOM_CITY;
 
   constructor() {
     toObservable(this.tableDataS)
@@ -138,7 +139,7 @@ export class CatalogMapComponent implements AfterViewInit {
 
     map.on('load', () => {
       getCurrentLocation()
-        .then(lngLat => {map.setCenter(lngLat), map.setZoom(12)})
+        .then(lngLat => {map.setCenter(lngLat), map.setZoom(this.minMapZoom)})
         .catch(err => console.warn('Could not get position:', err));
 
       // For slow PCs
@@ -197,6 +198,8 @@ export class CatalogMapComponent implements AfterViewInit {
       const item = JSON.parse(e.features?.[0].properties['raw']) as IPropertyObject;
       this.onMarkerClick(item);
     });
+
+    map.on('zoom', e => this.#storageService.setItem('catalog-map-zoom', e.target.getZoom().toFixed(1)));
   }
 
   onMapBoxChange(box: IMapBox): void {
