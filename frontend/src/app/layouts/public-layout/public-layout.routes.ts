@@ -13,11 +13,11 @@ export const publicLayoutRoutes: Routes = [
         redirectTo: 'landing',
       },
       ...publicListingsRoutes,
-      // {
-      //   path: 'landing',
-      //   title: 'Realtor-X',
-      //   loadComponent: () => import('../../features').then(c => c.LandingComponent),
-      // },
+      {
+        path: 'landing',
+        title: 'Realtor-X',
+        loadComponent: () => import('../../features').then(c => c.LandingComponent),
+      },
       // {
       //   path: 'policy',
       //   title: 'Policy',

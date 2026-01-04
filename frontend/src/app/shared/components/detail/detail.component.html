@@ -131,19 +131,21 @@
     }
 
     <!-- Contact -->
-    <div class="card">
-      <h5>{{ 'FORM.LABELS.CONTACT' | translate }}</h5>
-      <ul class="space-y-1">
-        <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.CONTACT_NAME' | translate }}: </span
-          ><span>{{ pObject?.contact?.name || '—' }}</span>
-        </li>
-        <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.CONTACT_PHONE' | translate }}: </span
-          ><span>{{ pObject?.contact?.phone | worldPhoneMask }}</span>
-        </li>
-      </ul>
-    </div>
+    @if (pObject?.contact) {
+      <div class="card">
+        <h5>{{ 'FORM.LABELS.CONTACT' | translate }}</h5>
+        <ul class="space-y-1">
+          <li>
+            <span class="text-gray-500">{{ 'FORM.LABELS.CONTACT_NAME' | translate }}: </span
+            ><span>{{ pObject?.contact?.name || '—' }}</span>
+          </li>
+          <li>
+            <span class="text-gray-500">{{ 'FORM.LABELS.CONTACT_PHONE' | translate }}: </span
+            ><span>{{ pObject?.contact?.phone | worldPhoneMask }}</span>
+          </li>
+        </ul>
+      </div>
+    }
   </div>
 </div>
 
