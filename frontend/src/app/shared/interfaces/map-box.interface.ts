@@ -1,6 +1,6 @@
 export interface IMapBox {
-  minLng: number,
-  minLat: number,
-  maxLng: number,
-  maxLat: number,
+  minLng: number;
+  minLat: number;
+  maxLng: number;
+  maxLat: number;
 }

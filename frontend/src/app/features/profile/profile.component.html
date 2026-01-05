@@ -5,13 +5,13 @@
         <div class="font-semibold text-xl">Personal info</div>
         <div class="flex flex-col gap-2">
           <label for="name">Name</label>
-          <input pInputText id="name" type="text" />
+          <input pInputText id="name" type="text" [value]="user()?.email || ''" />
         </div>
         <div class="flex flex-col gap-2">
           <label for="email">Email</label>
           <input pInputText id="email" type="text" />
         </div>
-        <p-button class="self-end" icon="pi pi-save" label="Save" [fluid]="false"></p-button>
+        <p-button class="self-end" icon="pi pi-save" label="Save" [fluid]="false" (onClick)="changePassword()"></p-button>
       </div>
 
       <div class="card flex flex-col gap-4">

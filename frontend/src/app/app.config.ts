@@ -19,6 +19,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ContactsState } from './core/contacts/state/contacts.state';
 import { ListingsState } from './core/listings/state';
+import { ProfileState } from './core/profile/state';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -58,7 +59,7 @@ export const appConfig: ApplicationConfig = {
     MessageService,
     ConfirmationService,
     provideStore(
-      [AuthState, CatalogState, ListingsState, ContactsState],
+      [AuthState, ProfileState, CatalogState, ListingsState, ContactsState],
       withNgxsReduxDevtoolsPlugin(),
       withNgxsFormPlugin(),
       withNgxsRouterPlugin(),

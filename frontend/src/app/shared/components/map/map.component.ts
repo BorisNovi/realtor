@@ -1,4 +1,14 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, output, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { environment } from '@environments/environment';
 import maplibregl, { LngLatBoundsLike, LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
@@ -17,7 +27,7 @@ export class MapComponent implements AfterViewInit {
   readonly zoom = input<number>(3);
   readonly images = input<Record<string, string>>({});
   readonly scrollZoomDisabled = input(false, { transform: v => v === '' || !!v });
-  readonly currentBox = output<{ minLng: number, minLat: number, maxLng: number, maxLat: number }>();
+  readonly currentBox = output<{ minLng: number; minLat: number; maxLng: number; maxLat: number }>();
 
   readonly #host: ElementRef<HTMLElement> = inject(ElementRef);
   readonly layoutService = inject(PrivateLayoutService);

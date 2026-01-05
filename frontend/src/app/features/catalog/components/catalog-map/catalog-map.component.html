@@ -11,7 +11,12 @@
       [badge]="filtersService.currentCount.toString()"
     />
   </div>
-  <rx-map class="flex w-full h-[51.4rem]" [zoom]="minMapZoom" [images]="mapImages" (currentBox)="onMapBoxChange($event)"></rx-map>
+  <rx-map
+    class="flex w-full h-[51.4rem]"
+    [zoom]="minMapZoom"
+    [images]="mapImages"
+    (currentBox)="onMapBoxChange($event)"
+  ></rx-map>
 </div>
 
 @let selected = selectedItem();

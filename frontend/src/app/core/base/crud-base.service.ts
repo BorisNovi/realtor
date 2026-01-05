@@ -24,30 +24,33 @@ export abstract class CrudBaseService<F = any> {
     if (sort) params = buildHttpParams(sort, params);
     if (query) params = buildHttpParams(query, params);
     if (search) params = params.set('search', search);
-    
+
     return params;
   }
 
-  fetchList<TList>(endpoint: string = '', options?: IFetchOptions<F>): Observable<TList> {
+  protected fetchList<TList>(endpoint: string = '', options?: IFetchOptions<F>): Observable<TList> {
     const params = this.buildParams(options);
     return this.http.get<TList>(`${this.baseUrl}/${endpoint}`, { params });
   }
 
-  fetchOne<TDetail>(id: number, endpoint: string = ''): Observable<TDetail> {
+  protected fetchOne<TDetail>(id: number, endpoint: string = ''): Observable<TDetail> {
     return this.http.get<TDetail>(`${this.baseUrl}/${endpoint}/${id}`);
   }
 
-  create<TRequest, TResponse = TRequest>(body: TRequest, endpoint: string = ''): Observable<TResponse> {
+  protected create<TRequest, TResponse = TRequest>(body: TRequest, endpoint: string = ''): Observable<TResponse> {
     return this.http.post<TResponse>(`${this.baseUrl}/${endpoint}`, body);
   }
 
-  update<TRequest extends { id: number }, TResponse = TRequest>(body: TRequest, endpoint: string = ''): Observable<TResponse> {
+  protected update<TRequest extends { id: number }, TResponse = TRequest>(
+    body: TRequest,
+    endpoint: string = '',
+  ): Observable<TResponse> {
     return this.http.put<TResponse>(`${this.baseUrl}/${endpoint}/${body.id}`, body);
   }
 
-  delete(id: number, endpoint?: string): Observable<void>;
-  delete(ids: number[], endpoint?: string): Observable<void>;
-  delete(idsOrId: number | number[], endpoint: string = ''): Observable<void> {
+  protected delete(id: number, endpoint?: string): Observable<void>;
+  protected delete(ids: number[], endpoint?: string): Observable<void>;
+  protected delete(idsOrId: number | number[], endpoint: string = ''): Observable<void> {
     let params = new HttpParams();
 
     if (Array.isArray(idsOrId))
@@ -57,7 +60,19 @@ export abstract class CrudBaseService<F = any> {
     return this.http.delete<void>(`${this.baseUrl}/${endpoint}`, { params });
   }
 
-  patch<TRequest, TResponse = TRequest>(id: number, body: Partial<TRequest>, endpoint: string = ''): Observable<TResponse> {
-    return this.http.patch<TResponse>(`${this.baseUrl}/${endpoint}/${id}`, body);
+  protected patch<TRequest, TResponse = TRequest>(body: Partial<TRequest>, endpoint: string): Observable<TResponse>;
+  protected patch<TRequest, TResponse = TRequest>(id: number, body: Partial<TRequest>, endpoint: string): Observable<TResponse>;
+  protected patch<TRequest, TResponse = TRequest>(
+    arg1: number | Partial<TRequest>,
+    arg2: Partial<TRequest> | string,
+    arg3?: string,
+  ): Observable<TResponse> {
+    const hasId = typeof arg1 === 'number';
+    const endpoint = hasId ? (arg3 ?? '') : (arg2 as string);
+
+    return this.http.patch<TResponse>(
+      hasId ? `${this.baseUrl}/${endpoint}/${arg1}` : `${this.baseUrl}/${endpoint}`,
+      hasId ? (arg2 as Partial<TRequest>) : (arg1 as Partial<TRequest>),
+    );
   }
 }

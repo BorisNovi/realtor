@@ -19,10 +19,7 @@ import { Currency } from '@shared/enums';
 import { ICatalogItem, IMapBox, IPropertyObject } from '@shared/interfaces';
 import { CamelToUpperSnakePipe, WorldPhoneMaskPipe } from '@shared/pipes';
 import { getCurrentLocation, MapHelper } from '@shared/utils';
-import {
-  getMapPropertyStatusColor,
-  getPropertyStatusSeverity
-} from '@shared/utils/property-status-severity.util';
+import { getMapPropertyStatusColor, getPropertyStatusSeverity } from '@shared/utils/property-status-severity.util';
 import GeoJSON from 'geojson';
 import maplibregl, { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
@@ -34,7 +31,14 @@ import { GalleriaModule } from 'primeng/galleria';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TagModule } from 'primeng/tag';
 import { distinctUntilChanged, skip, tap } from 'rxjs';
-import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, FetchCatalogMap, FetchPropertyObject, StorageService } from 'src/app/core';
+import {
+  CatalogState,
+  DeletePropertyObjects,
+  DeletionConfirmationService,
+  FetchCatalogMap,
+  FetchPropertyObject,
+  StorageService,
+} from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
@@ -123,7 +127,7 @@ export class CatalogMapComponent implements AfterViewInit {
     land_rented: 'assets/map-icons/land_rented.png',
   };
 
-  readonly minMapZoom = Number(this.#storageService.getItem('catalog-map-zoom')) ||  MapHelper.ZOOM_CITY;
+  readonly minMapZoom = Number(this.#storageService.getItem('catalog-map-zoom')) || MapHelper.ZOOM_CITY;
 
   constructor() {
     toObservable(this.tableDataS)
@@ -139,12 +143,13 @@ export class CatalogMapComponent implements AfterViewInit {
 
     map.on('load', () => {
       getCurrentLocation()
-        .then(lngLat => {map.setCenter(lngLat), map.setZoom(this.minMapZoom)})
+        .then(lngLat => {
+          (map.setCenter(lngLat), map.setZoom(this.minMapZoom));
+        })
         .catch(err => console.warn('Could not get position:', err));
 
       // For slow PCs
-      new Promise<void>(resolve => map.once('idle', resolve))
-        .then(() => this.#setData());
+      new Promise<void>(resolve => map.once('idle', resolve)).then(() => this.#setData());
     });
 
     // Cluster zoom
@@ -241,7 +246,7 @@ export class CatalogMapComponent implements AfterViewInit {
   updateLocation(): void {
     getCurrentLocation()
       .then(lngLat => this.mapComponent()?.map.flyTo({ center: lngLat, zoom: MapHelper.ZOOM_DISTRICT }))
-      .catch(err =>console.warn('Could not get position:', err));
+      .catch(err => console.warn('Could not get position:', err));
   }
 
   onMarkerClick(item: ICatalogItem): void {
