@@ -7,5 +7,5 @@ export { mapEnumToOptions } from './map-enum-to-options.util';
 export { MapHelper } from './map-helper.util';
 export {
   getPropertyStatusColor as getPropertyStatusBackground,
-  getPropertyStatusSeverity
+  getPropertyStatusSeverity,
 } from './property-status-severity.util';

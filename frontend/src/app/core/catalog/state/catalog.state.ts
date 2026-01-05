@@ -113,25 +113,23 @@ export class CatalogState {
     const state = ctx.getState();
     const filtersChanged = !state.loadedBoxFilters || !Object.is(state.loadedBoxFilters, state.filters);
 
-    if (!filtersChanged && state.loadedBox && MapHelper.isInsideBox(box, state.loadedBox))
-      return;
+    if (!filtersChanged && state.loadedBox && MapHelper.isInsideBox(box, state.loadedBox)) return;
 
     const expandedBox = MapHelper.expandBox(box, 0.25);
 
     ctx.patchState({ loading: true });
 
-    return this.#catalogService.fetchCatalogMap({ filters: state.filters }, expandedBox)
-      .pipe(
-        tap(mapCatalog => {
-          ctx.patchState({
-            mapCatalog,
-            loadedBox: expandedBox,
-            loadedBoxFilters: state.filters,
-            loading: false,
-          });
-        }),
-        catchError(error => ctx.dispatch(new CatalogOperationFailed(error)))
-      );
+    return this.#catalogService.fetchCatalogMap({ filters: state.filters }, expandedBox).pipe(
+      tap(mapCatalog => {
+        ctx.patchState({
+          mapCatalog,
+          loadedBox: expandedBox,
+          loadedBoxFilters: state.filters,
+          loading: false,
+        });
+      }),
+      catchError(error => ctx.dispatch(new CatalogOperationFailed(error))),
+    );
   }
 
   @Action(SetCatalogPagination)

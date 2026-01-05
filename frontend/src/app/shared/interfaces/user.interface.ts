@@ -6,8 +6,18 @@ export interface ISessionUser {
   refreshToken: string;
 }
 
-export interface IUser extends IEntity {
-  bannedAt: string | null;
+export interface IUserEditable {
   email: string;
+  companyLogo?: string;
+  companyName?: string;
+}
+
+export interface IUser extends IEntity, IUserEditable {
+  bannedAt: string | null;
   role: string;
+}
+
+export interface IPasswordChange {
+  password: string;
+  password_confirmation: string;
 }
