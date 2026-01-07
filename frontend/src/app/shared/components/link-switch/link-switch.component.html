@@ -3,8 +3,7 @@
     class="w-[45%] sm:w-36"
     [(ngModel)]="linkAvailable"
     (onChange)="
-      this.publicLink.set({ token: publicLink()?.token, available: $event.checked ?? false });
-      $event.originalEvent.stopPropagation()
+      this.publicLink.set({ token: publicLink()?.token, available: $event.checked }); $event.originalEvent.stopPropagation()
     "
     [onLabel]="'LISTINGS.LINK_STATUS.AVAILABLE' | translate"
     [offLabel]="'LISTINGS.LINK_STATUS.UNAVAILABLE' | translate"
