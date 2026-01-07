@@ -13,17 +13,12 @@ import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 import { authInterceptor, AuthState, CatalogState } from './core';
 
-import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TRANSLATE_HTTP_LOADER_CONFIG, TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ContactsState } from './core/contacts/state/contacts.state';
 import { ListingsState } from './core/listings/state';
 import { ProfileState } from './core/profile/state';
-
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -42,11 +37,11 @@ export const appConfig: ApplicationConfig = {
         defaultLanguage: 'en',
         loader: {
           provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient],
+          useFactory: () => new TranslateHttpLoader(),
         },
       }),
     ),
+    { provide: TRANSLATE_HTTP_LOADER_CONFIG, useValue: { prefix: './assets/i18n/', suffix: '.json' } },
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {

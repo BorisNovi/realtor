@@ -248,7 +248,7 @@ export class CreateCatalogItemComponent implements OnInit {
       },
     });
 
-    dialogRef.onClose
+    dialogRef?.onClose
       .pipe(take(1), takeUntilDestroyed(this.#destroyRef))
       .subscribe(result => this.form.get('contact')?.setValue(result));
   }

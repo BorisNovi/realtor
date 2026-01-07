@@ -10,7 +10,8 @@ export abstract class BaseSelect<T = any> {
   protected readonly items = signal<SelectItem[]>([]);
   protected readonly loading = signal(false);
   protected readonly search = signal('');
-  protected readonly pageSize = signal(10);
+  protected readonly pageSizeBase = signal(10);
+  protected readonly itemSizeBase = signal(38);
 
   protected readonly loadPage$ = new Subject<IPagination>();
   protected totalOnServer = 0;
@@ -29,7 +30,7 @@ export abstract class BaseSelect<T = any> {
       )
       .subscribe(() => {
         this.items.set([]);
-        this.loadPage$.next({ first: 0, rows: this.pageSize() });
+        this.loadPage$.next({ first: 0, rows: this.pageSizeBase() });
       });
 
     this.loadPage$
@@ -60,7 +61,7 @@ export abstract class BaseSelect<T = any> {
     if (this.items().length && !this.initialItemsLoaded) return;
     if (this.initialItemsLoaded) this.items.set([]);
 
-    this.loadPage$.next({ first: 0, rows: this.pageSize() });
+    this.loadPage$.next({ first: 0, rows: this.pageSizeBase() });
     this.initialItemsLoaded = false;
   }
 
@@ -69,12 +70,14 @@ export abstract class BaseSelect<T = any> {
 
     const threshold = 5;
     if (event.last >= this.items().length - threshold)
-      this.loadPage$.next({ first: this.items().length, rows: this.pageSize() });
+      this.loadPage$.next({ first: this.items().length, rows: this.pageSizeBase() });
   }
 
   protected readonly scrollerOptions: ScrollerOptions = {
     showLoader: true,
-    step: this.pageSize(),
+    step: this.pageSizeBase(),
+    itemSize: this.itemSizeBase(),
+    scrollHeight: `${(this.itemSizeBase() + 2) * 5}px`, // item height + gap * comfortable val to show
     onScrollIndexChange: (e: any) => this.onScrollBase(e),
   };
 }
