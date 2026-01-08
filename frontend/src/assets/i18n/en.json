@@ -374,6 +374,12 @@
       "LINK_COPIED": "Public link copied to clipboard"
     }
   },
+  "PROFILE": {
+    "INFO": "Main profile info",
+    "EMAIL": "Email",
+    "COMPANY_NAME": "Company name",
+    "COMPANY_LOGO": "Company logo"
+  },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "City, Road, House ...",
     "TOOLTIP": {

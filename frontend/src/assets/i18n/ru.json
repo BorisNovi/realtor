@@ -374,6 +374,12 @@
       "LINK_COPIED": "Публичная ссылка скопирована в буфер обмена"
     }
   },
+  "PROFILE": {
+    "INFO": "Основная информация профиля",
+    "EMAIL": "Email",
+    "COMPANY_NAME": "Название комании",
+    "COMPANY_LOGO": "Логотип компании"
+  },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "Город, улица, дом ...",
     "TOOLTIP": {

@@ -1,25 +1,99 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { InputWrapperComponent } from '@shared/components';
+import { IUser } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
+import { FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
 import { FluidModule } from 'primeng/fluid';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
-import { AuthState, Logout, Terminate } from 'src/app/core';
-import { ChangePassword } from 'src/app/core/profile/state';
+import { catchError, of } from 'rxjs';
+import { AuthState, FileUploadService, Logout, Terminate } from 'src/app/core';
+import { ChangePassword, EditProfile } from 'src/app/core/profile/state';
 
 @Component({
   selector: 'rx-profile',
-  imports: [InputTextModule, FluidModule, ButtonModule, FormsModule, DividerModule],
+  imports: [FormsModule, ReactiveFormsModule, InputTextModule, FluidModule, ButtonModule, DividerModule, InputGroupModule, InputGroupAddonModule, FileUploadModule, InputWrapperComponent, TranslatePipe],
   templateUrl: './profile.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileComponent {
   readonly #store = inject(Store);
   readonly #destroyRef = inject(DestroyRef);
+  readonly #fileUploadService = inject(FileUploadService);
+  readonly #fb = inject(FormBuilder);
 
   readonly user = this.#store.selectSignal(AuthState.user); // TODO: Заменить на юзера из профиля
+
+  readonly FieldEditing = FieldEditing;
+  readonly fieldEdititng = signal<FieldEditing | false>(false);
+
+  readonly userForm = this.#fb.group({
+    email: [this.user()?.email, [Validators.required, Validators.email]],
+    companyName: [this.user()?.companyName],
+    companyLogo: [this.user()?.companyLogo]
+  });
+
+  onUpload(event: FileUploadHandlerEvent): void {
+    if (event && Array.isArray(event.files)) {
+      const files: File[] = event.files;
+
+      this.#fileUploadService
+        .upload(files)
+        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .subscribe({
+          next: (newUrls: string[]) => {
+            this.userForm.controls['companyLogo'].setValue(newUrls[0]);
+            this.userForm.controls['companyLogo'].markAsDirty();
+          },
+          error: err => {
+            console.error('File upload failed:', err);
+          },
+        });
+    }
+  }
+
+  editProfile(field: FieldEditing): void {
+    const isfieldEditing = this.fieldEdititng() == field;
+
+    if (isfieldEditing) {
+      const user = this.user() as IUser;
+      this.userForm.get(field)?.reset(user?.[field]);
+      this.fieldEdititng.set(false);
+    }
+    else
+      this.fieldEdititng.set(field);
+  }
+
+  updateProfile(): void {
+    const dirtyPatch: Partial<IUser> = {};
+
+    for (const [key, control] of Object.entries(this.userForm.controls))
+      if (control.dirty)
+        (dirtyPatch as any)[key] = control.value;
+
+    if (Object.keys(dirtyPatch).length === 0)
+      return;
+
+    this.#store.dispatch(new EditProfile(dirtyPatch))
+      .pipe(
+        catchError(() => {
+          this.userForm.reset(this.user() || {});
+          return of();
+        }),
+        takeUntilDestroyed(this.#destroyRef)
+      )
+      .subscribe(() => {
+        this.userForm.markAsPristine();
+      });
+  }
+
+
 
   logOut(): void {
     this.#store.dispatch(new Logout());
@@ -32,4 +106,10 @@ export class ProfileComponent {
   changePassword() {
     this.#store.dispatch(new ChangePassword('abc', 'def')).pipe(takeUntilDestroyed(this.#destroyRef)).subscribe();
   }
+}
+
+enum FieldEditing {
+  CompanyName = 'companyName',
+  CompanyLogo = 'companyLogo',
+  Email = 'email',
 }

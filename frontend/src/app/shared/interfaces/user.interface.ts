@@ -8,8 +8,8 @@ export interface ISessionUser {
 
 export interface IUserEditable {
   email: string;
-  companyLogo?: string;
-  companyName?: string;
+  companyLogo: string;
+  companyName: string;
 }
 
 export interface IUser extends IEntity, IUserEditable {

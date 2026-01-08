@@ -1,15 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
-import {
-  IFetchOptions,
-  IListing,
-  IListingRequest,
-  IPasswordChange,
-  IPublicLinkUpdate,
-  ITableData,
-  IUser,
-  IUserEditable,
-} from '@shared/interfaces';
+import { IPasswordChange, IUser, IUserEditable } from '@shared/interfaces';
 import { CrudBaseService } from '../../base';
 
 @Injectable({
