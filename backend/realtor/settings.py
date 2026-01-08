@@ -23,6 +23,9 @@ PROPERTY_MEDIA_DIR = MEDIA_ROOT / 'property'      # Директория для 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # TODO: Для локальных тестов SMTP ОК, но потом нужна боевая хрень.
 SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p'
 
+# Используем базу данных для сессий
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
 ALLOWED_HOSTS = ['*']
 
 # Загружаем .env файл

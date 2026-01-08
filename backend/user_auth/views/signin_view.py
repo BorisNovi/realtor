@@ -1,17 +1,46 @@
 # user_auth/views/signin_view.py
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from ..serializers import SigninSerializer
-from rest_framework.views import APIView
-from rest_framework import status, permissions
+from ..serializers.signin_serializer import SigninSerializer
+from user_auth.models import UserSession
+from django.utils import timezone
+from django.contrib.auth import login
 
 class SigninView(APIView):
-    authentication_classes = [] 
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         serializer = SigninSerializer(data=request.data)
-        if serializer.is_valid():
-            return Response(serializer.validated_data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+
+        user = serializer.validated_data["user"]  # Теперь это объект модели
+
+        # Логиним пользователя
+        login(request, user)
+
+        # Сохраняем данные сессии
+        request.session["user_id"] = user.id
+        request.session["login_time"] = timezone.now().timestamp()
+
+        UserSession.objects.create(
+            user=user,
+            session_key=request.session.session_key,
+            ip_address=request.META.get("REMOTE_ADDR"),
+            user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
+        )
+
+        # Возвращаем токены и инфу, если нужно фронту
+        return Response({
+            "user": {
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "role": user.role,
+                "insertedAt": user.insertedAt.isoformat(),
+                "bannedAt": user.banned.isoformat() if user.banned else None
+            },
+            "accessToken": serializer.validated_data["accessToken"],
+            "refreshToken": serializer.validated_data["refreshToken"]
+        }, status=200)
