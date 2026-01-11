@@ -1,21 +1,18 @@
-export type { IAddress } from './address.interface';
-export type { ICatalogFilters } from './catalog-filters.interface';
-export type { ICatalogItem } from './catalog-item.interface';
-export type { IContact } from './contact.interface';
-export type { IFetchOptions } from './fetch-options.interface';
-export type { IFieldsetConfig } from './fieldset-config.interface';
-export type { IFingerprintData } from './fingerprint-data.interface';
-export type {
-  GeocodeAddress,
-  GeocodeFeature,
-  GeocodeFeatureCollection,
-  GeocodeGeometry,
-  GeocodeProperties,
-} from './geocoder.interface';
-export type { ILanguageOption } from './language-option.interface';
-export type { IPagination } from './pagination.interface';
-export type { IPhoneMaskConfig } from './phone-mask-config.interface';
-export type { IPropertyObject, IPropertyObjectSpecifics } from './property-object.interface';
-export type { ISort } from './sort.interface';
-export type { ITableData } from './table-data.interface';
-export type { ISessionUser, IUser } from './user.interface';
+export * from './address.interface';
+export * from './catalog-filters.interface';
+export * from './catalog-item.interface';
+export * from './contact.interface';
+export * from './entity.interface';
+export * from './fetch-options.interface';
+export * from './fieldset-config.interface';
+export * from './fingerprint-data.interface';
+export * from './geocoder.interface';
+export * from './language-option.interface';
+export * from './listing.interface';
+export * from './map-box.interface';
+export * from './pagination.interface';
+export * from './phone-mask-config.interface';
+export * from './property-object.interface';
+export * from './sort.interface';
+export * from './table-data.interface';
+export * from './user.interface';

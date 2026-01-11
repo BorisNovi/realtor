@@ -1,7 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { ICatalogFilters, ICatalogItem, IPagination, IPropertyObject, ISort, ITableData } from '@shared/interfaces';
+import { ICatalogFilters, ICatalogItem, IMapBox, IPagination, IPropertyObject, ISort, ITableData } from '@shared/interfaces';
+import { ICatalogMapItem } from '@shared/interfaces/catalog-item.interface';
+import { MapHelper } from '@shared/utils';
 import { MessageService } from 'primeng/api';
 import { catchError, of, switchMap, tap, throwError } from 'rxjs';
 import { CatalogService } from '../shared';
@@ -11,6 +13,7 @@ import {
   CreatePropertyObject,
   DeletePropertyObjects,
   FetchCatalog,
+  FetchCatalogMap,
   FetchPropertyObject,
   SetCatalogFilters,
   SetCatalogPagination,
@@ -21,6 +24,9 @@ import {
 
 interface CatalogStateModel {
   catalog: ITableData<ICatalogItem>;
+  mapCatalog: ITableData<ICatalogMapItem>;
+  loadedBox: IMapBox | null;
+  loadedBoxFilters: ICatalogFilters | null;
   filters: ICatalogFilters;
   sort: ISort | null;
   propertyObject: IPropertyObject | null;
@@ -32,6 +38,9 @@ interface CatalogStateModel {
   name: 'catalog',
   defaults: {
     catalog: { items: [], total: 0 },
+    mapCatalog: { items: [], total: 0 },
+    loadedBox: null,
+    loadedBoxFilters: {},
     filters: {},
     sort: null,
     propertyObject: null,
@@ -60,6 +69,16 @@ export class CatalogState {
   }
 
   @Selector()
+  static mapCatalog({ mapCatalog }: CatalogStateModel) {
+    return mapCatalog;
+  }
+
+  @Selector()
+  static loadedBox({ loadedBox }: CatalogStateModel) {
+    return loadedBox;
+  }
+
+  @Selector()
   static propertyObject({ propertyObject }: CatalogStateModel) {
     return propertyObject;
   }
@@ -76,7 +95,7 @@ export class CatalogState {
 
   // Actions
   @Action(FetchCatalog)
-  FetchCatalog(ctx: StateContext<CatalogStateModel>) {
+  fetchCatalog(ctx: StateContext<CatalogStateModel>) {
     const { filters, pagination, sort } = ctx.getState();
 
     if (pagination.first === undefined || pagination.rows === undefined) return;
@@ -86,6 +105,30 @@ export class CatalogState {
     return this.#catalogService.fetchCatalog({ filters, pagination, sort }).pipe(
       tap((catalog: ITableData<ICatalogItem>) => ctx.patchState({ catalog, loading: false })),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error))),
+    );
+  }
+
+  @Action(FetchCatalogMap)
+  fetchCatalogMap(ctx: StateContext<CatalogStateModel>, { box }: FetchCatalogMap) {
+    const state = ctx.getState();
+    const filtersChanged = !state.loadedBoxFilters || !Object.is(state.loadedBoxFilters, state.filters);
+
+    if (!filtersChanged && state.loadedBox && MapHelper.isInsideBox(box, state.loadedBox)) return;
+
+    const expandedBox = MapHelper.expandBox(box, 0.25);
+
+    ctx.patchState({ loading: true });
+
+    return this.#catalogService.fetchCatalogMap({ filters: state.filters }, expandedBox).pipe(
+      tap(mapCatalog => {
+        ctx.patchState({
+          mapCatalog,
+          loadedBox: expandedBox,
+          loadedBoxFilters: state.filters,
+          loading: false,
+        });
+      }),
+      catchError(error => ctx.dispatch(new CatalogOperationFailed(error))),
     );
   }
 
@@ -108,6 +151,7 @@ export class CatalogState {
 
   @Action(SetCatalogSort)
   setCatalogSort(ctx: StateContext<CatalogStateModel>, { sort }: SetCatalogSort) {
+    console.log('sort', sort);
     ctx.patchState({
       sort,
     });

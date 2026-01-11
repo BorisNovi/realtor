@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { GeocodeFeatureCollection } from '@shared/interfaces';
-import { normalizeLngLat } from '@shared/utils';
+import { MapHelper } from '@shared/utils';
 import { LngLatLike } from 'maplibre-gl';
 import { Observable, of, tap } from 'rxjs';
 import { LanguageSelectService } from './language-select.service';
@@ -32,7 +32,7 @@ export class GeocodeService {
   }
 
   reverse(position: LngLatLike): Observable<GeocodeFeatureCollection> {
-    const { lng, lat } = normalizeLngLat(position);
+    const { lng, lat } = MapHelper.normalizeLngLat(position);
     const cacheKey = `${lng},${lat}`;
 
     if (this.#cache.has(cacheKey)) return of(this.#cache.get(cacheKey));

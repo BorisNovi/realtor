@@ -1,7 +1,7 @@
 <p-menu #menu [popup]="true" [model]="actionItems"></p-menu>
 <p-confirm-dialog />
 
-<div class="card overflow-x-auto relative !p-0 !pb-2">
+<div class="card overflow-x-auto relative !p-0">
   @if (loadingS()) {
     <p-progressbar mode="indeterminate" [style]="{ height: '4px' }" class="w-[101%] h-1 top-0 left-[-4px] !absolute z-10" />
   }
@@ -32,7 +32,7 @@
           [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
           [outlined]="true"
           icon="pi pi-plus"
-          (click)="openItemDialog()"
+          (click)="openDialog()"
         />
 
         <p-inputgroup>
@@ -51,6 +51,9 @@
         <th class="min-w-[12rem]">
           {{ 'CONTACTS.TABLE.HEADERS.PHONE' | translate }}
         </th>
+        <th class="min-w-[18rem]">
+          {{ 'FORM.LABELS.COMMENT' | translate }}
+        </th>
         <th class="min-w-[8rem]" pSortableColumn="dateAdded">
           {{ 'CATALOG.TABLE.HEADERS.DATE' | translate }}
           <p-sortIcon field="dateAdded" />
@@ -61,8 +64,14 @@
     <ng-template #body let-item>
       <tr>
         <td class="max-w-[20rem] whitespace-nowrap text-ellipsis overflow-hidden">{{ item.name }}</td>
-        <td class="whitespace-nowrap">{{ item.phone | worldPhoneMask }}</td>
-        <td class="whitespace-nowrap">{{ item.dateAdded | date: 'd MM y' }}</td>
+        <td class="whitespace-nowrap">
+          {{ item.phone | worldPhoneMask }}
+          @if (item.additionalPhone) {
+            <div class="text-sm text-gray-500">{{ item.additionalPhone | worldPhoneMask }}</div>
+          }
+        </td>
+        <td class="text-sm text-gray-300">{{ item.comment }}</td>
+        <td class="whitespace-nowrap">{{ item.dateAdded | date: 'dd.MM.y' }}</td>
         <td>
           <p-button
             icon="pi pi-ellipsis-v"
@@ -71,6 +80,21 @@
             text
             rounded
           />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="4">
+          <div class="flex flex-col items-center gap-4">
+            <div>{{ 'CONTACTS.TABLE.EMPTY' | translate }}</div>
+            <p-button
+              [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+              [outlined]="true"
+              icon="pi pi-plus"
+              (click)="openDialog()"
+            />
+          </div>
         </td>
       </tr>
     </ng-template>

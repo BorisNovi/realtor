@@ -12,7 +12,8 @@
         (uploadHandler)="onUpload($event)"
         [multiple]="true"
         accept="image/*"
-        maxFileSize="4000000"
+        [maxFileSize]="maxImageSize"
+        [fileLimit]="imagesLimit"
         mode="advanced"
       >
         <ng-template #header let-files let-chooseCallback="chooseCallback">
@@ -218,20 +219,8 @@
       [label]="'FORM.LABELS.CONTACT' | translate"
       id="contact"
     >
-      <!-- TODO: Временно выбранный элемент засунул в placeholder. Потом убрать, когда будет фикс -->
-      <rx-select
-        [fetchMethod]="contactFetchMethod"
-        [mapToSelectItem]="contactMapToSelect"
-        [valueMapper]="contactValueMapper"
-        formControlName="contact"
-        [placeholder]="
-          (contactControl?.value?.name || ('FORM.PLACEHOLDERS.NOT_SELECTED' | translate)) +
-          ' ' +
-          (contactControl?.value?.phone | worldPhoneMask)
-        "
-        withSearch
-      >
-      </rx-select>
+      <rx-select-single [fetcher]="contactFetchMethod" [mapToSelect]="contactMapToSelect" formControlName="contact" withSearch>
+      </rx-select-single>
     </rx-input-wrapper>
 
     @let commentVisible = isCommentVisible();
@@ -397,14 +386,14 @@
     <!-- Buttons -->
     <div class="md:col-span-2 flex justify-end gap-2 mt-6 sticky bottom-0">
       <p-button
-        [label]="'FORM.BUTTONS.CANCEL' | translate"
+        [label]="'ACTIONS.CANCEL' | translate"
         type="button"
         (click)="onCancel()"
         class="backdrop-blur-[2px]"
         outlined
       />
       <p-button
-        [label]="'FORM.BUTTONS.SAVE' | translate"
+        [label]="'ACTIONS.SAVE' | translate"
         type="submit"
         class="p-button-primary backdrop-blur-[2px]"
         [disabled]="form.invalid"

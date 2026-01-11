@@ -2,15 +2,14 @@ import { Routes } from '@angular/router';
 import { CatalogComponent } from './catalog.component';
 import { catalogResolver } from './catalog.resolver';
 import { CatalogItemComponent } from './components/catalog-item/catalog-item.component';
-import { CatalogListComponent } from './components/catalog-list/catalog-list.component';
-import { CatalogMapComponent } from './components/catalog-map/catalog-map.component';
+import { CatalogTableComponent } from './components/catalog-table/catalog-table.component';
 import { itemResolver } from './item.resolver';
 
 export const catalogRoutes: Routes = [
   {
-    path: '',
+    path: 'catalog',
+    title: 'Catalog',
     component: CatalogComponent,
-    resolve: { data: catalogResolver },
     children: [
       {
         path: '',
@@ -19,17 +18,18 @@ export const catalogRoutes: Routes = [
       },
       {
         path: 'list',
-        component: CatalogListComponent,
+        component: CatalogTableComponent,
+        resolve: { data: catalogResolver },
       },
       {
         path: 'map',
         loadComponent: () => import('./components/catalog-map/catalog-map.component').then(c => c.CatalogMapComponent),
       },
+      {
+        path: ':id',
+        component: CatalogItemComponent,
+        resolve: { data: itemResolver },
+      },
     ],
-  },
-  {
-    path: ':id',
-    component: CatalogItemComponent,
-    resolve: { data: itemResolver },
   },
 ];

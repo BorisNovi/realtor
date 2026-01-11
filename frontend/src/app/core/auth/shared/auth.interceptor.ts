@@ -16,7 +16,9 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
     return token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
   };
 
-  // Обработка 401
+  /*
+   * Handles 401 Unauthorized responses by attempting to refresh the access token
+   */
   const handleUnauthorized = (req: HttpRequest<unknown>): Observable<HttpEvent<unknown>> => {
     if (!isRefreshing()) {
       isRefreshing.set(true);
@@ -42,10 +44,11 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
     }
   };
 
-  // Условия обработки запросов
+  /*
+   * Interceptor logic for API requests
+   */
   if (request.url.startsWith(environment.apiUrl)) {
     if (request.url.endsWith('auth/refresh')) {
-      // Обновление сессии с refreshToken
       return refreshToken$.pipe(
         take(1),
         switchMap(token => next(addTokenToRequest(request, token))),
@@ -57,7 +60,9 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
     }
 
     if (!request.url.endsWith('auth/refresh')) {
-      // Защищённые запросы с accessToken
+      /*
+       * Handles protected requests that require an access token
+       */
       return accessToken$.pipe(
         take(1),
         switchMap(token => next(addTokenToRequest(request, token))),
@@ -71,6 +76,8 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
     }
   }
 
-  // Публичные запросы без токена
+  /*
+   * Handles public requests that do not require a token
+   */
   return next(request);
 };

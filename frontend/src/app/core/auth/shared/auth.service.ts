@@ -27,7 +27,7 @@ export class AuthService {
     return this.#fingerprint$.pipe(
       switchMap(fingerprint => {
         const body = { fingerprint };
-        return this.#http.post<void>(`${environment.apiUrl}/auth/sessions/terminate`, body);
+        return this.#http.post<void>(`${environment.apiUrl}/auth/logout-all`, body);
       }),
     );
   }

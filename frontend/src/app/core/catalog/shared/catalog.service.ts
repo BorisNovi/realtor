@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { PropertyStatus } from '@shared/enums';
-import { ICatalogFilters, ICatalogItem, IFetchOptions, IPropertyObject, ITableData } from '@shared/interfaces';
-import { Observable } from 'rxjs';
+import { ICatalogFilters, ICatalogItem, IFetchOptions, IMapBox, IPropertyObject, ITableData } from '@shared/interfaces';
+import { ICatalogMapItem } from '@shared/interfaces/catalog-item.interface';
 import { CrudBaseService } from '../../base';
 
 @Injectable({
@@ -13,27 +13,31 @@ export class CatalogService extends CrudBaseService<ICatalogFilters> {
     super(`${environment.apiUrl}`);
   }
 
-  fetchCatalog(options: IFetchOptions<ICatalogFilters>): Observable<ITableData<ICatalogItem>> {
+  fetchCatalog(options: IFetchOptions<ICatalogFilters>) {
     return this.fetchList<ITableData<ICatalogItem>>('catalog', options);
   }
 
-  fetchPropertyObject(id: number): Observable<IPropertyObject> {
+  fetchCatalogMap(options: IFetchOptions<ICatalogFilters>, box: IMapBox) {
+    return this.fetchList<ITableData<ICatalogMapItem>>('catalog/catalog_map', { ...options, query: { box } });
+  }
+
+  fetchPropertyObject(id: number) {
     return this.fetchOne<IPropertyObject>(id, 'property_object');
   }
 
-  createPropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
+  createPropertyObject(body: IPropertyObject) {
     return this.create<IPropertyObject>(body, 'property_object');
   }
 
-  updatePropertyObject(body: IPropertyObject): Observable<IPropertyObject> {
-    return this.update<IPropertyObject & { id: number }>(body, 'property_object');
+  updatePropertyObject(body: IPropertyObject) {
+    return this.update<IPropertyObject>(body, 'property_object');
   }
 
-  updateStatus(id: number, status: PropertyStatus): Observable<IPropertyObject> {
+  updateStatus(id: number, status: PropertyStatus) {
     return this.patch<IPropertyObject>(id, { status }, 'property_object');
   }
 
-  deletePropertyObject(ids: number[]): Observable<void> {
+  deletePropertyObject(ids: number[]) {
     return this.delete(ids, 'catalog/delete');
   }
 }

@@ -1,6 +1,6 @@
 @let loading = isLoading();
 
-<div class="bg-surface-50 dark:bg-surface-950 flex items-center min-h-screen px-4 min-w-[100vw] overflow-hidden">
+<div class="flex items-center min-h-screen px-4 min-w-[100vw] overflow-hidden">
   <div class="w-1/2 flex items-center justify-center min-h-dvh">
     <div>{{ 'AUTH.INFO_IMAGE_RIGHT_BLOCK' | translate }}</div>
   </div>
@@ -51,7 +51,7 @@
             formControlName="password"
             [placeholder]="'AUTH.PASSWORD_PLACEHOLDER' | translate"
             [toggleMask]="true"
-            styleClass="mb-2"
+            class="mb-2"
             [fluid]="true"
             [feedback]="false"
           ></p-password>
@@ -79,7 +79,7 @@
             formControlName="passwordConfirmation"
             [placeholder]="'AUTH.REPEAT_PASSWORD_PLACEHOLDER' | translate"
             [toggleMask]="true"
-            styleClass="mb-2"
+            calss="mb-2"
             [fluid]="true"
             [feedback]="false"
           ></p-password>
@@ -88,20 +88,20 @@
           @if (passwordConfirmationInput?.invalid && passwordConfirmationInput?.touched && passwordConfirmationInput?.dirty) {
             <div class="text-red-500 flex flex-col mb-4 text-sm">
               @if (passwordConfirmationInput?.errors?.['required']) {
-                <span>{{ 'AUTH.PASSWORD_CONFIRMATION_REQUIRED_ERROR' | translate }}</span>
+                <span>{{ 'AUTH.PASSWORD_REQUIRED_ERROR' | translate }}</span>
               }
               @if (passwordConfirmationInput?.errors?.['minlength']) {
-                <span>{{ 'AUTH.PASSWORD_CONFIRMATION_MINLENGTH_ERROR' | translate }}</span>
+                <span>{{ 'AUTH.PASSWORD_MINLENGTH_ERROR' | translate }}</span>
               }
               @if (!passwordConfirmationInput?.errors?.['minlength'] && passwordConfirmationInput?.errors?.['pattern']) {
-                <span>{{ 'AUTH.PASSWORD_CONFIRMATION_PATTERN_ERROR' | translate }}</span>
+                <span>{{ 'AUTH.PASSWORD_PATTERN_ERROR' | translate }}</span>
               }
               @if (
                 !passwordConfirmationInput?.errors?.['minlength'] &&
                 !passwordConfirmationInput?.errors?.['pattern'] &&
                 passwordConfirmationInput?.errors?.['fieldsMismatch']
               ) {
-                <span>{{ 'AUTH.PASSWORD_CONFIRMATION_MISMATCH_ERROR' | translate }}</span>
+                <span>{{ 'AUTH.PASSWORD_MISMATCH_ERROR' | translate }}</span>
               }
             </div>
           }
@@ -109,11 +109,11 @@
           <div class="flex items-center justify-between mt-2 mb-8 gap-8">
             <span class="font-medium ml-2">
               {{ 'AUTH.ALREADY_HAVE_ACCOUNT_TEXT' | translate }}
-              <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-in']">{{ 'AUTH.SIGN_IN_LINK' | translate }}</a>
+              <a class="cursor-pointer text-primary" [routerLink]="['/auth/sign-in']">{{ 'AUTH.SIGN_IN' | translate }}</a>
             </span>
           </div>
           <p-button
-            [label]="'AUTH.SIGN_UP_BUTTON' | translate"
+            [label]="'AUTH.SIGN_UP' | translate"
             styleClass="w-full"
             type="submit"
             [disabled]="form.invalid"

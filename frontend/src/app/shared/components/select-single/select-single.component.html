@@ -1,0 +1,27 @@
+<p-select
+  [ngModel]="selected()"
+  (ngModelChange)="selected.set($event)"
+  [options]="items()"
+  appendTo="body"
+  [virtualScroll]="true"
+  [virtualScrollOptions]="scrollerOptions"
+  dataKey="id"
+  [loading]="loading()"
+  (onShow)="onShow()"
+  [placeholder]="placeholder()"
+  [filter]="true"
+  [emptyMessage]="emptyMessage()"
+  [showClear]="true"
+  class="w-full"
+>
+  @if (withSearch()) {
+    <ng-template #filter>
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-search"></i>
+        </p-inputgroup-addon>
+        <input pInputText [(ngModel)]="search" />
+      </p-inputgroup>
+    </ng-template>
+  }
+</p-select>

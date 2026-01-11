@@ -401,6 +401,8 @@ export class AuthState {
       detail: this.translateService.instant('AUTH.NOTIFICATION.TERMINATION_SUCCESS.DETAIL'),
       life: 3000,
     });
+
+    ctx.dispatch(new Logout());
   }
 
   @Action(TerminationFailed)

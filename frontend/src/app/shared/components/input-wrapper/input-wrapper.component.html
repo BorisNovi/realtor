@@ -10,6 +10,6 @@
 
   @let ctrl = control();
   @if (ctrl.invalid && ctrl.touched && ctrl.dirty) {
-    <span class="text-xs text-red-500">{{ errorMessage() }}</span>
+    <span class="text-xs text-red-500">{{ errorMessage }}</span>
   }
 </div>

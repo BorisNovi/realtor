@@ -1,0 +1,41 @@
+:host {
+  .card {
+    margin-bottom: 1rem;
+  }
+
+  .galeria {
+    border-radius: 0;
+    border: none;
+  }
+
+  ::ng-deep {
+    .maplibregl-popup {
+      &-content {
+        padding: 5px;
+        background: var(--p-button-secondary-background);
+      }
+
+      &-anchor {
+        &-top-left .maplibregl-popup-tip,
+        &-top-right .maplibregl-popup-tip,
+        &-top .maplibregl-popup-tip {
+          border-bottom-color: var(--p-button-secondary-background) !important;
+        }
+
+        &-bottom-left .maplibregl-popup-tip,
+        &-bottom-right .maplibregl-popup-tip,
+        &-bottom .maplibregl-popup-tip {
+          border-top-color: var(--p-button-secondary-background) !important;
+        }
+
+        &-left .maplibregl-popup-tip {
+          border-right-color: var(--p-button-secondary-background) !important;
+        }
+
+        &-right .maplibregl-popup-tip {
+          border-left-color: var(--p-button-secondary-background) !important;
+        }
+      }
+    }
+  }
+}

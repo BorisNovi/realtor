@@ -14,7 +14,31 @@
         <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteItem()" />
         <p-button icon="pi pi-pencil" (onClick)="openEditDialog()" />
       </div>
-      <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate" icon="pi pi-list-check" />
+      <p-button
+        [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate"
+        icon="pi pi-list-check"
+        (onClick)="openListingsSelector($event)"
+      />
     </div>
   </rx-detail>
+
+  <p-popover
+    #listingsSelector
+    (onShow)="listingSelectShown.set(true)"
+    (onHide)="listingSelectShown.set(false)"
+    styleClass="w-[300px]"
+  >
+    <rx-select
+      [fetcher]="listingsFetchMethod"
+      [itemTpl]="itemTemplate"
+      [mapToSelect]="lisitingsMapToSelect"
+      [disabledIds]="listingsAlreadyHasObject()"
+      [disableFn]="disableListingWhithCurrentObject"
+      [open]="listingSelectShown()"
+      (valueClick)="onListingClick($event)"
+    ></rx-select>
+    <ng-template #itemTemplate let-item>
+      <div>{{ item.label }}</div>
+    </ng-template>
+  </p-popover>
 }

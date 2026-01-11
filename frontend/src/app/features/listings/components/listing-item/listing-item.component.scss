@@ -1,0 +1,7 @@
+:host {
+  ::ng-deep {
+    p-divider {
+      --p-divider-content-background: var(--surface-ground);
+    }
+  }
+}

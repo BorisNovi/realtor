@@ -1,131 +1,122 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, forwardRef, inject, input, model, signal } from '@angular/core';
+import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input, model, output, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { IFetchOptions, IPagination, ITableData } from '@shared/interfaces';
-import { ScrollerOptions, SelectItem } from 'primeng/api';
-import { InputGroup } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputText } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { debounceTime, map, Observable, skip, startWith, Subject, switchMap, tap, withLatestFrom } from 'rxjs';
+import { IFetchOptions, ITableData } from '@shared/interfaces';
+import { Subject, switchMap, tap } from 'rxjs';
+
+export interface RxSelectItem {
+  label: string;
+  value: any;
+}
 
 @Component({
   selector: 'rx-select',
   standalone: true,
-  imports: [SelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule],
+  imports: [ScrollingModule, NgTemplateOutlet],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SelectComponent),
-      multi: true,
-    },
-  ],
 })
-export class SelectComponent {
-  readonly #destroyRef = inject(DestroyRef);
+export class SelectComponent<T = any> {
+  readonly fetcher = input.required<(o: IFetchOptions) => any>();
+  readonly mapToSelect = input.required<(src: T) => RxSelectItem>();
+  readonly itemTpl = input<any>();
+  readonly disabledIds = input<any[]>([]);
+  readonly disableFn = input<(item: RxSelectItem, value: RxSelectItem[]) => boolean>();
+  readonly selectable = input(false, { transform: v => v === '' || !!v });
+  readonly multiple = input(false, { transform: v => v === '' || !!v });
+  readonly open = input<boolean>(false);
 
-  readonly fetchMethod = input.required<(options: IFetchOptions) => Observable<ITableData<any>>>();
-  readonly mapToSelectItem = input.required<(item: any) => SelectItem>();
-  readonly valueMapper = input<(item: any) => any>(v => v);
-  readonly pageSize = input(25);
-  readonly withSearch = input(false, { transform: v => v === '' || !!v });
-  readonly placeholder = input('Select item');
-  readonly emptyMessage = input('');
+  readonly value = model<RxSelectItem[]>([]);
+  readonly valueClick = output<RxSelectItem>();
 
-  readonly selected = model<SelectItem | null>(null);
-  readonly items = signal<SelectItem[]>([]);
+  readonly items = signal<RxSelectItem[]>([]);
   readonly loading = signal(false);
-  readonly search = signal<any>('');
-  readonly #loadPage$ = new Subject<IPagination>();
-  #totalOnServer = 0;
+  readonly pageSize = signal(10);
 
-  #onChange: (value: any) => void = () => {};
-  #onTouched: () => void = () => {};
+  private readonly loadPage$ = new Subject<{ first: number; rows: number }>();
+  private total = 0;
+  private initialLoaded = false;
+
+  viewport = viewChild(CdkVirtualScrollViewport);
 
   constructor() {
-    toObservable(this.search)
+    this.loadPage$
       .pipe(
-        skip(1),
-        debounceTime(500),
-        map(q => q.trim()),
-        takeUntilDestroyed(this.#destroyRef),
-      )
-      .subscribe(() => {
-        this.items.set([]);
-        this.#loadPage$.next({ first: 0, rows: this.pageSize() });
-      });
-
-    this.#loadPage$
-      .pipe(
-        withLatestFrom(
-          toObservable(this.search).pipe(
-            map(q => q.trim()),
-            startWith(''),
-          ),
-        ),
         tap(() => this.loading.set(true)),
-        switchMap(([pagination, search]) =>
-          this.fetchMethod()({ pagination, search }).pipe(
-            tap(res => {
-              this.#totalOnServer = res.total;
-              const newItems = res.items.map(this.mapToSelectItem());
-              this.items.update(current => [...current, ...newItems]);
+        switchMap(pagination =>
+          this.fetcher()({ pagination } as IFetchOptions).pipe(
+            tap((res: ITableData<T>) => {
+              this.total = res.total;
+              const mapped = res.items.map(i => this.mapToSelect()(i));
+              this.items.update(curr => [...curr, ...mapped]);
               this.loading.set(false);
+              this.initialLoaded = true;
             }),
           ),
         ),
-        takeUntilDestroyed(this.#destroyRef),
+        takeUntilDestroyed(),
       )
       .subscribe();
 
-    toObservable(this.selected)
-      .pipe(skip(1), takeUntilDestroyed(this.#destroyRef))
-      .subscribe(selectItem => {
-        this.#emitValue(selectItem);
-      });
+    toObservable(this.open)
+      .pipe(
+        takeUntilDestroyed(),
+        tap(isOpen => {
+          if (isOpen) this.onShow();
+        }),
+      )
+      .subscribe();
   }
 
-  readonly options: ScrollerOptions = {
-    showLoader: true,
-    step: this.pageSize(),
-    onScrollIndexChange: this.#onScroll.bind(this),
+  trackByValue = (_: number, item: RxSelectItem) => item.value;
+  isDisabled = (i: RxSelectItem) => {
+    const fn = this.disableFn();
+    const byIds = this.disabledIds().includes(i.value.id);
+    const byFn = fn ? fn(i, this.value()) : false;
+
+    return byIds || byFn;
   };
+  isSelected = (i: RxSelectItem) =>
+    this.multiple() ? this.value().some(x => x.value === i.value) : this.value()[0]?.value === i.value;
 
   onShow(): void {
-    if (this.items().length) return;
-    this.#loadPage$.next({ first: 0, rows: this.pageSize() });
+    setTimeout(() => this.viewport()?.checkViewportSize(), 0);
+
+    if (this.items().length && this.initialLoaded) return;
+
+    this.items.set([]);
+    this.loadPage$.next({ first: 0, rows: this.pageSize() });
   }
 
-  #onScroll(event: { first: number; last: number }): void {
-    if (this.loading() || this.items().length >= this.#totalOnServer) return;
+  onScrolled(): void {
+    const view = this.viewport();
+    if (!view) return;
 
-    const threshold = 5;
-    if (event.last >= this.items().length - threshold)
-      this.#loadPage$.next({ first: this.items().length, rows: this.pageSize() });
+    const end = view.getRenderedRange().end;
+    const total = this.items().length;
+
+    if (!this.loading() && total < this.total && end >= total - 5) this.loadPage$.next({ first: total, rows: this.pageSize() });
   }
 
-  #emitValue(value: any | null): void {
-    const mapped = this.valueMapper()(value);
-    this.#onChange(mapped);
-  }
+  toggle(item: RxSelectItem): void {
+    if (this.isDisabled(item) || !this.selectable()) return;
 
-  writeValue(value: any): void {
-    if (value === undefined || value === null) {
-      this.selected.set(null);
+    if (this.multiple()) {
+      const exists = this.value().some(v => v.value === item.value);
+      this.value.update(exists ? curr => curr.filter(x => x.value !== item.value) : curr => [...curr, item]);
       return;
     }
-    const mapped = this.mapToSelectItem()(value);
-    this.selected.set(mapped);
+
+    const current = this.value()[0];
+    if (current?.value === item.value) this.value.set([]);
+    else this.value.set([item]);
   }
 
-  registerOnChange(fn: any): void {
-    this.#onChange = fn;
-  }
+  onItemClick(item: RxSelectItem): void {
+    if (this.isDisabled(item)) return;
 
-  registerOnTouched(fn: any): void {
-    this.#onTouched = fn;
+    this.valueClick.emit(item);
   }
 }
