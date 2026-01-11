@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { InputWrapperComponent } from '@shared/components';
 import { IUser } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
 import { FluidModule } from 'primeng/fluid';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -14,11 +15,25 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { catchError, of } from 'rxjs';
 import { AuthState, FileUploadService, Logout, Terminate } from 'src/app/core';
-import { ChangePassword, EditProfile } from 'src/app/core/profile/state';
+import { EditProfile } from 'src/app/core/profile/state';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 @Component({
   selector: 'rx-profile',
-  imports: [FormsModule, ReactiveFormsModule, InputTextModule, FluidModule, ButtonModule, DividerModule, InputGroupModule, InputGroupAddonModule, FileUploadModule, InputWrapperComponent, TranslatePipe],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    FluidModule,
+    ButtonModule,
+    DividerModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    FileUploadModule,
+    InputWrapperComponent,
+    TranslatePipe,
+  ],
+  providers: [DialogService],
   templateUrl: './profile.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -27,6 +42,10 @@ export class ProfileComponent {
   readonly #destroyRef = inject(DestroyRef);
   readonly #fileUploadService = inject(FileUploadService);
   readonly #fb = inject(FormBuilder);
+  readonly #dialogService = inject(DialogService);
+  readonly #translateService = inject(TranslateService);
+
+  #ref!: DynamicDialogRef | null;
 
   readonly user = this.#store.selectSignal(AuthState.user); // TODO: Заменить на юзера из профиля
 
@@ -36,7 +55,7 @@ export class ProfileComponent {
   readonly userForm = this.#fb.group({
     email: [this.user()?.email, [Validators.required, Validators.email]],
     companyName: [this.user()?.companyName],
-    companyLogo: [this.user()?.companyLogo]
+    companyLogo: [this.user()?.companyLogo],
   });
 
   onUpload(event: FileUploadHandlerEvent): void {
@@ -65,35 +84,30 @@ export class ProfileComponent {
       const user = this.user() as IUser;
       this.userForm.get(field)?.reset(user?.[field]);
       this.fieldEdititng.set(false);
-    }
-    else
-      this.fieldEdititng.set(field);
+    } else this.fieldEdititng.set(field);
   }
 
   updateProfile(): void {
     const dirtyPatch: Partial<IUser> = {};
 
     for (const [key, control] of Object.entries(this.userForm.controls))
-      if (control.dirty)
-        (dirtyPatch as any)[key] = control.value;
+      if (control.dirty) (dirtyPatch as any)[key] = control.value;
 
-    if (Object.keys(dirtyPatch).length === 0)
-      return;
+    if (Object.keys(dirtyPatch).length === 0) return;
 
-    this.#store.dispatch(new EditProfile(dirtyPatch))
+    this.#store
+      .dispatch(new EditProfile(dirtyPatch))
       .pipe(
         catchError(() => {
           this.userForm.reset(this.user() || {});
           return of();
         }),
-        takeUntilDestroyed(this.#destroyRef)
+        takeUntilDestroyed(this.#destroyRef),
       )
       .subscribe(() => {
         this.userForm.markAsPristine();
       });
   }
-
-
 
   logOut(): void {
     this.#store.dispatch(new Logout());
@@ -103,8 +117,17 @@ export class ProfileComponent {
     this.#store.dispatch(new Terminate());
   }
 
-  changePassword() {
-    this.#store.dispatch(new ChangePassword('abc', 'def')).pipe(takeUntilDestroyed(this.#destroyRef)).subscribe();
+  openChangePasswordDialog(): void {
+    this.#ref = this.#dialogService.open(ChangePasswordComponent, {
+      header: this.#translateService.instant('PROFILE.CHANGE_PASSWORD'),
+      width: '470px',
+      modal: true,
+      closable: true,
+      contentStyle: { overflow: 'auto' },
+      breakpoints: {
+        '640px': '90vw',
+      },
+    });
   }
 }
 
