@@ -1,4 +1,4 @@
-import { PropertyType, ZoningType, PropertyStatus, Currency } from '@shared/enums';
+import { Currency, PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
 
 export interface ICatalogFilters {
   search?: string;

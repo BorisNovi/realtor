@@ -15,6 +15,13 @@
     "INFO": "Info",
     "CONTACTS": "Contacts"
   },
+  "ACTIONS": {
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "CANCEL": "Cancel",
+    "SAVE": "Save",
+    "CHANGE": "Change"
+  },
   "FORM": {
     "LABELS": {
       "PHOTOS": "Photos",
@@ -37,6 +44,8 @@
       "CONTACT_PHONE": "Contact phone",
       "CREATE_CONTACT": "Create contact",
       "ADDITIONAL_CONTACT_PHONE": "Additional contact phone",
+      "LISTING_NAME": "Listing name",
+      "LINK_AVAILABLE": "Available by link",
       "COMMENT": "Comment",
       "ADDITIONAL_PARAMS": "Additional params",
       "CURRENT_FLOOR": "Current Floor",
@@ -66,7 +75,8 @@
       "ELEVATOR": "Elevator",
       "BALCONY": "Balcony",
       "GARDEN": "Garden",
-      "GARAGE": "Garage"
+      "GARAGE": "Garage",
+      "PROPERTY_OBJECTS": "Property objects"
     },
     "PLACEHOLDERS": {
       "PROPERTY_TYPE": "Select Property Type",
@@ -81,8 +91,9 @@
       "APARTMENT": "Enter apartment number",
       "PRICE": "Enter price",
       "CURRENCY": "e.g., USD",
-      "CONTACT_NAME": "Enter name",
+      "CONTACT_NAME": "Enter contact name",
       "CONTACT_PHONE": "Enter phone",
+      "LISTING_NAME": "Enter listing name",
       "UPLOAD_PHOTOS": "Drag and drop files to here to upload",
       "CURRENT_FLOOR": "Enter current floor",
       "TOTAL_FLOORS": "Enter total floors",
@@ -91,7 +102,8 @@
       "FURNISHED": "Select furnished",
       "RENOVATION": "Select renovation",
       "KITCHEN": "Select kitchen type",
-      "NOT_SELECTED": "Not Selected"
+      "NOT_SELECTED": "Not Selected",
+      "SELECTED_COUNT": "{count} items selected"
     },
     "PROPERTIES": {
       "PROPERTY_TYPE": {
@@ -138,11 +150,9 @@
       "REQUIRED": "{{label}} is required",
       "MIN": "{{label}} must be at least {{min}}",
       "MAX": "{{label}} must not exceed {{max}}",
+      "MINLENGTH": "Should be longer than {{max}}",
+      "MAXLENGTH": "Should be shorter than {{max}}",
       "INVALID": "{{label}} is invalid"
-    },
-    "BUTTONS": {
-      "CANCEL": "Cancel",
-      "SAVE": "Save"
     }
   },
   "AUTH": {
@@ -168,20 +178,16 @@
     "REPEAT_PASSWORD_LABEL": "Repeat Password",
     "REPEAT_PASSWORD_PLACEHOLDER": "Repeat Password",
     "REPEAT_NEW_PASSWORD_PLACEHOLDER": "Repeat New Password",
-    "PASSWORD_CONFIRMATION_REQUIRED_ERROR": "Password is required.",
-    "PASSWORD_CONFIRMATION_MINLENGTH_ERROR": "Password must be at least 8 characters.",
-    "PASSWORD_CONFIRMATION_PATTERN_ERROR": "Password must contain an uppercase letter, a number, and a special character.",
-    "PASSWORD_CONFIRMATION_MISMATCH_ERROR": "Passwords do not match.",
+    "PASSWORD_MISMATCH_ERROR": "Passwords do not match.",
     "FORGOT_PASSWORD_LINK": "Forgot password?",
     "DONT_HAVE_ACCOUNT_TEXT": "Don't have an account?",
-    "SIGN_UP_LINK": "Sign-up",
-    "SIGN_IN_BUTTON": "Sign In",
+    "SIGN_UP": "Sign Up",
+    "SIGN_IN": "Sign In",
+    "SIGN_OUT": "Sigh Out",
+    "TERMINATE": "Terminate all sessions",
     "ALREADY_HAVE_ACCOUNT_TEXT": "Already have an account?",
-    "SIGN_IN_LINK": "Sign in",
-    "SIGN_UP_BUTTON": "Sign Up",
     "BACK_TO_TEXT": "Back to",
     "SEND_BUTTON": "Send",
-    "SAVE_BUTTON": "Save",
     "NOTIFICATION": {
       "SESSION_EXPIRED": {
         "SUMMARY": "Session expired",
@@ -255,20 +261,14 @@
       "BUTTONS": {
         "ADD": "Add",
         "FILTERS": "Filters",
-        "ADD_TO_LISTING": "Add to listing",
-        "DELETE": "Delete"
+        "ADD_TO_LISTING": "Add to listing"
       },
       "FOOTER": {
         "SELECTED": "Selected {{count}}"
       },
-      "ACTIONS": {
-        "EDIT": "Edit",
-        "DELETE": "Delete"
-      },
       "DIALOG": {
         "ADD": "Add new item",
         "EDIT": "Edit item",
-        "CANCEL": "Cancel",
         "DELETE_REQUEST_SINGLE": "Delete item?",
         "DELETE_REQUEST_MANY": "Delete items?",
         "DELETE_HINT": "Attention! This action is irreversible!"
@@ -276,7 +276,8 @@
       "CONFIRM_DIALOG": {
         "YES": "Yes",
         "NO": "No"
-      }
+      },
+      "EMPTY": "There are no property. You can add first"
     },
     "LABELS": {
       "ABOUT": "About",
@@ -320,15 +321,12 @@
         "NAME": "Name",
         "PHONE": "Phone"
       },
-      "DIALOG": {
-        "ADD": "Add new contact",
-        "EDIT": "Edit contact",
-        "DELETE_REQUEST_SINGLE": "Delete contact?"
-      },
-      "ACTIONS": {
-        "EDIT": "Edit",
-        "DELETE": "Delete"
-      }
+      "EMPTY": "There are no contacts. You can add first"
+    },
+    "DIALOG": {
+      "ADD": "Add new contact",
+      "EDIT": "Edit contact",
+      "DELETE_REQUEST_SINGLE": "Delete contact?"
     },
     "SEARCH_PLACEHOLDER": "Name or phone number",
     "NOTIFICATION": {
@@ -339,6 +337,53 @@
       "DELETED": "Contact deleted successfully",
       "DELETE_FAILED": "Failed to delete contact"
     }
+  },
+  "LISTINGS" : {
+    "ACTIONS": {
+      "ADD_OBJECT": "Add object to listing",
+      "DELETE_OBJECT": "Delete from listing",
+      "DELETE_LISTING": "Delete listing",
+      "COPY_LINK": "Copy link"
+    },
+    "TABLE": {
+      "HEADERS": {
+        "NAME": "Name",
+        "QUANTITY": "Objects quantity",
+        "DATE": "Date",
+        "LINK_AVAILABLE": "Available by link"
+      },
+      "EMPTY": "There are no listings. You can add first"
+    },
+    "DIALOG": {
+      "ADD": "Add new listing",
+      "EDIT": "Edit listing",
+      "DELETE_REQUEST_SINGLE": "Delete listing?"
+    },
+    "LINK_STATUS": {
+      "AVAILABLE": "Available",
+      "UNAVAILABLE": "Unavailable"
+    },
+    "NOTIFICATION": {
+      "CREATED": "Listing created successfully",
+      "CREATE_FAILED": "Failed to create listing",
+      "UPDATED": "Listing updated successfully",
+      "UPDATE_FAILED": "Failed to update listing",
+      "DELETED": "Listing deleted successfully",
+      "DELETE_FAILED": "Failed to delete listing",
+      "LINK_AVAILABILITY_CHANGED": "Link availability changed",
+      "LINK_AVAILABILITY_FAILED": "Link availability changing failed",
+      "LINK_COPIED": "Public link copied to clipboard"
+    }
+  },
+  "PROFILE": {
+    "INFO": "Main profile info",
+    "EMAIL": "Email",
+    "COMPANY_NAME": "Company name",
+    "COMPANY_LOGO": "Company logo",
+    "CHANGE_PASSWORD": "Change password",
+    "ABOUT": "About profile",
+    "DATE_ADDED": "Date added",
+    "ROLE": "Role"
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "City, Road, House ...",
@@ -358,9 +403,18 @@
     }
   },
   "MAP": {
-    "SHOW_ALL": "Show all"
+    "LOCATE": "Current location"
   },
   "PREFIXES": {
     "APARTMENT": "Ap."
+  },
+  "NOT_FOUND": {
+    "LABEL": "Not Found",
+    "DESCRIPTION": "Requested resource is not available.",
+    "SOLUTION": "Solution Center",
+    "SOLUTION_DESCRIPTION": "Report bug",
+    "LOG_IN": "Login in app",
+    "LOG_IN_DESCRIPTION": "For realtors and staff",
+    "GO_TO_MAIN": "Go to main"
   }
 }

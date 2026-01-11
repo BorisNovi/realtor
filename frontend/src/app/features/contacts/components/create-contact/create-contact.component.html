@@ -37,7 +37,7 @@
 
     <!-- Additional Phone -->
     <rx-input-wrapper
-      [control]="form.get('additional_phone')!"
+      [control]="form.get('additionalPhone')!"
       [label]="'FORM.LABELS.ADDITIONAL_CONTACT_PHONE' | translate"
       id="additionalPhone"
     >
@@ -49,7 +49,7 @@
           id="additionalPhone"
           pInputText
           type="text"
-          formControlName="additional_phone"
+          formControlName="additionalPhone"
           [placeholder]="'FORM.PLACEHOLDERS.CONTACT_PHONE' | translate"
           rxWorldPhoneMasks
           (valid)="validAddPhone($event)"
@@ -57,17 +57,27 @@
       </p-inputgroup>
     </rx-input-wrapper>
 
+    <!-- Comment -->
+    <rx-input-wrapper
+      [control]="form.get('comment')!"
+      [label]="'FORM.LABELS.COMMENT' | translate"
+      id="additionalPhone"
+      class="col-span-full"
+    >
+      <textarea pTextarea id="comment" formControlName="comment" [fluid]="true" rows="5"></textarea>
+    </rx-input-wrapper>
+
     <!-- Buttons -->
     <div class="md:col-span-2 flex justify-end gap-2 mt-6 sticky bottom-0">
       <p-button
-        [label]="'FORM.BUTTONS.CANCEL' | translate"
+        [label]="'ACTIONS.CANCEL' | translate"
         type="button"
         (click)="onCancel()"
         class="backdrop-blur-[2px]"
         outlined
       />
       <p-button
-        [label]="'FORM.BUTTONS.SAVE' | translate"
+        [label]="'ACTIONS.SAVE' | translate"
         type="submit"
         class="p-button-primary backdrop-blur-[2px]"
         [disabled]="form.invalid"

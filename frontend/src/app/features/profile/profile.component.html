@@ -2,36 +2,132 @@
   <div class="flex flex-col md:flex-row gap-8">
     <div class="md:w-1/2">
       <div class="card flex flex-col gap-4">
-        <div class="font-semibold text-xl">Personal info</div>
-        <div class="flex flex-col gap-2">
-          <label for="name">Name</label>
-          <input pInputText id="name" type="text" />
-        </div>
-        <div class="flex flex-col gap-2">
-          <label for="email">Email</label>
-          <input pInputText id="email" type="text" />
-        </div>
-        <p-button class="self-end" icon="pi pi-save" label="Save" [fluid]="false"></p-button>
+        <div class="font-semibold text-xl">{{ 'PROFILE.INFO' | translate }}</div>
+
+        <form class="flex flex-col gap-4" [formGroup]="userForm">
+          @let isCompanyNameEditing = fieldEdititng() == FieldEditing.CompanyName;
+          <rx-input-wrapper
+            [control]="userForm.get('companyName')!"
+            [label]="'PROFILE.COMPANY_NAME' | translate"
+            id="companyName"
+          >
+            <p-inputgroup>
+              <input
+                pInputText
+                id="companyName"
+                type="text"
+                formControlName="companyName"
+                [class.p-disabled]="!isCompanyNameEditing"
+              />
+
+              @if (isCompanyNameEditing) {
+                <p-inputgroup-addon>
+                  <p-button
+                    icon="pi pi-save"
+                    severity="primary"
+                    (onClick)="fieldEdititng.set(false); updateProfile()"
+                    [disabled]="!userForm.get('companyName')?.dirty"
+                  />
+                </p-inputgroup-addon>
+              }
+              <p-inputgroup-addon>
+                <p-button
+                  [icon]="isCompanyNameEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isCompanyNameEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.CompanyName)"
+                />
+              </p-inputgroup-addon>
+            </p-inputgroup>
+          </rx-input-wrapper>
+
+          @let isEmailEditing = fieldEdititng() == FieldEditing.Email;
+          <rx-input-wrapper [control]="userForm.get('email')!" [label]="'PROFILE.EMAIL' | translate" id="email">
+            <p-inputgroup>
+              <input pInputText id="email" type="text" formControlName="email" [class.p-disabled]="!isEmailEditing" />
+
+              @if (isEmailEditing) {
+                <p-inputgroup-addon>
+                  <p-button
+                    icon="pi pi-save"
+                    severity="primary"
+                    (onClick)="fieldEdititng.set(false); updateProfile()"
+                    [disabled]="!userForm.get('email')?.dirty"
+                  />
+                </p-inputgroup-addon>
+              }
+              <p-inputgroup-addon>
+                <p-button
+                  [icon]="isEmailEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isEmailEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.Email)"
+                />
+              </p-inputgroup-addon>
+            </p-inputgroup>
+          </rx-input-wrapper>
+
+          @let isCompanyLogoEditing = fieldEdititng() == FieldEditing.CompanyLogo;
+          <rx-input-wrapper
+            [control]="userForm.get('companyLogo')!"
+            [label]="'PROFILE.COMPANY_LOGO' | translate"
+            id="companyLogo"
+          >
+            <p-inputgroup>
+              <input
+                pInputText
+                id="companyLogo"
+                type="text"
+                formControlName="companyLogo"
+                [class.p-disabled]="!isCompanyLogoEditing"
+              />
+
+              @if (isCompanyLogoEditing) {
+                <p-inputgroup-addon>
+                  <p-button
+                    icon="pi pi-save"
+                    severity="primary"
+                    (onClick)="fieldEdititng.set(false); updateProfile()"
+                    [disabled]="!userForm.get('companyLogo')?.dirty"
+                  />
+                </p-inputgroup-addon>
+                <p-inputgroup-addon>
+                  <p-fileupload
+                    [customUpload]="true"
+                    [auto]="true"
+                    (uploadHandler)="onUpload($event)"
+                    mode="basic"
+                    accept="image/*"
+                    [maxFileSize]="1000000"
+                  >
+                  </p-fileupload>
+                </p-inputgroup-addon>
+              }
+              <p-inputgroup-addon>
+                <p-button
+                  [icon]="isCompanyLogoEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isCompanyLogoEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.CompanyLogo)"
+                />
+              </p-inputgroup-addon>
+            </p-inputgroup>
+          </rx-input-wrapper>
+        </form>
       </div>
 
       <div class="card flex flex-col gap-4">
         <div class="font-semibold text-xl" style="color: var(--p-red-500)">Danger zone</div>
-        <div class="flex flex-col gap-4">
-          <div class="font-semibold text-l">Change password</div>
-          <div class="flex flex-col gap-2">
-            <label for="password">Password</label>
-            <input pInputText id="password" type="text" />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="email1">Confirm password</label>
-            <input pInputText id="email1" type="text" />
-          </div>
-          <p-button class="self-end" icon="pi pi-save" label="Save" [fluid]="false"></p-button>
-        </div>
 
-        <p-divider />
+        <p-button
+          class="self-start"
+          icon="pi pi-key"
+          variant="text"
+          [label]="'PROFILE.CHANGE_PASSWORD' | translate"
+          severity="danger"
+          (click)="openChangePasswordDialog()"
+        ></p-button>
 
-        <div class="flex flex-col gap-4">
+        <!-- <p-divider /> -->
+
+        <!-- <div class="flex flex-col gap-4">
           <div class="font-semibold text-l">Delete profile</div>
           <div class="flex flex-col gap-2">
             <label for="password1">Password</label>
@@ -45,17 +141,15 @@
             severity="danger"
             [fluid]="false"
           ></p-button>
-        </div>
+        </div> -->
       </div>
     </div>
 
     <div class="md:w-1/2">
       <div class="card flex flex-col gap-4">
-        <div class="font-semibold text-xl">Info aboout profile</div>
-        <div>Something about you</div>
-        <div>Something about you</div>
-        <div>Something about you</div>
-        <div>Something about you</div>
+        <div class="font-semibold text-xl">{{ 'PROFILE.ABOUT' | translate }}</div>
+        <div>{{ 'PROFILE.DATE_ADDED' | translate }}: {{ user()?.dateAdded }}</div>
+        <div>{{ 'PROFILE.ROLE' | translate }}: {{ user()?.role }}</div>
 
         <p-divider />
 
@@ -63,22 +157,22 @@
           <p-button
             icon="pi pi-sign-out"
             variant="text"
-            label="Terminate all sessions"
+            [label]="'AUTH.TERMINATE' | translate"
             severity="danger"
             (click)="terminate()"
           ></p-button>
-          <p-button icon="pi pi-sign-out" label="Sign out" severity="danger" (click)="logOut()"></p-button>
+          <p-button icon="pi pi-sign-out" [label]="'AUTH.SIGN_OUT' | translate" severity="danger" (click)="logOut()"></p-button>
         </div>
       </div>
 
-      <div class="card flex flex-col gap-4">
+      <!-- <div class="card flex flex-col gap-4">
         <div class="font-semibold text-xl">Help Text</div>
         <div class="flex flex-wrap gap-2">
           <label for="username">Username</label>
           <input pInputText id="username" type="text" />
           <small>Enter your username to reset your password.</small>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </p-fluid>

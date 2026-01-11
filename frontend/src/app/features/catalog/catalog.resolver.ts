@@ -1,11 +1,10 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { CatalogState, FetchCatalog, QueryParamsService, SetCatalogFilters, SetCatalogPagination } from 'src/app/core';
-import { map, switchMap, take } from 'rxjs/operators';
 import { CATALOG_FILTERS_KEY, CATALOG_PAGINATION_KEY } from '@shared/constants';
 import { combineLatest } from 'rxjs';
-
+import { map, switchMap, take } from 'rxjs/operators';
+import { CatalogState, FetchCatalog, QueryParamsService, SetCatalogFilters, SetCatalogPagination } from 'src/app/core';
 export const catalogResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapshot) => {
   const queryParamsService = inject(QueryParamsService);
   const store = inject(Store);
@@ -24,7 +23,10 @@ export const catalogResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapsho
       };
 
       if (!Object.keys(paginationFromQuery).length) {
-        router.navigate(['/catalog'], {
+        // Сделано для того, чтобы при переходе на определенный маршрут не перебрасывало на конрневой (/catalog)
+        const segments = route.children.map(child => child.url.map(segment => segment.toString()).join('/')).filter(Boolean);
+
+        router.navigate(['/catalog', ...segments], {
           queryParams: newQueryParams,
           // queryParamsHandling: 'merge',
           replaceUrl: false,

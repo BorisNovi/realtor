@@ -8,7 +8,7 @@ import {
   AddressPickerComponent,
   FieldsetCheckboxGroupComponent,
   InputWrapperComponent,
-  SelectComponent,
+  SelectSingleComponent,
 } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { createItemsFieldsetConfig } from '@shared/constants/fieldset.configs';
@@ -40,7 +40,7 @@ import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
-import { startWith, tap } from 'rxjs';
+import { startWith, take, tap } from 'rxjs';
 import { ContactsService, CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
 import { CreateContactComponent } from 'src/app/features/contacts';
 import { AddressFormComponent } from '../address-form/address-form.component';
@@ -65,8 +65,7 @@ import { AddressFormComponent } from '../address-form/address-form.component';
     AddressPickerComponent,
     ScrollToTopOnShowDirective,
     AddressFormComponent,
-    SelectComponent,
-    WorldPhoneMaskPipe,
+    SelectSingleComponent,
   ],
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -91,6 +90,7 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly contactMapToSelect = (item: IContact) => ({
     label: `${item?.name} ${this.#worldPhoneMaskPipe.transform(item?.phone)}`,
     value: item,
+    id: item.id,
   });
   readonly contactValueMapper = (contact: IContact) => ({
     id: contact?.id || null,
@@ -106,6 +106,8 @@ export class CreateCatalogItemComponent implements OnInit {
 
   readonly photosS = signal<string[]>([]);
   readonly uploadErrorS = signal<string | null>(null);
+  readonly maxImageSize = 4194304; // 4mb
+  readonly imagesLimit = 25;
 
   readonly propertyTypes = mapEnumToOptions(PropertyType, value =>
     this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_TYPE.${value}`),
@@ -168,7 +170,7 @@ export class CreateCatalogItemComponent implements OnInit {
           full: [data?.specifics?.floor?.full || null, Validators.min(1)],
         }),
         kitchen: [data?.specifics?.kitchen || null],
-        heating: [data?.specifics?.utilities?.heating || null],
+        heating: [data?.specifics?.heating || null],
         furnished: [data?.specifics?.furnished || null],
         renovation: [data?.specifics?.renovation || null],
 
@@ -208,6 +210,7 @@ export class CreateCatalogItemComponent implements OnInit {
           error: err => {
             const errorMessage = err?.message || 'File upload failed';
             this.uploadErrorS.set(errorMessage);
+            files.length = 0;
             console.error('File upload failed:', err);
           },
         });
@@ -233,8 +236,8 @@ export class CreateCatalogItemComponent implements OnInit {
   }
 
   openContactDialog(): void {
-    this.#dialogService.open(CreateContactComponent, {
-      header: this.#translateService.instant('CONTACTS.TABLE.DIALOG.ADD'),
+    const dialogRef = this.#dialogService.open(CreateContactComponent, {
+      header: this.#translateService.instant('CONTACTS.DIALOG.ADD'),
       appendTo: document.querySelector('.p-dynamic-dialog')!,
       width: '480px',
       modal: true,
@@ -244,6 +247,10 @@ export class CreateCatalogItemComponent implements OnInit {
         '640px': '90vw',
       },
     });
+
+    dialogRef?.onClose
+      .pipe(take(1), takeUntilDestroyed(this.#destroyRef))
+      .subscribe(result => this.form.get('contact')?.setValue(result));
   }
 
   onSubmit(): void {
@@ -253,7 +260,6 @@ export class CreateCatalogItemComponent implements OnInit {
     }
 
     const formData = this.form.value;
-    const position = this.position();
     const hasId = Boolean(this.config.data?.id);
 
     const payload = hasId

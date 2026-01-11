@@ -1,0 +1,13 @@
+<rx-select
+  [fetcher]="listingsFetchMethod"
+  [itemTpl]="itemTemplate"
+  [mapToSelect]="lisitingsMapToSelect"
+  [disabledIds]="listingsAlreadyHasObject()"
+  [disableFn]="disableListingWhithCurrentObject"
+  [open]="true"
+  (valueClick)="onListingClick($event)"
+></rx-select>
+
+<ng-template #itemTemplate let-item>
+  <div>{{ item.label }}</div>
+</ng-template>

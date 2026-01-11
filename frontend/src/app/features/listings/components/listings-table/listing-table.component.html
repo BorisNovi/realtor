@@ -1,0 +1,98 @@
+<p-menu #menu [popup]="true" [model]="actionItems"></p-menu>
+<p-confirm-dialog />
+
+<div class="card overflow-x-auto relative !p-0">
+  @if (loadingS()) {
+    <p-progressbar mode="indeterminate" [style]="{ height: '4px' }" class="w-[101%] h-1 top-0 left-[-4px] !absolute z-10" />
+  }
+  @let tableData = tableDataS();
+  <p-table
+    #pTable
+    [scrollable]="true"
+    [scrollHeight]="'calc(100vh - 15.4rem)'"
+    [value]="tableData!.items"
+    [paginator]="true"
+    [totalRecords]="tableData?.total || 0"
+    [lazy]="true"
+    [rowsPerPageOptions]="[10, 20, 50]"
+    [showCurrentPageReport]="true"
+    paginatorDropdownAppendTo="body"
+    [currentPageReportTemplate]="
+      'CATALOG.TABLE.PAGINATOR.CURRENT_PAGE_REPORT'
+        | translate: { first: '{first}', last: '{last}', totalRecords: '{totalRecords}' }
+    "
+    (onPage)="pageChange($event)"
+    [customSort]="true"
+    (onLazyLoad)="onLazyLoad($event)"
+    [tableStyle]="{ 'min-width': '40rem' }"
+  >
+    <ng-template #caption>
+      <div class="flex justify-between gap-4">
+        <p-button
+          [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+          [outlined]="true"
+          icon="pi pi-plus"
+          (click)="openDialog()"
+        />
+      </div>
+    </ng-template>
+    <ng-template #header>
+      <tr>
+        <th class="w-full">
+          {{ 'LISTINGS.TABLE.HEADERS.NAME' | translate }}
+        </th>
+        <th class="min-w-[12rem]">
+          {{ 'LISTINGS.TABLE.HEADERS.QUANTITY' | translate }}
+        </th>
+        <th class="min-w-[8rem]" pSortableColumn="dateAdded">
+          {{ 'LISTINGS.TABLE.HEADERS.DATE' | translate }}
+          <p-sortIcon field="dateAdded" />
+        </th>
+        <th class="min-w-[8rem]">
+          {{ 'LISTINGS.TABLE.HEADERS.LINK_AVAILABLE' | translate }}
+        </th>
+        <th class="w-[0%]"></th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-item>
+      <tr class="cursor-pointer" [routerLink]="['../', item.id]">
+        <td class="max-w-[20rem] whitespace-nowrap text-ellipsis overflow-hidden">{{ item.name }}</td>
+        <td class="whitespace-nowrap">
+          {{ item?.propertyObjectIds?.length }}
+        </td>
+        <td class="whitespace-nowrap">{{ item?.dateAdded | date: 'dd.MM.y' }}</td>
+        <td class="whitespace-nowrap">
+          <rx-link-switch
+            [publicLink]="item?.publicLink"
+            (publicLinkChange)="changeAvaliability(item, $event?.available)"
+            [disabled]="loadingS()"
+          ></rx-link-switch>
+        </td>
+        <td>
+          <p-button
+            icon="pi pi-ellipsis-v"
+            (click)="onActionClick($event, item); $event.stopPropagation()"
+            severity="secondary"
+            text
+            rounded
+          />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="5">
+          <div class="flex flex-col items-center gap-4">
+            <div>{{ 'LISTINGS.TABLE.EMPTY' | translate }}</div>
+            <p-button
+              [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+              [outlined]="true"
+              icon="pi pi-plus"
+              (click)="openDialog()"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

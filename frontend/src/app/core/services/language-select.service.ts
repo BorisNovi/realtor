@@ -9,7 +9,8 @@ export class LanguageSelectService {
   readonly #storageService = inject(StorageService);
 
   // Доступные языки
-  readonly availableLanguages = ['en', 'ru', 'es', 'pt'];
+  // readonly availableLanguages = ['en', 'ru', 'es', 'pt'];
+  readonly availableLanguages = ['en', 'ru'];
 
   // Сигнал для текущего языка
   readonly #currentLangSignal = signal<string>(
@@ -20,8 +21,8 @@ export class LanguageSelectService {
   readonly languageOptions = computed<ILanguageOption[]>(() => [
     { value: 'en', label: 'English' },
     { value: 'ru', label: 'Русский' },
-    { value: 'es', label: 'Español' },
-    { value: 'pt', label: 'Português' },
+    // { value: 'es', label: 'Español' },
+    // { value: 'pt', label: 'Português' },
   ]);
 
   // Вычисляемый сигнал для текущей опции

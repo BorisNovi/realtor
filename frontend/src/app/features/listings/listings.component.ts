@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'rx-listings',
-  imports: [],
+  imports: [RouterOutlet],
   templateUrl: './listings.component.html',
-  styleUrl: './listings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListingsComponent {}

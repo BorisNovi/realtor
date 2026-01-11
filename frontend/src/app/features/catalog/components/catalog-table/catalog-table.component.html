@@ -1,0 +1,183 @@
+<p-menu #menu [popup]="true" [model]="actionItems"></p-menu>
+<p-confirm-dialog />
+
+<div class="card overflow-x-auto relative !p-0">
+  @if (loadingS()) {
+    <p-progressbar mode="indeterminate" [style]="{ height: '4px' }" class="w-[101%] h-1 top-0 left-[-4px] !absolute z-10" />
+  }
+  @let tableData = tableDataS();
+  <p-table
+    #pTable
+    (onEditComplete)="onEditComplete($event)"
+    [scrollable]="true"
+    [scrollHeight]="'calc(100vh - 15.4rem)'"
+    [value]="tableData!.items"
+    [paginator]="true"
+    [totalRecords]="tableData?.total || 0"
+    [lazy]="true"
+    [rowsPerPageOptions]="[10, 20, 50]"
+    [showCurrentPageReport]="true"
+    paginatorDropdownAppendTo="body"
+    [currentPageReportTemplate]="
+      'CATALOG.TABLE.PAGINATOR.CURRENT_PAGE_REPORT'
+        | translate: { first: '{first}', last: '{last}', totalRecords: '{totalRecords}' }
+    "
+    (onPage)="pageChange($event)"
+    [(selection)]="selectedItems"
+    [customSort]="true"
+    (onLazyLoad)="onLazyLoad($event)"
+    [tableStyle]="{ 'min-width': '40rem' }"
+  >
+    <ng-template #caption>
+      <div class="flex justify-between gap-4">
+        <p-button
+          [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+          [outlined]="true"
+          icon="pi pi-plus"
+          (click)="openItemDialog()"
+        />
+        <p-button
+          [label]="'CATALOG.TABLE.BUTTONS.FILTERS' | translate"
+          [outlined]="true"
+          icon="pi pi-filter"
+          (click)="onFiltersOpen()"
+          [badge]="filtersCount().toString()"
+        />
+      </div>
+    </ng-template>
+    <ng-template #header>
+      <tr>
+        <th><p-tableHeaderCheckbox /></th>
+        <th class="min-w-24">{{ 'CATALOG.TABLE.HEADERS.PHOTO' | translate }}</th>
+        <th>{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}</th>
+        <th>{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}</th>
+        <th>{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}</th>
+        <th class="min-w-32" pSortableColumn="price">
+          {{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }} <p-sortIcon field="price" />
+        </th>
+        <th class="min-w-32" pSortableColumn="area">
+          {{ 'CATALOG.TABLE.HEADERS.AREA' | translate }} <p-sortIcon field="area" />
+        </th>
+        <th class="min-w-32" pSortableColumn="dateAdded">
+          {{ 'CATALOG.TABLE.HEADERS.DATE' | translate }} <p-sortIcon field="dateAdded" />
+        </th>
+        <th class="min-w-44">{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}</th>
+        <th class="min-w-16"></th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-item>
+      <tr class="cursor-pointer" [routerLink]="['../', item.id]">
+        <td>
+          <p-tableCheckbox [value]="item" (click)="$event.stopPropagation()" />
+        </td>
+        <td>
+          @if (item.photos?.length) {
+            <img [src]="item.photos[0]" [alt]="item.name" class="w-24 rounded" />
+          } @else {
+            —
+          }
+        </td>
+        <td>{{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + item.propertyType | translate }}</td>
+        <td>{{ item.zoningType ? ('FORM.PROPERTIES.ZONING_TYPE.' + item.zoningType | translate) : '—' }}</td>
+        <td class="max-w-36">
+          @let a = item.address;
+          <div class="truncate">{{ a.city }}</div>
+          <div class="text-xs text-nowrap">
+            <div class="truncate">{{ a.road }}</div>
+            <div class="truncate">№ {{ a.house }}</div>
+            @if (a.apartment) {
+              <div class="truncate">{{ 'PREFIXES.APARTMENT' | translate }} {{ a.apartment }}</div>
+            }
+          </div>
+        </td>
+        <td>{{ item.price.value | number }} {{ getCurrencySymbol(item.price.currency) }}</td>
+        <td>{{ item.area }} m²</td>
+        <td>{{ item.dateAdded | date: 'dd.MM.y' }}</td>
+        <td
+          [pEditableColumn]="{ id: item.id, value: item.status }"
+          pEditableColumnField="status"
+          (click)="$event.stopPropagation()"
+        >
+          <p-cellEditor class="relative">
+            <ng-template #input>
+              <p-select
+                [options]="statuses"
+                [ngModel]="item.status"
+                (ngModelChange)="onStatusChange($event, item.id)"
+                optionLabel="label"
+                optionValue="value"
+                appendTo="body"
+                [ngStyle]="{ 'background-color': getStatusBackground(item.status) }"
+                class="!absolute bottom-[-1.2rem]"
+              >
+                <ng-template pTemplate="item" let-item>
+                  <div class="flex items-center">
+                    <p-tag [value]="item.label" [severity]="getSeverity(item.value)" />
+                  </div>
+                </ng-template>
+              </p-select>
+            </ng-template>
+            <ng-template #output>
+              <p-tag
+                [value]="'FORM.PROPERTIES.PROPERTY_STATUS.' + item.status | translate"
+                [severity]="getSeverity(item.status)"
+              />
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
+        <td>
+          <p-button
+            icon="pi pi-ellipsis-v"
+            (click)="onActionClick($event, item); $event.stopPropagation()"
+            severity="secondary"
+            text
+            rounded
+          />
+        </td>
+      </tr>
+    </ng-template>
+    @if (selectedItems.length) {
+      <ng-template #footer>
+        <tr>
+          <td colspan="8" class="text-right font-bold">
+            {{ 'CATALOG.TABLE.FOOTER.SELECTED' | translate: { count: selectedItems.length } }}
+          </td>
+          <td colspan="3">
+            <p-buttongroup class="flex justify-end">
+              <p-button
+                [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate"
+                icon="pi pi-plus"
+                class="text-nowrap"
+                outlined
+                (onClick)="(null)"
+              />
+              <p-button
+                severity="danger"
+                [label]="'ACTIONS.DELETE' | translate"
+                icon="pi pi-trash"
+                outlined
+                (onClick)="deleteItems(selectedItems)"
+              />
+            </p-buttongroup>
+          </td>
+        </tr>
+      </ng-template>
+    }
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="10">
+          <div class="flex flex-col items-center gap-4">
+            <div>{{ 'CATALOG.TABLE.EMPTY' | translate }}</div>
+            <p-button
+              [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+              [outlined]="true"
+              icon="pi pi-plus"
+              (click)="openItemDialog()"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

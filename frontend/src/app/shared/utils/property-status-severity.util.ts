@@ -28,3 +28,17 @@ export function getPropertyStatusColor(status: string, type: 'color' | 'backgrou
       return type === 'color' ? 'var(--p-sky-300)' : 'color-mix(in srgb, var(--p-sky-500), transparent 84%)';
   }
 }
+
+// TODO: убрать, когда будут иконки
+export function getMapPropertyStatusColor(status: string): string {
+  switch (status) {
+    case PropertyStatus.available:
+      return 'rgba(34,197,94,0.9)';
+    case PropertyStatus.reserved:
+      return 'rgba(251,191,36,0.9)';
+    case PropertyStatus.rented:
+      return 'rgba(239,68,68,0.9)';
+    default:
+      return 'rgba(56,189,248,0.9)';
+  }
+}

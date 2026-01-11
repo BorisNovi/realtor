@@ -1,0 +1,29 @@
+<p-multi-select
+  [ngModel]="selectedMulti()"
+  (ngModelChange)="selectedMulti.set($event)"
+  [options]="items()"
+  appendTo="body"
+  [virtualScroll]="true"
+  [virtualScrollItemSize]="38"
+  [virtualScrollOptions]="scrollerOptions"
+  [selectedItemsLabel]="'FORM.PLACEHOLDERS.SELECTED_COUNT' | translate"
+  dataKey="id"
+  [loading]="loading()"
+  (onPanelShow)="onShow()"
+  [placeholder]="placeholder()"
+  [filter]="false"
+  [emptyMessage]="emptyMessage()"
+  display="chip"
+  class="w-full"
+>
+  @if (withSearch()) {
+    <ng-template #filter>
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-search"></i>
+        </p-inputgroup-addon>
+        <input pInputText [(ngModel)]="search" />
+      </p-inputgroup>
+    </ng-template>
+  }
+</p-multi-select>

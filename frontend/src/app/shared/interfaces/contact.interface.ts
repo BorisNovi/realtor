@@ -1,7 +1,7 @@
-export interface IContact {
-  id: number;
-  dateAdded: string | Date;
-  name: string;
+import { IEntity } from './entity.interface';
+
+export interface IContact extends IEntity {
   phone: string;
-  additional_phone?: string;
+  additionalPhone?: string;
+  comment?: string;
 }
