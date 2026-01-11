@@ -19,7 +19,8 @@
     "EDIT": "Изменить",
     "DELETE": "Удалить",
     "CANCEL": "Отмена",
-    "SAVE": "Сохранить"
+    "SAVE": "Сохранить",
+    "CHANGE": "Сменить"
   },
   "FORM": {
     "LABELS": {
@@ -149,6 +150,7 @@
       "REQUIRED": "{{label}} - обязательное поле",
       "MIN": "{{label}} должно быть не менее {{min}}",
       "MAX": "{{label}} не должно превышать {{max}}",
+      "MINLENGTH": "Должно быть длиннее {{max}}",
       "MAXLENGTH": "Должно быть короче {{max}}",
       "INVALID": "Поле {{label}} некорректно"
     }
@@ -176,14 +178,13 @@
     "REPEAT_PASSWORD_LABEL": "Повторите пароль",
     "REPEAT_PASSWORD_PLACEHOLDER": "Повторите пароль",
     "REPEAT_NEW_PASSWORD_PLACEHOLDER": "Повторите новый пароль",
-    "PASSWORD_CONFIRMATION_REQUIRED_ERROR": "Пароль обязателен.",
-    "PASSWORD_CONFIRMATION_MINLENGTH_ERROR": "Пароль должен содержать не менее 8 символов.",
-    "PASSWORD_CONFIRMATION_PATTERN_ERROR": "Пароль должен содержать заглавную букву, цифру и специальный символ.",
-    "PASSWORD_CONFIRMATION_MISMATCH_ERROR": "Пароли не совпадают.",
+    "PASSWORD_MISMATCH_ERROR": "Пароли не совпадают.",
     "FORGOT_PASSWORD_LINK": "Забыли пароль?",
     "DONT_HAVE_ACCOUNT_TEXT": "Нет аккаунта?",
     "SIGN_UP": "Зарегистрироваться",
     "SIGN_IN": "Войти",
+    "SIGN_OUT": "Выйти",
+    "TERMINATE": "Завершить все сессии",
     "ALREADY_HAVE_ACCOUNT_TEXT": "Уже есть аккаунт?",
     "BACK_TO_TEXT": "Назад к",
     "SEND_BUTTON": "Отправить",
@@ -378,7 +379,11 @@
     "INFO": "Основная информация профиля",
     "EMAIL": "Email",
     "COMPANY_NAME": "Название комании",
-    "COMPANY_LOGO": "Логотип компании"
+    "COMPANY_LOGO": "Логотип компании",
+    "CHANGE_PASSWORD": "Сменить пароль",
+    "ABOUT": "О профиле",
+    "DATE_ADDED": "Дата создания",
+    "ROLE": "Роль"
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "Город, улица, дом ...",

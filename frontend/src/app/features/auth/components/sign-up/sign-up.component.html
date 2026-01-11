@@ -51,7 +51,7 @@
             formControlName="password"
             [placeholder]="'AUTH.PASSWORD_PLACEHOLDER' | translate"
             [toggleMask]="true"
-            styleClass="mb-2"
+            class="mb-2"
             [fluid]="true"
             [feedback]="false"
           ></p-password>
@@ -79,7 +79,7 @@
             formControlName="passwordConfirmation"
             [placeholder]="'AUTH.REPEAT_PASSWORD_PLACEHOLDER' | translate"
             [toggleMask]="true"
-            styleClass="mb-2"
+            calss="mb-2"
             [fluid]="true"
             [feedback]="false"
           ></p-password>
@@ -88,20 +88,20 @@
           @if (passwordConfirmationInput?.invalid && passwordConfirmationInput?.touched && passwordConfirmationInput?.dirty) {
             <div class="text-red-500 flex flex-col mb-4 text-sm">
               @if (passwordConfirmationInput?.errors?.['required']) {
-                <span>{{ 'AUTH.PASSWORD_CONFIRMATION_REQUIRED_ERROR' | translate }}</span>
+                <span>{{ 'AUTH.PASSWORD_REQUIRED_ERROR' | translate }}</span>
               }
               @if (passwordConfirmationInput?.errors?.['minlength']) {
-                <span>{{ 'AUTH.PASSWORD_CONFIRMATION_MINLENGTH_ERROR' | translate }}</span>
+                <span>{{ 'AUTH.PASSWORD_MINLENGTH_ERROR' | translate }}</span>
               }
               @if (!passwordConfirmationInput?.errors?.['minlength'] && passwordConfirmationInput?.errors?.['pattern']) {
-                <span>{{ 'AUTH.PASSWORD_CONFIRMATION_PATTERN_ERROR' | translate }}</span>
+                <span>{{ 'AUTH.PASSWORD_PATTERN_ERROR' | translate }}</span>
               }
               @if (
                 !passwordConfirmationInput?.errors?.['minlength'] &&
                 !passwordConfirmationInput?.errors?.['pattern'] &&
                 passwordConfirmationInput?.errors?.['fieldsMismatch']
               ) {
-                <span>{{ 'AUTH.PASSWORD_CONFIRMATION_MISMATCH_ERROR' | translate }}</span>
+                <span>{{ 'AUTH.PASSWORD_MISMATCH_ERROR' | translate }}</span>
               }
             </div>
           }

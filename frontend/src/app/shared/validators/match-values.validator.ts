@@ -13,7 +13,7 @@ export const matchValuesValidator = (mainField: string, confirmField: string): V
       const existingErrors = confirmPassword.errors || {};
       confirmPassword.setErrors({
         ...existingErrors,
-        fieldsMismatch: true,
+        fieldsMismatch: { message: 'AUTH.PASSWORD_MISMATCH_ERROR' },
       });
     } else {
       if (confirmPassword.hasError('fieldsMismatch')) {

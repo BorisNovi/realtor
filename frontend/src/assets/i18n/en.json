@@ -19,7 +19,8 @@
     "EDIT": "Edit",
     "DELETE": "Delete",
     "CANCEL": "Cancel",
-    "SAVE": "Save"
+    "SAVE": "Save",
+    "CHANGE": "Change"
   },
   "FORM": {
     "LABELS": {
@@ -149,6 +150,7 @@
       "REQUIRED": "{{label}} is required",
       "MIN": "{{label}} must be at least {{min}}",
       "MAX": "{{label}} must not exceed {{max}}",
+      "MINLENGTH": "Should be longer than {{max}}",
       "MAXLENGTH": "Should be shorter than {{max}}",
       "INVALID": "{{label}} is invalid"
     }
@@ -176,14 +178,13 @@
     "REPEAT_PASSWORD_LABEL": "Repeat Password",
     "REPEAT_PASSWORD_PLACEHOLDER": "Repeat Password",
     "REPEAT_NEW_PASSWORD_PLACEHOLDER": "Repeat New Password",
-    "PASSWORD_CONFIRMATION_REQUIRED_ERROR": "Password is required.",
-    "PASSWORD_CONFIRMATION_MINLENGTH_ERROR": "Password must be at least 8 characters.",
-    "PASSWORD_CONFIRMATION_PATTERN_ERROR": "Password must contain an uppercase letter, a number, and a special character.",
-    "PASSWORD_CONFIRMATION_MISMATCH_ERROR": "Passwords do not match.",
+    "PASSWORD_MISMATCH_ERROR": "Passwords do not match.",
     "FORGOT_PASSWORD_LINK": "Forgot password?",
     "DONT_HAVE_ACCOUNT_TEXT": "Don't have an account?",
     "SIGN_UP": "Sign Up",
     "SIGN_IN": "Sign In",
+    "SIGN_OUT": "Sigh Out",
+    "TERMINATE": "Terminate all sessions",
     "ALREADY_HAVE_ACCOUNT_TEXT": "Already have an account?",
     "BACK_TO_TEXT": "Back to",
     "SEND_BUTTON": "Send",
@@ -378,7 +379,11 @@
     "INFO": "Main profile info",
     "EMAIL": "Email",
     "COMPANY_NAME": "Company name",
-    "COMPANY_LOGO": "Company logo"
+    "COMPANY_LOGO": "Company logo",
+    "CHANGE_PASSWORD": "Change password",
+    "ABOUT": "About profile",
+    "DATE_ADDED": "Date added",
+    "ROLE": "Role"
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "City, Road, House ...",
