@@ -8,7 +8,14 @@ import { of, throwError } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { Logout } from '../../auth/state/auth.actions';
 import { ProfileService } from '../shared';
-import { ChangePassword, DeleteAccount, EditProfile, FetchProfile, ProfileOperationFailed, ProfileOperationSuccess } from './profile.actions';
+import {
+  ChangePassword,
+  DeleteAccount,
+  EditProfile,
+  FetchProfile,
+  ProfileOperationFailed,
+  ProfileOperationSuccess,
+} from './profile.actions';
 
 interface ProfileStateModel {
   user: IUser | null;
