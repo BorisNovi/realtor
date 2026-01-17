@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ILanguageOption } from '@shared/interfaces';
 import { StorageService } from './storage.service';
@@ -8,16 +8,22 @@ export class LanguageSelectService {
   readonly #translateService = inject(TranslateService);
   readonly #storageService = inject(StorageService);
 
-  // Доступные языки
-  // readonly availableLanguages = ['en', 'ru', 'es', 'pt'];
-  readonly availableLanguages = ['en', 'ru'];
+  readonly availableLanguages = ['en', 'ru']; // es, pt
+  readonly #defaultLanguage = 'en';
 
-  // Сигнал для текущего языка
-  readonly #currentLangSignal = signal<string>(
-    this.#storageService.getItem('language') || this.#translateService.getBrowserLang() || this.availableLanguages[0],
-  );
+  readonly #currentLangSignal = signal<string>(this.#getInitialLanguage());
 
-  // Вычисляемый сигнал для языковых опций
+  #getInitialLanguage(): string {
+    const savedLanguage = this.#storageService.getItem<string>('language');
+    const browserLang = this.#translateService.getBrowserLang();
+
+    if (savedLanguage && this.availableLanguages.includes(savedLanguage))
+      return savedLanguage;
+    if (browserLang && this.availableLanguages.includes(browserLang))
+      return browserLang;
+    return this.#defaultLanguage;
+  }
+
   readonly languageOptions = computed<ILanguageOption[]>(() => [
     { value: 'en', label: 'English' },
     { value: 'ru', label: 'Русский' },
@@ -25,7 +31,6 @@ export class LanguageSelectService {
     // { value: 'pt', label: 'Português' },
   ]);
 
-  // Вычисляемый сигнал для текущей опции
   readonly currentLanguageOption = computed<ILanguageOption>(() => {
     const options = this.languageOptions();
     return options.find(option => option.value === this.#currentLangSignal()) || options[0];
@@ -37,7 +42,6 @@ export class LanguageSelectService {
     this.#translateService.use(this.#currentLangSignal());
   }
 
-  // Смена языка
   changeLanguage(value: string): void {
     this.#currentLangSignal.set(value);
     this.#storageService.setItem('language', value);
