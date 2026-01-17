@@ -1,6 +1,6 @@
 @let loading = isLoading();
 
-<div class="flex items-center min-h-screen px-4 min-w-[100vw] overflow-hidden">
+<div class="flex items-center min-h-screen px-4 min-w-screen overflow-hidden">
   <div class="w-1/2 flex items-center justify-center min-h-dvh">
     <div>{{ 'AUTH.INFO_IMAGE_RIGHT_BLOCK' | translate }}</div>
   </div>
@@ -35,7 +35,7 @@
           <span class="text-muted-color font-medium">{{ 'AUTH.SIGN_IN_TO_CONTINUE' | translate }}</span>
         </div>
 
-        <form (submit)="onSubmit()" [formGroup]="form" class="md:w-[30rem]">
+        <form (submit)="onSubmit()" [formGroup]="form" class="md:w-120">
           <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">{{
             'AUTH.EMAIL_LABEL' | translate
           }}</label>
