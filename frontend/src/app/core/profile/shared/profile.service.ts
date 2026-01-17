@@ -22,4 +22,8 @@ export class ProfileService extends CrudBaseService {
   changeProfileDetails(body: Partial<IUserEditable>) {
     return this.patch<IUserEditable, IUser>(body, 'profile');
   }
+
+  deleteAccount(password: string) {
+    return this.create<{ password: string }, null>({ password }, 'profile/delete');
+  }
 }

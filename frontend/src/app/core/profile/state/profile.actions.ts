@@ -17,6 +17,11 @@ export class EditProfile {
   constructor(public options: Partial<IUserEditable>) {}
 }
 
+export class DeleteAccount {
+  static readonly type = '[Profile] Delete Account';
+  constructor(public password: string) {}
+}
+
 export class ProfileOperationSuccess {
   public static readonly type = '[Profile] ProfileOperationSuccess';
   constructor(

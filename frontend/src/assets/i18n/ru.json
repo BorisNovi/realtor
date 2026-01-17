@@ -381,9 +381,21 @@
     "COMPANY_NAME": "Название комании",
     "COMPANY_LOGO": "Логотип компании",
     "CHANGE_PASSWORD": "Сменить пароль",
+    "DELETE_ACCOUNT": "Удалить аккаунт",
+    "DELETE_ACCOUNT_WARNING_TITLE": "Внимание! Это действие необратимо",
+    "DELETE_ACCOUNT_WARNING_MESSAGE": "После удаления аккаунта все ваши данные будут безвозвратно удалены. Эту операцию невозможно отменить.",
+    "DELETE_ACCOUNT_PASSWORD_LABEL": "Введите пароль для подтверждения",
+    "DELETE_ACCOUNT_PASSWORD_PLACEHOLDER": "Ваш текущий пароль",
+    "DELETE_ACCOUNT_CONFIRM": "Удалить аккаунт навсегда",
     "ABOUT": "О профиле",
     "DATE_ADDED": "Дата создания",
-    "ROLE": "Роль"
+    "ROLE": "Роль",
+    "NOTIFICATION": {
+      "UPDATED": "Профиль успешно обновлен",
+      "UPDATE_FAILED": "Не удалось обновить профиль",
+      "ACCOUNT_DELETED": "Аккаунт успешно удален",
+      "ACCOUNT_DELETE_FAILED": "Не удалось удалить аккаунт"
+    }
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "Город, улица, дом ...",
