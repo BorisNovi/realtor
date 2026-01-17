@@ -17,10 +17,8 @@ export class LanguageSelectService {
     const savedLanguage = this.#storageService.getItem<string>('language');
     const browserLang = this.#translateService.getBrowserLang();
 
-    if (savedLanguage && this.availableLanguages.includes(savedLanguage))
-      return savedLanguage;
-    if (browserLang && this.availableLanguages.includes(browserLang))
-      return browserLang;
+    if (savedLanguage && this.availableLanguages.includes(savedLanguage)) return savedLanguage;
+    if (browserLang && this.availableLanguages.includes(browserLang)) return browserLang;
     return this.#defaultLanguage;
   }
 

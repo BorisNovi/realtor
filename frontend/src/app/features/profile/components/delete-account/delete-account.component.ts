@@ -21,7 +21,7 @@ import { DeleteAccount } from 'src/app/core/profile/state';
     AutoFocusModule,
     InputWrapperComponent,
     TranslatePipe,
-    MessageModule
+    MessageModule,
   ],
   templateUrl: './delete-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
