@@ -381,9 +381,21 @@
     "COMPANY_NAME": "Company name",
     "COMPANY_LOGO": "Company logo",
     "CHANGE_PASSWORD": "Change password",
+    "DELETE_ACCOUNT": "Delete account",
+    "DELETE_ACCOUNT_WARNING_TITLE": "Warning! This action is irreversible",
+    "DELETE_ACCOUNT_WARNING_MESSAGE": "After deleting your account, all your data will be permanently deleted. This operation cannot be undone.",
+    "DELETE_ACCOUNT_PASSWORD_LABEL": "Enter your password to confirm",
+    "DELETE_ACCOUNT_PASSWORD_PLACEHOLDER": "Your current password",
+    "DELETE_ACCOUNT_CONFIRM": "Delete account permanently",
     "ABOUT": "About profile",
     "DATE_ADDED": "Date added",
-    "ROLE": "Role"
+    "ROLE": "Role",
+    "NOTIFICATION": {
+      "UPDATED": "Profile updated successfully",
+      "UPDATE_FAILED": "Failed to update profile",
+      "ACCOUNT_DELETED": "Account deleted successfully",
+      "ACCOUNT_DELETE_FAILED": "Failed to delete account"
+    }
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "City, Road, House ...",

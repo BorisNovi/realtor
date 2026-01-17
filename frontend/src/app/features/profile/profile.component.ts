@@ -17,6 +17,7 @@ import { catchError, of } from 'rxjs';
 import { AuthState, FileUploadService, Logout, Terminate } from 'src/app/core';
 import { EditProfile } from 'src/app/core/profile/state';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { DeleteAccountComponent } from './components/delete-account/delete-account.component';
 
 @Component({
   selector: 'rx-profile',
@@ -121,6 +122,19 @@ export class ProfileComponent {
     this.#ref = this.#dialogService.open(ChangePasswordComponent, {
       header: this.#translateService.instant('PROFILE.CHANGE_PASSWORD'),
       width: '470px',
+      modal: true,
+      closable: true,
+      contentStyle: { overflow: 'auto' },
+      breakpoints: {
+        '640px': '90vw',
+      },
+    });
+  }
+
+  openDeleteAccountDialog(): void {
+    this.#ref = this.#dialogService.open(DeleteAccountComponent, {
+      header: this.#translateService.instant('PROFILE.DELETE_ACCOUNT'),
+      width: '520px',
       modal: true,
       closable: true,
       contentStyle: { overflow: 'auto' },

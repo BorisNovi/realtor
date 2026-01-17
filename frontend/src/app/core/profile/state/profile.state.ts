@@ -1,14 +1,14 @@
-import { inject, Injectable } from '@angular/core';
-import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { tap, catchError, switchMap } from 'rxjs/operators';
-import { of, throwError } from 'rxjs';
-import { FetchProfile, ChangePassword, EditProfile, ProfileOperationSuccess, ProfileOperationFailed } from './profile.actions';
-import { ISessionUser, IUser } from '@shared/interfaces';
-import { Navigate } from '@ngxs/router-plugin';
-import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { IUser } from '@shared/interfaces';
+import { MessageService } from 'primeng/api';
+import { of, throwError } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { Logout } from '../../auth/state/auth.actions';
 import { ProfileService } from '../shared';
+import { ChangePassword, DeleteAccount, EditProfile, FetchProfile, ProfileOperationFailed, ProfileOperationSuccess } from './profile.actions';
 
 interface ProfileStateModel {
   user: IUser | null;
@@ -69,6 +69,17 @@ export class ProfileState {
       catchError((error: Error) =>
         ctx.dispatch(new ProfileOperationFailed(error, 'UPDATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
       ),
+    );
+  }
+
+  @Action(DeleteAccount)
+  deleteAccount(ctx: StateContext<ProfileStateModel>, { password }: DeleteAccount) {
+    ctx.patchState({ loading: true });
+    return this.#profileService.deleteAccount(password).pipe(
+      tap(() => ctx.patchState({ loading: false, user: null })),
+      tap(() => ctx.dispatch(new ProfileOperationSuccess('ACCOUNT_DELETED'))),
+      tap(() => ctx.dispatch(new Logout())),
+      catchError((error: Error) => ctx.dispatch(new ProfileOperationFailed(error, 'ACCOUNT_DELETE_FAILED'))),
     );
   }
 
