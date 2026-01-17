@@ -164,7 +164,6 @@
     "ENTER_YOUR_EMAIL_TO_CONTINUE": "Enter your email to continue",
     "SET_NEW_PASSWORD": "Set New Password",
     "ENTER_YOUR_NEW_PASSWORD": "Enter your new password",
-    "INFO_IMAGE_RIGHT_BLOCK": "Info-image right block",
     "EMAIL_LABEL": "Email",
     "EMAIL_PLACEHOLDER": "Email address",
     "EMAIL_REQUIRED_ERROR": "Email is required.",
@@ -428,5 +427,16 @@
     "LOG_IN": "Login in app",
     "LOG_IN_DESCRIPTION": "For realtors and staff",
     "GO_TO_MAIN": "Go to main"
+  },
+  "INFO_BLOCK": {
+    "TITLE": "Tools for Efficient Realtor Workflow",
+    "CATALOG_TITLE": "Property Catalog",
+    "CATALOG_DESC": "Apartments, houses, offices, and land plots — all in one place",
+    "LISTINGS_TITLE": "Listings",
+    "LISTINGS_DESC": "Create personalized listings for your clients",
+    "MAP_TITLE": "Map",
+    "MAP_DESC": "View properties on a map, search by address",
+    "CONTACTS_TITLE": "Owner Contacts",
+    "CONTACTS_DESC": "Keep property owner contacts at hand"
   }
 }
