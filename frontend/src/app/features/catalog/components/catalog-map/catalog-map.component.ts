@@ -15,7 +15,7 @@ import { Store } from '@ngxs/store';
 import { SLIDE } from '@shared/animations';
 import { MapComponent } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
-import { Currency } from '@shared/enums';
+import { Currency, PropertyStatus } from '@shared/enums';
 import { ICatalogItem, IMapBox, IPropertyObject } from '@shared/interfaces';
 import { CamelToUpperSnakePipe, WorldPhoneMaskPipe } from '@shared/pipes';
 import { getCurrentLocation, MapHelper } from '@shared/utils';
@@ -230,6 +230,10 @@ export class CatalogMapComponent implements AfterViewInit {
               color: getMapPropertyStatusColor(item.status),
               marker_type: `${item.propertyType.toLowerCase()}_${item.status.toLowerCase()}`,
               raw: item,
+              // Счётчики для агрегации в кластерах
+              cnt_available: item.status === PropertyStatus.available ? 1 : 0,
+              cnt_reserved: item.status === PropertyStatus.reserved ? 1 : 0,
+              cnt_rented: item.status === PropertyStatus.rented ? 1 : 0,
             },
           } as GeoJSON.Feature;
         }
@@ -252,7 +256,7 @@ export class CatalogMapComponent implements AfterViewInit {
   onMarkerClick(item: ICatalogItem): void {
     this.selectedItem.set(item);
     this.drawerOpen.set(true);
-    if (item.id) this.loadDetailedItem(item.id);
+    if (item.id) this.#loadDetailedItem(item.id);
   }
 
   deleteItem(id: number): void {
@@ -291,9 +295,24 @@ export class CatalogMapComponent implements AfterViewInit {
         '640px': '95vw',
       },
     });
+
+    // Перезагрузить данные карты после закрытия диалога
+    this.#ref?.onClose.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(() => {
+      this.#refreshMapData();
+    });
   }
 
-  private loadDetailedItem(id: number) {
+  #refreshMapData(): void {
+    const map = this.mapComponent()?.map;
+    if (!map) return;
+
+    const bounds = map.getBounds();
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+    this.#store.dispatch(new FetchCatalogMap({ minLng: sw.lng, minLat: sw.lat, maxLng: ne.lng, maxLat: ne.lat }));
+  }
+
+  #loadDetailedItem(id: number): void {
     this.detailedSelected.set(null);
 
     const cache = this.detailedCache();

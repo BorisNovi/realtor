@@ -10,7 +10,8 @@ import {
   signal,
 } from '@angular/core';
 import { environment } from '@environments/environment';
-import maplibregl, { LngLatBoundsLike, LngLatLike } from 'maplibre-gl';
+import { generateClusterRingIcon } from '@shared/utils/cluster-ring-icon.util';
+import maplibregl, { LngLatBoundsLike, LngLatLike, MapStyleImageMissingEvent } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { ReplaySubject } from 'rxjs';
 import { PrivateLayoutService } from 'src/app/layouts/private-layout/shared';
@@ -93,6 +94,19 @@ export class MapComponent implements AfterViewInit {
       const ne = bounds.getNorthEast();
       this.currentBox.emit({ minLng: sw.lng, minLat: sw.lat, maxLng: ne.lng, maxLat: ne.lat });
     });
+
+    // Генерация ring chart иконок для кластеров
+    map.on('styleimagemissing', (e: MapStyleImageMissingEvent) => {
+      const id = e.id;
+      if (!id.startsWith('cluster-')) return;
+
+      const parts = id.replace('cluster-', '').split('-').map(Number);
+      if (parts.length !== 3 || parts.some(isNaN)) return;
+
+      const [available, reserved, rented] = parts;
+      const imageData = generateClusterRingIcon({ available, reserved, rented });
+      map.addImage(id, imageData);
+    });
   }
 
   addClusteredSource(id: string, data: GeoJSON.FeatureCollection) {
@@ -109,8 +123,13 @@ export class MapComponent implements AfterViewInit {
       type: 'geojson',
       data,
       cluster: true,
-      clusterRadius: 20,
+      clusterRadius: 50,
       clusterMaxZoom: 15,
+      clusterProperties: {
+        cnt_available: ['+', ['get', 'cnt_available']],
+        cnt_reserved: ['+', ['get', 'cnt_reserved']],
+        cnt_rented: ['+', ['get', 'cnt_rented']],
+      },
     });
 
     const onSourceData = () => {
@@ -119,15 +138,21 @@ export class MapComponent implements AfterViewInit {
       if (!map.getLayer(`${id}-clusters`)) {
         map.addLayer({
           id: `${id}-clusters`,
-          type: 'circle',
+          type: 'symbol',
           source: id,
           filter: ['has', 'point_count'],
-          paint: {
-            'circle-color': '#4D82F0',
-            'circle-stroke-color': '#4D82F0',
-            'circle-stroke-width': 5,
-            'circle-stroke-opacity': 0.7,
-            'circle-radius': ['step', ['get', 'point_count'], 18, 20, 24, 50, 30],
+          layout: {
+            'icon-image': [
+              'concat',
+              'cluster-',
+              ['get', 'cnt_available'],
+              '-',
+              ['get', 'cnt_reserved'],
+              '-',
+              ['get', 'cnt_rented'],
+            ],
+            'icon-size': 1,
+            'icon-allow-overlap': true,
           },
         });
       }
