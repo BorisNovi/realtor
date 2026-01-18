@@ -28,7 +28,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
 import { Table, TableEditCompleteEvent, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
-import { startWith, tap } from 'rxjs';
+import { startWith, switchMap, tap } from 'rxjs';
 import {
   CatalogState,
   DeletePropertyObjects,
@@ -114,7 +114,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
 
     if (!currentItem || currentItem.status === newStatus) return;
 
-    this.#store.dispatch(new UpdateStatus(id, newStatus));
+    this.#store.dispatch(new UpdateStatus(id, newStatus, { getList: true }));
   }
 
   #setActionItems(item: ICatalogItem): void {
@@ -217,11 +217,23 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
         '640px': '95vw',
       },
     });
+
+    this.#ref?.onClose
+      .pipe(
+        takeUntilDestroyed(this.#destroyRef),
+        switchMap(() => this.#store.dispatch(new FetchCatalog())),
+      )
+      .subscribe();
   }
 
   deleteItems(items: ICatalogItem[]): void {
     this.#deletionConfirmationService.confirm(() => {
-      this.#store.dispatch(new DeletePropertyObjects(items.map(item => item.id)));
+      this.#store.dispatch(
+        new DeletePropertyObjects(
+          items.map(item => item.id),
+          { getList: true },
+        ),
+      );
       this.selectedItems = [];
     });
   }

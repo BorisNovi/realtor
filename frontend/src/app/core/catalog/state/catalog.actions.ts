@@ -32,12 +32,18 @@ export class FetchPropertyObject {
 
 export class CreatePropertyObject {
   static readonly type = '[Catalog] Create Property Object';
-  constructor(public readonly propertyObject: IPropertyObject) {}
+  constructor(
+    public readonly propertyObject: IPropertyObject,
+    public readonly opts?: { getList: boolean },
+  ) {}
 }
 
 export class UpdatePropertyObject {
   static readonly type = '[Catalog] Update Property Object';
-  constructor(public readonly propertyObject: IPropertyObject) {}
+  constructor(
+    public readonly propertyObject: IPropertyObject,
+    public readonly opts?: { getList: boolean },
+  ) {}
 }
 
 export class UpdateStatus {
@@ -45,17 +51,24 @@ export class UpdateStatus {
   constructor(
     public readonly id: number,
     public readonly status: PropertyStatus,
+    public readonly opts?: { getList: boolean },
   ) {}
 }
 
 export class DeletePropertyObjects {
   static readonly type = '[Catalog] Delete Property Objects';
-  constructor(public readonly idList: number[]) {}
+  constructor(
+    public readonly idList: number[],
+    public readonly opts?: { getList: boolean },
+  ) {}
 }
 
 export class CatalogOperationSuccess {
   public static readonly type = '[Catalog] CatalogOperationSuccess';
-  constructor(public readonly message?: string) {}
+  constructor(
+    public readonly message?: string,
+    public readonly getList?: boolean,
+  ) {}
 }
 
 export class CatalogOperationFailed {
