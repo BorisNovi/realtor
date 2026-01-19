@@ -1,25 +1,34 @@
-from django.contrib.sessions.models import Session
-from django.contrib.auth import logout
-from rest_framework.decorators import api_view, permission_classes
+from django.utils import timezone
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import permissions
-from user_auth.models import UserSession
+from rest_framework import status
+from rest_framework_simplejwt.token_blacklist.models import (
+    OutstandingToken, BlacklistedToken
+)
 
-@api_view(["POST"])
-@permission_classes([permissions.IsAuthenticated])
-def logout_all(request):
-    user = request.user
+# user_auth/views/logout_all.py
 
-    # Берём ключи сессий юзера
-    keys = UserSession.objects.filter(user=user).values_list("session_key", flat=True)
+class LogoutAllView(APIView):
+    permission_classes = (IsAuthenticated,)
 
-    # Удаляем сессии из django_session одним запросом
-    Session.objects.filter(session_key__in=keys).delete()
+    def post(self, request):
+        user = request.user
 
-    # Чистим нашу таблицу
-    UserSession.objects.filter(user=user).delete()
+        # мгновенно убиваем access
+        user.last_logout_at = timezone.now()
+        user.save(update_fields=["last_logout_at"])
 
-    # Завершаем текущую сессию
-    logout(request)
+        # убиваем refresh
+        tokens = OutstandingToken.objects.filter(
+            user=user,
+            expires_at__gt=timezone.now()
+        )
 
-    return Response({"message": "all sessions have been terminated"}, status=200)
+        for token in tokens:
+            BlacklistedToken.objects.get_or_create(token=token)
+
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+
+

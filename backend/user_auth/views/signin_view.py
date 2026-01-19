@@ -15,21 +15,7 @@ class SigninView(APIView):
         serializer = SigninSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = serializer.validated_data["user"]  # Теперь это объект модели
-
-        # Логиним пользователя
-        login(request, user)
-
-        # Сохраняем данные сессии
-        request.session["user_id"] = user.id
-        request.session["login_time"] = timezone.now().timestamp()
-
-        UserSession.objects.create(
-            user=user,
-            session_key=request.session.session_key,
-            ip_address=request.META.get("REMOTE_ADDR"),
-            user_agent=request.META.get("HTTP_USER_AGENT", "")[:500],
-        )
+        user = serializer.validated_data["user"]
 
         # Возвращаем токены и инфу, если нужно фронту
         return Response({

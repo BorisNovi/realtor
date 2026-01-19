@@ -24,10 +24,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True) # Активен ли пользователь
     is_staff = models.BooleanField(default=False) # Админ ли пользователь
 
-    insertedAt = models.DateTimeField(auto_now_add=True)  # Дата регистрации
+    insertedAt = models.DateTimeField(auto_now_add=True)  # TODO: ИЗМЕНИТЬ НА dateAdded!!
+
     name = models.CharField(max_length=100, null=True, blank=True)  # Имя пользователя
     role = models.CharField(max_length=50, default='default')  # Роль пользователя
     banned = models.DateTimeField(null=True, blank=True)  # Дата бана (если есть)
+    last_logout_at = models.DateTimeField(null=True, blank=True)
+
 
     objects = UserManager()
 

@@ -1,3 +1,15 @@
+19.01.26 – МГНОВЕННЫЙ ЛОГАУТ JWT
+➕ Мгновенный кик пользователя на всех устройствах.
+ - Убрана старая логика `Django-сессии (login(), request.session, UserSession)` для авторизации.
+ - Создано поле `last_logout_at` в модели `User` для контроля момента глобального выхода.
+ - Разработан кастомный auth-класс `KillSwitchJWTAuthentication`:
+  - Проверяет `iat` access-токена против `last_logout_at`.
+  - `Access` токены, выданные до `last_logout_at`, сразу отклоняются (`401`).
+  - `Refresh` токены пропускаются, но при `logout_all` блэклистятся через `OutstandingToken` → `BlacklistedToken`.
+✍🏼 `SigninView/SigninSerializer` возвращают только `JWT`-токены без сессий.
+✍🏼 `LogoutAllView`: обновляет `last_logout_at` и блэклистит все `refresh-токены`.
+➕ Повышена безопасность: даже если `access` или `refresh` украдены, пользователь мгновенно кикается со всех устройств.
+
 08.01.25 - ЗАВЕРШЕНИЕ ВСЕХ СЕССИЙ
 ➕ BETA: Завершение всех сессий. 
           - Создана модель `UserSession`. 
