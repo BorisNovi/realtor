@@ -6,7 +6,7 @@ from .views.session_check_view import check_session
 from .views.password_view import PasswordRecoveryView
 from .views.refresh_view import RefreshTokenView
 from .views.signin_view import SigninView
-from .views.terminate_sessions import logout_all
+from .views.terminate_sessions import LogoutAllView
 
 urlpatterns = [
     path('/sign-up', views.signup, name='signup'),
@@ -16,7 +16,7 @@ urlpatterns = [
     path('/recover-activate', PasswordResetActivateView.as_view(), name='password-reset-activate'),
     path('/refresh', RefreshTokenView.as_view(), name='refresh_token'),
     path('/sessions/check', check_session, name='check_session'),
-    path('/logout-all', logout_all, name='logout_all'),
+    path('/logout-all', LogoutAllView.as_view(), name='logout_all'),
 
 ]
 
