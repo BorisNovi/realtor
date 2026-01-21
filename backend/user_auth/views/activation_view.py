@@ -47,7 +47,7 @@ def signup_activate(request):
                 "name": user.name,
                 "email": user.email,
                 "role": user.role,
-                "insertedAt": user.insertedAt.isoformat(),
+                "dateAdded": user.date_added.isoformat(),
                 "bannedAt": user.banned.isoformat() if user.banned else None
             }
         }

@@ -24,7 +24,7 @@ class SigninView(APIView):
                 "name": user.name,
                 "email": user.email,
                 "role": user.role,
-                "insertedAt": user.insertedAt.isoformat(),
+                "date_added": user.date_added.isoformat(),
                 "bannedAt": user.banned.isoformat() if user.banned else None
             },
             "accessToken": serializer.validated_data["accessToken"],

@@ -42,7 +42,7 @@ class RefreshTokenView(APIView):
                     "name": user.name,  # Имя пользователя
                     "email": user.email,  # Почта пользователя
                     "role": user.role,  # Роль пользователя
-                    "insertedAt": user.insertedAt.isoformat(),  # Дата регистрации
+                    "date_added": user.date_added.isoformat(),  # Дата регистрации
                     "bannedAt": user.banned.isoformat() if user.banned else None  # Дата бана (если есть)
                 }
         }

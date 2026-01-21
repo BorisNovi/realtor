@@ -24,7 +24,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True) # Активен ли пользователь
     is_staff = models.BooleanField(default=False) # Админ ли пользователь
 
-    insertedAt = models.DateTimeField(auto_now_add=True)  # TODO: ИЗМЕНИТЬ НА dateAdded!!
+    # Данные компании пользователя
+    company_logo = models.URLField(max_length=500, null=True, blank=True)  # Логотип компании пользователя
+    company_name = models.CharField(max_length=255, null=True, blank=True)  # Название компании пользователя
+
+    date_added = models.DateTimeField(auto_now_add=True)  # Дата добавления пользователя
 
     name = models.CharField(max_length=100, null=True, blank=True)  # Имя пользователя
     role = models.CharField(max_length=50, default='default')  # Роль пользователя
