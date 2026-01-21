@@ -12,7 +12,7 @@ export class ProfileService extends CrudBaseService {
   }
 
   fetchProfile() {
-    return this.http.get<IUser>(`${this.baseUrl}/${environment.apiUrl}/profile`);
+    return this.http.get<IUser>(`${this.baseUrl}/profile`);
   }
 
   changePassword(body: IPasswordChange) {
