@@ -59,9 +59,9 @@ export class ProfileState {
   }
 
   @Action(ChangePassword)
-  changePassword(ctx: StateContext<ProfileStateModel>, { password, passwordConfirmation }: ChangePassword) {
+  changePassword(ctx: StateContext<ProfileStateModel>, { oldPassword, newPassword, newPasswordConfirmation }: ChangePassword) {
     ctx.patchState({ loading: true });
-    return this.#profileService.changePassword({ password, password_confirmation: passwordConfirmation }).pipe(
+    return this.#profileService.changePassword({ oldPassword, newPassword, newPasswordConfirmation }).pipe(
       tap(() => ctx.patchState({ loading: false })),
       catchError((error: Error) => ctx.dispatch(new ProfileOperationFailed(error))),
     );

@@ -15,7 +15,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { catchError, of } from 'rxjs';
 import { AuthState, FileUploadService, Logout, Terminate } from 'src/app/core';
-import { EditProfile } from 'src/app/core/profile/state';
+import { EditProfile, ProfileState } from 'src/app/core/profile/state';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { DeleteAccountComponent } from './components/delete-account/delete-account.component';
 
@@ -48,7 +48,7 @@ export class ProfileComponent {
 
   #ref!: DynamicDialogRef | null;
 
-  readonly user = this.#store.selectSignal(AuthState.user); // TODO: Заменить на юзера из профиля
+  readonly user = this.#store.selectSignal(ProfileState.user); // TODO: Заменить на юзера из профиля
 
   readonly FieldEditing = FieldEditing;
   readonly fieldEdititng = signal<FieldEditing | false>(false);
