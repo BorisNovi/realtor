@@ -7,8 +7,9 @@ export class FetchProfile {
 export class ChangePassword {
   static readonly type = '[Profile] Change Password';
   constructor(
-    public password: string,
-    public passwordConfirmation: string,
+    public oldPassword: string,
+    public newPassword: string,
+    public newPasswordConfirmation: string,
   ) {}
 }
 
