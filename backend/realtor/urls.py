@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/v1/contact', include('contacts.urls')), 
     path("api/v1/file", include("file.urls")),
     path("api/v1/listing", include("listings.urls")),
+    path("api/v1/profile", include("users.urls")),
 ]
 
 if settings.DEBUG:
@@ -19,3 +20,6 @@ if settings.DEBUG:
 
 # Короче, тут ни в начале, ни в конце слэши не нужны. 
 # Они ставятся только в дочерних модулях и только в начале оных.
+
+# ПОДСКАЗКА: 
+# В следующий раз если что-то не работает, убедись, что пусть, который ты прописал, согласован с действительностью.

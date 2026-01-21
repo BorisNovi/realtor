@@ -14,7 +14,7 @@ def check_session(request):
             "name": user.name,
             "email": user.email,
             "role": user.role,
-            "insertedAt": user.insertedAt.isoformat(),
+            "date_added": user.date_added.isoformat(),
             "bannedAt": user.banned.isoformat() if user.banned else None
         }
     })

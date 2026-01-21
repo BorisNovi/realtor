@@ -88,8 +88,6 @@ INSTALLED_APPS = [
     'file',
     'listings',                     
     # 'ai_assistant',                 # Может зависеть от users или user_auth
-    # 'listings',                     # Листинги, возможно, зависят от users
-    # 'map',                          # Карта, может зависеть от listings или users
     # 'payments',                     # Платежи, может зависеть от users
 ]
 

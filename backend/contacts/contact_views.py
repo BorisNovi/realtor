@@ -81,6 +81,7 @@ class ContactView(APIView):
 
         total_count: int = queryset.count()
         paginated_queryset = queryset[first:first + rows]
+        
         serializer = ContactSerializer(paginated_queryset, many=True)
 
         return Response({
