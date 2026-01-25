@@ -418,6 +418,14 @@
   "MAP": {
     "LOCATE": "Текущее местоположение"
   },
+  "AVATAR": {
+    "UPLOAD": "Загрузить",
+    "ERRORS": {
+      "INVALID_TYPE": "Разрешены только изображения",
+      "FILE_TOO_LARGE": "Размер файла превышает {{size}}МБ",
+      "UPLOAD_FAILED": "Ошибка загрузки"
+    }
+  },
   "PREFIXES": {
     "APARTMENT": "Кв."
   },

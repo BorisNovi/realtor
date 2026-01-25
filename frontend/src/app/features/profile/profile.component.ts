@@ -1,9 +1,10 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { InputWrapperComponent } from '@shared/components';
+import { AvatarComponent, InputWrapperComponent } from '@shared/components';
 import { IUser } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -14,7 +15,7 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { catchError, of } from 'rxjs';
-import { AuthState, FileUploadService, Logout, Terminate } from 'src/app/core';
+import { FileUploadService, Logout, Terminate } from 'src/app/core';
 import { EditProfile, ProfileState } from 'src/app/core/profile/state';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { DeleteAccountComponent } from './components/delete-account/delete-account.component';
@@ -32,7 +33,9 @@ import { DeleteAccountComponent } from './components/delete-account/delete-accou
     InputGroupAddonModule,
     FileUploadModule,
     InputWrapperComponent,
+    AvatarComponent,
     TranslatePipe,
+    DatePipe,
   ],
   providers: [DialogService],
   templateUrl: './profile.component.html',
@@ -48,7 +51,7 @@ export class ProfileComponent {
 
   #ref!: DynamicDialogRef | null;
 
-  readonly user = this.#store.selectSignal(ProfileState.user); // TODO: Заменить на юзера из профиля
+  readonly user = this.#store.selectSignal(ProfileState.user);
 
   readonly FieldEditing = FieldEditing;
   readonly fieldEdititng = signal<FieldEditing | false>(false);

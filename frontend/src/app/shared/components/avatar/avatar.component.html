@@ -1,0 +1,40 @@
+<div
+  class="avatar-container"
+  [class.readonly]="readonly()"
+  [class.drag-over]="isDragOver()"
+  [class.has-image]="imageUrl()"
+  (click)="onContainerClick()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" class="file-input" />
+
+  @if (isLoading()) {
+    <div class="loading-overlay">
+      <i class="pi pi-spin pi-spinner"></i>
+    </div>
+  } @else if (imageUrl(); as img) {
+    <img [src]="img" alt="Avatar" class="avatar-image" />
+    <div class="overlay">
+      <i class="pi pi-camera"></i>
+    </div>
+
+    @if (!readonly()) {
+      <button type="button" class="remove-button" (click)="removeImage($event)">
+        <i class="pi pi-trash"></i>
+      </button>
+    }
+  } @else {
+    <div class="placeholder">
+      <i class="pi pi-image"></i>
+      @if (!readonly()) {
+        <span class="placeholder-text">{{ 'AVATAR.UPLOAD' | translate }}</span>
+      }
+    </div>
+  }
+</div>
+
+@if (error(); as err) {
+  <div class="error-message">{{ err }}</div>
+}
