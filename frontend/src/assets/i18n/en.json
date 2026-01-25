@@ -418,6 +418,14 @@
   "MAP": {
     "LOCATE": "Current location"
   },
+  "AVATAR": {
+    "UPLOAD": "Upload",
+    "ERRORS": {
+      "INVALID_TYPE": "Only image files are allowed",
+      "FILE_TOO_LARGE": "File size exceeds {{size}}MB limit",
+      "UPLOAD_FAILED": "Upload failed"
+    }
+  },
   "PREFIXES": {
     "APARTMENT": "Ap."
   },

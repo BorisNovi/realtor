@@ -43,9 +43,15 @@ export class ChangePasswordComponent {
   );
 
   onSubmit(): void {
-    const {oldPassword, newPassword, newPasswordConfirmation } = this.form.value;
+    const { oldPassword, newPassword, newPasswordConfirmation } = this.form.value;
 
-    if (!this.form.valid || typeof oldPassword != 'string' || typeof newPassword != 'string' || typeof newPasswordConfirmation != 'string') return;
+    if (
+      !this.form.valid ||
+      typeof oldPassword != 'string' ||
+      typeof newPassword != 'string' ||
+      typeof newPasswordConfirmation != 'string'
+    )
+      return;
 
     this.#store
       .dispatch(new ChangePassword(oldPassword, newPassword, newPasswordConfirmation))
