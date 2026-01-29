@@ -91,7 +91,7 @@ class CatalogCreateSerializer(serializers.Serializer):
 
         # Работа с фото
         if photos:
-            new_photos = [make_files_permanent(url, subdir=f'property_{instance.id}') for url in photos]
+            new_photos = [make_files_permanent(url) for url in photos]
             instance.photos = new_photos
             instance.save(update_fields=["photos"])
 
@@ -154,7 +154,7 @@ class CatalogCreateSerializer(serializers.Serializer):
             old_photos = instance.photos or []
             photos_to_keep = [p for p in new_photos_from_front if p in old_photos]
             temporary_new_photos = [p for p in new_photos_from_front if p not in old_photos]
-            processed_new_photos = [make_files_permanent(url, subdir=f'property_{instance.id}') for url in temporary_new_photos]
+            processed_new_photos = [make_files_permanent(url) for url in temporary_new_photos]
             final_photos = photos_to_keep + processed_new_photos
             instance.photos = final_photos
             print(Fore.YELLOW + f"Updated photos. Kept: {photos_to_keep}, Added: {processed_new_photos}" + Fore.RESET)
