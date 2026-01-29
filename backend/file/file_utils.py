@@ -14,21 +14,31 @@ baseurl = BASE_URL
 MAX_SIZE = 500 * 1024  # 500 KB
 
 # Функция для перемещения файла из временной директории в постоянную
-def make_files_permanent(temp_url: str, subdir: str) -> str:
+def make_files_permanent(temp_url: str) -> str:
     """
-    Перемещает файл из /media/temp/... в /media/property/{subdir}/...
+    Перемещает файл из /media/temp/... в /media/permanent/...
     Возвращает новый URL.
     """
     # Оставляем путь относительно MEDIA_ROOT
     if temp_url.startswith("http://") or temp_url.startswith("https://"):
-        temp_url = temp_url.split("/media/")[-1]  # берем путь после /media/
+        temp_url = temp_url.split("/media/")[-1]
 
     temp_path = os.path.join(settings.MEDIA_ROOT, temp_url)
-    permanent_dir = os.path.join(settings.MEDIA_ROOT, 'property', subdir)
+    permanent_dir = os.path.join(settings.MEDIA_ROOT, "permanent")
     os.makedirs(permanent_dir, exist_ok=True)
 
     filename = os.path.basename(temp_path)
-    new_path = os.path.join(permanent_dir, filename)
+
+    # Чтобы не перетирать файлы с одинаковыми именами
+    name, ext = os.path.splitext(filename)
+    counter = 1
+    new_filename = filename
+    new_path = os.path.join(permanent_dir, new_filename)
+
+    while os.path.exists(new_path):
+        new_filename = f"{name}_{counter}{ext}"
+        new_path = os.path.join(permanent_dir, new_filename)
+        counter += 1
 
     logger.debug(f"[move] from={temp_path} to={new_path}")
 
@@ -38,9 +48,9 @@ def make_files_permanent(temp_url: str, subdir: str) -> str:
     else:
         logger.warning(f"⚠️ Файл не найден: {temp_path}")
 
-    # Возвращаем URL для БД
-    new_url = f"{baseurl}/media/property/{subdir}/{filename}"
+    new_url = f"{baseurl}/media/permanent/{new_filename}"
     return new_url
+
 
 # Сжатие изображений
 def compress_image(image_field):
