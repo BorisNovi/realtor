@@ -127,6 +127,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
       width: '480px',
       modal: true,
       closable: true,
+      dismissableMask: true,
       contentStyle: { overflow: 'auto' },
       focusOnShow: false,
       breakpoints: {

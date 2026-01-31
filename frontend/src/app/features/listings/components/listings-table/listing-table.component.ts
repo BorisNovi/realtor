@@ -123,6 +123,7 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
       width: '620px',
       modal: true,
       closable: true,
+      dismissableMask: true,
       contentStyle: { overflow: 'auto' },
       breakpoints: {
         '640px': '90vw',
