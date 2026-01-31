@@ -72,9 +72,15 @@
         </td>
         <td>
           @if (item.photos?.length) {
-            <img [src]="item.photos[0]" [alt]="item.name" class="w-24 rounded" />
+            <img
+              [src]="item.photos[0]"
+              [alt]="item.propertyType"
+              class="w-24 rounded"
+            />
           } @else {
-            —
+            <div class="w-24 h-16 rounded bg-surface-200 dark:bg-surface-700 flex items-center justify-center">
+              <i class="pi pi-image text-surface-400 dark:text-surface-500 text-2xl"></i>
+            </div>
           }
         </td>
         <td>{{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + item.propertyType | translate }}</td>
