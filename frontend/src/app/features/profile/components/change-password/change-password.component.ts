@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { tap } from 'rxjs';
 import { ChangePassword } from 'src/app/core/profile/state';
 
 @Component({
@@ -55,7 +56,7 @@ export class ChangePasswordComponent {
 
     this.#store
       .dispatch(new ChangePassword(oldPassword, newPassword, newPasswordConfirmation))
-      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .pipe(tap(() => this.#ref.close()),takeUntilDestroyed(this.#destroyRef))
       .subscribe();
   }
 

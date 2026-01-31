@@ -106,11 +106,11 @@ export class ProfileState {
 
   @Action(ProfileOperationFailed)
   onProfileOperationFailed(ctx: StateContext<ProfileStateModel>, { error, message }: ProfileOperationFailed) {
-    if (message) {
+    if (error || message) {
       this.#messageService.add({
         severity: 'error',
         summary: this.#translateService.instant('NOTIFICATIONS.ERROR'),
-        detail: this.#translateService.instant('PROFILE.NOTIFICATION.' + message),
+        detail: message ? this.#translateService.instant('PROFILE.NOTIFICATION.' + message) : error.message,
         life: 3000,
       });
     }
