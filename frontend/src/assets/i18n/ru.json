@@ -20,7 +20,8 @@
     "DELETE": "Удалить",
     "CANCEL": "Отмена",
     "SAVE": "Сохранить",
-    "CHANGE": "Сменить"
+    "CHANGE": "Сменить",
+    "OPEN": "Открыть"
   },
   "FORM": {
     "LABELS": {
@@ -257,7 +258,9 @@
         "STATUS": "Статус"
       },
       "PAGINATOR": {
-        "CURRENT_PAGE_REPORT": "Показано с {first} по {last} из {totalRecords} записей"
+        "CURRENT_PAGE_REPORT": "Показано с {first} по {last} из {totalRecords} записей",
+        "CARDS_VIEW": "Карточки",
+        "TABLE_VIEW": "Таблица"
       },
       "BUTTONS": {
         "ADD": "Добавить",
