@@ -228,11 +228,11 @@ export class CatalogState {
 
   @Action(CatalogOperationFailed)
   onCatalogOperationFailed(ctx: StateContext<CatalogStateModel>, { error, message }: CatalogOperationFailed) {
-    if (message) {
+    if (error || message) {
       this.#messageService.add({
         severity: 'error',
         summary: this.#translateService.instant('NOTIFICATIONS.ERROR'),
-        detail: this.#translateService.instant('CATALOG.NOTIFICATION.' + message),
+        detail: message ? this.#translateService.instant('CATALOG.NOTIFICATION.' + message) : error.message,
         life: 3000,
       });
     }
