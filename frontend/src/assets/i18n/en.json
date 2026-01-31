@@ -20,7 +20,8 @@
     "DELETE": "Delete",
     "CANCEL": "Cancel",
     "SAVE": "Save",
-    "CHANGE": "Change"
+    "CHANGE": "Change",
+    "OPEN": "Open"
   },
   "FORM": {
     "LABELS": {
@@ -257,7 +258,9 @@
         "STATUS": "Status"
       },
       "PAGINATOR": {
-        "CURRENT_PAGE_REPORT": "Showing {first} to {last} of {totalRecords} entries"
+        "CURRENT_PAGE_REPORT": "Showing {first} to {last} of {totalRecords} entries",
+        "CARDS_VIEW": "Card view",
+        "TABLE_VIEW": "Table view"
       },
       "BUTTONS": {
         "ADD": "Add",

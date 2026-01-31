@@ -170,7 +170,7 @@ export class ContactsState {
       this.#messageService.add({
         severity: 'error',
         summary: this.#translateService.instant('NOTIFICATIONS.ERROR'),
-        detail: message ?  this.#translateService.instant('CONTACTS.NOTIFICATION.' + message) : error.message,
+        detail: message ? this.#translateService.instant('CONTACTS.NOTIFICATION.' + message) : error.message,
         life: 3000,
       });
     }

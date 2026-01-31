@@ -16,8 +16,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
 import { debounceTime, map, skip } from 'rxjs';
-import { DeletionConfirmationService } from 'src/app/core';
+import { DeletionConfirmationService, ViewModeService } from 'src/app/core';
 import { DeleteContact, FetchContacts, SetContactsSearch } from 'src/app/core/contacts/state/contacts.actions';
 import { ContactsState } from 'src/app/core/contacts/state/contacts.state';
 import { CreateContactComponent } from '../create-contact/create-contact.component';
@@ -38,6 +39,7 @@ import { CreateContactComponent } from '../create-contact/create-contact.compone
     ProgressBarModule,
     TranslatePipe,
     WorldPhoneMaskPipe,
+    TooltipModule,
   ],
   providers: [DialogService],
   templateUrl: './contacts-table.component.html',
@@ -55,6 +57,9 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   readonly #store = inject(Store);
   readonly #translateService = inject(TranslateService);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
+  readonly #viewModeService = inject(ViewModeService);
+
+  readonly viewMode = this.#viewModeService.viewMode;
 
   actionItems: MenuItem[] = [];
 
@@ -118,6 +123,10 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
 
   pageChange(event: TablePageEvent): void {
     this.paginationChange.emit(event);
+  }
+
+  toggleViewMode(): void {
+    this.#viewModeService.toggle();
   }
 
   openDialog(data?: IContact | null): void {

@@ -56,7 +56,10 @@ export class ChangePasswordComponent {
 
     this.#store
       .dispatch(new ChangePassword(oldPassword, newPassword, newPasswordConfirmation))
-      .pipe(tap(() => this.#ref.close()),takeUntilDestroyed(this.#destroyRef))
+      .pipe(
+        tap(() => this.#ref.close()),
+        takeUntilDestroyed(this.#destroyRef),
+      )
       .subscribe();
   }
 

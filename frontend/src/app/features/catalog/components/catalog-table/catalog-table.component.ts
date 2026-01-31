@@ -21,13 +21,17 @@ import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOption
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
+import { CardsGridComponent } from '@shared/components';
+import { CardModule } from 'primeng/card';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Menu, MenuModule } from 'primeng/menu';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
 import { Table, TableEditCompleteEvent, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 import { startWith, switchMap, tap } from 'rxjs';
 import {
   CatalogState,
@@ -39,6 +43,7 @@ import {
   SetCatalogPagination,
   SetCatalogSort,
   UpdateStatus,
+  ViewModeService,
 } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
@@ -60,13 +65,17 @@ import { AddToListingComponent } from '../add-to-listing/add-to-listing.componen
     SelectModule,
     ProgressBarModule,
     TranslatePipe,
+    TooltipModule,
+    CardsGridComponent,
+    CardModule,
+    PaginatorModule,
   ],
   providers: [DialogService],
   templateUrl: './catalog-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CatalogTableComponent implements AfterViewInit, OnDestroy {
-  readonly pTable = viewChild.required<Table>('pTable');
+  readonly pTable = viewChild<Table>('pTable');
   readonly menu = viewChild.required<Menu>('menu');
 
   #ref!: DynamicDialogRef | null;
@@ -78,6 +87,10 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
   readonly #queryParamsService = inject(QueryParamsService);
   readonly #filtersService = inject(CatalogFiltersService);
+  readonly #viewModeService = inject(ViewModeService);
+
+  readonly viewMode = this.#viewModeService.viewMode;
+  readonly catalogTrackBy = (item: ICatalogItem) => item.id;
 
   readonly filtersCount = computed(() => this.#filtersService.currentCount);
   readonly getSeverity = getPropertyStatusSeverity;
@@ -93,9 +106,12 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
   readonly loadingS = this.#store.selectSignal(CatalogState.loading);
 
   ngAfterViewInit(): void {
-    const pagination = this.paginationS();
-    this.pTable().first = pagination.first;
-    this.pTable().rows = pagination.rows;
+    const table = this.pTable();
+    if (table) {
+      const pagination = this.paginationS();
+      table.first = pagination.first;
+      table.rows = pagination.rows;
+    }
 
     this.#initPropsTranlstes();
   }
@@ -152,16 +168,27 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
     }
 
     // Используется, чтобы перебить переключение пагинации при сортировке
-    if (this.pTable) {
+    const table = this.pTable();
+    if (table) {
       const pagination = this.paginationS();
-      this.pTable().first = pagination.first;
-      this.pTable().rows = pagination.rows;
+      table.first = pagination.first;
+      table.rows = pagination.rows;
     }
   }
 
   pageChange(event: TablePageEvent): void {
     this.#queryParamsService.updateQueryParams(event, CATALOG_PAGINATION_KEY);
     this.#store.dispatch([new SetCatalogPagination(event), new FetchCatalog()]);
+  }
+
+  onCardsPageChange(event: PaginatorState): void {
+    const pagination = { first: event.first ?? 0, rows: event.rows ?? 20 };
+    this.#queryParamsService.updateQueryParams(pagination, CATALOG_PAGINATION_KEY);
+    this.#store.dispatch([new SetCatalogPagination(pagination), new FetchCatalog()]);
+  }
+
+  toggleViewMode(): void {
+    this.#viewModeService.toggle();
   }
 
   onFiltersOpen(): void {
