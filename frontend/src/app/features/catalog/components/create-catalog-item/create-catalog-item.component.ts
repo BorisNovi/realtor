@@ -242,6 +242,7 @@ export class CreateCatalogItemComponent implements OnInit {
       width: '480px',
       modal: true,
       closable: true,
+      dismissableMask: true,
       focusOnShow: false,
       breakpoints: {
         '640px': '90vw',

@@ -287,6 +287,7 @@ export class CatalogMapComponent implements AfterViewInit {
       width: '50vw',
       modal: true,
       closable: true,
+      dismissableMask: true,
       contentStyle: { overflow: 'auto' },
       focusOnShow: false,
       breakpoints: {

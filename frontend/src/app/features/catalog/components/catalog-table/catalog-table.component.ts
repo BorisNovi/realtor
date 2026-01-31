@@ -210,6 +210,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
       width: '50vw',
       modal: true,
       closable: true,
+      dismissableMask: true,
       focusOnShow: false,
       breakpoints: {
         '960px': '75vw',
