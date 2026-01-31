@@ -13,6 +13,23 @@ import { ViewModeService } from 'src/app/core';
   imports: [CardModule, PaginatorModule, ProgressBarModule, ButtonModule, TooltipModule, TranslatePipe, NgTemplateOutlet],
   templateUrl: './cards-grid.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: `
+    :host ::ng-deep {
+      .p-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .p-card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .p-card-footer {
+        margin-top: auto;
+      }
+    }
+  `,
 })
 export class CardsGridComponent<T> {
   readonly items = input.required<T[]>();
