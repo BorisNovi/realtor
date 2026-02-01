@@ -4,16 +4,19 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { CardsGridComponent } from '@shared/components';
 import { IContact, IPagination } from '@shared/interfaces';
 import { WorldPhoneMaskPipe } from '@shared/pipes';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
+import { PaginatorState } from 'primeng/paginator';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
@@ -40,13 +43,15 @@ import { CreateContactComponent } from '../create-contact/create-contact.compone
     TranslatePipe,
     WorldPhoneMaskPipe,
     TooltipModule,
+    CardsGridComponent,
+    CardModule,
   ],
   providers: [DialogService],
   templateUrl: './contacts-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContactsTableComponent implements AfterViewInit, OnDestroy {
-  readonly pTable = viewChild.required<Table>('pTable');
+  readonly pTable = viewChild<Table>('pTable');
   readonly menu = viewChild.required<Menu>('menu');
 
   readonly paginationChange = output<IPagination>();
@@ -60,6 +65,7 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   readonly #viewModeService = inject(ViewModeService);
 
   readonly viewMode = this.#viewModeService.viewMode;
+  readonly contactTrackBy = (item: IContact) => item.id;
 
   actionItems: MenuItem[] = [];
 
@@ -81,9 +87,12 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    const pagination = this.paginationS();
-    this.pTable().first = pagination.first;
-    this.pTable().rows = pagination.rows;
+    const table = this.pTable();
+    if (table) {
+      const pagination = this.paginationS();
+      table.first = pagination.first;
+      table.rows = pagination.rows;
+    }
   }
 
   #setActionItems(item: IContact): void {
@@ -114,15 +123,20 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
       this.sortChange.emit({ sortField: event.sortField, sortOrder: event.sortOrder === 1 ? 'asc' : 'desc' });
 
     // Используется, чтобы перебить переключение пагинации при сортировке
-    if (this.pTable) {
+    const table = this.pTable();
+    if (table) {
       const pagination = this.paginationS();
-      this.pTable().first = pagination.first;
-      this.pTable().rows = pagination.rows;
+      table.first = pagination.first;
+      table.rows = pagination.rows;
     }
   }
 
   pageChange(event: TablePageEvent): void {
     this.paginationChange.emit(event);
+  }
+
+  onCardsPageChange(event: PaginatorState): void {
+    this.paginationChange.emit({ first: event.first ?? 0, rows: event.rows ?? 20 });
   }
 
   toggleViewMode(): void {
