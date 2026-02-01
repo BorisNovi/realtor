@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { CardsGridComponent } from '@shared/components';
 import { CATALOG_PAGINATION_KEY, CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency, PropertyStatus } from '@shared/enums';
 import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
@@ -21,12 +22,11 @@ import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOption
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
-import { CardsGridComponent } from '@shared/components';
 import { CardModule } from 'primeng/card';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Menu, MenuModule } from 'primeng/menu';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { PaginatorState } from 'primeng/paginator';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
 import { Table, TableEditCompleteEvent, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
@@ -46,8 +46,8 @@ import {
   ViewModeService,
 } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
-import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 import { AddToListingComponent } from '../add-to-listing/add-to-listing.component';
+import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
 @Component({
   selector: 'rx-table',
@@ -68,7 +68,6 @@ import { AddToListingComponent } from '../add-to-listing/add-to-listing.componen
     TooltipModule,
     CardsGridComponent,
     CardModule,
-    PaginatorModule,
   ],
   providers: [DialogService],
   templateUrl: './catalog-table.component.html',

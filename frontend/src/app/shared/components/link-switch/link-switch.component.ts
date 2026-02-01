@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, linkedSignal, model } from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, inject, input, linkedSignal, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { IPublicLink } from '@shared/interfaces/listing.interface';

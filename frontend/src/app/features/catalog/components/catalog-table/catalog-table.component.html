@@ -127,7 +127,7 @@
                   optionValue="value"
                   appendTo="body"
                   [ngStyle]="{ 'background-color': getStatusBackground(item.status) }"
-                  class="!absolute bottom-[-1.2rem]"
+                  class="absolute! bottom-[-1.2rem]"
                 >
                   <ng-template pTemplate="item" let-item>
                     <div class="flex items-center">
@@ -237,9 +237,9 @@
       <p-card class="border border-surface-200 dark:border-surface-700 rounded-xl overflow-hidden block">
         <ng-template #header>
           @if (item.photos.length) {
-            <img [src]="item.photos[0]" [alt]="item.propertyType" class="w-full h-48 object-cover" />
+            <img [src]="item.photos[0]" [alt]="item.propertyType" class="w-full h-68 object-cover" />
           } @else {
-            <div class="w-full h-48 bg-surface-200 dark:bg-surface-700 flex items-center justify-center">
+            <div class="w-full h-68 bg-surface-200 dark:bg-surface-700 flex items-center justify-center">
               <i class="pi pi-image text-surface-400 dark:text-surface-500 text-4xl"></i>
             </div>
           }
