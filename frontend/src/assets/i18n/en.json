@@ -421,7 +421,7 @@
   "MAP": {
     "LOCATE": "Current location"
   },
-  "AVATAR": {
+  "FILE_UPLOAD": {
     "UPLOAD": "Upload",
     "ERRORS": {
       "INVALID_TYPE": "Only image files are allowed",

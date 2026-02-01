@@ -195,22 +195,31 @@ export class CreateCatalogItemComponent implements OnInit {
 
   onUpload(event: FileUploadHandlerEvent): void {
     if (event && Array.isArray(event.files)) {
-      const files: File[] = event.files;
+      const oversized = event.files.filter(f => f.size > this.maxImageSize);
+      const validFiles = event.files.filter(f => f.size <= this.maxImageSize);
+
+      if (oversized.length > 0) {
+        const sizeMb = this.maxImageSize / 1024 / 1024;
+        this.uploadErrorS.set(this.#translateService.instant('FILE_UPLOAD.ERRORS.FILE_TOO_LARGE', { size: sizeMb }));
+        this.fileUpload().clear();
+      }
+
+      if (validFiles.length === 0)
+        return;
 
       this.#fileUploadService
-        .upload(files)
+        .upload(validFiles)
         .pipe(takeUntilDestroyed(this.#destroyRef))
         .subscribe({
           next: (newUrls: string[]) => {
             this.photosS.update(currentUrls => [...currentUrls, ...newUrls]);
             this.form.patchValue({ photos: this.photosS() });
             this.fileUpload().clear();
-            this.uploadErrorS.set(null);
+            if (oversized.length === 0)
+              this.uploadErrorS.set(null);
           },
           error: err => {
-            const errorMessage = err?.message || 'File upload failed';
-            this.uploadErrorS.set(errorMessage);
-            files.length = 0;
+            this.uploadErrorS.set(this.#translateService.instant('FILE_UPLOAD.ERRORS.UPLOAD_FAILED'));
             console.error('File upload failed:', err);
           },
         });

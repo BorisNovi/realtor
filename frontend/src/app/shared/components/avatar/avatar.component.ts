@@ -105,13 +105,13 @@ export class AvatarComponent implements ControlValueAccessor {
     this.error.set(null);
 
     if (!file.type.startsWith('image/')) {
-      this.error.set(this.#translateService.instant('AVATAR.ERRORS.INVALID_TYPE'));
+      this.error.set(this.#translateService.instant('FILE_UPLOAD.ERRORS.INVALID_TYPE'));
       return;
     }
 
     if (file.size > this.maxFileSize()) {
       this.error.set(
-        this.#translateService.instant('AVATAR.ERRORS.FILE_TOO_LARGE', {
+        this.#translateService.instant('FILE_UPLOAD.ERRORS.FILE_TOO_LARGE', {
           size: this.maxFileSize() / 1000000,
         }),
       );
@@ -132,7 +132,7 @@ export class AvatarComponent implements ControlValueAccessor {
           this.isLoading.set(false);
         },
         error: () => {
-          this.error.set(this.#translateService.instant('AVATAR.ERRORS.UPLOAD_FAILED'));
+          this.error.set(this.#translateService.instant('FILE_UPLOAD.ERRORS.UPLOAD_FAILED'));
           this.isLoading.set(false);
         },
       });
