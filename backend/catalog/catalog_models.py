@@ -7,6 +7,13 @@ class PropertyStatus(models.TextChoices):
     RESERVED = 'reserved', 
     RENTED = 'rented', 
 
+class ZoningType(models.TextChoices):
+    RESIDENTIAL = 'residential', 'Residential'
+    COMMERCIAL = 'commercial', 'Commercial'
+    AGRICULTURAL = 'agricultural', 'Agricultural'
+    MIXED = 'mixed', 'Mixed'
+
+# Абстрактная базовая модель для объектов недвижимости
 class BaseProperty(models.Model):
     PROPERTY_TYPE = None
 
@@ -20,14 +27,13 @@ class BaseProperty(models.Model):
         """Возвращает тип объекта недвижимости"""
         return self.PROPERTY_TYPE
     
+    status = models.CharField(max_length=10, choices=PropertyStatus.choices, default=PropertyStatus.AVAILABLE)
     photos = models.JSONField(default=list)
     address = models.JSONField() # [lng, lat]
-    zoning_type = models.CharField(max_length=50, null=True, blank=True)
+    zoning_type = models.CharField(max_length=20, choices=ZoningType.choices, default=ZoningType.RESIDENTIAL)
     price_value = models.DecimalField(max_digits=12, decimal_places=2)
     price_currency = models.CharField(max_length=3, default="USD")
     area = models.DecimalField(max_digits=7, decimal_places=2)
-    date_added = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=10, choices=PropertyStatus.choices, default=PropertyStatus.AVAILABLE)
     contact = models.ForeignKey(
         Contact,
         on_delete=models.CASCADE,
@@ -36,6 +42,7 @@ class BaseProperty(models.Model):
         blank=True
     )
     comment = models.TextField(blank=True, null=True)
+    date_added = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
