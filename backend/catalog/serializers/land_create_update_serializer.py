@@ -66,11 +66,11 @@ class LandCreateUpdateSerializer(BaseCreateUpdateSerializer):
         validated_data.update(flatten_land_specifics(specifics))
         return super().create(validated_data)
 
-    # @transaction.atomic
-    # def update(self, instance, validated_data):
-    #     specifics = validated_data.pop('specifics', {})
-    #     validated_data.update(flatten_land_specifics(specifics))
-    #     return super().update(instance, validated_data)
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        specifics = validated_data.pop('specifics', {})
+        validated_data.update(flatten_land_specifics(specifics))
+        return super().update(instance, validated_data)
 
 # Сериализатор для чтения объектов Land и возврата структурированного ответа
 class LandReadSerializer(serializers.ModelSerializer):

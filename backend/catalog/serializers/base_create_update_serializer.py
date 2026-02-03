@@ -65,5 +65,65 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
         print(f"Created instance: {instance}")
         return instance
 
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        print(Fore.YELLOW + "=== Initiating Updating Property... ===" + Fore.RESET)
+        print(f"Validated data: {validated_data}")
+
+        # === Работа с вложенными данными ===
+        contact_data = validated_data.pop('contact', None)
+        price_data = validated_data.pop('price', None)
+        address_data = validated_data.pop('address', None)
+
+        # Обновляем контакт
+        if contact_data:
+            if instance.contact:
+                for attr, value in contact_data.items():
+                    setattr(instance.contact, attr, value)
+                instance.contact.save()
+            else:
+                instance.contact = Contact.objects.create(**contact_data)
+
+        # Обновляем адрес
+        if address_data:
+            instance.address = address_data
+
+        # Обновляем цену
+        if price_data:
+            instance.price_value = price_data.get('value', instance.price_value)
+            instance.price_currency = price_data.get('currency', instance.price_currency)
+
+        # Обновляем остальные поля
+        for attr, value in validated_data.items():
+            if attr != 'photos':  # фото обработаем отдельно
+                setattr(instance, attr, value)
+
+        instance.save()
+
+        # === Работа с фото ===
+        new_photos_from_front = validated_data.get("photos", None)
+
+        if new_photos_from_front is not None:
+            old_photos = instance.photos or []
+
+            # Фото, которые оставляем
+            photos_to_keep = [p for p in new_photos_from_front if p in old_photos]
+
+            # Новые временные фото
+            temporary_new_photos = [p for p in new_photos_from_front if p not in old_photos]
+
+            # Превращаем новые временные в постоянные
+            processed_new_photos = [make_files_permanent(url, subdir=f'property_{instance.id}') 
+                                    for url in temporary_new_photos]
+
+            # Итоговый список
+            final_photos = photos_to_keep + processed_new_photos
+
+            instance.photos = final_photos
+            instance.save(update_fields=['photos'])
+
+        print(Fore.GREEN + "=== Property updated successfully ===" + Fore.RESET)
+        print(f"Updated instance: {instance}")
+        return instance
 
 

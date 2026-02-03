@@ -67,11 +67,11 @@ class FlatCreateUpdateSerializer(BaseCreateUpdateSerializer):
         validated_data.update(flatten_flat_specifics(specifics))
         return super().create(validated_data)
 
-    # @transaction.atomic
-    # def update(self, instance, validated_data):
-    #     specifics = validated_data.pop('specifics', {})
-    #     validated_data.update(flatten_flat_specifics(specifics))
-    #     return super().update(instance, validated_data)
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        specifics = validated_data.pop('specifics', {})
+        validated_data.update(flatten_flat_specifics(specifics))
+        return super().update(instance, validated_data)
 
 # Сериализатор для чтения объектов Flat и возврата структурированного ответа
 class FlatReadSerializer(serializers.ModelSerializer):

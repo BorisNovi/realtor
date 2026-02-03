@@ -1,12 +1,12 @@
 # contacts/serializers.py
 from rest_framework import serializers
 from contacts.models import Contact
-from rest_framework import serializers
-from .models import Contact
 import re
 
 class ContactSerializer(serializers.ModelSerializer):
     dateAdded = serializers.DateTimeField(read_only=True, format="%Y-%m-%dT%H:%M:%SZ")
+    comment = serializers.CharField(required=False, allow_blank=True)
+
 
     class Meta:
         model = Contact

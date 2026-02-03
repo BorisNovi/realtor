@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.db import models
 from contacts.models import Contact
+from polymorphic.models import PolymorphicModel
 
 class PropertyStatus(models.TextChoices):
     AVAILABLE = 'available', 
@@ -14,19 +15,7 @@ class ZoningType(models.TextChoices):
     MIXED = 'mixed', 'Mixed'
 
 # Абстрактная базовая модель для объектов недвижимости
-class BaseProperty(models.Model):
-    PROPERTY_TYPE = None
-
-    def soft_delete(self):
-        self.is_deleted = True
-        self.deleted_at = timezone.now()
-        self.save()
-
-    @property # Виртуальное/вычисляемое поле
-    def property_type(self):
-        """Возвращает тип объекта недвижимости"""
-        return self.PROPERTY_TYPE
-    
+class Property(PolymorphicModel):
     status = models.CharField(max_length=10, choices=PropertyStatus.choices, default=PropertyStatus.AVAILABLE)
     photos = models.JSONField(default=list)
     address = models.JSONField() # [lng, lat]
@@ -46,14 +35,21 @@ class BaseProperty(models.Model):
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
+    def soft_delete(self):
+        self.is_deleted = True
+        self.deleted_at = timezone.now()
+        self.save()
+
+    @property
+    def property_type(self):
+        return self.polymorphic_ctype.model
+
     class Meta:
-        abstract = True 
+        ordering = ['-date_added']
 
 
 # Модель для квартир
-class Flat(BaseProperty):
-    PROPERTY_TYPE = "flat"
-
+class Flat(Property):
     # specifics
     rooms = models.IntegerField(null=True, blank=True)
     floor_current = models.PositiveIntegerField(null=True, blank=True)
@@ -90,9 +86,7 @@ class Flat(BaseProperty):
     garage = models.BooleanField(default=False)
 
 # Модель для домов
-class House(BaseProperty):
-    PROPERTY_TYPE = "house"
-
+class House(Property):
     # specifics
     rooms = models.IntegerField(null=True, blank=True)
     floor_current = models.PositiveIntegerField(null=True, blank=True)
@@ -129,9 +123,8 @@ class House(BaseProperty):
     garage = models.BooleanField(default=False)
 
 # Модель для комнат
-class Room(BaseProperty):
-    PROPERTY_TYPE = "room"
-
+class Room(Property):
+ 
     # specifics
     rooms = models.IntegerField(null=True, blank=True)
     floor_current = models.PositiveIntegerField(null=True, blank=True)
@@ -168,9 +161,8 @@ class Room(BaseProperty):
     garage = models.BooleanField(default=False)
 
 # Модель для офисов
-class Office(BaseProperty):
-    PROPERTY_TYPE = "office"
-
+class Office(Property):
+ 
     # specifics
     rooms = models.IntegerField(null=True, blank=True)
     floor_current = models.PositiveIntegerField(null=True, blank=True)
@@ -207,9 +199,8 @@ class Office(BaseProperty):
     garage = models.BooleanField(default=False)
 
 # Модель для земельных участков
-class Land(BaseProperty):
-    PROPERTY_TYPE = "land"
-
+class Land(Property):
+ 
     # specifics
     rooms = models.IntegerField(null=True, blank=True)
     floor_current = models.PositiveIntegerField(null=True, blank=True)
