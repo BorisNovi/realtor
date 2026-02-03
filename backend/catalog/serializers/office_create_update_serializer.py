@@ -1,15 +1,14 @@
-# catalog/serializers/flat_create_update_serializer.py
+# catalog/serializers/Office_create_update_serializer.py
 from rest_framework import serializers
-from catalog.catalog_models import Flat
+from catalog.catalog_models import Office
 from catalog.serializers.base_create_update_serializer import BaseCreateUpdateSerializer
 from django.db import transaction
-
 from catalog.serializers.catalog_address_serializer import AddressSerializer
-from catalog.serializers.catalog_price_serializer import build_price
 from contacts.contact_serializers import ContactSerializer
+from catalog.serializers.catalog_price_serializer import build_price
 
-def flatten_flat_specifics(specifics: dict) -> dict:
-    """Разворачивает nested specifics из запроса фронта в плоский словарь для модели Flat."""
+def flatten_office_specifics(specifics: dict) -> dict:
+    """Разворачивает nested specifics из запроса фронта в плоский словарь для модели Office."""
     result = {}
 
     # floor
@@ -53,28 +52,28 @@ def flatten_flat_specifics(specifics: dict) -> dict:
 
     return result
 
-# Сериализатор для создания/обновления объектов Flat
-class FlatCreateUpdateSerializer(BaseCreateUpdateSerializer):
+# Сериализатор для создания/обновления объектов Office
+class OfficeCreateUpdateSerializer(BaseCreateUpdateSerializer):
     specifics = serializers.DictField(required=False)
 
     class Meta(BaseCreateUpdateSerializer.Meta):
-        model = Flat
+        model = Office
         fields = BaseCreateUpdateSerializer.Meta.fields + ['specifics']
 
     @transaction.atomic
     def create(self, validated_data):
         specifics = validated_data.pop('specifics', {})
-        validated_data.update(flatten_flat_specifics(specifics))
+        validated_data.update(flatten_office_specifics(specifics))
         return super().create(validated_data)
 
     # @transaction.atomic
     # def update(self, instance, validated_data):
     #     specifics = validated_data.pop('specifics', {})
-    #     validated_data.update(flatten_flat_specifics(specifics))
+    #     validated_data.update(flatten_office_specifics(specifics))
     #     return super().update(instance, validated_data)
 
-# Сериализатор для чтения объектов Flat и возврата структурированного ответа
-class FlatReadSerializer(serializers.ModelSerializer):
+# Сериализатор для чтения объектов Office и возврата структурированного ответа
+class OfficeReadSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField() 
     property_type = serializers.ReadOnlyField()
     address = AddressSerializer()
@@ -83,7 +82,7 @@ class FlatReadSerializer(serializers.ModelSerializer):
     specifics = serializers.SerializerMethodField()
 
     class Meta:
-        model = Flat
+        model = Office
         fields = [
             'id', 'property_type', 'status', 'photos', 'address', 'zoning_type',
             'price', 'area', 'contact', 'comment', 'date_added', 'specifics'

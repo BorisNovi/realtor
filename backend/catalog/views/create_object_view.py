@@ -3,23 +3,46 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
 from catalog.serializers.flat_create_update_serializer import (
     FlatCreateUpdateSerializer,
     FlatReadSerializer
-) # TODO: импортировать другие типы недвижимости и их сериализаторы
+)
+from catalog.serializers.house_create_update_serializer import (
+    HouseCreateUpdateSerializer, 
+    HouseReadSerializer
+) 
+from catalog.serializers.room_create_update_serializer import (
+    RoomCreateUpdateSerializer, 
+    RoomReadSerializer
+) 
+from catalog.serializers.office_create_update_serializer import (
+    OfficeCreateUpdateSerializer, 
+    OfficeReadSerializer
+) 
+from catalog.serializers.land_create_update_serializer import (
+    LandCreateUpdateSerializer, 
+    LandReadSerializer
+) 
 
 
-# Словарь для динамического выбора сериализатора по propertyType
+# Словари для динамического выбора сериализатора по propertyType
+# Для записи (создание/обновление)
 PROPERTY_WRITE_SERIALIZER_MAP = {
     "flat": FlatCreateUpdateSerializer,
-    # "house": HouseCreateUpdateSerializer,
-    # "garage": GarageCreateUpdateSerializer,
+    "house": HouseCreateUpdateSerializer,
+    "room": RoomCreateUpdateSerializer,
+    "office": OfficeCreateUpdateSerializer,
+    "land": LandCreateUpdateSerializer,
 }
 
+# Для чтения (возврат данных фронту)
 PROPERTY_READ_SERIALIZER_MAP = {
     "flat": FlatReadSerializer,
-    # "house": HouseReadSerializer,
-    # "garage": GarageReadSerializer,
+    "house": HouseReadSerializer,
+    "room": RoomReadSerializer,
+    "office": OfficeReadSerializer,
+    "land": LandReadSerializer,
 }
 
 
