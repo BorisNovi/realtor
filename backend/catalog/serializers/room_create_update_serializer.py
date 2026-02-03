@@ -66,11 +66,11 @@ class RoomCreateUpdateSerializer(BaseCreateUpdateSerializer):
         validated_data.update(flatten_room_specifics(specifics))
         return super().create(validated_data)
 
-    # @transaction.atomic
-    # def update(self, instance, validated_data):
-    #     specifics = validated_data.pop('specifics', {})
-    #     validated_data.update(flatten_room_specifics(specifics))
-    #     return super().update(instance, validated_data)
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        specifics = validated_data.pop('specifics', {})
+        validated_data.update(flatten_room_specifics(specifics))
+        return super().update(instance, validated_data)
 
 # Сериализатор для чтения объектов Room и возврата структурированного ответа
 class RoomReadSerializer(serializers.ModelSerializer):

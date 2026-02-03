@@ -5,7 +5,7 @@ from colorama import Fore
 from listings.models import Listing
 from catalog.catalog_models import Flat 
 from rest_framework import serializers
-from catalog.serializers.flat_serializer import FlatSerializer
+# from catalog.serializers.flat_serializer import FlatSerializer
 
 # === СЕРИАЛИЗАТОР ЛИСТИНГОВ ===
 class ListingSerializer(serializers.ModelSerializer):
@@ -23,7 +23,7 @@ class ListingSerializer(serializers.ModelSerializer):
         # на текущий момент берём только квартиры
         flats = Flat.objects.filter(id__in=obj.property_object_ids)
         # TODO: ДОБАВЬ ОСТАЛЬНЫЕ ПОТОМ
-        return FlatSerializer(flats, many=True).data
+        # return FlatSerializer(flats, many=True).data
 
     # Отдает фронту
     class Meta:
