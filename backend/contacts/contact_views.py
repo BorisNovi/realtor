@@ -22,66 +22,93 @@ class ContactView(APIView):
     permission_classes = [permissions.AllowAny]
     
 
-    def _build_prefix_tsquery(self, text: str) -> SearchQuery:
-        """Строит префиксный tsquery из входного текста для full-text поиска.
-        Разбивает текст на токены и формирует запрос с использованием :* для префиксного поиска."""
-        
-        tokens = re.findall(r'\w+', text, flags=re.UNICODE)
+    def _build_prefix_tsquery(self, text: str) -> Optional[SearchQuery]:
+        """
+        Строим prefix tsquery вида: token:* & token2:*
+        Если токенов нет — возвращаем None.
+        """
+        tokens = re.findall(r"\w+", text, flags=re.UNICODE)
         if not tokens:
-            return SearchQuery(text)
-        raw = ' & '.join(f"{token}:*" for token in tokens)
-        return SearchQuery(raw, search_type='raw')
+            return None
 
-    def get(self, request: Request, pk: Optional[int] = None) -> Response:
+        raw_query = " & ".join(f"{token}:*" for token in tokens)
+        return SearchQuery(raw_query, search_type="raw")
+
+
+    def get(self, request, pk: Optional[int] = None):
+
+        # -------- Получение одного контакта --------
         if pk is not None:
-            try:
-                contact = Contact.objects.get(pk=pk)
-            except Contact.DoesNotExist:
-                return Response({"detail": "Contact not found."}, status=status.HTTP_404_NOT_FOUND)
-            serializer = ContactSerializer(contact)
-            return Response(serializer.data)
+            contact = Contact.objects.filter(pk=pk).first()
+            if not contact:
+                return Response(
+                    {"detail": "Contact not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
 
-        # Список (search, pagination, sorting)
-        search: Optional[str] = request.query_params.get("search")
-        first: int = int(request.query_params.get("first", 0))
-        rows: int = int(request.query_params.get("rows", 10))
-        sort_field: Optional[str] = request.query_params.get("sortField")
-        sort_order: str = request.query_params.get("sortOrder", "asc")
+            return Response(ContactSerializer(contact).data)
+
+        # -------- Параметры --------
+        search = request.query_params.get("search")
+        sort_field = request.query_params.get("sortField")
+        sort_order = request.query_params.get("sortOrder", "asc")
+
+        try:
+            first = int(request.query_params.get("first", 0))
+            rows = int(request.query_params.get("rows", 10))
+        except ValueError:
+            return Response(
+                {"detail": "Invalid pagination params."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         queryset = Contact.objects.all()
 
-        if search:
-            # Попробуем prefix-fulltext (tsquery с :*)
-            tsquery = self._build_prefix_tsquery(search)
-            vector = SearchVector("name", "phone")
-            fts_qs = (
-                queryset
-                .annotate(search_vector=vector)
-                .filter(search_vector=tsquery)  # фильтр по tsquery
-                .annotate(rank=SearchRank(vector, tsquery))
-                .order_by("-rank")
-            )
+        # -------- Поиск --------
+        if search and search.strip():
 
-            # если fulltext ничего не вернуло — fallback на substring (icontains)
-            if fts_qs.exists():
-                queryset = fts_qs
+            tsquery = self._build_prefix_tsquery(search)
+
+            if tsquery:
+                vector = SearchVector("name", "phone")
+
+                fts_queryset = (
+                    queryset
+                    .annotate(search_vector=vector)
+                    .filter(search_vector=tsquery)
+                    .annotate(rank=SearchRank(vector, tsquery))
+                    .order_by("-rank")
+                )
+
+                # Проверяем наличие результатов без отдельнего exists()
+                first_result = fts_queryset[:1]
+                if first_result:
+                    queryset = fts_queryset
+                else:
+                    queryset = queryset.filter(
+                        Q(name__icontains=search) |
+                        Q(phone__icontains=search)
+                    )
             else:
                 queryset = queryset.filter(
-                    Q(name__icontains=search) | Q(phone__icontains=search)
+                    Q(name__icontains=search) |
+                    Q(phone__icontains=search)
                 )
-        # если search не указан — queryset остаётся all()
 
-        # Сортировка (если указана фронтом — она перекрывает order_by("-rank"))
-        if sort_field in ["name", "dateAdded"]:
+        # -------- Сортировка --------
+        allowed_sort_fields = ["name", "dateAdded"]
+
+        if sort_field in allowed_sort_fields:
             direction = "-" if sort_order.lower() == "desc" else ""
             queryset = queryset.order_by(f"{direction}{sort_field}")
-        else:
-            # Дефолтная сортировка по дате добавления (по убыванию)
-            queryset = queryset.order_by("-dateAdded") 
+        elif not search:
+            # Дефолтная сортировка только если нет fulltext
+            queryset = queryset.order_by("-dateAdded")
 
-        total_count: int = queryset.count()
+        # -------- Пагинация --------
+        total_count = queryset.count()
         paginated_queryset = queryset[first:first + rows]
-        
+
         serializer = ContactSerializer(paginated_queryset, many=True)
 
         return Response({
@@ -89,24 +116,41 @@ class ContactView(APIView):
             "total": total_count
         })
 
+
     def post(self, request):
         serializer = ContactSerializer(data=request.data)
-        if serializer.is_valid():
-            contact = serializer.save()
-            return Response(ContactSerializer(contact).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=400)
+
+        contact = serializer.save()
+
+        return Response(
+            ContactSerializer(contact).data,
+            status=status.HTTP_201_CREATED
+        )
+
 
     def put(self, request, pk):
-        try:
-            contact = Contact.objects.get(pk=pk)
-        except Contact.DoesNotExist:
-            return Response({"detail": "Contact not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = ContactSerializer(contact, data=request.data, partial=True)
-        if serializer.is_valid():
-            contact = serializer.save()
-            return Response(ContactSerializer(contact).data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        contact = Contact.objects.filter(pk=pk).first()
+        if not contact:
+            return Response(
+                {"detail": "Contact not found."},
+                status=404
+            )
+
+        serializer = ContactSerializer(
+            contact,
+            data=request.data,
+            partial=True
+        )
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=400)
+
+        contact = serializer.save()
+        return Response(ContactSerializer(contact).data)
 
     # Удаление контактов (пакетное) 
     # Ожидает JSON-массив ID в поле "ids" тела запроса
