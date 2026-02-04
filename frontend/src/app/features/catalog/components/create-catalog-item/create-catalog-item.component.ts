@@ -260,7 +260,11 @@ export class CreateCatalogItemComponent implements OnInit {
 
     dialogRef?.onClose
       .pipe(take(1), takeUntilDestroyed(this.#destroyRef))
-      .subscribe(result => this.form.get('contact')?.setValue(result));
+      .subscribe(result => {
+
+        console.log(result);
+        this.form.get('contact')?.setValue(result)
+      });
   }
 
   onSubmit(): void {
@@ -277,13 +281,13 @@ export class CreateCatalogItemComponent implements OnInit {
           ...this.config.data,
           ...formData,
           price: { ...this.config.data!.price, ...formData.price },
-          contact: { ...this.config.data!.contact, name: formData.contact.name, phone: clearPhone(formData.contact.phone) },
+          contact: { id: formData.contact.id },
           specifics: { ...this.config.data!.specifics, ...formData.specifics },
           photos: this.photosS(),
         }
       : {
           ...formData,
-          contact: { name: formData.contact.name, phone: clearPhone(formData.contact.phone) },
+          contact: { id: formData.contact.id },
           photos: this.photosS(),
         };
 
