@@ -218,7 +218,7 @@
       [label]="'FORM.LABELS.CONTACT' | translate"
       id="contact"
     >
-      <rx-select-single [fetcher]="contactFetchMethod" [mapToSelect]="contactMapToSelect" formControlName="contact" withSearch>
+      <rx-select-single [fetcher]="contactFetchMethod" [mapToSelect]="contactMapToSelect" [valueMapper]="contactValueMapper" formControlName="contact" withSearch>
       </rx-select-single>
     </rx-input-wrapper>
 

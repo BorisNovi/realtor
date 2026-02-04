@@ -92,11 +92,7 @@ export class CreateCatalogItemComponent implements OnInit {
     value: item,
     id: item.id,
   });
-  readonly contactValueMapper = (contact: IContact) => ({
-    id: contact?.id || null,
-    name: contact?.name || null,
-    phone: contact?.phone || null,
-  });
+  readonly contactValueMapper = (contact: IContact) => ({ id: contact.id });
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
   readonly fieldsetConfig = createItemsFieldsetConfig;
@@ -160,7 +156,7 @@ export class CreateCatalogItemComponent implements OnInit {
         value: [data?.price?.value || null, [Validators.required, Validators.min(0)]],
       }),
 
-      contact: [data?.contact || null, [Validators.required]],
+      contact: [data?.contact],
       comment: [data?.comment || null],
 
       specifics: this.#fb.group({
@@ -281,13 +277,11 @@ export class CreateCatalogItemComponent implements OnInit {
           ...this.config.data,
           ...formData,
           price: { ...this.config.data!.price, ...formData.price },
-          contact: { id: formData.contact.id },
           specifics: { ...this.config.data!.specifics, ...formData.specifics },
           photos: this.photosS(),
         }
       : {
           ...formData,
-          contact: { id: formData.contact.id },
           photos: this.photosS(),
         };
 
