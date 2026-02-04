@@ -25,10 +25,10 @@ class Property(PolymorphicModel):
     area = models.DecimalField(max_digits=7, decimal_places=2)
     contact = models.ForeignKey(
         Contact,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,  # оставляем объект, если контакт удалён
         related_name="%(class)ss",
-        null=True,
-        blank=True
+        null=True,                   # база допускает NULL
+        blank=True                   # форма/админка допускает пустое поле
     )
     comment = models.TextField(blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)

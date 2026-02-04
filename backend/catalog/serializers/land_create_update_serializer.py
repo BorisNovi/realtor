@@ -8,29 +8,32 @@ from contacts.contact_serializers import ContactSerializer
 from catalog.serializers.catalog_price_serializer import build_price
 
 def flatten_land_specifics(specifics: dict) -> dict:
-    """Разворачивает nested specifics из запроса фронта в плоский словарь для модели Land."""
+    specifics = specifics or {}
     result = {}
 
     # floor
-    floor = specifics.get('floor', {})
+    floor = specifics.get('floor') or {}
     result['floor_current'] = floor.get('current')
     result['floor_full'] = floor.get('full')
 
+    # options
+    options = specifics.get('options') or {}
+
     # sharedFacilities
-    shared = specifics.get('options', {}).get('shared_facilities', {})
+    shared = options.get('shared_facilities') or {}
     result['shared_kitchen'] = shared.get('kitchen', False)
     result['shared_bathroom'] = shared.get('bathroom', False)
 
     # utilities
-    utilities = specifics.get('options', {}).get('utilities', {})
+    utilities = options.get('utilities') or {}
     result['electricity'] = utilities.get('electricity', False)
     result['water_supply'] = utilities.get('water_supply', False)
     result['natural_gas'] = utilities.get('natural_gas', False)
     result['sewerage'] = utilities.get('sewerage', False)
     result['internet'] = utilities.get('internet', False)
 
-    # options.other
-    other = specifics.get('options', {}).get('other', {})
+    # other
+    other = options.get('other') or {}
     result['parking'] = other.get('parking', False)
     result['bath'] = other.get('bath', False)
     result['shower'] = other.get('shower', False)

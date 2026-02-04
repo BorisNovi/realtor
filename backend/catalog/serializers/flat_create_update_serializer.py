@@ -8,30 +8,33 @@ from catalog.serializers.catalog_address_serializer import AddressSerializer
 from catalog.serializers.catalog_price_serializer import build_price
 from contacts.contact_serializers import ContactSerializer
 
-def flatten_flat_specifics(specifics: dict) -> dict:
-    """Разворачивает nested specifics из запроса фронта в плоский словарь для модели Flat."""
+def flatten_flat_specifics(specifics: dict | None) -> dict:
+    specifics = specifics or {}
     result = {}
 
     # floor
-    floor = specifics.get('floor', {})
+    floor = specifics.get('floor') or {}
     result['floor_current'] = floor.get('current')
     result['floor_full'] = floor.get('full')
 
+    # options
+    options = specifics.get('options') or {}
+
     # sharedFacilities
-    shared = specifics.get('options', {}).get('shared_facilities', {})
+    shared = options.get('shared_facilities') or {}
     result['shared_kitchen'] = shared.get('kitchen', False)
     result['shared_bathroom'] = shared.get('bathroom', False)
 
     # utilities
-    utilities = specifics.get('options', {}).get('utilities', {})
+    utilities = options.get('utilities') or {}
     result['electricity'] = utilities.get('electricity', False)
     result['water_supply'] = utilities.get('water_supply', False)
     result['natural_gas'] = utilities.get('natural_gas', False)
     result['sewerage'] = utilities.get('sewerage', False)
     result['internet'] = utilities.get('internet', False)
 
-    # options.other
-    other = specifics.get('options', {}).get('other', {})
+    # other
+    other = options.get('other') or {}
     result['parking'] = other.get('parking', False)
     result['bath'] = other.get('bath', False)
     result['shower'] = other.get('shower', False)
@@ -53,6 +56,7 @@ def flatten_flat_specifics(specifics: dict) -> dict:
 
     return result
 
+
 # Сериализатор для создания/обновления объектов Flat
 class FlatCreateUpdateSerializer(BaseCreateUpdateSerializer):
     specifics = serializers.DictField(required=False)
@@ -63,13 +67,13 @@ class FlatCreateUpdateSerializer(BaseCreateUpdateSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        specifics = validated_data.pop('specifics', {})
+        specifics = validated_data.pop('specifics', {}) or {}
         validated_data.update(flatten_flat_specifics(specifics))
         return super().create(validated_data)
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        specifics = validated_data.pop('specifics', {})
+        specifics = validated_data.pop('specifics', {}) or {}
         validated_data.update(flatten_flat_specifics(specifics))
         return super().update(instance, validated_data)
 

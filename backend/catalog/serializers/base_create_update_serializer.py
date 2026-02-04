@@ -1,7 +1,7 @@
 from colorama import init, Fore
 from file.file_utils import make_files_permanent
 from rest_framework import serializers
-from contacts.contact_serializers import ContactSerializer
+from contacts.contact_serializers import ContactIDField
 from .catalog_address_serializer import AddressSerializer
 from .catalog_price_serializer import PriceSerializer 
 from contacts.models import Contact
@@ -12,10 +12,14 @@ init()
 
 # Базовый сериализатор для создания/обновления объектов недвижимости
 class BaseCreateUpdateSerializer(serializers.ModelSerializer):
-    property_type = serializers.ReadOnlyField() # Виртуальное поле из модели
+    property_type = serializers.ReadOnlyField()
     address = AddressSerializer()               
-    contact = ContactSerializer()
     price = PriceSerializer()
+    contact = ContactIDField(
+        queryset=Contact.objects.all(),
+        required=False,      # необязательное поле
+        allow_null=True      # можно передавать null
+    )
 
     class Meta:
         model = None
@@ -37,18 +41,13 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
         print(Fore.YELLOW + "=== Initiating Creating Property... ===" + Fore.RESET)
         print(f"Validated data: {validated_data}")
 
-        # ✅ Извлекаем вложенные данные
+        # Извлекаем вложенные данные
         photos = validated_data.pop('photos', [])
-        contact_data = validated_data.pop('contact', None)
         price_data = validated_data.pop('price')
         address_data = validated_data.pop('address', {})
 
-        # создаём вложенные объекты
-        contact = Contact.objects.create(**contact_data) if contact_data else None
-
         # создаём основной объект
         instance = self.Meta.model.objects.create(
-            contact=contact,
             address=address_data,
             price_value=price_data.get('value'),
             price_currency=price_data.get('currency'),
@@ -71,18 +70,18 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
         print(f"Validated data: {validated_data}")
 
         # === Работа с вложенными данными ===
-        contact_data = validated_data.pop('contact', None)
+        # contact_data = validated_data.pop('contact', None)
         price_data = validated_data.pop('price', None)
         address_data = validated_data.pop('address', None)
 
-        # Обновляем контакт
-        if contact_data:
-            if instance.contact:
-                for attr, value in contact_data.items():
-                    setattr(instance.contact, attr, value)
-                instance.contact.save()
-            else:
-                instance.contact = Contact.objects.create(**contact_data)
+        # # Обновляем контакт
+        # if contact_data:
+        #     if instance.contact:
+        #         for attr, value in contact_data.items():
+        #             setattr(instance.contact, attr, value)
+        #         instance.contact.save()
+        #     else:
+        #         instance.contact = Contact.objects.create(**contact_data)
 
         # Обновляем адрес
         if address_data:
