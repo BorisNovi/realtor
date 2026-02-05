@@ -2,9 +2,9 @@ from colorama import init, Fore
 from file.file_utils import make_files_permanent
 from rest_framework import serializers
 from contacts.contact_serializers import ContactIDField
+from contacts.models import Contact
 from .catalog_address_serializer import AddressSerializer
 from .catalog_price_serializer import PriceSerializer 
-from contacts.models import Contact
 from realtor.settings import MAX_FILES
 from django.db import transaction
 
@@ -25,8 +25,9 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
         model = None
         fields = [
             'property_type', 'status', 'photos', 'address', 'zoning_type',
-            'price', 'area','contact', 'comment','date_added',
+            'price', 'area','contact', 'comment','date_added', 'name'
         ]
+        read_only_fields = ['date_added']
 
     # ВАЛИДАЦИЯ КОЛИЧЕСТВА ФОТО
     def validate_photos(self, value):

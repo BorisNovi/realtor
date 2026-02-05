@@ -16,6 +16,7 @@ class ZoningType(models.TextChoices):
 
 # Абстрактная базовая модель для объектов недвижимости
 class Property(PolymorphicModel):
+    name = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=10, choices=PropertyStatus.choices, default=PropertyStatus.AVAILABLE)
     photos = models.JSONField(default=list)
     address = models.JSONField() # [lng, lat]
