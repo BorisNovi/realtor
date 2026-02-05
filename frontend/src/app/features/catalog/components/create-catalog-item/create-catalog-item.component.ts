@@ -144,6 +144,7 @@ export class CreateCatalogItemComponent implements OnInit {
     const data = this.config.data;
 
     this.form = this.#fb.group({
+      name: [data?.name],
       photos: [data?.photos || []],
       propertyType: [data?.propertyType || null, Validators.required],
       zoningType: [data?.zoningType || null, Validators.required],
@@ -200,8 +201,7 @@ export class CreateCatalogItemComponent implements OnInit {
         this.fileUpload().clear();
       }
 
-      if (validFiles.length === 0)
-        return;
+      if (validFiles.length === 0) return;
 
       this.#fileUploadService
         .upload(validFiles)
@@ -211,12 +211,12 @@ export class CreateCatalogItemComponent implements OnInit {
             this.photosS.update(currentUrls => [...currentUrls, ...newUrls]);
             this.form.patchValue({ photos: this.photosS() });
             this.fileUpload().clear();
-            if (oversized.length === 0)
-              this.uploadErrorS.set(null);
+            if (oversized.length === 0) this.uploadErrorS.set(null);
           },
           error: err => {
             this.uploadErrorS.set(this.#translateService.instant('FILE_UPLOAD.ERRORS.UPLOAD_FAILED'));
             console.error('File upload failed:', err);
+            this.fileUpload().clear();
           },
         });
     }
@@ -254,13 +254,10 @@ export class CreateCatalogItemComponent implements OnInit {
       },
     });
 
-    dialogRef?.onClose
-      .pipe(take(1), takeUntilDestroyed(this.#destroyRef))
-      .subscribe(result => {
-
-        console.log(result);
-        this.form.get('contact')?.setValue(result)
-      });
+    dialogRef?.onClose.pipe(take(1), takeUntilDestroyed(this.#destroyRef)).subscribe(result => {
+      console.log(result);
+      this.form.get('contact')?.setValue(result);
+    });
   }
 
   onSubmit(): void {

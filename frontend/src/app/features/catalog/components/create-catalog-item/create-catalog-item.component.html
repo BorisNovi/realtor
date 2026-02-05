@@ -1,5 +1,10 @@
 <div class="p-4">
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Name -->
+    <rx-input-wrapper id="name" [control]="form.get('name')!" [label]="'FORM.LABELS.NAME' | translate" class="md:col-span-2">
+      <input id="name" pInputText type="text" formControlName="name" [placeholder]="'FORM.PLACEHOLDERS.NAME' | translate" />
+    </rx-input-wrapper>
+
     <!-- Photos (File Upload) -->
     @let photos = photosS();
 
@@ -218,7 +223,13 @@
       [label]="'FORM.LABELS.CONTACT' | translate"
       id="contact"
     >
-      <rx-select-single [fetcher]="contactFetchMethod" [mapToSelect]="contactMapToSelect" [valueMapper]="contactValueMapper" formControlName="contact" withSearch>
+      <rx-select-single
+        [fetcher]="contactFetchMethod"
+        [mapToSelect]="contactMapToSelect"
+        [valueMapper]="contactValueMapper"
+        formControlName="contact"
+        withSearch
+      >
       </rx-select-single>
     </rx-input-wrapper>
 

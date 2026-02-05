@@ -17,7 +17,7 @@ import { MapComponent } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency, PropertyStatus } from '@shared/enums';
 import { ICatalogItem, IMapBox, IPropertyObject } from '@shared/interfaces';
-import { CamelToUpperSnakePipe, WorldPhoneMaskPipe } from '@shared/pipes';
+import { CamelToUpperSnakePipe, NotEmptyPipe, WorldPhoneMaskPipe } from '@shared/pipes';
 import { getCurrentLocation, MapHelper } from '@shared/utils';
 import { getMapPropertyStatusColor, getPropertyStatusSeverity } from '@shared/utils/property-status-severity.util';
 import GeoJSON from 'geojson';
@@ -57,6 +57,7 @@ import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalo
     ProgressBarModule,
     CamelToUpperSnakePipe,
     WorldPhoneMaskPipe,
+    NotEmptyPipe,
   ],
   providers: [DialogService],
   templateUrl: './catalog-map.component.html',

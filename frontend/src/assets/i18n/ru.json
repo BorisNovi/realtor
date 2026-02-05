@@ -77,9 +77,11 @@
       "BALCONY": "Балкон",
       "GARDEN": "Сад",
       "GARAGE": "Гараж",
-      "PROPERTY_OBJECTS": "Объекты недвижимости"
+      "PROPERTY_OBJECTS": "Объекты недвижимости",
+      "NAME": "Название"
     },
     "PLACEHOLDERS": {
+      "NAME": "Введите название",
       "PROPERTY_TYPE": "Выберите тип недвижимости",
       "STATUS": "Выберите статус",
       "ZONING": "Выберите категорию",
@@ -249,6 +251,7 @@
     "TABLE": {
       "HEADERS": {
         "PHOTO": "Фото",
+        "NAME": "Название",
         "TYPE": "Тип",
         "ZONING": "Категория",
         "ADDRESS": "Адрес",
