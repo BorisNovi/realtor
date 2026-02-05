@@ -77,9 +77,11 @@
       "BALCONY": "Balcony",
       "GARDEN": "Garden",
       "GARAGE": "Garage",
-      "PROPERTY_OBJECTS": "Property objects"
+      "PROPERTY_OBJECTS": "Property objects",
+      "NAME": "Name"
     },
     "PLACEHOLDERS": {
+      "NAME": "Enter name",
       "PROPERTY_TYPE": "Select Property Type",
       "STATUS": "Select Status",
       "ZONING": "Select zoning type",
@@ -249,6 +251,7 @@
     "TABLE": {
       "HEADERS": {
         "PHOTO": "Photo",
+        "NAME": "Name",
         "TYPE": "Type",
         "ZONING": "Zoning",
         "ADDRESS": "Address",

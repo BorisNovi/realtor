@@ -66,6 +66,7 @@
         <tr>
           <th><p-tableHeaderCheckbox /></th>
           <th class="min-w-24">{{ 'CATALOG.TABLE.HEADERS.PHOTO' | translate }}</th>
+          <th>{{ 'CATALOG.TABLE.HEADERS.NAME' | translate }}</th>
           <th>{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}</th>
           <th>{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}</th>
           <th>{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}</th>
@@ -96,6 +97,7 @@
               </div>
             }
           </td>
+          <td>{{ item.name || '—' }}</td>
           <td>{{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + item.propertyType | translate }}</td>
           <td>{{ item.zoningType ? ('FORM.PROPERTIES.ZONING_TYPE.' + item.zoningType | translate) : '—' }}</td>
           <td class="max-w-36">
@@ -159,7 +161,7 @@
       @if (selectedItems.length) {
         <ng-template #footer>
           <tr>
-            <td colspan="8" class="text-right font-bold">
+            <td colspan="9" class="text-right font-bold">
               {{ 'CATALOG.TABLE.FOOTER.SELECTED' | translate: { count: selectedItems.length } }}
             </td>
             <td colspan="3">
@@ -185,7 +187,7 @@
       }
       <ng-template #emptymessage>
         <tr>
-          <td colspan="10">
+          <td colspan="11">
             <div class="flex flex-col items-center gap-4">
               <div>{{ 'CATALOG.TABLE.EMPTY' | translate }}</div>
               <p-button
@@ -246,6 +248,9 @@
         </ng-template>
 
         <div class="flex flex-col gap-2">
+          @if (item.name) {
+            <div class="font-semibold text-lg truncate">{{ item.name }}</div>
+          }
           <div class="flex items-center justify-between">
             <span class="font-semibold text-lg">
               {{ item.price.value | number }} {{ getCurrencySymbol(item.price.currency) }}
