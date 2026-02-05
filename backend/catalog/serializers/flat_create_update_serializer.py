@@ -56,7 +56,6 @@ def flatten_flat_specifics(specifics: dict | None) -> dict:
 
     return result
 
-
 # Сериализатор для создания/обновления объектов Flat
 class FlatCreateUpdateSerializer(BaseCreateUpdateSerializer):
     specifics = serializers.DictField(required=False)
@@ -79,8 +78,6 @@ class FlatCreateUpdateSerializer(BaseCreateUpdateSerializer):
 
 # Сериализатор для чтения объектов Flat и возврата структурированного ответа
 class FlatReadSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField() 
-    property_type = serializers.ReadOnlyField()
     address = AddressSerializer()
     contact = ContactSerializer()
     price = serializers.SerializerMethodField()
@@ -89,9 +86,10 @@ class FlatReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flat
         fields = [
-            'id', 'property_type', 'status', 'photos', 'address', 'zoning_type',
-            'price', 'area', 'contact', 'comment', 'date_added', 'specifics'
+            'id', 'name', 'property_type', 'status', 'photos', 'address', 'zoning_type',
+            'price', 'area', 'contact', 'comment', 'date_added', 'specifics', 
         ]
+        read_only_fields = ['id', 'date_added']
 
     def get_price(self, obj):
         return build_price(obj)
@@ -131,3 +129,5 @@ class FlatReadSerializer(serializers.ModelSerializer):
                 }
             }
         }
+
+# TODO: Это идеальный сериализатор. Подтяни остальные под него. 
