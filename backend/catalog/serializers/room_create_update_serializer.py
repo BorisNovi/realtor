@@ -87,9 +87,10 @@ class RoomReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = [
-            'id', 'property_type', 'status', 'photos', 'address', 'zoning_type',
-            'price', 'area', 'contact', 'comment', 'date_added', 'specifics'
+            'id', 'name', 'property_type', 'status', 'photos', 'address', 'zoning_type',
+            'price', 'area', 'contact', 'comment', 'date_added', 'specifics', 
         ]
+        read_only_fields = ['id', 'date_added']
 
     def get_price(self, obj):
         return build_price(obj)

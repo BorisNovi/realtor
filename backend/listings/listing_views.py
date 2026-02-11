@@ -22,12 +22,8 @@ CAMEL_TO_SNAKE = {
 
 # Контроллер для листингов с поддержкой создания листинга
 class ListingsView(APIView):
-    # authentication_classes = [JWTAuthentication]  
-    # permission_classes = [permissions.IsAuthenticated]
-
-    # Тестовая среда
-    authentication_classes = []  
-    permission_classes = [permissions.AllowAny]
+    authentication_classes = [JWTAuthentication]  
+    permission_classes = [permissions.IsAuthenticated]
 
     # Вспомогательный метод для построения префиксного tsquery
     def _build_prefix_tsquery(self, text: str) -> SearchQuery:
@@ -39,9 +35,9 @@ class ListingsView(APIView):
     
     # Создание нового листинга ../listing/
     def post(self, request):
-        serializer = ListingSerializer(data=request.data) # Объявляем сериализатор с входными данными 
-        if serializer.is_valid(): # Проверяем валидность данных
-            serializer.save() # Сохраняем новый листинг в БД
+        serializer = ListingSerializer(data=request.data)
+        if serializer.is_valid(): 
+            serializer.save() 
             return Response(serializer.data, status=status.HTTP_201_CREATED)  # Возвращаем созданный листинг с кодом 201
         return Response(serializer.errors, status=400) # Возвращаем ошибки валидации с кодом 400
     
@@ -148,6 +144,7 @@ class ListingsView(APIView):
 
         return Response({"deleted": deleted_count}, status=status.HTTP_200_OK)
     
+
 # Удаление контакта перед отправкой публичной подборки
 def remove_contacts(obj):
     """Рекурсивно удаляет поле "contact" из вложенных структур данных. 

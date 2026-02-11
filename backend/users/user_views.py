@@ -11,6 +11,7 @@ User = get_user_model()
 # Просмотр и редактирование профиля
 class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
+    
     authentication_classes = [JWTAuthentication]  
     permission_classes = [permissions.IsAuthenticated]
 

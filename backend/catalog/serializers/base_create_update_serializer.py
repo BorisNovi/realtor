@@ -12,6 +12,8 @@ init()
 
 # Базовый сериализатор для создания/обновления объектов недвижимости
 class BaseCreateUpdateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    
     property_type = serializers.ReadOnlyField()
     address = AddressSerializer()               
     price = PriceSerializer()
@@ -24,10 +26,10 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = None
         fields = [
-            'property_type', 'status', 'photos', 'address', 'zoning_type',
-            'price', 'area','contact', 'comment','date_added', 'name'
+            'property_type', 'name', 'status', 'photos', 'address', 'zoning_type',
+            'price', 'area','contact', 'comment','date_added', 'user',
         ]
-        read_only_fields = ['date_added']
+        read_only_fields = ['date_added', 'user']
 
     # ВАЛИДАЦИЯ КОЛИЧЕСТВА ФОТО
     def validate_photos(self, value):
@@ -75,15 +77,6 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
         price_data = validated_data.pop('price', None)
         address_data = validated_data.pop('address', None)
 
-        # # Обновляем контакт
-        # if contact_data:
-        #     if instance.contact:
-        #         for attr, value in contact_data.items():
-        #             setattr(instance.contact, attr, value)
-        #         instance.contact.save()
-        #     else:
-        #         instance.contact = Contact.objects.create(**contact_data)
-
         # Обновляем адрес
         if address_data:
             instance.address = address_data
@@ -113,7 +106,7 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
             temporary_new_photos = [p for p in new_photos_from_front if p not in old_photos]
 
             # Превращаем новые временные в постоянные
-            processed_new_photos = [make_files_permanent(url, subdir=f'property_{instance.id}') 
+            processed_new_photos = [make_files_permanent(url) 
                                     for url in temporary_new_photos]
 
             # Итоговый список
