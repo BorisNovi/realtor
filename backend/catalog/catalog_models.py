@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.db import models
 from contacts.models import Contact
 from polymorphic.models import PolymorphicModel
+from users.models import User
 
 class PropertyStatus(models.TextChoices):
     AVAILABLE = 'available', 
@@ -35,6 +36,9 @@ class Property(PolymorphicModel):
     date_added = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
 
     def soft_delete(self):
         self.is_deleted = True

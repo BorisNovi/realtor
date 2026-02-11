@@ -1,6 +1,7 @@
 from datetime import datetime
 
-def apply_catalog_filters(objects, query_params):
+def apply_catalog_filters(qs, query_params):
+    """Применяет фильтры из query_params к списку объектов."""
 
     # --- Универсальные парсеры ---
     def get_param(*keys):
@@ -12,19 +13,27 @@ def apply_catalog_filters(objects, query_params):
         return None
 
     def get_list(*keys):
-        """Возвращает список значений, поддерживает:
-        - propertyType=flat&propertyType=house
-        - propertyType=flat,house
-        - property.type=flat,house
-        """
+        values = []
         for key in keys:
-            values = query_params.getlist(key)
-            if not values:
-                continue
-            if len(values) == 1 and "," in values[0]:
-                return [v.strip() for v in values[0].split(",")]
-            return values
-        return []
+            # ищем exact
+            values.extend(query_params.getlist(key))
+            # ищем ключи вида key[0], key[1] ...
+            i = 0
+            while True:
+                indexed_key = f"{key}[{i}]"
+                val = query_params.get(indexed_key)
+                if val is None:
+                    break
+                values.append(val)
+                i += 1
+        # Если есть строки вида "flat,house" — разделим
+        result = []
+        for v in values:
+            if "," in v:
+                result.extend([x.strip() for x in v.split(",")])
+            else:
+                result.append(v)
+        return result
 
     def parse_date(val):
         """ISO, YYYY-MM-DD — похуй, съест всё."""
@@ -46,53 +55,42 @@ def apply_catalog_filters(objects, query_params):
         except:
             return None
 
-    # --- Основная функция проверки объекта ---
-    def filter_obj(obj):
-        # Даты
-        date_from = parse_date(get_param("dateAdded[from]", "dateAdded.from"))
-        date_to   = parse_date(get_param("dateAdded[to]", "dateAdded.to"))
+    # --- Фильтры ---
+    date_from = parse_date(get_param("dateAdded[from]", "dateAdded.from"))
+    date_to   = parse_date(get_param("dateAdded[to]", "dateAdded.to"))
+    if date_from:
+        qs = qs.filter(date_added__gte=date_from)
+    if date_to:
+        qs = qs.filter(date_added__lte=date_to)
 
-        if date_from and obj.date_added.date() < date_from:
-            return False
-        if date_to and obj.date_added.date() > date_to:
-            return False
+    status = get_param("status")
+    if status:
+        qs = qs.filter(status=status)
 
-        # Статус
-        status = get_param("status")
-        if status and obj.status != status:
-            return False
+    property_types = get_list("propertyType", "property.type")
+    if property_types:
+        qs = qs.filter(polymorphic_ctype__model__in=property_types)
 
-        # Тип недвижимости, TODO: УБЕДИТЬСЯ, ЧТО ВАЛИДНО 
-        property_types = get_list("propertyType", "property.type")
-        if property_types and obj.get_property_type_display() not in property_types:
-            return False
+    zoning_types = get_list("zoningType", "zoning.type")
+    if zoning_types:
+        qs = qs.filter(zoning_type__in=zoning_types)
 
-        # Зонирование
-        zoning_types = get_list("zoningType", "zoning.type")
-        if zoning_types and obj.zoning_type not in zoning_types:
-            return False
+    area_min = parse_float(get_param("area[min]", "area.min"))
+    area_max = parse_float(get_param("area[max]", "area.max"))
+    if area_min is not None:
+        qs = qs.filter(area__gte=area_min)
+    if area_max is not None:
+        qs = qs.filter(area__lte=area_max)
 
-        # Площадь
-        area_min = parse_float(get_param("area[min]", "area.min"))
-        area_max = parse_float(get_param("area[max]", "area.max"))
+    price_min  = parse_float(get_param("price[min]", "price.min"))
+    price_max  = parse_float(get_param("price[max]", "price.max"))
+    currency   = get_param("price[currency]", "price.currency")
 
-        if area_min is not None and obj.area < area_min:
-            return False
-        if area_max is not None and obj.area > area_max:
-            return False
+    if currency:
+        qs = qs.filter(price_currency=currency)
+    if price_min is not None:
+        qs = qs.filter(price_value__gte=price_min)
+    if price_max is not None:
+        qs = qs.filter(price_value__lte=price_max)
 
-        # Цена
-        price_min  = parse_float(get_param("price[min]", "price.min"))
-        price_max  = parse_float(get_param("price[max]", "price.max"))
-        currency   = get_param("price[currency]", "price.currency")
-
-        if currency and obj.price_currency != currency:
-            return False
-        if price_min is not None and obj.price_value < price_min:
-            return False
-        if price_max is not None and obj.price_value > price_max:
-            return False
-
-        return True
-
-    return list(filter(filter_obj, objects))
+    return qs

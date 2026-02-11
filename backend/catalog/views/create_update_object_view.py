@@ -4,6 +4,7 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from catalog.catalog_models import Property
 from catalog.serializers.flat_create_update_serializer import (
@@ -50,12 +51,7 @@ PROPERTY_READ_SERIALIZER_MAP = {
 
 class PropertyObjectAPIView(APIView):
     """Универсальный эндпоинт для работы с объектами недвижимости."""
-    # authentication_classes = [JWTAuthentication]  
-    # permission_classes = [permissions.IsAuthenticated]
-
-    # Тестовая среда
-    authentication_classes = []  
-    permission_classes = [permissions.AllowAny]
+    authentication_classes = [JWTAuthentication]  
 
     # Вспомогательный метод для получения объекта по pk
     def _get_property_instance(self, pk):
@@ -82,7 +78,11 @@ class PropertyObjectAPIView(APIView):
         if not serializer_class:
             return Response({"error": f"Unknown propertyType {property_type}"}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = serializer_class(data=request.data)
+        serializer = serializer_class(
+            data=request.data,
+            context={'request': request}
+        )
+
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
 
@@ -109,7 +109,10 @@ class PropertyObjectAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        serializer = read_serializer_class(instance)
+        serializer = read_serializer_class(
+            instance,
+            context={'request': request}
+        )
 
         print("Response data:", serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -122,12 +125,17 @@ class PropertyObjectAPIView(APIView):
         property_type = instance.property_type
         serializer_class = PROPERTY_WRITE_SERIALIZER_MAP[property_type]
 
-        serializer = serializer_class(instance, data=request.data)  # !
+        serializer = serializer_class(
+            instance,
+            data=request.data,
+            context={'request': request}
+        )
+
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
 
         read_serializer_class = PROPERTY_READ_SERIALIZER_MAP[property_type]
-        read_serializer = read_serializer_class(instance)
+        read_serializer = read_serializer_class(instance, context={'request': request})
         
         print("Response data:", read_serializer.data)
         return Response(read_serializer.data, status=status.HTTP_200_OK)
@@ -141,12 +149,18 @@ class PropertyObjectAPIView(APIView):
         property_type = instance.property_type
         serializer_class = PROPERTY_WRITE_SERIALIZER_MAP[property_type]
  
-        serializer = serializer_class(instance, data=request.data, partial=True) # !
+        serializer = serializer_class(
+            instance,
+            data=request.data,
+            partial=True,
+            context={'request': request}
+        )
+
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
 
         read_serializer_class = PROPERTY_READ_SERIALIZER_MAP[property_type]
-        read_serializer = read_serializer_class(instance)
+        read_serializer = read_serializer_class(instance, context={'request': request})
         
         print("Response data:", read_serializer.data)
         return Response(read_serializer.data, status=status.HTTP_200_OK)

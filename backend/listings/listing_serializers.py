@@ -1,72 +1,63 @@
 # listings/listing_serializers.py
-
 import secrets
-from colorama import Fore
 from listings.models import Listing
-from catalog.catalog_models import Flat 
+from catalog.catalog_models import Property 
 from rest_framework import serializers
-# from catalog.serializers.flat_serializer import FlatSerializer
+from catalog.serializers.catalog_list_serializer import CatalogListSerializer
+from django.db import transaction
 
 # === СЕРИАЛИЗАТОР ЛИСТИНГОВ ===
 class ListingSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели Listing."""
-
     property_object_ids = serializers.ListField(
         child=serializers.IntegerField(min_value=1)
     )
-
-    property_objects = serializers.SerializerMethodField(read_only=True) # поле для развёрнутых объектов. 
     public_link = serializers.JSONField(required=False)
+    property_objects = serializers.SerializerMethodField()
 
-    # Обращаемся к таблице за искомыми объектами:
-    def get_property_objects(self, obj):
-        # на текущий момент берём только квартиры
-        flats = Flat.objects.filter(id__in=obj.property_object_ids)
-        # TODO: ДОБАВЬ ОСТАЛЬНЫЕ ПОТОМ
-        # return FlatSerializer(flats, many=True).data
 
-    # Отдает фронту
     class Meta:
         model = Listing
-        fields = ['id', 
-                  'name', 
-                  'property_object_ids',
-                  'property_objects', 
-                  'company_name', 
-                  'company_logo', 
-                  'public_link',
-                  'date_added',
-                  ] 
+        fields = [
+            'id', 
+            'name', 
+            'company_name', 
+            'company_logo', 
+            'public_link',
+            'date_added',
+            'property_object_ids',
+            'property_objects', 
+            ] 
+        read_only_fields = [
+            'id', 
+            'date_added', 
+            'property_objects'
+            ]
 
-    # -------------------- ВАЛИДАЦИИ --------------------
-    def validate_name(self, value):
-        value = value.strip()
+    # Ищем запрашиваемые объекты
+    def get_property_objects(self, obj):
+        """Обращается к таблице за искомыми объектами по всей базе. 
+        Получает их ID из поля property_object_ids, сериализует через BaseCreateUpdateSerializer и возвращает словарь {id: данные}."""
+        
+        properties = Property.objects.filter(id__in=obj.property_object_ids)
+        return CatalogListSerializer(properties, many=True).data
 
-        # if len(value) > 100:
-        #     raise serializers.ValidationError("Название должно быть не длиннее 100 символов.")
+    # Получаем данные компании по связке с пользователем
+    def get_company_info(self, obj):
+        if hasattr(obj, 'user') and obj.user:
+            return {
+                'company_logo': obj.user.company_logo,
+                'company_name': obj.user.company_name
+            }
+        return None
 
-        # qs = Listing.objects.filter(name=value)
-        # if self.instance:
-        #     qs = qs.exclude(pk=self.instance.pk)
-
-        # if qs.exists():
-        #     raise serializers.ValidationError("Такое название уже используется.")
-
-        return value
-
-    def validate_company_logo(self, value):
-        if value and not value.startswith("http"):
-            raise serializers.ValidationError("Блядь, дай мне нормальную ссылку на лого, а не хуйню.")
-        return value
-
+    # Ручная валидация поля property_object_ids, чтобы убедиться, что все фронт не шлет хуйню
     def validate_property_object_ids(self, ids):
-        existing = list(Flat.objects.filter(id__in=ids).values_list("id", flat=True))
-
-        missing = set(ids) - set(existing)
-        if missing:
-            raise serializers.ValidationError(f"Объекты не найдены: {list(missing)}")
-
+        if not isinstance(ids, list):
+            raise serializers.ValidationError("Должен быть список")
+        if not all(isinstance(i, int) for i in ids):
+            raise serializers.ValidationError("Все элементы должны быть числами")
         return ids
+        
 
     # -------------------- ЛОГИКА ГЕНЕРАЦИИ PUBLIC LINK --------------------
     def _generate_token(self) -> str:
@@ -82,7 +73,8 @@ class ListingSerializer(serializers.ModelSerializer):
             "token": token
         }
 
-    # -------------------- СОЗДАНИЕ --------------------
+
+    @transaction.atomic
     def create(self, validated_data):
         public = validated_data.pop("public_link", {})
         listing = super().create(validated_data)
@@ -93,7 +85,7 @@ class ListingSerializer(serializers.ModelSerializer):
 
         return listing
 
-    # -------------------- ОБНОВЛЕНИЕ --------------------
+    @transaction.atomic
     def update(self, instance, validated_data):
         public = validated_data.pop("public_link", None)
         listing = super().update(instance, validated_data)
