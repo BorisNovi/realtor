@@ -13,7 +13,7 @@ class ListingSerializer(serializers.ModelSerializer):
     )
     public_link = serializers.JSONField(required=False)
     property_objects = serializers.SerializerMethodField()
-
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Listing
@@ -26,11 +26,13 @@ class ListingSerializer(serializers.ModelSerializer):
             'date_added',
             'property_object_ids',
             'property_objects', 
+            'user'
             ] 
         read_only_fields = [
             'id', 
             'date_added', 
-            'property_objects'
+            'property_objects',
+            'user',
             ]
 
     # Ищем запрашиваемые объекты

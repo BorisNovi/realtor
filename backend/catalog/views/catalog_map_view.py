@@ -1,54 +1,45 @@
 # catalog_map_view.py
 # Ответственный за получение объектов недвижимости в заданных координатах для отображения на карте.
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from catalog.catalog_models import Property
 from catalog.serializers.catalog_map_serializer import CatalogMapSerializer
 from catalog.utils.filters import apply_catalog_filters
-from rest_framework import permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import viewsets
+from realtor import mixins
+from rest_framework.exceptions import ValidationError
+from django.db.models.functions import Cast
+from django.db.models import F, FloatField
 
 # Получение объектов недвижимости в заданных координатах при работе с картой.
-class CatalogMapView(APIView):
-    # authentication_classes = [JWTAuthentication]  
-    # permission_classes = [permissions.IsAuthenticated]
-
-    # Тестовая среда
-    authentication_classes = []  
-    permission_classes = [permissions.AllowAny]
-    
-    def get(self, request):
-        properties = Property.objects.filter(is_deleted=False)
-       
+class CatalogMapView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
+    authentication_classes = [JWTAuthentication]  
+    serializer_class = CatalogMapSerializer
+    queryset = Property.objects.filter(is_deleted=False)
+        
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = apply_catalog_filters(qs, self.request.query_params)
+               
         # Получаем координаты квадрата
-        lng_min = request.query_params.get("lngMin") or request.query_params.get("box.minLng")
-        lng_max = request.query_params.get("lngMax") or request.query_params.get("box.maxLng")
-        lat_min = request.query_params.get("latMin") or request.query_params.get("box.minLat")
-        lat_max = request.query_params.get("latMax") or request.query_params.get("box.maxLat")
+        lng_min = self.request.query_params.get("lngMin") or self.request.query_params.get("box.minLng")
+        lng_max = self.request.query_params.get("lngMax") or self.request.query_params.get("box.maxLng")
+        lat_min = self.request.query_params.get("latMin") or self.request.query_params.get("box.minLat")
+        lat_max = self.request.query_params.get("latMax") or self.request.query_params.get("box.maxLat")
 
         if not all([lng_min, lng_max, lat_min, lat_max]):
-            return Response({"detail": "Союз развалили, и запрос тоже"}, status=400)
+            raise ValidationError("Some of the required coordinates are missing")
 
         lng_min, lng_max, lat_min, lat_max = map(float, [lng_min, lng_max, lat_min, lat_max])
 
-        # Применяем обычные фильтры каталога
-        filtered = apply_catalog_filters(properties, request.query_params)
+        # Фильтрация через ORM по JSONField с позициями
+        qs = qs.annotate(
+            lng=Cast(F('address__position__0'), FloatField()),
+            lat=Cast(F('address__position__1'), FloatField())
+        ).filter(
+            lng__gte=lng_min,
+            lng__lte=lng_max,
+            lat__gte=lat_min,
+            lat__lte=lat_max
+        )
 
-        # Фильтруем по координатам
-        def in_bounds(obj):
-            pos = obj.address.get("position")
-            if not pos or len(pos) < 2:
-                return False
-            lng, lat = map(float, pos)
-            return lng_min <= lng <= lng_max and lat_min <= lat <= lat_max
-
-        filtered = list(filter(in_bounds, filtered))
-
-        serializer = CatalogMapSerializer(filtered, many=True)
-        total_count = len(filtered)
-
-        print("Response data:", serializer.data)
-        return Response({
-            "items": serializer.data,
-            "total": total_count
-        })
+        return qs

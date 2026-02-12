@@ -2,7 +2,6 @@
 from rest_framework import serializers
 from catalog.catalog_models import Property
 from catalog.serializers.catalog_price_serializer import build_price
-from contacts.contact_serializers import ContactSerializer
 from .catalog_address_serializer import AddressSerializer
 
 # Сериализатор для запроса списка всех объектов в сокращенном формате НА КАРТЕ. 

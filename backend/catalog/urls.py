@@ -9,7 +9,7 @@ urlpatterns = [
     path('/property_object', PropertyObjectAPIView.as_view(), name='property-create'),         # POST
     path('/property_object/<int:pk>', PropertyObjectAPIView.as_view(), name='property-detail'),# GET / PUT / PATCH
     path('/catalog', CatalogListView.as_view({'get': 'list'}), name='catalog'),                               # GET (список)
-    path('/catalog/catalog_map', CatalogMapView.as_view(), name='catalog-map'),                # GET (карта)
+    path('/catalog/catalog_map', CatalogMapView.as_view({'get': 'list'}), name='catalog-map'),                # GET (карта)
     path('/catalog/delete', CatalogBulkDeleteView.as_view(), name="catalog-bulk-delete"),      # POST/DELETE
 ]
 

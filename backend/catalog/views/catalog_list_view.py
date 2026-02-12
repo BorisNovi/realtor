@@ -1,4 +1,3 @@
-from rest_framework.views import APIView
 from catalog.catalog_models import Property
 from ..utils.pagination import FrontendPagination
 from catalog.utils.filters import apply_catalog_filters
@@ -13,7 +12,7 @@ class CatalogListView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
     serializer_class = CatalogListSerializer
     pagination_class = FrontendPagination
     authentication_classes = [JWTAuthentication]
-    queryset = Property.objects.filter(is_deleted=False)  
+    queryset = Property.objects.filter(is_deleted=False) 
 
     def get_queryset(self):
         qs = super().get_queryset()
