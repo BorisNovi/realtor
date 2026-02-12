@@ -1,28 +1,29 @@
-# user_auth/serializers/signin_serializer.py
-
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
 
 class SigninSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+    access = serializers.CharField(read_only=True)
+    refresh = serializers.CharField(read_only=True)
 
-    def validate(self, data):
-        user = User.objects.filter(email=data["email"]).first()
-        if not user:
-            raise serializers.ValidationError("Пользователь не найден")
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
 
-        user = authenticate(username=user.email, password=data["password"])
+        user = authenticate(username=email, password=password)
         if not user:
-            raise serializers.ValidationError("Неверный логин или пароль")
+            raise serializers.ValidationError("Неверный email или пароль")
+        if not user.is_active:
+            raise serializers.ValidationError("Аккаунт не активирован")
 
         refresh = RefreshToken.for_user(user)
-
-        data["user"] = user
-        data["accessToken"] = str(refresh.access_token)
-        data["refreshToken"] = str(refresh)
-
-        return data
+        attrs['access'] = str(refresh.access_token)
+        attrs['refresh'] = str(refresh)
+        attrs['user'] = user
+        return attrs

@@ -19,6 +19,8 @@ class CatalogListView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
         qs = apply_catalog_filters(qs, self.request.query_params)
         
         sort_field = self.request.query_params.get("sortField")
+        if sort_field == "dateAdded":
+            sort_field = "date_added"
         if sort_field:
             direction = "-" if self.request.query_params.get("sortOrder", "desc").lower() == "desc" else ""
             qs = qs.order_by(direction + sort_field)
