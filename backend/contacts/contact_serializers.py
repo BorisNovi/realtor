@@ -13,11 +13,12 @@ class ContactIDField(serializers.PrimaryKeyRelatedField):
 
 class ContactSerializer(serializers.ModelSerializer):
     comment = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Contact
-        fields = ['id', 'dateAdded', 'name', 'phone', 'additional_phone', 'comment']
-        read_only_fields = ['id', 'dateAdded']
+        fields = ['id', 'dateAdded', 'name', 'phone', 'additional_phone', 'comment', 'user']
+        read_only_fields = ['id', 'dateAdded', 'user']
 
     # Валидация полей контакта
     def validate_name(self, value):
@@ -43,39 +44,34 @@ class ContactSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         phone = attrs.get('phone')
         name = attrs.get('name')
+        user = self.context['request'].user
 
         instance = getattr(self, 'instance', None)
 
-        # Проверяем уникальность телефона вручную,
-        # чтобы контролировать текст ошибки
-        qs = Contact.objects.filter(phone=phone)
+        # Ищем контакт ТОЛЬКО у текущего пользователя
+        qs = Contact.objects.filter(phone=phone, user=user)
 
         if instance:
             qs = qs.exclude(pk=instance.pk)
 
         if qs.exists():
             existing = qs.first()
-
-            if not instance:  # create
-                if existing.name != name:
-                    raise serializers.ValidationError({
-                        "phone": f"Номер уже привязан к контакту '{existing.name}'."
-                    })
-                # если имя совпадает — просто вернем существующий
-                self.instance = existing
-            else:
+            
+            if not instance:  # создание
                 raise serializers.ValidationError({
-                    "phone": "Этот номер уже используется."
+                    "phone": f"Такой контакт уже существует в вашем списке ('{existing.name}')"
                 })
+            
+            # при обновлении — просто запрещаем дубли (можно смягчить, если нужно)
+            raise serializers.ValidationError({
+                "phone": "Этот номер уже используется в ваших контактах."
+            })
 
         return attrs
 
 
     # Создание контакта, если его не было, или возвращение существующего
     def create(self, validated_data):
-        if self.instance:
-            return self.instance
-
         return Contact.objects.create(**validated_data)
 
     # Обновление контакта с проверкой уникальности по номеру телефона
