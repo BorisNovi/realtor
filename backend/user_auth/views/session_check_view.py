@@ -1,11 +1,7 @@
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes
+from rest_framework.response import Response
 
-# Проверка сессии. Позволяет юзеру находиться в системе даже после обновления страницы. 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def check_session(request):
     user = request.user
     return Response({
@@ -15,6 +11,6 @@ def check_session(request):
             "email": user.email,
             "role": user.role,
             "date_added": user.date_added.isoformat(),
-            "bannedAt": user.banned.isoformat() if user.banned else None
+            "banned_at": user.banned_at.isoformat() if user.banned_at else None
         }
     })

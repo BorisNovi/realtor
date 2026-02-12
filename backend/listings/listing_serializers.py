@@ -15,6 +15,10 @@ class ListingSerializer(serializers.ModelSerializer):
     property_objects = serializers.SerializerMethodField()
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
+    # Добавляем новые поля для компании
+    company_name = serializers.SerializerMethodField()
+    company_logo = serializers.SerializerMethodField()
+
     class Meta:
         model = Listing
         fields = [
@@ -43,13 +47,16 @@ class ListingSerializer(serializers.ModelSerializer):
         properties = Property.objects.filter(id__in=obj.property_object_ids)
         return CatalogListSerializer(properties, many=True).data
 
-    # Получаем данные компании по связке с пользователем
-    def get_company_info(self, obj):
-        if hasattr(obj, 'user') and obj.user:
-            return {
-                'company_logo': obj.user.company_logo,
-                'company_name': obj.user.company_name
-            }
+    # Берем имя компании через пользователя
+    def get_company_name(self, obj):
+        if obj.user:
+            return obj.user.company_name
+        return None
+
+    # Берем логотип компании через пользователя
+    def get_company_logo(self, obj):
+        if obj.user:
+            return obj.user.company_logo
         return None
 
     # Ручная валидация поля property_object_ids, чтобы убедиться, что все фронт не шлет хуйню
