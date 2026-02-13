@@ -93,8 +93,8 @@ class AuthViewSet(viewsets.GenericViewSet):
                     'date_added': user.date_added.isoformat(),
                     'banned_at': user.banned_at.isoformat() if user.banned_at else None
                 },
-                'access': str(refresh.access_token),
-                'refresh': str(refresh)
+                'access_token': str(refresh.access_token),
+                'refresh_token': str(refresh)
             }, status=status.HTTP_201_CREATED)
 
         except IntegrityError:
