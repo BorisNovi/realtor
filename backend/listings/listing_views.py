@@ -34,7 +34,7 @@ class ListingsView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
 
         # --- Поиск ---
         if search and search.strip():
-            tsquery = self._build_prefix_tsquery(search)
+            tsquery = self._build_prefix(search)
             if tsquery:
                 vector = SearchVector("name")
                 fts_qs = (
