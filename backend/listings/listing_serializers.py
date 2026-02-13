@@ -1,5 +1,6 @@
 # listings/listing_serializers.py
 import secrets
+from catalog.views.create_update_object_view import PROPERTY_READ_SERIALIZER_MAP
 from listings.models import Listing
 from catalog.catalog_models import Property 
 from rest_framework import serializers
@@ -42,10 +43,20 @@ class ListingSerializer(serializers.ModelSerializer):
     # Ищем запрашиваемые объекты
     def get_property_objects(self, obj):
         """Обращается к таблице за искомыми объектами по всей базе. 
-        Получает их ID из поля property_object_ids, сериализует через BaseCreateUpdateSerializer и возвращает словарь {id: данные}."""
+        Получает их ID из поля property_object_ids, сериализует через нужный сериализатор и возвращает словарь."""
         
-        properties = Property.objects.filter(id__in=obj.property_object_ids)
-        return CatalogListSerializer(properties, many=True).data
+        properties = Property.objects.filter(
+            id__in=obj.property_object_ids,
+            is_deleted=False
+        )
+
+        return [
+            PROPERTY_READ_SERIALIZER_MAP[p.get_real_instance().property_type](
+                p.get_real_instance(),
+                context=self.context
+            ).data
+            for p in properties
+        ]
 
     # Берем имя компании через пользователя
     def get_company_name(self, obj):
