@@ -182,6 +182,8 @@ export class CatalogMapComponent implements AfterViewInit {
         .setLngLat(e.lngLat)
         .setHTML(
           `
+          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.COUNTRY')}</strong>: ${item.address.country}</div>
+          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.STATE')}</strong>: ${item.address.state || '-'}</div>
           <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.CITY')}</strong>: ${item.address.city}</div>
           <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.ROAD')}</strong>: ${item.address.road}</div>
           <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.HOUSE')}</strong>: ${item.address.house}</div>
