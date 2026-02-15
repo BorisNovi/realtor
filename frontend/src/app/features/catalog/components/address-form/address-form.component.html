@@ -1,5 +1,37 @@
 @let f = form();
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4" [formGroup]="f">
+  <rx-input-wrapper
+    id="address-country"
+    [control]="f.get('country')!"
+    [label]="'FORM.LABELS.COUNTRY' | translate"
+    class="md:col-span-1"
+  >
+    <input
+      id="address-country"
+      pInputText
+      type="text"
+      formControlName="country"
+      [placeholder]="'FORM.PLACEHOLDERS.COUNTRY' | translate"
+      class="w-full"
+    />
+  </rx-input-wrapper>
+
+  <rx-input-wrapper
+    id="address-state"
+    [control]="f.get('state')!"
+    [label]="'FORM.LABELS.STATE' | translate"
+    class="md:col-span-1"
+  >
+    <input
+      id="address-state"
+      pInputText
+      type="text"
+      formControlName="state"
+      [placeholder]="'FORM.PLACEHOLDERS.STATE' | translate"
+      class="w-full"
+    />
+  </rx-input-wrapper>
+
   <rx-input-wrapper id="address-city" [control]="f.get('city')!" [label]="'FORM.LABELS.CITY' | translate" class="md:col-span-1">
     <input
       id="address-city"

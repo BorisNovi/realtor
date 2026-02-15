@@ -30,8 +30,11 @@ export interface GeocodeAddress {
   quarter?: string;
   suburb?: string;
   city?: string;
-  state?: string;
-  county?: string;
+  village?: string; // Деревня
+  town?: string; // Деревня, но другая
+  hamlet?: string; // Хутор (меньше village)
+  state?: string; // Область
+  county?: string; // Район (внутри области)
   postcode?: string;
   country: string;
   house_number?: string;

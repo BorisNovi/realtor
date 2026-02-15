@@ -45,8 +45,9 @@ export class GeocodeService {
       'accept-language': `${this.currentLanguage().value}, en`,
     };
 
-    return this.#http
-      .get<GeocodeFeatureCollection>('https://nominatim.openstreetmap.org/reverse', { params })
-      .pipe(tap(result => this.#cache.set(cacheKey, result)));
+    return this.#http.get<GeocodeFeatureCollection>('https://nominatim.openstreetmap.org/reverse', { params }).pipe(
+      tap(result => this.#cache.set(cacheKey, result)),
+      tap(res => console.log(res.features[0].properties.address)),
+    );
   }
 }

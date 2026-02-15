@@ -24,18 +24,13 @@
   <ng-template #header>
     <div>
       @if (selected?.name) {
-        <h1 class="font-semibold text-xl mb-1">{{ selected?.name }}</h1>
-        <h2 class="text-base text-surface-500 mb-2">
-          {{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + selected?.propertyType | translate }} {{ selected?.area || 0 }} m² —
-          {{ selected?.price?.value || 0 }}
-          {{ getCurrencySymbol((selected?.price)!.currency) }}
-        </h2>
+        <h3 class="font-semibold text-xl mb-1">{{ selected?.name }}</h3>
       } @else {
-        <h1 class="font-semibold text-xl mb-2">
+        <h3 class="font-semibold text-xl mb-2">
           {{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + selected?.propertyType | translate }} {{ selected?.area || 0 }} m² —
           {{ selected?.price?.value || 0 }}
           {{ getCurrencySymbol((selected?.price)!.currency) }}
-        </h1>
+        </h3>
       }
     </div>
   </ng-template>

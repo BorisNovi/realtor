@@ -148,7 +148,7 @@ export class CreateCatalogItemComponent implements OnInit {
       photos: [data?.photos || []],
       propertyType: [data?.propertyType || null, Validators.required],
       zoningType: [data?.zoningType || null, Validators.required],
-      status: [data?.status || null, Validators.required],
+      status: [data?.status || PropertyStatus.available, Validators.required],
       address: this.#fb.group({}),
       area: [data?.area || null, [Validators.required, Validators.min(1)]],
 
@@ -225,9 +225,13 @@ export class CreateCatalogItemComponent implements OnInit {
   onAddresPickerFill(picked: IPickerAddress | null): void {
     this.position.set(picked?.coordinates || [0, 0]);
     const address = this.form.get('address')! as FormGroup;
-    address.get('city')?.setValue(picked?.address.city);
-    address.get('road')?.setValue(picked?.address.road);
-    address.get('house')?.setValue(picked?.address.house_number);
+    address.get('country')?.setValue(picked?.address?.country);
+    address.get('state')?.setValue(picked?.address?.state);
+    address
+      .get('city')
+      ?.setValue(picked?.address?.city || picked?.address?.town || picked?.address?.village || picked?.address?.hamlet);
+    address.get('road')?.setValue(picked?.address?.road);
+    address.get('house')?.setValue(picked?.address?.house_number);
     address.get('position')?.setValue(picked?.coordinates);
   }
 
