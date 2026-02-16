@@ -1,14 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  OnDestroy,
-  viewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -43,6 +34,7 @@ import {
   SetCatalogPagination,
   SetCatalogSort,
   UpdateStatus,
+  ViewMode,
   ViewModeService,
 } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
@@ -102,6 +94,8 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
   readonly tableDataS = this.#store.selectSignal(CatalogState.catalog);
   readonly paginationS = this.#store.selectSignal(CatalogState.pagination);
   readonly loadingS = this.#store.selectSignal(CatalogState.loading);
+
+  ViewMode = ViewMode;
 
   ngAfterViewInit(): void {
     const table = this.pTable();

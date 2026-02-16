@@ -21,7 +21,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { debounceTime, map, skip } from 'rxjs';
-import { DeletionConfirmationService, ViewModeService } from 'src/app/core';
+import { DeletionConfirmationService, ViewMode, ViewModeService } from 'src/app/core';
 import { DeleteContact, FetchContacts, SetContactsSearch } from 'src/app/core/contacts/state/contacts.actions';
 import { ContactsState } from 'src/app/core/contacts/state/contacts.state';
 import { CreateContactComponent } from '../create-contact/create-contact.component';
@@ -74,6 +74,8 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   readonly loadingS = this.#store.selectSignal(ContactsState.loading);
 
   readonly search = model<string>('');
+
+  ViewMode = ViewMode;
 
   constructor() {
     toObservable(this.search)

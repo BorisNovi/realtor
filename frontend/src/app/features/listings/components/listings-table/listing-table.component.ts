@@ -17,7 +17,7 @@ import { PaginatorState } from 'primeng/paginator';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { DeletionConfirmationService, QueryParamsService, ViewModeService } from 'src/app/core';
+import { DeletionConfirmationService, QueryParamsService, ViewMode, ViewModeService } from 'src/app/core';
 import {
   ChangeListingAvaliability,
   DeleteListing,
@@ -73,6 +73,8 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   readonly loadingS = this.#store.selectSignal(ListingsState.loading);
 
   readonly search = model<string>('');
+
+  ViewMode = ViewMode;
 
   ngAfterViewInit(): void {
     const table = this.pTable();

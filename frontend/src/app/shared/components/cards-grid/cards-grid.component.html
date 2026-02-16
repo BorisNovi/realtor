@@ -40,9 +40,10 @@
     </div>
     <div class="justify-end">
       <p-button
-        [icon]="viewMode() === 'table' ? 'pi pi-th-large' : 'pi pi-table'"
+        [icon]="viewMode() === ViewMode.Table ? 'pi pi-th-large' : 'pi pi-table'"
         [pTooltip]="
-          (viewMode() === 'table' ? 'CATALOG.TABLE.PAGINATOR.CARDS_VIEW' : 'CATALOG.TABLE.PAGINATOR.TABLE_VIEW') | translate
+          (viewMode() === ViewMode.Table ? 'CATALOG.TABLE.PAGINATOR.CARDS_VIEW' : 'CATALOG.TABLE.PAGINATOR.TABLE_VIEW')
+            | translate
         "
         tooltipPosition="left"
         text
