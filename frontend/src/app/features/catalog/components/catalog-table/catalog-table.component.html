@@ -3,7 +3,7 @@
 
 @let tableData = tableDataS();
 
-@if (viewMode() === 'table') {
+@if (viewMode() === ViewMode.Table) {
   <div class="card overflow-x-auto relative p-0!">
     @if (loadingS()) {
       <p-progressbar mode="indeterminate" [style]="{ height: '4px' }" class="w-[101%] h-1 top-0 -left-1 absolute! z-10" />

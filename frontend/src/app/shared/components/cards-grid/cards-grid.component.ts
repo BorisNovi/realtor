@@ -6,7 +6,7 @@ import { CardModule } from 'primeng/card';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { ViewModeService } from 'src/app/core';
+import { ViewMode, ViewModeService } from 'src/app/core';
 
 @Component({
   selector: 'rx-cards-grid',
@@ -49,6 +49,8 @@ export class CardsGridComponent<T> {
 
   readonly #viewModeService = inject(ViewModeService);
   readonly viewMode = this.#viewModeService.viewMode;
+
+  ViewMode = ViewMode;
 
   toggleViewMode(): void {
     this.#viewModeService.toggle();
