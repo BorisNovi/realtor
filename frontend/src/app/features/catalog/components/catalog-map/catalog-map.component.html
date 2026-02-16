@@ -8,7 +8,7 @@
       [outlined]="true"
       icon="pi pi-filter"
       (click)="filtersService.openFilters()"
-      [badge]="filtersService.currentCount.toString()"
+      [badge]="filtersService.filtersCount().toString()"
     />
   </div>
   <rx-map

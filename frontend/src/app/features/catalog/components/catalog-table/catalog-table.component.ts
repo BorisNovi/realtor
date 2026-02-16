@@ -85,13 +85,12 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
   readonly #destroyRef = inject(DestroyRef);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
   readonly #queryParamsService = inject(QueryParamsService);
-  readonly #filtersService = inject(CatalogFiltersService);
   readonly #viewModeService = inject(ViewModeService);
+  readonly filtersService = inject(CatalogFiltersService);
 
   readonly viewMode = this.#viewModeService.viewMode;
   readonly catalogTrackBy = (item: ICatalogItem) => item.id;
 
-  readonly filtersCount = computed(() => this.#filtersService.currentCount);
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
   statuses: { label: string; value: string }[] = [];
@@ -191,7 +190,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
   }
 
   onFiltersOpen(): void {
-    this.#filtersService.openFilters();
+    this.filtersService.openFilters();
   }
 
   openItemDialog(id?: number): void {
