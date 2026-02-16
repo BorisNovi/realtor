@@ -58,7 +58,7 @@
             [outlined]="true"
             icon="pi pi-filter"
             (click)="onFiltersOpen()"
-            [badge]="filtersCount().toString()"
+            [badge]="filtersService.filtersCount().toString()"
           />
         </div>
       </ng-template>
@@ -230,7 +230,7 @@
           [outlined]="true"
           icon="pi pi-filter"
           (click)="onFiltersOpen()"
-          [badge]="filtersCount().toString()"
+          [badge]="filtersService.filtersCount().toString()"
         />
       </div>
     </ng-template>
