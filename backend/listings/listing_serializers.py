@@ -1,11 +1,10 @@
 # listings/listing_serializers.py
 import secrets
-from catalog.views.create_update_object_view import PROPERTY_READ_SERIALIZER_MAP
-from listings.models import Listing
-from catalog.catalog_models import Property 
-from rest_framework import serializers
-from catalog.serializers.catalog_list_serializer import CatalogListSerializer
 from django.db import transaction
+from rest_framework import serializers
+from catalog.views.create_update_object_view import PROPERTY_READ_SERIALIZER_MAP
+from catalog.catalog_models import Property 
+from listings.models import Listing
 
 # === СЕРИАЛИЗАТОР ЛИСТИНГОВ ===
 class ListingSerializer(serializers.ModelSerializer):
