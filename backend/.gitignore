@@ -31,5 +31,5 @@ Thumbs.db
 # environment
 .env
 
-# Pip installer bundle (should not be in repo)
+# Pip installer bundle
 get-pip.py
