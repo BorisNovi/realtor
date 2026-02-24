@@ -1,8 +1,7 @@
-from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.utils import timezone
 
-# Кастомный менеджер пользователя
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -16,18 +15,24 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
         return self.create_user(email, password, **extra_fields)
 
-class User(AbstractBaseUser):
-    email = models.EmailField(unique=True)
-    username = models.CharField(max_length=150, blank=True, null=True, unique=True)  # Юзернейм. Необязательное поле при регистрации
-    is_active = models.BooleanField(default=True) # Активен ли пользователь
-    is_staff = models.BooleanField(default=False) # Админ ли пользователь
 
-    insertedAt = models.DateTimeField(auto_now_add=True)  # Дата регистрации
-    name = models.CharField(max_length=100, null=True, blank=True)  # Имя пользователя
-    role = models.CharField(max_length=50, default='default')  # Роль пользователя
-    banned = models.DateTimeField(null=True, blank=True)  # Дата бана (если есть)
+class User(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True)
+    
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    name = models.CharField(max_length=100, blank=True)
+    company_name = models.CharField(max_length=255, blank=True)
+    company_logo = models.URLField(max_length=500, blank=True)
+    
+    role = models.CharField(max_length=50, default='default')
+    banned_at = models.DateTimeField(null=True, blank=True)
+    last_logout_at = models.DateTimeField(null=True, blank=True)
+    date_added = models.DateTimeField(default=timezone.now)
 
     objects = UserManager()
 
@@ -37,10 +42,15 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.email
 
+    @property
+    def is_banned(self):
+        return self.banned_at is not None
+
+
 class PasswordResetRequest(models.Model):
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)  # Ссылка на кастомную модель User
-    token = models.CharField(max_length=255, unique=True)  # Уникальный токен для сброса пароля
-    created_at = models.DateTimeField(auto_now_add=True)  # Дата запроса на восстановление
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)  
+    token = models.CharField(max_length=255, unique=True)  
+    created_at = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):
         return f"Password reset request for {self.user.email} at {self.created_at}"
