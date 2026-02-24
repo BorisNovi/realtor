@@ -1,22 +1,19 @@
-# listings/views.py
 import json
+from typing import Optional
+from rest_framework import status, permissions, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions
+from rest_framework.decorators import action
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from catalog.utils.pagination import FrontendPagination
-from listings.models import Listing
-from listings.listing_serializers import ListingSerializer
-from typing import Optional
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from realtor.helpers import build_prefix_tsquery
-from rest_framework.decorators import action
-from rest_framework import viewsets
 from realtor import mixins
+from realtor.helpers import build_prefix_tsquery
+from catalog.utils.pagination import FrontendPagination
+from listings.models import Listing
+from listings.listing_serializers import ListingSerializer
 
-# Контроллер для листингов с поддержкой создания листинга
 class ListingsView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
     queryset = Listing.objects.all()  
@@ -32,7 +29,6 @@ class ListingsView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
         sort_field = self.request.query_params.get("sortField")
         sort_order = self.request.query_params.get("sortOrder", "asc")
 
-        # --- Поиск ---
         if search and search.strip():
             tsquery = self._build_prefix(search)
             if tsquery:
@@ -49,7 +45,6 @@ class ListingsView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
             else:
                 qs = qs.filter(Q(name__icontains=search))
 
-        # --- Сортировка ---
         allowed_sort_fields = ["name", "date_added"]
 
         # Нормализация. TODO: то же самое нужно сделать для контаков, 
@@ -65,8 +60,6 @@ class ListingsView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
 
         return qs
 
-    # Удаление подборок (пакетное) 
-    # Ожидает JSON-массив ID в поле "ids" тела запроса
     @action(detail=False, methods=["delete"])
     def bulk_delete(self, request):
         ids_param = request.query_params.get("ids", "[]")
@@ -102,10 +95,8 @@ class PublicListingView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, token: str):
-        # Ищем листинг с нужным токеном
         listing = get_object_or_404(Listing, public_link__token=token)
-
-        # Проверяем доступность
+        
         if not listing.public_link.get("available", False):
             return Response({"detail": "Not found"}, status=status.HTTP_404_NOT_FOUND)
 

@@ -1,21 +1,17 @@
 from django.utils import timezone
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework_simplejwt.token_blacklist.models import (
-    OutstandingToken, BlacklistedToken
-)
-
-# user_auth/views/logout_all.py
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 
 class LogoutAllView(APIView):
     permission_classes = (IsAuthenticated,)
-
+    
     def post(self, request):
         user = request.user
 
-        # мгновенно убиваем access
+        # убиваем access
         user.last_logout_at = timezone.now()
         user.save(update_fields=["last_logout_at"])
 

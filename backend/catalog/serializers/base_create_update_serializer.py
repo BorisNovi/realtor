@@ -19,8 +19,8 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
     price = PriceSerializer()
     contact = ContactIDField(
         queryset=Contact.objects.all(),
-        required=False,      # необязательное поле
-        allow_null=True      # можно передавать null
+        required=False,      
+        allow_null=True     
     )
 
     class Meta:
@@ -35,11 +35,11 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
     def validate_photos(self, value):
         if len(value) > MAX_FILES:
             raise serializers.ValidationError(
-                f"Too many photos. Max allowed is {MAX_FILES}."
+                f"TOO_MANY_FILES. MAX_ALLOWED_IS_{MAX_FILES}."
             )
         return value
     
-    @transaction.atomic # Обеспечивает атомарность операции, чтобы избежать частичного создания данных
+    @transaction.atomic
     def create(self, validated_data):
         print(Fore.YELLOW + "=== Initiating Creating Property... ===" + Fore.RESET)
         print(f"Validated data: {validated_data}")

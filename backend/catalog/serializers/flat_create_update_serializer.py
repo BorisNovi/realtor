@@ -1,9 +1,7 @@
-# catalog/serializers/flat_create_update_serializer.py
 from rest_framework import serializers
 from catalog.catalog_models import Flat
 from catalog.serializers.base_create_update_serializer import BaseCreateUpdateSerializer
 from django.db import transaction
-
 from catalog.serializers.catalog_address_serializer import AddressSerializer
 from catalog.serializers.catalog_price_serializer import build_price
 from contacts.contact_serializers import ContactSerializer

@@ -1,15 +1,13 @@
-# contacts/serializers.py
 from rest_framework import serializers
 from contacts.models import Contact
 import re
 
-# Чтобы можно было передавать только ID контакта во вложенном виде
+# Адаптер для обработки входящих данных, которые могут быть в виде словаря с ключом 'id' или просто числом
 class ContactIDField(serializers.PrimaryKeyRelatedField):
     def to_internal_value(self, data):
         if isinstance(data, dict) and 'id' in data:
             data = data['id']
         return super().to_internal_value(data)
-
 
 class ContactSerializer(serializers.ModelSerializer):
     comment = serializers.CharField(required=False, allow_null=True, allow_blank=True)
@@ -20,7 +18,6 @@ class ContactSerializer(serializers.ModelSerializer):
         fields = ['id', 'dateAdded', 'name', 'phone', 'additional_phone', 'comment', 'user']
         read_only_fields = ['id', 'dateAdded', 'user']
 
-    # Валидация полей контакта
     def validate_name(self, value):
         if len(value) > 50:
             raise serializers.ValidationError("Максимум 50 символов.")
@@ -57,20 +54,17 @@ class ContactSerializer(serializers.ModelSerializer):
         if qs.exists():
             existing = qs.first()
             
-            if not instance:  # создание
+            if not instance: 
                 raise serializers.ValidationError({
-                    "phone": f"Такой контакт уже существует в вашем списке ('{existing.name}')"
+                    "CONTACT_ALREADY_EXISTS"
                 })
             
-            # при обновлении — просто запрещаем дубли (можно смягчить, если нужно)
             raise serializers.ValidationError({
-                "phone": "Этот номер уже используется в ваших контактах."
+                "PHONE_ALREADY_USED_BY_ANOTHER_CONTACT"
             })
 
         return attrs
 
-
-    # Создание контакта, если его не было, или возвращение существующего
     def create(self, validated_data):
         return Contact.objects.create(**validated_data)
 
@@ -83,7 +77,7 @@ class ContactSerializer(serializers.ModelSerializer):
         if new_phone != instance.phone:
             if Contact.objects.filter(phone=new_phone).exclude(pk=instance.pk).exists():
                 raise serializers.ValidationError(
-                    f"Phone number {new_phone} is already used by another contact."
+                    "PHONE_ALREADY_USED_BY_ANOTHER_CONTACT"
                 )
 
         # Обновляем поля, если они переданы, иначе оставляем старые

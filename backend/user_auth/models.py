@@ -12,6 +12,5 @@ class UserSession(models.Model):
     user_agent = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # Чтобы в админке было видно по-человечески
     def __str__(self):
         return f"{self.user.email} — {self.ip_address}"

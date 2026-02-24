@@ -1,12 +1,9 @@
-# file/utils.py
-import os
-import shutil
-import logging
-from realtor.settings import BASE_URL
+import os, shutil, logging
 from django.conf import settings
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
+from realtor.settings import BASE_URL
 
 logger = logging.getLogger(__name__)
 

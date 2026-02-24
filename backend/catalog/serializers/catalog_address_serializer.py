@@ -1,5 +1,3 @@
-# Сериалайзер для адреса недвижимости. Используется в других сериалайзерах.
-
 from rest_framework import serializers
 
 class AddressSerializer(serializers.Serializer):
