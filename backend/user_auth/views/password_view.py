@@ -1,14 +1,14 @@
+import secrets
+from datetime import timedelta
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
-from django.core.mail import send_mail
+from rest_framework.response import Response
 from django.utils import timezone
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
-from datetime import timedelta
-import secrets
+from django.core.mail import send_mail
 from users.models import User, PasswordResetRequest
-from rest_framework.response import Response
-from rest_framework import status
 
 class PasswordRecoveryView(APIView):
     authentication_classes = []
@@ -17,24 +17,22 @@ class PasswordRecoveryView(APIView):
     def post(self, request):
         email = request.data.get("email")
         if not email:
-            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"EMAIL_IS_REQUIRED"}, status=status.HTTP_400_BAD_REQUEST)
 
         validator = EmailValidator()
         try:
             validator(email)
         except ValidationError:
-            return Response({"error": "Invalid email format"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"INVALID_EMAIL_FORMAT"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return Response({"error": "User with this email does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"USER_NOT_FOUND"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Генерация токена
         token = secrets.token_urlsafe(32)
         PasswordResetRequest.objects.create(user=user, token=token)
 
-        # Ссылка на фронт
         reset_url = request.build_absolute_uri(f"/auth/password-reset-activate/?token={token}")
 
         send_mail(
@@ -57,22 +55,20 @@ class PasswordResetActivateView(APIView):
         new_password = request.data.get("password")
 
         if not token or not new_password:
-            return Response({"error": "Token and new password are required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"TOKEN_AND_PASSWORD_REQUIRED"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             reset_request = PasswordResetRequest.objects.get(token=token)
         except PasswordResetRequest.DoesNotExist:
-            return Response({"error": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"INVALID_OR_EXPIRED_TOKEN"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Проверка на срок действия токена (1 час)
         if reset_request.created_at < timezone.now() - timedelta(hours=1):
-            return Response({"error": "Token expired"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"TOKEN_EXPIRED"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Обновляем пароль
         user = reset_request.user
         user.set_password(new_password)
         user.save()
 
-        reset_request.delete()  # удаляем использованный токен
+        reset_request.delete()
 
         return Response({"message": "Password has been reset successfully"}, status=status.HTTP_200_OK)

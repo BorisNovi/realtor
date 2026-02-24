@@ -1,8 +1,6 @@
-# contacts/urls.py
 from django.urls import path
 from .contact_views import ContactView
 
-# contacts/urls.py
 urlpatterns = [
     path('', ContactView.as_view(
         {
@@ -19,8 +17,8 @@ urlpatterns = [
         'patch': 'partial_update',
     })),
     
-    # Дополнительный путь для получения списка контактов (может быть полезен для фронтенда, чтобы не путать с основным CRUD-эндпоинтом)
-    path('/list', ContactView.as_view({'get': 'list'})),              # /api/v1/contact/list
+    # Дополнительный путь для получения списка контактов
+    path('/list', ContactView.as_view({'get': 'list'})),  # /api/v1/contact/list
 ]
 
 # Проверил, все пути работают корректно. Слэши в начале URLов нужны!

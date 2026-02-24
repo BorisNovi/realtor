@@ -1,10 +1,8 @@
-# catalog/views.py
-from django.shortcuts import get_object_or_404
-from rest_framework import permissions
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.shortcuts import get_object_or_404
 
 from catalog.catalog_models import Property
 from catalog.serializers.flat_create_update_serializer import (
@@ -27,7 +25,6 @@ from catalog.serializers.land_create_update_serializer import (
     LandCreateUpdateSerializer, 
     LandReadSerializer
 ) 
-
 
 # Словари для динамического выбора сериализатора по propertyType
 # Для записи (создание/обновление)
@@ -66,7 +63,6 @@ class PropertyObjectAPIView(APIView):
         )
         return instance.get_real_instance()
 
-    # POST - создание нового объекта
     def post(self, request):
         print("Incoming data:", request.data)
         
@@ -86,26 +82,22 @@ class PropertyObjectAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
 
-        # Отдаём фронту через read-сериализатор
         read_serializer_class = PROPERTY_READ_SERIALIZER_MAP[property_type]
         read_serializer = read_serializer_class(instance)
         
         print("Response data:", read_serializer.data)
         return Response(read_serializer.data, status=status.HTTP_201_CREATED)
 
-    # GET - получение данных
     def get(self, request, pk):
         print("Requested pk:", pk)
 
-        # Берём объект из базовой таблицы Property
         instance = self._get_property_instance(pk)
         property_type = instance.property_type 
 
         read_serializer_class = PROPERTY_READ_SERIALIZER_MAP.get(property_type)
         if not read_serializer_class:
             return Response(
-                # я хуй его знает почему тут может быть неизвестный тип, но на всякий случай
-                {"error": f"Unknown propertyType {property_type}"},
+                {"error": f"UNKNOWN_TYPE {property_type}"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -117,7 +109,6 @@ class PropertyObjectAPIView(APIView):
         print("Response data:", serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # PUT - полное обновление объекта
     def put(self, request, pk):
         print("Incoming data:", request.data)
         
@@ -140,8 +131,6 @@ class PropertyObjectAPIView(APIView):
         print("Response data:", read_serializer.data)
         return Response(read_serializer.data, status=status.HTTP_200_OK)
 
-
-    # PATCH - частичное обновление (например, только статус)
     def patch(self, request, pk):
         print("Incoming data:", request.data)
         

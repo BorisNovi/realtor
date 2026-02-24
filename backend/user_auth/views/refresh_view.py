@@ -1,9 +1,9 @@
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.contrib.auth import get_user_model
-from rest_framework import status
 
 class RefreshTokenView(APIView):
     permission_classes = [AllowAny]
@@ -14,9 +14,9 @@ class RefreshTokenView(APIView):
         auth_header = request.headers.get('Authorization')
 
         if not user_id:
-            return Response({'error': 'Missing userId in request body'}, status=400)
+            return Response({'MISSING_USER_ID'}, status=400)
         if not auth_header or not auth_header.startswith('Bearer '):
-            return Response({'error': 'Invalid Authorization header'}, status=400)
+            return Response({'INVALID_AUTH_HEADER'}, status=400)
 
         refresh_token = auth_header.split(' ')[1]
 
@@ -25,7 +25,7 @@ class RefreshTokenView(APIView):
             user = get_user_model().objects.get(id=user_id)
             
             if str(refresh['user_id']) != str(user_id):
-                return Response({'error': 'Token does not belong to this user'}, status=400)
+                return Response({'TOKEN_DOES_NOT_BELONG_TO_USER'}, status=400)
 
             return Response({
                 'user': {

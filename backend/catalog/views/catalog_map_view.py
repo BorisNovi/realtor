@@ -27,7 +27,7 @@ class CatalogMapView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
         lat_max = self.request.query_params.get("latMax") or self.request.query_params.get("box.maxLat")
 
         if not all([lng_min, lng_max, lat_min, lat_max]):
-            raise ValidationError("Some of the required coordinates are missing")
+            raise ValidationError("MISSING_COORDINATES")
 
         lng_min, lng_max, lat_min, lat_max = map(float, [lng_min, lng_max, lat_min, lat_max])
 

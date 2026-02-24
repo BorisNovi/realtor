@@ -1,15 +1,13 @@
-# user_auth/urls.py
-from django.urls import path, include
+from django.urls import path
 from rest_framework.routers import DefaultRouter
-
 from user_auth.views.terminate_sessions import LogoutAllView
 from .views import (
     AuthViewSet,
     PasswordRecoveryView,
     PasswordResetActivateView,
+    refresh_view,
+    session_check_view
 )
-from .views import refresh_view, session_check_view
-
 
 router = DefaultRouter()
 router.register(r'', AuthViewSet, basename='auth')  

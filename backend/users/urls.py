@@ -1,4 +1,3 @@
-# user/urls.py
 from django.urls import path
 from .user_views import ProfileView, ChangePasswordView, DeleteProfileView
 

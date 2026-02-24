@@ -1,27 +1,19 @@
-# file/views.py
-# Тут реализуем загрузку файлов (изображений) для объектов недвижимости
-from file.file_serializers import FileUploadSerializer
-from realtor.settings import MAX_FILES, BASE_URL
-from .models import FileUpload
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from realtor.settings import MAX_FILES, BASE_URL
+from file.file_serializers import FileUploadSerializer
 
-baseurl = BASE_URL # Базовый URL для формирования полных ссылок на файлы 
+baseurl = BASE_URL 
 
 class FileUploadView(APIView):
-    # authentication_classes = [JWTAuthentication]  
-    # permission_classes = [permissions.IsAuthenticated]
-
-    # Тестовая среда
-    authentication_classes = []  
-    permission_classes = [permissions.AllowAny]
+    authentication_classes = [JWTAuthentication]  
 
     def post(self, request):
         if not request.FILES:
             return Response(
-                {"detail": "А где?"},
+                {"MISSING_FILES"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -29,7 +21,7 @@ class FileUploadView(APIView):
         total_files = sum(len(request.FILES.getlist(key)) for key in request.FILES)
         if total_files > MAX_FILES:
             return Response(
-                {"detail": f"В таком количестве себе члены в жопу суй, а в один объект можно пихать только {MAX_FILES} изображений"},
+                {"TOO_MANY_FILES"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 

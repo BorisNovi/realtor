@@ -25,7 +25,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    # Профиль
     name = models.CharField(max_length=100, blank=True)
     company_name = models.CharField(max_length=255, blank=True)
     company_logo = models.URLField(max_length=500, blank=True)
@@ -49,9 +48,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class PasswordResetRequest(models.Model):
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)  # Ссылка на кастомную модель User
-    token = models.CharField(max_length=255, unique=True)  # Уникальный токен для сброса пароля
-    created_at = models.DateTimeField(auto_now_add=True)  # Дата запроса на восстановление
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)  
+    token = models.CharField(max_length=255, unique=True)  
+    created_at = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):
         return f"Password reset request for {self.user.email} at {self.created_at}"

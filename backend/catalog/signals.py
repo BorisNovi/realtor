@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from listings.models import Listing
-from catalog.catalog_models import Flat # House, Land и другие дочерние модели
+from catalog.catalog_models import Flat
 
 # Функция для очистки ссылок на удалённые объекты недвижимости из листингов
 def cleanup_from_listings(deleted_id):
@@ -22,15 +22,5 @@ def soft_delete_flat(sender, instance, **kwargs):
     if instance.is_deleted:
         cleanup_from_listings(instance.id)
 
-# TODO: не забудь про это, когда добавишь другие модели недвижимости
-# @receiver(post_save, sender=House)
-# def soft_delete_house(sender, instance, **kwargs):
-#     if instance.is_deleted:
-#         cleanup_from_listings(instance.id)
-
-
-# @receiver(post_save, sender=Land)
-# def soft_delete_land(sender, instance, **kwargs):
-#     if instance.is_deleted:
-#         cleanup_from_listings(instance.id)
+# TODO: не забудь переписать этот сигнал под новую модель. 
 

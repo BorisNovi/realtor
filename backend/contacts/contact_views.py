@@ -1,18 +1,16 @@
-# contacts/views.py
-import re, json
+import json
+from typing import Optional
+from rest_framework import status, viewsets
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.db.models import Q
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from realtor import mixins
+from realtor.helpers import build_prefix_tsquery
 from catalog.utils.pagination import FrontendPagination
 from contacts.models import Contact
-from django.db.models import Q
 from contacts.contact_serializers import ContactSerializer
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-from typing import Optional
-from rest_framework import viewsets
-from realtor import mixins
-from rest_framework.decorators import action
-from realtor.helpers import build_prefix_tsquery
 
 # Контроллер для контактов с поддержкой поиска, пагинации, сортировки и CRUD операций
 # Использует PostgreSQL full-text search с префиксным поиском и fallback на icontains
@@ -31,7 +29,6 @@ class ContactView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
         sort_field = self.request.query_params.get("sortField")
         sort_order = self.request.query_params.get("sortOrder", "asc")
 
-        # --- Поиск ---
         if search and search.strip():
             tsquery = self._build_prefix(search)
             if tsquery:
@@ -48,7 +45,6 @@ class ContactView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
             else:
                 qs = qs.filter(Q(name__icontains=search) | Q(phone__icontains=search))
 
-        # --- Сортировка ---
         allowed_sort_fields = ["name", "dateAdded"]
         if sort_field in allowed_sort_fields:
             direction = "-" if sort_order.lower() == "desc" else ""
@@ -58,18 +54,16 @@ class ContactView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
 
         return qs
 
-    # Удаление контактов (пакетное) 
-    # Ожидает JSON-массив ID в поле "ids" тела запроса
     @action(detail=False, methods=["delete"])
     def bulk_delete(self, request):
         ids_param = request.query_params.get("ids", "[]")
         try:
             ids = json.loads(ids_param)
         except json.JSONDecodeError:
-            return Response({"detail": "Invalid JSON"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"INVALID_JSON"}, status=status.HTTP_400_BAD_REQUEST)
 
         if not isinstance(ids, list):
-            return Response({"detail": "Invalid ID list"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"INVALID_ID_LIST"}, status=status.HTTP_400_BAD_REQUEST)
 
         qs = Contact.objects.filter(id__in=ids)
         deleted_count = qs.count()

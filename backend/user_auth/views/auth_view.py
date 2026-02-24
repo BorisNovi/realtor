@@ -1,21 +1,18 @@
-# user_auth/views/signup_view.py
+import uuid
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
-from ..serializers import SignupSerializer, SigninSerializer
-from django.core.cache import cache
 from django.db import IntegrityError
-import uuid
+from django.core.cache import cache
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
-
+from ..serializers import SignupSerializer, SigninSerializer
 
 User = get_user_model()
 CACHE_TIMEOUT = 3600 # 1 hour
 
 class AuthViewSet(viewsets.GenericViewSet):
-    """Регистрация и логин пользователей через email и password"""
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
 
@@ -29,17 +26,14 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'])
     def sign_up(self, request):
-        """Регистрация нового пользователя с подтверждением по email"""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user_data = serializer.validated_data
         email = user_data['email']
 
-        # Генерация токена активации
         token = str(uuid.uuid4())
         cache.set(f"signup_token:{token}", user_data, timeout=CACHE_TIMEOUT)
 
-        # Формируем ссылку активации
         activation_link = request.build_absolute_uri(f"/auth/activate/?token={token}")
 
         try:
@@ -62,14 +56,13 @@ class AuthViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['post'])
     def sign_up_activate(self, request):
-        """Активация аккаунта по токену из письма"""
         token = request.data.get('token')
         if not token:
-            return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'TOKEN_IS_REQUIRED'}, status=status.HTTP_400_BAD_REQUEST)
 
         user_data = cache.get(f"signup_token:{token}")
         if not user_data or 'email' not in user_data or 'password' not in user_data:
-            return Response({'error': 'Invalid or expired token'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'INVALID_TOKEN'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = User.objects.create_user(
@@ -98,13 +91,12 @@ class AuthViewSet(viewsets.GenericViewSet):
             }, status=status.HTTP_201_CREATED)
 
         except IntegrityError:
-            return Response({'error': 'Email is already registered'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'EMAIL_ALREADY_REGISTERED'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'error': f'Failed to create user: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'FAILED_TO_CREATE_USER': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=False, methods=['post'])
     def sign_in(self, request):
-        """Авторизация пользователя"""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']

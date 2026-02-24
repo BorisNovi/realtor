@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 def temp_upload_path(instance, filename):
-    return f"temp/{filename}"  # <-- файлы будут в media/temp/
+    return f"temp/{filename}"
 
 class FileUpload(models.Model):
     file = models.FileField(upload_to=temp_upload_path)
@@ -13,9 +13,9 @@ class FileUpload(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # сначала сохраняем файл
+        super().save(*args, **kwargs)
         if not self.url:
-            self.url = self.file.url  # теперь file.url точно вернёт /media/temp/filename
+            self.url = self.file.url 
             super().save(update_fields=["url"])
 
 

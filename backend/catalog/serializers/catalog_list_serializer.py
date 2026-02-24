@@ -4,7 +4,6 @@ from catalog.serializers.catalog_price_serializer import build_price
 from .catalog_address_serializer import AddressSerializer
 
 # Сериализатор для запроса списка всех объектов в сокращенном формате. 
-# Используется в CatalogListView
 class CatalogListSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
     price = serializers.SerializerMethodField()

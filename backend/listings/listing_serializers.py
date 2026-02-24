@@ -1,4 +1,3 @@
-# listings/listing_serializers.py
 import secrets
 from django.db import transaction
 from rest_framework import serializers
@@ -6,7 +5,6 @@ from catalog.views.create_update_object_view import PROPERTY_READ_SERIALIZER_MAP
 from catalog.catalog_models import Property 
 from listings.models import Listing
 
-# === СЕРИАЛИЗАТОР ЛИСТИНГОВ ===
 class ListingSerializer(serializers.ModelSerializer):
     property_object_ids = serializers.ListField(
         child=serializers.IntegerField(min_value=1)
@@ -15,7 +13,6 @@ class ListingSerializer(serializers.ModelSerializer):
     property_objects = serializers.SerializerMethodField()
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
-    # Добавляем новые поля для компании
     company_name = serializers.SerializerMethodField()
     company_logo = serializers.SerializerMethodField()
 
@@ -76,7 +73,6 @@ class ListingSerializer(serializers.ModelSerializer):
         if not all(isinstance(i, int) for i in ids):
             raise serializers.ValidationError("Все элементы должны быть числами")
         return ids
-        
 
     # -------------------- ЛОГИКА ГЕНЕРАЦИИ PUBLIC LINK --------------------
     def _generate_token(self) -> str:
@@ -91,7 +87,6 @@ class ListingSerializer(serializers.ModelSerializer):
             "available": available,
             "token": token
         }
-
 
     @transaction.atomic
     def create(self, validated_data):
