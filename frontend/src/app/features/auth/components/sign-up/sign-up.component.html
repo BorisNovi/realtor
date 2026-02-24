@@ -1,10 +1,10 @@
 @let loading = isLoading();
 
-<div class="flex items-center min-h-screen px-4 min-w-[100vw] overflow-hidden">
-  <div class="w-1/2 flex items-center justify-center min-h-dvh">
-    <div>{{ 'AUTH.INFO_IMAGE_RIGHT_BLOCK' | translate }}</div>
+<div class="flex items-center justify-around min-h-screen px-4 min-w-screen overflow-hidden">
+  <div class="hidden lg:flex items-center min-h-dvh">
+    <rx-info-block />
   </div>
-  <div class="w-full flex items-center justify-center min-h-dvh">
+  <div class="flex items-center justify-center min-h-dvh">
     <div
       style="
         border-radius: 56px;
@@ -12,13 +12,13 @@
         background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);
       "
     >
-      <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
+      <div class="bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
         <div class="text-center mb-8">
           <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">{{ 'AUTH.JOIN' | translate }}</div>
           <span class="text-muted-color font-medium">{{ 'AUTH.SIGN_UP_TO_GET_STARTED' | translate }}</span>
         </div>
 
-        <form (submit)="onSubmit()" [formGroup]="form" class="md:w-[30rem]">
+        <form (submit)="onSubmit()" [formGroup]="form" class="md:w-120">
           <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">{{
             'AUTH.EMAIL_LABEL' | translate
           }}</label>

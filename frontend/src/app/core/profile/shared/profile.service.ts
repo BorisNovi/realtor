@@ -12,7 +12,7 @@ export class ProfileService extends CrudBaseService {
   }
 
   fetchProfile() {
-    return this.http.get<IUser>(`${this.baseUrl}/${environment.apiUrl}/profile`);
+    return this.http.get<IUser>(`${this.baseUrl}/profile`);
   }
 
   changePassword(body: IPasswordChange) {
@@ -21,5 +21,9 @@ export class ProfileService extends CrudBaseService {
 
   changeProfileDetails(body: Partial<IUserEditable>) {
     return this.patch<IUserEditable, IUser>(body, 'profile');
+  }
+
+  deleteAccount(password: string) {
+    return this.create<{ password: string }, null>({ password }, 'profile/delete');
   }
 }

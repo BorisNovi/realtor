@@ -7,14 +7,20 @@ export class FetchProfile {
 export class ChangePassword {
   static readonly type = '[Profile] Change Password';
   constructor(
-    public password: string,
-    public passwordConfirmation: string,
+    public oldPassword: string,
+    public newPassword: string,
+    public newPasswordConfirmation: string,
   ) {}
 }
 
 export class EditProfile {
   static readonly type = '[Profile] Edit';
   constructor(public options: Partial<IUserEditable>) {}
+}
+
+export class DeleteAccount {
+  static readonly type = '[Profile] Delete Account';
+  constructor(public password: string) {}
 }
 
 export class ProfileOperationSuccess {

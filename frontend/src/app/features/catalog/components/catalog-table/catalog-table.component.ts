@@ -1,19 +1,11 @@
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  OnDestroy,
-  viewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { CardsGridComponent } from '@shared/components';
 import { CATALOG_PAGINATION_KEY, CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency, PropertyStatus } from '@shared/enums';
 import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
@@ -21,14 +13,17 @@ import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOption
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
+import { CardModule } from 'primeng/card';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Menu, MenuModule } from 'primeng/menu';
+import { PaginatorState } from 'primeng/paginator';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
 import { Table, TableEditCompleteEvent, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
-import { startWith, tap } from 'rxjs';
+import { TooltipModule } from 'primeng/tooltip';
+import { startWith, switchMap, tap } from 'rxjs';
 import {
   CatalogState,
   DeletePropertyObjects,
@@ -39,10 +34,12 @@ import {
   SetCatalogPagination,
   SetCatalogSort,
   UpdateStatus,
+  ViewMode,
+  ViewModeService,
 } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
-import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 import { AddToListingComponent } from '../add-to-listing/add-to-listing.component';
+import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
 @Component({
   selector: 'rx-table',
@@ -60,13 +57,16 @@ import { AddToListingComponent } from '../add-to-listing/add-to-listing.componen
     SelectModule,
     ProgressBarModule,
     TranslatePipe,
+    TooltipModule,
+    CardsGridComponent,
+    CardModule,
   ],
   providers: [DialogService],
   templateUrl: './catalog-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CatalogTableComponent implements AfterViewInit, OnDestroy {
-  readonly pTable = viewChild.required<Table>('pTable');
+  readonly pTable = viewChild<Table>('pTable');
   readonly menu = viewChild.required<Menu>('menu');
 
   #ref!: DynamicDialogRef | null;
@@ -77,9 +77,12 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
   readonly #destroyRef = inject(DestroyRef);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
   readonly #queryParamsService = inject(QueryParamsService);
-  readonly #filtersService = inject(CatalogFiltersService);
+  readonly #viewModeService = inject(ViewModeService);
+  readonly filtersService = inject(CatalogFiltersService);
 
-  readonly filtersCount = computed(() => this.#filtersService.currentCount);
+  readonly viewMode = this.#viewModeService.viewMode;
+  readonly catalogTrackBy = (item: ICatalogItem) => item.id;
+
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
   statuses: { label: string; value: string }[] = [];
@@ -92,10 +95,15 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
   readonly paginationS = this.#store.selectSignal(CatalogState.pagination);
   readonly loadingS = this.#store.selectSignal(CatalogState.loading);
 
+  ViewMode = ViewMode;
+
   ngAfterViewInit(): void {
-    const pagination = this.paginationS();
-    this.pTable().first = pagination.first;
-    this.pTable().rows = pagination.rows;
+    const table = this.pTable();
+    if (table) {
+      const pagination = this.paginationS();
+      table.first = pagination.first;
+      table.rows = pagination.rows;
+    }
 
     this.#initPropsTranlstes();
   }
@@ -114,7 +122,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
 
     if (!currentItem || currentItem.status === newStatus) return;
 
-    this.#store.dispatch(new UpdateStatus(id, newStatus));
+    this.#store.dispatch(new UpdateStatus(id, newStatus, { getList: true }));
   }
 
   #setActionItems(item: ICatalogItem): void {
@@ -152,10 +160,11 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
     }
 
     // Используется, чтобы перебить переключение пагинации при сортировке
-    if (this.pTable) {
+    const table = this.pTable();
+    if (table) {
       const pagination = this.paginationS();
-      this.pTable().first = pagination.first;
-      this.pTable().rows = pagination.rows;
+      table.first = pagination.first;
+      table.rows = pagination.rows;
     }
   }
 
@@ -164,8 +173,18 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
     this.#store.dispatch([new SetCatalogPagination(event), new FetchCatalog()]);
   }
 
+  onCardsPageChange(event: PaginatorState): void {
+    const pagination = { first: event.first ?? 0, rows: event.rows ?? 20 };
+    this.#queryParamsService.updateQueryParams(pagination, CATALOG_PAGINATION_KEY);
+    this.#store.dispatch([new SetCatalogPagination(pagination), new FetchCatalog()]);
+  }
+
+  toggleViewMode(): void {
+    this.#viewModeService.toggle();
+  }
+
   onFiltersOpen(): void {
-    this.#filtersService.openFilters();
+    this.filtersService.openFilters();
   }
 
   openItemDialog(id?: number): void {
@@ -210,6 +229,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
       width: '50vw',
       modal: true,
       closable: true,
+      dismissableMask: true,
       focusOnShow: false,
       breakpoints: {
         '960px': '75vw',
@@ -217,11 +237,23 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
         '640px': '95vw',
       },
     });
+
+    this.#ref?.onClose
+      .pipe(
+        takeUntilDestroyed(this.#destroyRef),
+        switchMap(() => this.#store.dispatch(new FetchCatalog())),
+      )
+      .subscribe();
   }
 
   deleteItems(items: ICatalogItem[]): void {
     this.#deletionConfirmationService.confirm(() => {
-      this.#store.dispatch(new DeletePropertyObjects(items.map(item => item.id)));
+      this.#store.dispatch(
+        new DeletePropertyObjects(
+          items.map(item => item.id),
+          { getList: true },
+        ),
+      );
       this.selectedItems = [];
     });
   }

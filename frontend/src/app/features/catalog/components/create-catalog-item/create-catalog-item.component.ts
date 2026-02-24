@@ -92,11 +92,7 @@ export class CreateCatalogItemComponent implements OnInit {
     value: item,
     id: item.id,
   });
-  readonly contactValueMapper = (contact: IContact) => ({
-    id: contact?.id || null,
-    name: contact?.name || null,
-    phone: contact?.phone || null,
-  });
+  readonly contactValueMapper = (contact: IContact) => ({ id: contact.id });
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
   readonly fieldsetConfig = createItemsFieldsetConfig;
@@ -148,10 +144,11 @@ export class CreateCatalogItemComponent implements OnInit {
     const data = this.config.data;
 
     this.form = this.#fb.group({
+      name: [data?.name],
       photos: [data?.photos || []],
       propertyType: [data?.propertyType || null, Validators.required],
       zoningType: [data?.zoningType || null, Validators.required],
-      status: [data?.status || null, Validators.required],
+      status: [data?.status || PropertyStatus.available, Validators.required],
       address: this.#fb.group({}),
       area: [data?.area || null, [Validators.required, Validators.min(1)]],
 
@@ -160,7 +157,7 @@ export class CreateCatalogItemComponent implements OnInit {
         value: [data?.price?.value || null, [Validators.required, Validators.min(0)]],
       }),
 
-      contact: [data?.contact || null, [Validators.required]],
+      contact: [data?.contact],
       comment: [data?.comment || null],
 
       specifics: this.#fb.group({
@@ -195,23 +192,31 @@ export class CreateCatalogItemComponent implements OnInit {
 
   onUpload(event: FileUploadHandlerEvent): void {
     if (event && Array.isArray(event.files)) {
-      const files: File[] = event.files;
+      const oversized = event.files.filter(f => f.size > this.maxImageSize);
+      const validFiles = event.files.filter(f => f.size <= this.maxImageSize);
+
+      if (oversized.length > 0) {
+        const sizeMb = this.maxImageSize / 1024 / 1024;
+        this.uploadErrorS.set(this.#translateService.instant('FILE_UPLOAD.ERRORS.FILE_TOO_LARGE', { size: sizeMb }));
+        this.fileUpload().clear();
+      }
+
+      if (validFiles.length === 0) return;
 
       this.#fileUploadService
-        .upload(files)
+        .upload(validFiles)
         .pipe(takeUntilDestroyed(this.#destroyRef))
         .subscribe({
           next: (newUrls: string[]) => {
             this.photosS.update(currentUrls => [...currentUrls, ...newUrls]);
             this.form.patchValue({ photos: this.photosS() });
             this.fileUpload().clear();
-            this.uploadErrorS.set(null);
+            if (oversized.length === 0) this.uploadErrorS.set(null);
           },
           error: err => {
-            const errorMessage = err?.message || 'File upload failed';
-            this.uploadErrorS.set(errorMessage);
-            files.length = 0;
+            this.uploadErrorS.set(this.#translateService.instant('FILE_UPLOAD.ERRORS.UPLOAD_FAILED'));
             console.error('File upload failed:', err);
+            this.fileUpload().clear();
           },
         });
     }
@@ -220,9 +225,13 @@ export class CreateCatalogItemComponent implements OnInit {
   onAddresPickerFill(picked: IPickerAddress | null): void {
     this.position.set(picked?.coordinates || [0, 0]);
     const address = this.form.get('address')! as FormGroup;
-    address.get('city')?.setValue(picked?.address.city);
-    address.get('road')?.setValue(picked?.address.road);
-    address.get('house')?.setValue(picked?.address.house_number);
+    address.get('country')?.setValue(picked?.address?.country);
+    address.get('state')?.setValue(picked?.address?.state);
+    address
+      .get('city')
+      ?.setValue(picked?.address?.city || picked?.address?.town || picked?.address?.village || picked?.address?.hamlet);
+    address.get('road')?.setValue(picked?.address?.road);
+    address.get('house')?.setValue(picked?.address?.house_number);
     address.get('position')?.setValue(picked?.coordinates);
   }
 
@@ -242,15 +251,17 @@ export class CreateCatalogItemComponent implements OnInit {
       width: '480px',
       modal: true,
       closable: true,
+      dismissableMask: true,
       focusOnShow: false,
       breakpoints: {
         '640px': '90vw',
       },
     });
 
-    dialogRef?.onClose
-      .pipe(take(1), takeUntilDestroyed(this.#destroyRef))
-      .subscribe(result => this.form.get('contact')?.setValue(result));
+    dialogRef?.onClose.pipe(take(1), takeUntilDestroyed(this.#destroyRef)).subscribe(result => {
+      console.log(result);
+      this.form.get('contact')?.setValue(result);
+    });
   }
 
   onSubmit(): void {
@@ -267,13 +278,11 @@ export class CreateCatalogItemComponent implements OnInit {
           ...this.config.data,
           ...formData,
           price: { ...this.config.data!.price, ...formData.price },
-          contact: { ...this.config.data!.contact, name: formData.contact.name, phone: clearPhone(formData.contact.phone) },
           specifics: { ...this.config.data!.specifics, ...formData.specifics },
           photos: this.photosS(),
         }
       : {
           ...formData,
-          contact: { name: formData.contact.name, phone: clearPhone(formData.contact.phone) },
           photos: this.photosS(),
         };
 

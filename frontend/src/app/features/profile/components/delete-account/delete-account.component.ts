@@ -4,14 +4,13 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { InputWrapperComponent } from '@shared/components';
-import { matchValuesValidator, strongPasswordValidator } from '@shared/validators';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
 import { PasswordModule } from 'primeng/password';
-import { tap } from 'rxjs';
-import { ChangePassword } from 'src/app/core/profile/state';
+import { DeleteAccount } from 'src/app/core/profile/state';
 
 @Component({
   imports: [
@@ -22,45 +21,32 @@ import { ChangePassword } from 'src/app/core/profile/state';
     AutoFocusModule,
     InputWrapperComponent,
     TranslatePipe,
+    MessageModule,
   ],
-  templateUrl: './change-password.component.html',
+  templateUrl: './delete-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChangePasswordComponent {
+export class DeleteAccountComponent {
   readonly #ref = inject(DynamicDialogRef);
   readonly #fb = inject(FormBuilder);
   readonly #store = inject(Store);
   readonly #destroyRef = inject(DestroyRef);
 
-  form = this.#fb.group(
-    {
-      oldPassword: ['', [Validators.required]],
-      newPassword: ['', [Validators.required, Validators.minLength(8), strongPasswordValidator()]],
-      newPasswordConfirmation: ['', [Validators.required, Validators.minLength(8), strongPasswordValidator()]],
-    },
-    {
-      validators: matchValuesValidator('password', 'newPasswordConfirmation'),
-    },
-  );
+  form = this.#fb.group({
+    password: ['', [Validators.required, Validators.minLength(8)]],
+  });
 
   onSubmit(): void {
-    const { oldPassword, newPassword, newPasswordConfirmation } = this.form.value;
+    const { password } = this.form.value;
 
-    if (
-      !this.form.valid ||
-      typeof oldPassword != 'string' ||
-      typeof newPassword != 'string' ||
-      typeof newPasswordConfirmation != 'string'
-    )
-      return;
+    if (!this.form.valid || typeof password != 'string') return;
 
     this.#store
-      .dispatch(new ChangePassword(oldPassword, newPassword, newPasswordConfirmation))
-      .pipe(
-        tap(() => this.#ref.close()),
-        takeUntilDestroyed(this.#destroyRef),
-      )
-      .subscribe();
+      .dispatch(new DeleteAccount(password))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(() => {
+        this.#ref.close();
+      });
   }
 
   onCancel(): void {

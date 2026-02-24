@@ -17,10 +17,12 @@ export class AddressFormComponent implements OnInit {
   ngOnInit(): void {
     const f = this.form();
     const v = this.value();
+    f.addControl('country', new FormControl(v?.country || '', Validators.required));
+    f.addControl('state', new FormControl(v?.state || ''));
     f.addControl('city', new FormControl(v?.city || '', Validators.required));
     f.addControl('road', new FormControl(v?.road || '', Validators.required));
     f.addControl('house', new FormControl(v?.house || '', Validators.required));
-    f.addControl('apartment', new FormControl(''));
+    f.addControl('apartment', new FormControl(v?.apartment || ''));
     f.addControl('position', new FormControl(v?.position || [0, 0]));
   }
 }

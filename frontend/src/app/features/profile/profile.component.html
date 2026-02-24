@@ -66,50 +66,29 @@
           </rx-input-wrapper>
 
           @let isCompanyLogoEditing = fieldEdititng() == FieldEditing.CompanyLogo;
-          <rx-input-wrapper
-            [control]="userForm.get('companyLogo')!"
-            [label]="'PROFILE.COMPANY_LOGO' | translate"
-            id="companyLogo"
-          >
-            <p-inputgroup>
-              <input
-                pInputText
-                id="companyLogo"
-                type="text"
-                formControlName="companyLogo"
-                [class.p-disabled]="!isCompanyLogoEditing"
-              />
-
-              @if (isCompanyLogoEditing) {
-                <p-inputgroup-addon>
+          <div class="flex flex-col gap-1">
+            <label for="companyLogo" class="block text-sm font-medium text-gray-700">{{
+              'PROFILE.COMPANY_LOGO' | translate
+            }}</label>
+            <div class="flex gap-1">
+              <rx-avatar class="w-full h-56" formControlName="companyLogo" [readonly]="!isCompanyLogoEditing"></rx-avatar>
+              <div class="flex flex-col gap-1">
+                <p-button
+                  [icon]="isCompanyLogoEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isCompanyLogoEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.CompanyLogo)"
+                />
+                @if (isCompanyLogoEditing) {
                   <p-button
                     icon="pi pi-save"
                     severity="primary"
                     (onClick)="fieldEdititng.set(false); updateProfile()"
                     [disabled]="!userForm.get('companyLogo')?.dirty"
                   />
-                </p-inputgroup-addon>
-                <p-inputgroup-addon>
-                  <p-fileupload
-                    [customUpload]="true"
-                    [auto]="true"
-                    (uploadHandler)="onUpload($event)"
-                    mode="basic"
-                    accept="image/*"
-                    [maxFileSize]="1000000"
-                  >
-                  </p-fileupload>
-                </p-inputgroup-addon>
-              }
-              <p-inputgroup-addon>
-                <p-button
-                  [icon]="isCompanyLogoEditing ? 'pi pi-times' : 'pi pi-pencil'"
-                  [severity]="isCompanyLogoEditing ? 'danger' : 'secondary'"
-                  (onClick)="editProfile(FieldEditing.CompanyLogo)"
-                />
-              </p-inputgroup-addon>
-            </p-inputgroup>
-          </rx-input-wrapper>
+                }
+              </div>
+            </div>
+          </div>
         </form>
       </div>
 
@@ -125,35 +104,28 @@
           (click)="openChangePasswordDialog()"
         ></p-button>
 
-        <!-- <p-divider /> -->
+        <p-divider />
 
-        <!-- <div class="flex flex-col gap-4">
-          <div class="font-semibold text-l">Delete profile</div>
-          <div class="flex flex-col gap-2">
-            <label for="password1">Password</label>
-            <input pInputText id="password1" type="text" />
-          </div>
-          <p-button
-            class=""
-            icon="pi pi-trash"
-            variant="text"
-            label="Delete profile"
-            severity="danger"
-            [fluid]="false"
-          ></p-button>
-        </div> -->
+        <p-button
+          class="self-start"
+          icon="pi pi-trash"
+          variant="text"
+          [label]="'PROFILE.DELETE_ACCOUNT' | translate"
+          severity="danger"
+          (click)="openDeleteAccountDialog()"
+        ></p-button>
       </div>
     </div>
 
     <div class="md:w-1/2">
       <div class="card flex flex-col gap-4">
         <div class="font-semibold text-xl">{{ 'PROFILE.ABOUT' | translate }}</div>
-        <div>{{ 'PROFILE.DATE_ADDED' | translate }}: {{ user()?.dateAdded }}</div>
+        <div>{{ 'PROFILE.DATE_ADDED' | translate }}: {{ user()?.dateAdded | date: 'dd.MM.y HH:mm' }}</div>
         <div>{{ 'PROFILE.ROLE' | translate }}: {{ user()?.role }}</div>
 
         <p-divider />
 
-        <div class="flex flex-row justify-between gap-4">
+        <div class="flex flex-row justify-between items-center gap-4">
           <p-button
             icon="pi pi-sign-out"
             variant="text"
@@ -164,15 +136,6 @@
           <p-button icon="pi pi-sign-out" [label]="'AUTH.SIGN_OUT' | translate" severity="danger" (click)="logOut()"></p-button>
         </div>
       </div>
-
-      <!-- <div class="card flex flex-col gap-4">
-        <div class="font-semibold text-xl">Help Text</div>
-        <div class="flex flex-wrap gap-2">
-          <label for="username">Username</label>
-          <input pInputText id="username" type="text" />
-          <small>Enter your username to reset your password.</small>
-        </div>
-      </div> -->
     </div>
   </div>
 </p-fluid>
