@@ -150,9 +150,13 @@
 </div>
 
 <ng-template #headerTpl>
-  <h1 class="font-semibold text-3xl mb-4">
-    {{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + pObject?.propertyType | translate }} {{ pObject?.area || 0 }} m² —
-    {{ pObject?.price?.value || 0 }}
-    {{ getCurrencySymbol((pObject?.price)!.currency) }}
-  </h1>
+  @if (pObject?.name) {
+    <h3 class="font-semibold text-3xl mb-2">{{ pObject?.name }}</h3>
+  } @else {
+    <h3 class="font-semibold text-3xl mb-4">
+      {{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + pObject?.propertyType | translate }} {{ pObject?.area || 0 }} m² —
+      {{ pObject?.price?.value || 0 }}
+      {{ getCurrencySymbol((pObject?.price)!.currency) }}
+    </h3>
+  }
 </ng-template>

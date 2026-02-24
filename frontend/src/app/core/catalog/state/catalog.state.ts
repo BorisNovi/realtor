@@ -167,11 +167,11 @@ export class CatalogState {
   }
 
   @Action(CreatePropertyObject)
-  createPropertyObject(ctx: StateContext<CatalogStateModel>, { propertyObject }: CreatePropertyObject) {
+  createPropertyObject(ctx: StateContext<CatalogStateModel>, { propertyObject, opts }: CreatePropertyObject) {
     ctx.patchState({ loading: true });
     return this.#catalogService.createPropertyObject(propertyObject).pipe(
       tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
-      tap(() => ctx.dispatch(new CatalogOperationSuccess('CREATED'))),
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('CREATED', opts?.getList))),
       catchError((error: Error) =>
         ctx.dispatch(new CatalogOperationFailed(error, 'CREATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
       ),
@@ -179,11 +179,11 @@ export class CatalogState {
   }
 
   @Action(UpdatePropertyObject)
-  updatePropertyObject(ctx: StateContext<CatalogStateModel>, { propertyObject }: UpdatePropertyObject) {
+  updatePropertyObject(ctx: StateContext<CatalogStateModel>, { propertyObject, opts }: UpdatePropertyObject) {
     ctx.patchState({ loading: true });
     return this.#catalogService.updatePropertyObject(propertyObject).pipe(
       tap((propertyObject: IPropertyObject) => ctx.patchState({ propertyObject, loading: false })),
-      tap(() => ctx.dispatch(new CatalogOperationSuccess('UPDATED'))),
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('UPDATED', opts?.getList))),
       catchError((error: Error) =>
         ctx.dispatch(new CatalogOperationFailed(error, 'UPDATE_FAILED')).pipe(switchMap(() => throwError(() => error))),
       ),
@@ -191,27 +191,27 @@ export class CatalogState {
   }
 
   @Action(UpdateStatus)
-  updateStatus(ctx: StateContext<CatalogStateModel>, { id, status }: UpdateStatus) {
+  updateStatus(ctx: StateContext<CatalogStateModel>, { id, status, opts }: UpdateStatus) {
     ctx.patchState({ loading: true });
     return this.#catalogService.updateStatus(id, status).pipe(
-      tap(() => ctx.dispatch(new CatalogOperationSuccess('STATUS_UPDATED'))),
+      tap(() => ctx.dispatch(new CatalogOperationSuccess('STATUS_UPDATED', opts?.getList))),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'STATUS_UPDATE_FAILED'))),
     );
   }
 
   @Action(DeletePropertyObjects)
-  deletePropertyObjects(ctx: StateContext<CatalogStateModel>, { idList }: DeletePropertyObjects) {
+  deletePropertyObjects(ctx: StateContext<CatalogStateModel>, { idList, opts }: DeletePropertyObjects) {
     ctx.patchState({ loading: true });
     return this.#catalogService.deletePropertyObject(idList).pipe(
       tap(() => {
-        ctx.dispatch(new CatalogOperationSuccess('DELETED'));
+        ctx.dispatch(new CatalogOperationSuccess('DELETED', opts?.getList));
       }),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error, 'DELETE_FAILED'))),
     );
   }
 
   @Action(CatalogOperationSuccess)
-  onCatalogOperationSuccess(ctx: StateContext<CatalogStateModel>, { message }: CatalogOperationSuccess) {
+  onCatalogOperationSuccess(ctx: StateContext<CatalogStateModel>, { message, getList }: CatalogOperationSuccess) {
     if (message) {
       this.#messageService.add({
         severity: 'success',
@@ -221,17 +221,18 @@ export class CatalogState {
       });
     }
 
-    ctx.dispatch(new FetchCatalog());
-    return ctx.patchState({ loading: false });
+    if (getList) ctx.dispatch(new FetchCatalog());
+    // Сборос loadedBox, чтобы карта перезагрузила данные при следующем moveend
+    return ctx.patchState({ loading: false, loadedBox: null });
   }
 
   @Action(CatalogOperationFailed)
   onCatalogOperationFailed(ctx: StateContext<CatalogStateModel>, { error, message }: CatalogOperationFailed) {
-    if (message) {
+    if (error || message) {
       this.#messageService.add({
         severity: 'error',
         summary: this.#translateService.instant('NOTIFICATIONS.ERROR'),
-        detail: this.#translateService.instant('CATALOG.NOTIFICATION.' + message),
+        detail: message ? this.#translateService.instant('CATALOG.NOTIFICATION.' + message) : error.message,
         life: 3000,
       });
     }

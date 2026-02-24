@@ -20,7 +20,8 @@
     "DELETE": "Delete",
     "CANCEL": "Cancel",
     "SAVE": "Save",
-    "CHANGE": "Change"
+    "CHANGE": "Change",
+    "OPEN": "Open"
   },
   "FORM": {
     "LABELS": {
@@ -31,6 +32,8 @@
       "ZONING": "Zoning",
       "AREA": "Area (m²)",
       "ADDRESS": "Address",
+      "COUNTRY": "Country",
+      "STATE": "State/Region",
       "CITY": "City",
       "ROAD": "Road",
       "HOUSE": "House",
@@ -76,15 +79,19 @@
       "BALCONY": "Balcony",
       "GARDEN": "Garden",
       "GARAGE": "Garage",
-      "PROPERTY_OBJECTS": "Property objects"
+      "PROPERTY_OBJECTS": "Property objects",
+      "NAME": "Name"
     },
     "PLACEHOLDERS": {
+      "NAME": "Enter name",
       "PROPERTY_TYPE": "Select Property Type",
       "STATUS": "Select Status",
       "ZONING": "Select zoning type",
       "MAP_LINK": "Enter map link",
       "AREA": "Enter area",
       "ADDRESS": "Enter address",
+      "COUNTRY": "Enter country",
+      "STATE": "Enter state/region",
       "CITY": "Enter city",
       "ROAD": "Enter road",
       "HOUSE": "Enter house number",
@@ -164,12 +171,13 @@
     "ENTER_YOUR_EMAIL_TO_CONTINUE": "Enter your email to continue",
     "SET_NEW_PASSWORD": "Set New Password",
     "ENTER_YOUR_NEW_PASSWORD": "Enter your new password",
-    "INFO_IMAGE_RIGHT_BLOCK": "Info-image right block",
     "EMAIL_LABEL": "Email",
     "EMAIL_PLACEHOLDER": "Email address",
     "EMAIL_REQUIRED_ERROR": "Email is required.",
     "EMAIL_INVALID_ERROR": "Please enter a valid email.",
     "PASSWORD_LABEL": "Password",
+    "NEW_PASSWORD_LABEL": "New password",
+    "OLD_PASSWORD_LABEL": "Old password",
     "PASSWORD_PLACEHOLDER": "Password",
     "NEW_PASSWORD_PLACEHOLDER": "New Password",
     "PASSWORD_REQUIRED_ERROR": "Password is required.",
@@ -247,6 +255,7 @@
     "TABLE": {
       "HEADERS": {
         "PHOTO": "Photo",
+        "NAME": "Name",
         "TYPE": "Type",
         "ZONING": "Zoning",
         "ADDRESS": "Address",
@@ -256,7 +265,9 @@
         "STATUS": "Status"
       },
       "PAGINATOR": {
-        "CURRENT_PAGE_REPORT": "Showing {first} to {last} of {totalRecords} entries"
+        "CURRENT_PAGE_REPORT": "Showing {first} to {last} of {totalRecords} entries",
+        "CARDS_VIEW": "Card view",
+        "TABLE_VIEW": "Table view"
       },
       "BUTTONS": {
         "ADD": "Add",
@@ -381,9 +392,21 @@
     "COMPANY_NAME": "Company name",
     "COMPANY_LOGO": "Company logo",
     "CHANGE_PASSWORD": "Change password",
+    "DELETE_ACCOUNT": "Delete account",
+    "DELETE_ACCOUNT_WARNING_TITLE": "Warning! This action is irreversible",
+    "DELETE_ACCOUNT_WARNING_MESSAGE": "After deleting your account, all your data will be permanently deleted. This operation cannot be undone.",
+    "DELETE_ACCOUNT_PASSWORD_LABEL": "Enter your password to confirm",
+    "DELETE_ACCOUNT_PASSWORD_PLACEHOLDER": "Your current password",
+    "DELETE_ACCOUNT_CONFIRM": "Delete account permanently",
     "ABOUT": "About profile",
     "DATE_ADDED": "Date added",
-    "ROLE": "Role"
+    "ROLE": "Role",
+    "NOTIFICATION": {
+      "UPDATED": "Profile updated successfully",
+      "UPDATE_FAILED": "Failed to update profile",
+      "ACCOUNT_DELETED": "Account deleted successfully",
+      "ACCOUNT_DELETE_FAILED": "Failed to delete account"
+    }
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "City, Road, House ...",
@@ -397,6 +420,8 @@
       "DEFAULT": "Geocoded address",
       "GEO_DISABLED": "Allow geoposition or move marker",
       "NOT_FOUND": "Nothing found",
+      "COUNTRY": "Country",
+      "STATE": "State/Region",
       "CITY": "City",
       "ROAD": "Road",
       "HOUSE": "House"
@@ -404,6 +429,14 @@
   },
   "MAP": {
     "LOCATE": "Current location"
+  },
+  "FILE_UPLOAD": {
+    "UPLOAD": "Upload",
+    "ERRORS": {
+      "INVALID_TYPE": "Only image files are allowed",
+      "FILE_TOO_LARGE": "File size exceeds {{size}}MB limit",
+      "UPLOAD_FAILED": "Upload failed"
+    }
   },
   "PREFIXES": {
     "APARTMENT": "Ap."
@@ -416,5 +449,16 @@
     "LOG_IN": "Login in app",
     "LOG_IN_DESCRIPTION": "For realtors and staff",
     "GO_TO_MAIN": "Go to main"
+  },
+  "INFO_BLOCK": {
+    "TITLE": "Tools for Efficient Realtor Workflow",
+    "CATALOG_TITLE": "Property Catalog",
+    "CATALOG_DESC": "Apartments, houses, offices, and land plots — all in one place",
+    "LISTINGS_TITLE": "Listings",
+    "LISTINGS_DESC": "Create personalized listings for your clients",
+    "MAP_TITLE": "Map",
+    "MAP_DESC": "View properties on a map, search by address",
+    "CONTACTS_TITLE": "Owner Contacts",
+    "CONTACTS_DESC": "Keep property owner contacts at hand"
   }
 }

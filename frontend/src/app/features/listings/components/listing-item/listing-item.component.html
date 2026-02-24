@@ -1,6 +1,20 @@
 <p-confirm-dialog />
 
 @let listing = item();
+
+@if (mode() === Mode.Share && listing && (listing.companyLogo || listing.companyName)) {
+  <div class="flex items-center gap-4 mb-6">
+    @if (listing.companyLogo) {
+      <img [src]="listing?.companyLogo" class="h-12 w-auto object-contain" />
+    }
+    @if (listing.companyName) {
+      <span class="text-xl font-medium text-color-secondary">
+        {{ listing?.companyName }}
+      </span>
+    }
+  </div>
+}
+
 <h1 class="font-semibold text-3xl mb-4">
   {{ listing?.name }}
 </h1>

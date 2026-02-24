@@ -20,7 +20,8 @@
     "DELETE": "Удалить",
     "CANCEL": "Отмена",
     "SAVE": "Сохранить",
-    "CHANGE": "Сменить"
+    "CHANGE": "Сменить",
+    "OPEN": "Открыть"
   },
   "FORM": {
     "LABELS": {
@@ -31,6 +32,8 @@
       "ZONING": "Категория",
       "AREA": "Площадь (м²)",
       "ADDRESS": "Адрес",
+      "COUNTRY": "Страна",
+      "STATE": "Область",
       "CITY": "Город",
       "ROAD": "Улица",
       "HOUSE": "Дом",
@@ -76,15 +79,19 @@
       "BALCONY": "Балкон",
       "GARDEN": "Сад",
       "GARAGE": "Гараж",
-      "PROPERTY_OBJECTS": "Объекты недвижимости"
+      "PROPERTY_OBJECTS": "Объекты недвижимости",
+      "NAME": "Название"
     },
     "PLACEHOLDERS": {
+      "NAME": "Введите название",
       "PROPERTY_TYPE": "Выберите тип недвижимости",
       "STATUS": "Выберите статус",
       "ZONING": "Выберите категорию",
       "MAP_LINK": "Введите ссылку на карту",
       "AREA": "Введите площадь",
       "ADDRESS": "Введите адрес",
+      "COUNTRY": "Введите страну",
+      "STATE": "Введите область",
       "CITY": "Введите город",
       "ROAD": "Введите улицу",
       "HOUSE": "Введите номер дома",
@@ -164,12 +171,13 @@
     "ENTER_YOUR_EMAIL_TO_CONTINUE": "Введите ваш email, чтобы продолжить",
     "SET_NEW_PASSWORD": "Установить новый пароль",
     "ENTER_YOUR_NEW_PASSWORD": "Введите ваш новый пароль",
-    "INFO_IMAGE_RIGHT_BLOCK": "Информационное изображение правого блока",
     "EMAIL_LABEL": "Email",
     "EMAIL_PLACEHOLDER": "Адрес электронной почты",
     "EMAIL_REQUIRED_ERROR": "Email обязателен.",
     "EMAIL_INVALID_ERROR": "Пожалуйста, введите действительный email.",
     "PASSWORD_LABEL": "Пароль",
+    "NEW_PASSWORD_LABEL": "Новый пароль",
+    "OLD_PASSWORD_LABEL": "Старый пароль",
     "PASSWORD_PLACEHOLDER": "Пароль",
     "NEW_PASSWORD_PLACEHOLDER": "Новый пароль",
     "PASSWORD_REQUIRED_ERROR": "Пароль обязателен.",
@@ -247,6 +255,7 @@
     "TABLE": {
       "HEADERS": {
         "PHOTO": "Фото",
+        "NAME": "Название",
         "TYPE": "Тип",
         "ZONING": "Категория",
         "ADDRESS": "Адрес",
@@ -256,7 +265,9 @@
         "STATUS": "Статус"
       },
       "PAGINATOR": {
-        "CURRENT_PAGE_REPORT": "Показано с {first} по {last} из {totalRecords} записей"
+        "CURRENT_PAGE_REPORT": "Показано с {first} по {last} из {totalRecords} записей",
+        "CARDS_VIEW": "Карточки",
+        "TABLE_VIEW": "Таблица"
       },
       "BUTTONS": {
         "ADD": "Добавить",
@@ -381,9 +392,21 @@
     "COMPANY_NAME": "Название комании",
     "COMPANY_LOGO": "Логотип компании",
     "CHANGE_PASSWORD": "Сменить пароль",
+    "DELETE_ACCOUNT": "Удалить аккаунт",
+    "DELETE_ACCOUNT_WARNING_TITLE": "Внимание! Это действие необратимо",
+    "DELETE_ACCOUNT_WARNING_MESSAGE": "После удаления аккаунта все ваши данные будут безвозвратно удалены. Эту операцию невозможно отменить.",
+    "DELETE_ACCOUNT_PASSWORD_LABEL": "Введите пароль для подтверждения",
+    "DELETE_ACCOUNT_PASSWORD_PLACEHOLDER": "Ваш текущий пароль",
+    "DELETE_ACCOUNT_CONFIRM": "Удалить аккаунт навсегда",
     "ABOUT": "О профиле",
     "DATE_ADDED": "Дата создания",
-    "ROLE": "Роль"
+    "ROLE": "Роль",
+    "NOTIFICATION": {
+      "UPDATED": "Профиль успешно обновлен",
+      "UPDATE_FAILED": "Не удалось обновить профиль",
+      "ACCOUNT_DELETED": "Аккаунт успешно удален",
+      "ACCOUNT_DELETE_FAILED": "Не удалось удалить аккаунт"
+    }
   },
   "ADDRESS_PICKER": {
     "PLACEHOLDER": "Город, улица, дом ...",
@@ -397,6 +420,8 @@
       "DEFAULT": "Найденный адрес",
       "GEO_DISABLED": "Разрешите доступ к геопозиции или переместите маркер",
       "NOT_FOUND": "Ничего не найдено",
+      "COUNTRY": "Страна",
+      "STATE": "Область",
       "CITY": "Город",
       "ROAD": "Улица",
       "HOUSE": "Дом"
@@ -404,6 +429,14 @@
   },
   "MAP": {
     "LOCATE": "Текущее местоположение"
+  },
+  "FILE_UPLOAD": {
+    "UPLOAD": "Загрузить",
+    "ERRORS": {
+      "INVALID_TYPE": "Разрешены только изображения",
+      "FILE_TOO_LARGE": "Размер файла превышает {{size}}МБ",
+      "UPLOAD_FAILED": "Ошибка загрузки"
+    }
   },
   "PREFIXES": {
     "APARTMENT": "Кв."
@@ -416,5 +449,16 @@
     "LOG_IN": "Войти в приложение",
     "LOG_IN_DESCRIPTION": "Для риелторов и сотрудников",
     "GO_TO_MAIN": "На главную"
+  },
+  "INFO_BLOCK": {
+    "TITLE": "Инструмент для эффективной работы риэлтора",
+    "CATALOG_TITLE": "Каталог объектов",
+    "CATALOG_DESC": "Квартиры, дома, офисы и участки — всё в одном месте",
+    "LISTINGS_TITLE": "Подборки",
+    "LISTINGS_DESC": "Создавайте персональные подборки для клиентов",
+    "MAP_TITLE": "Карта",
+    "MAP_DESC": "Смотрите объекты на карте, ищите по адресу",
+    "CONTACTS_TITLE": "Контакты собственников",
+    "CONTACTS_DESC": "Храните контакты собственников под рукой"
   }
 }
