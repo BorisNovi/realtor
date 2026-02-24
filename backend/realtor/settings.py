@@ -1,43 +1,68 @@
+import os
 from datetime import timedelta
 from pathlib import Path
-import os
 from decouple import config
 from dotenv import load_dotenv
 
+DEBUG = True
 APPEND_SLASH = False
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Для локальных тестов SMTP (например для проверки отправки писем для сброса пароля)
+BASE_URL = "http://localhost:8000"                # Базовый URL (для формирования полных ссылок на файлы и т.д.)
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Настройки для работы с загружаемыми файлами    
+MAX_FILES = 25                                    # Допустимое Количество изображений на 1 объект недвижимости
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024    # Максимально допустимый размер файла для сервера (10 МБ)
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024    # Максимально допустимый размер загружаемого файла (10 МБ)
+BASE_DIR = Path(__file__).resolve().parent.parent # Корневая директория проекта
+MEDIA_URL = '/media/'                             # URL для доступа к медиафайлам
+MEDIA_ROOT = BASE_DIR / 'media'                   # Физический путь к медиафайлам
+TEMP_UPLOAD_DIR = MEDIA_ROOT / 'temp'             # Временная директория для загружаемых файлов
+PROPERTY_MEDIA_DIR = MEDIA_ROOT / 'property'      # Директория для постоянного хранения файлов объектов недвижимости
 
+# Настройки электронной почты (для отправки писем)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # TODO: Для локальных тестов SMTP ОК, но потом нужна боевая хрень.
 SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p'
+
+# Используем базу данных для сессий
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 ALLOWED_HOSTS = ['*']
 
-# Загружаем файл .env
+# Загружаем .env файл
 ENV_FILE = BASE_DIR / ".env"
 print(f"Загружаем файл: {ENV_FILE}")
 load_dotenv(ENV_FILE)
 
 # Читаем переменные из .env
-REDIS_HOST = os.getenv("REDIS_HOST", "redis")  # Всегда используем "redis" по умолчанию
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")  # Если Redis не используется, то localhost
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+USE_REDIS = os.getenv("USE_REDIS", "False") == "True"  # Проверка, используется ли Redis
 
-# Выводим для проверки
 print(f"REDIS_HOST: {REDIS_HOST}")
+print(f"USE_REDIS: {USE_REDIS}")
 
-# Redis
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",  
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+# Условное подключение Redis
+if USE_REDIS:
+    # Используем Redis
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
         }
     }
-}
+    print("Redis is enabled.")
+else:
+    # Используем локальный кэш, если Redis не используется
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
+    }
+    print("Redis is not enabled. Using local cache.")
 
-DEBUG = True
 
 INSTALLED_APPS = [
     # Встроенные приложения Django (основные зависимости сначала)
@@ -54,33 +79,90 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',  # Blacklist зависит от simplejwt
     'corsheaders',                  # CORS для API, независим
 
-    # Ваши приложения (в порядке возможных зависимостей)
+    # Мои приложения (в порядке возможных зависимостей)
     'users',                        # Кастомная модель User, основа для других приложений
     'user_auth',                    # Зависит от users (предположительно)
-    'catalog',
+    # 'catalog',
+    'catalog.apps.CatalogConfig',
+    'contacts',
+    'file',
+    'listings',                     
     # 'ai_assistant',                 # Может зависеть от users или user_auth
-    # 'listings',                     # Листинги, возможно, зависят от users
-    # 'map',                          # Карта, может зависеть от listings или users
     # 'payments',                     # Платежи, может зависеть от users
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'file.auth.BearerTokenAuthentication',
+        "user_auth.auth.KillSwitchJWTAuthentication",
+    ],
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    # Пагинация
+    'DEFAULT_PAGINATION_CLASS': 'catalog.utils.pagination.FrontendPagination',
+    'PAGE_SIZE': 10,
+
+    # Рендереры — чтобы API возвращал camelCase JSON
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+
+    # Парсеры — чтобы принимать camelCase JSON и multipart                   
+    'DEFAULT_PARSER_CLASSES': (                                            
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',       
+        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',  
     ),
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),  # Access-токен живёт 15 минут
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),     # Refresh-токен живёт 7 дней
-    "ROTATE_REFRESH_TOKENS": True,                   # Новый refresh-токен при каждом обновлении
-    "BLACKLIST_AFTER_ROTATION": True,                # Старый refresh-токен аннулируется
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": False,
+
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": "",
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JSON_ENCODER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+    "ON_LOGIN_SUCCESS": "rest_framework_simplejwt.serializers.default_on_login_success",
+    "ON_LOGIN_FAILED": "rest_framework_simplejwt.serializers.default_on_login_failed",
+
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-#     "AUTH_TOKEN_CLASSES": (
-#     "rest_framework_simplejwt.tokens.AccessToken",
-#     "rest_framework_simplejwt.tokens.RefreshToken",
-# ),
-    "TOKEN_BLACKLIST_ENABLED": True,                 # Включаем Blacklist
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+
+    "JTI_CLAIM": "jti",
+
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+
+    "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
+    "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
+    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
+    "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
+    "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
+    "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
+
+    "CHECK_REVOKE_TOKEN": False,
+    "REVOKE_TOKEN_CLAIM": "hash_password",
+    "CHECK_USER_IS_ACTIVE": True,
 }
 
 AUTH_USER_MODEL = 'users.User'
@@ -144,15 +226,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
 STATIC_URL = 'static/'
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Настройки CORS
@@ -178,3 +255,15 @@ CORS_ALLOW_HEADERS = [
     "origin",
     "x-csrftoken",
 ]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+}
