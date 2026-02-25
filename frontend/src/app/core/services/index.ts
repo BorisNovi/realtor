@@ -1,4 +1,5 @@
 export { DeletionConfirmationService } from './deletion-confirmation.service';
+export { ImportExportService } from './import-export.service';
 export { FileUploadService } from './file-upload.service';
 export { FingerprintService } from './fingerprint.service';
 export { GeocodeService } from './geocode.service';

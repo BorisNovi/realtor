@@ -4,8 +4,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { AvatarComponent, InputWrapperComponent } from '@shared/components';
-import { IUser } from '@shared/interfaces';
+import { AvatarComponent, ImportExportComponent, InputWrapperComponent } from '@shared/components';
+import { IImportExportSection, IUser } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -34,6 +34,7 @@ import { DeleteAccountComponent } from './components/delete-account/delete-accou
     FileUploadModule,
     InputWrapperComponent,
     AvatarComponent,
+    ImportExportComponent,
     TranslatePipe,
     DatePipe,
   ],
@@ -55,6 +56,25 @@ export class ProfileComponent {
 
   readonly FieldEditing = FieldEditing;
   readonly fieldEdititng = signal<FieldEditing | false>(false);
+
+  readonly importExportSections: IImportExportSection[] = [
+    {
+      entityId: 'catalog',
+      labelKey: 'IMPORT_EXPORT.CATALOG',
+      formats: ['csv', 'xlsx'],
+      importEndpoint: 'property-object/import',
+      exportEndpoint: 'property-object/export',
+      exportTypeSuffix: 'csv',
+    },
+    {
+      entityId: 'contacts',
+      labelKey: 'IMPORT_EXPORT.CONTACTS',
+      formats: ['csv', 'xlsx'],
+      importEndpoint: 'contact/import',
+      exportEndpoint: 'contact/export',
+      exportTypeSuffix: 'csv',
+    },
+  ];
 
   readonly userForm = this.#fb.group({
     email: [this.user()?.email, [Validators.required, Validators.email]],

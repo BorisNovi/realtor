@@ -1,5 +1,7 @@
 export * from './address-picker/address-picker.component';
 export * from './avatar/avatar.component';
+export * from './import-export/import-export.component';
+export * from './file-upload-progress/file-upload-progress.component';
 export * from './cards-grid/cards-grid.component';
 export * from './detail/detail.component';
 export * from './fieldset-checkbox-group/fieldset-checkbox-group.component';
