@@ -386,6 +386,15 @@
       "LINK_COPIED": "Публичная ссылка скопирована в буфер обмена"
     }
   },
+  "IMPORT_EXPORT": {
+    "CATALOG": "Объекты недвижимости",
+    "CONTACTS": "Контакты",
+    "IMPORT": "Импорт {{type}}",
+    "EXPORT": "Экспорт {{type}}",
+    "UPLOADING": "Загружается...",
+    "UPLOAD_SUCCESS": "Готово",
+    "UPLOAD_ERROR": "Ошибка"
+  },
   "PROFILE": {
     "INFO": "Основная информация профиля",
     "EMAIL": "Email",
@@ -399,6 +408,7 @@
     "DELETE_ACCOUNT_PASSWORD_PLACEHOLDER": "Ваш текущий пароль",
     "DELETE_ACCOUNT_CONFIRM": "Удалить аккаунт навсегда",
     "ABOUT": "О профиле",
+    "IMPORT_EXPORT": "Импорт и экспорт",
     "DATE_ADDED": "Дата создания",
     "ROLE": "Роль",
     "NOTIFICATION": {

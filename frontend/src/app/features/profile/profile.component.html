@@ -136,6 +136,11 @@
           <p-button icon="pi pi-sign-out" [label]="'AUTH.SIGN_OUT' | translate" severity="danger" (click)="logOut()"></p-button>
         </div>
       </div>
+
+      <div class="card flex flex-col gap-4">
+        <div class="font-semibold text-xl">{{ 'PROFILE.IMPORT_EXPORT' | translate }}</div>
+        <rx-import-export [sections]="importExportSections" />
+      </div>
     </div>
   </div>
 </p-fluid>

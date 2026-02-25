@@ -386,6 +386,15 @@
       "LINK_COPIED": "Public link copied to clipboard"
     }
   },
+  "IMPORT_EXPORT": {
+    "CATALOG": "Property objects",
+    "CONTACTS": "Contacts",
+    "IMPORT": "Import {type}",
+    "EXPORT": "Export {{type}}",
+    "UPLOADING": "Uploading...",
+    "UPLOAD_SUCCESS": "Done",
+    "UPLOAD_ERROR": "Failed"
+  },
   "PROFILE": {
     "INFO": "Main profile info",
     "EMAIL": "Email",
@@ -399,6 +408,7 @@
     "DELETE_ACCOUNT_PASSWORD_PLACEHOLDER": "Your current password",
     "DELETE_ACCOUNT_CONFIRM": "Delete account permanently",
     "ABOUT": "About profile",
+    "IMPORT_EXPORT": "Import and export",
     "DATE_ADDED": "Date added",
     "ROLE": "Role",
     "NOTIFICATION": {
