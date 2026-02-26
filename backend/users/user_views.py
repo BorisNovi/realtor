@@ -1,8 +1,11 @@
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import get_user_model
 from .user_serializers import ProfileSerializer, ChangePasswordSerializer
+from users.data_transfering import export_properties_csv
+
 
 User = get_user_model()
 
@@ -49,3 +52,8 @@ class DeleteProfileView(generics.DestroyAPIView):
         # Тут можно потом добавить удаление связанных данных
         user.delete()
         return Response({"PROFILE_DELETED_SUCCESSFULLY"}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def export_csv_view(request):
+    return export_properties_csv(request.user)
