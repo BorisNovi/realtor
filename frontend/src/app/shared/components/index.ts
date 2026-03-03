@@ -12,3 +12,4 @@ export * from './map/map.component';
 export * from './multiselect/multiselect.component';
 export * from './select-single/select-single.component';
 export * from './select/select.component';
+export * from './static-map/static-map.component';
