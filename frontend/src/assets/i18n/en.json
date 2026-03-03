@@ -292,7 +292,8 @@
     },
     "LABELS": {
       "ABOUT": "About",
-      "OPTIONS": "Options"
+      "OPTIONS": "Options",
+      "LOCATION": "Location"
     },
     "FILTERS": {
       "LABEL": "Filters",

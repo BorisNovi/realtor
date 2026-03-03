@@ -130,6 +130,14 @@
       </div>
     }
 
+    <!-- Map -->
+    @if (pObject?.address?.position) {
+      <div class="card">
+        <h5>{{ 'CATALOG.LABELS.LOCATION' | translate }}</h5>
+        <rx-static-map [coordinates]="pObject!.address.position" />
+      </div>
+    }
+
     <!-- Contact -->
     @if (pObject?.contact) {
       <div class="card">
