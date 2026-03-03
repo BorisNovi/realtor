@@ -33,7 +33,11 @@
 
     &.disabled {
       opacity: 0.4;
-      pointer-events: none;
+      cursor: default;
+
+      &:hover {
+        background-color: transparent;
+      }
     }
   }
 

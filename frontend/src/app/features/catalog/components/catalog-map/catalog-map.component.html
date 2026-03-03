@@ -186,7 +186,11 @@
         <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteItem(selected?.id || 0)" />
         <p-button icon="pi pi-pencil" (onClick)="edit(selected?.id || 0)" />
       </div>
-      <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate" icon="pi pi-list-check" />
+      <p-button
+        [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate"
+        icon="pi pi-list-check"
+        (onClick)="openAddToListingDialog(selected?.id || 0)"
+      />
     </div>
   </ng-template>
 </p-drawer>

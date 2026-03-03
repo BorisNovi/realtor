@@ -354,7 +354,8 @@
       "ADD_OBJECT": "Add object to listing",
       "DELETE_OBJECT": "Delete from listing",
       "DELETE_LISTING": "Delete listing",
-      "COPY_LINK": "Copy link"
+      "COPY_LINK": "Copy link",
+      "ALREADY_ADDED": "Already added"
     },
     "TABLE": {
       "HEADERS": {
