@@ -7,9 +7,11 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { first } from 'rxjs';
 import { ListingsService } from 'src/app/core/listings';
 import { ListingsState, UpdateListing } from 'src/app/core/listings/state';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
-  imports: [ButtonModule, SelectComponent],
+  imports: [ButtonModule, SelectComponent, Tooltip, TranslatePipe],
   templateUrl: 'add-to-listing.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

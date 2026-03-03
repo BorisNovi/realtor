@@ -354,7 +354,8 @@
       "ADD_OBJECT": "Добавить объект в подборку",
       "DELETE_OBJECT": "Удалить из подборки",
       "DELETE_LISTING": "Удалить подборку",
-      "COPY_LINK": "Копировать ссылку"
+      "COPY_LINK": "Копировать ссылку",
+      "ALREADY_ADDED": "Уже добавлен"
     },
     "TABLE": {
       "HEADERS": {
