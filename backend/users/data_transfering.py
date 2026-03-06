@@ -208,24 +208,31 @@ def import_properties_csv(file, user):
         reader.fieldnames[0] = reader.fieldnames[0].replace("\ufeff", "")
 
     expected_headers = list(HEADERS.values())
-
     if reader.fieldnames != expected_headers:
-        raise ValueError("CSV headers mismatch")
+        raise ValueError("HEADERS_MISMATCH")
 
     objects_by_model = defaultdict(list)
-    contacts = []
 
     created = 0
     errors = []
 
     contacts_cache = {}
 
+    max_rows = 5 # Ограничение на количество строк в импортируемой таблице. 
+
     with transaction.atomic():
         for line_number, row in enumerate(reader, start=2):
+            if max_rows is not None and (line_number - 1) > max_rows:
+                errors.append({
+                    "TOO_MANY_ROWS"
+                })
+                transaction.set_rollback(True)
+                return 0, errors
+            
             try:
                 obj, contact = _build_property(row, user, contacts_cache)
                 objects_by_model[type(obj)].append(obj)
-                # contacts теперь берём из кэша, а не добавляем повторно
+                # contacts берём из кэша
 
             except Exception as e:
 
@@ -246,7 +253,6 @@ def import_properties_csv(file, user):
             transaction.set_rollback(True)
             return 0, errors
 
-        # contacts_cache.values() — уникальные контакты без дублей
         new_contacts = [c for c in contacts_cache.values() if c.pk is None]
         Contact.objects.bulk_create(new_contacts, batch_size=500)
 
