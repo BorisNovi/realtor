@@ -1,7 +1,17 @@
+from collections import defaultdict
 import csv
+import io
 from django.http import StreamingHttpResponse
+from django.db import transaction
 from catalog.catalog_models import Property
+from catalog.views.create_update_object_view import PROPERTY_WRITE_SERIALIZER_MAP
+from contacts.contact_serializers import ContactSerializer
+from contacts.models import Contact
 from realtor.mixins import filter_by_user
+import traceback
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Т.к. сохранять файл мы никуда не планируем, надо создать псевдо-буфер, который будет возвращать строку напрямую, а не сохранять её в память.
 class Echo:
@@ -9,7 +19,8 @@ class Echo:
     def write(self, value):
         return value
 
-
+# Словарик для наглядности. 
+# Ключи — это имена полей модели, а значения — заголовки столбцов в CSV.
 HEADERS = {
     "id": "ID",
     "property_type": "Property Type",
@@ -43,6 +54,8 @@ def property_to_row(prop: Property) -> list:
 
     # Раскладываем контакт по полям. Если контакта нет, ставим пустые строки.
     c = prop.contact
+    
+    # Порядок полей должен соответствовать порядку заголовков в HEADERS.
     return [
         prop.id,
         prop.property_type,
@@ -97,3 +110,151 @@ def export_properties_csv(user) -> StreamingHttpResponse:
     )
     response["Content-Disposition"] = 'attachment; filename="properties.csv"'
     return response
+
+
+from rest_framework.test import APIRequestFactory
+
+
+
+
+from django.contrib.contenttypes.models import ContentType
+def _build_property(row, user, contacts_cache: dict):
+    property_type = row["Property Type"]
+    serializer_class = PROPERTY_WRITE_SERIALIZER_MAP.get(property_type)
+
+    if not serializer_class:
+        raise ValueError(f"Unknown property type: {property_type}")
+
+    model = serializer_class.Meta.model
+    polymorphic_ctype = ContentType.objects.get_for_model(model)
+    contact = None
+
+    if row["Contact Phone"]:
+        phone = row["Contact Phone"]
+
+        if phone in contacts_cache:
+            contact = contacts_cache[phone]
+        else:
+            # Сначала ищем существующий контакт в БД
+            existing = Contact.objects.filter(phone=phone, user=user).first()
+            if existing:
+                contact = existing
+            else:
+                contact_data = {
+                    "name": row["Contact Name"],
+                    "phone": phone,
+                    "additional_phone": row["Contact Additional Phone"],
+                    "comment": row["Contact Comment"],
+                }
+
+                factory = APIRequestFactory()
+                fake_request = factory.post("/")
+                fake_request.user = user
+
+                serializer = ContactSerializer(
+                    data=contact_data,
+                    context={"request": fake_request}
+                )
+                serializer.is_valid(raise_exception=True)
+                contact = Contact(**serializer.validated_data)
+
+            contacts_cache[phone] = contact
+
+    address = {
+        "city": row["City"],
+        "road": row["Street"],
+        "house": row["House"],
+        "apartment": row["Apartment"],
+        "position": [
+            float(row["Longitude"]) if row["Longitude"] else None,
+            float(row["Latitude"]) if row["Latitude"] else None,
+        ],
+    }
+
+    obj = model(
+
+        # polymorphic
+        polymorphic_ctype=polymorphic_ctype,
+
+        # базовые поля
+        # property_type=property_type,
+        name=row["Name"],
+        status=row["Status"],
+        zoning_type=row["Zoning Type"],
+        price_value=row["Price"],
+        price_currency=row["Currency"],
+        area=row["Area"],
+        address=address,
+        comment=row["Comment"],
+
+        # связи
+        user=user,
+        contact=contact,
+    )
+
+    return obj, contact
+
+# Главная функция для импорта. 
+# Читает CSV, строит объекты и сохраняет их в БД. 
+# Если возникают ошибки, откатывает транзакцию и возвращает список ошибок.
+def import_properties_csv(file, user):
+    """Импортирует объекты недвижимости из CSV-файла. 
+    Возвращает количество созданных объектов и список ошибок."""
+
+    wrapper = io.TextIOWrapper(file.file, encoding="utf-8")
+    reader = csv.DictReader(wrapper)
+
+    if reader.fieldnames and reader.fieldnames[0].startswith("\ufeff"):
+        reader.fieldnames[0] = reader.fieldnames[0].replace("\ufeff", "")
+
+    expected_headers = list(HEADERS.values())
+
+    if reader.fieldnames != expected_headers:
+        raise ValueError("CSV headers mismatch")
+
+    objects_by_model = defaultdict(list)
+    contacts = []
+
+    created = 0
+    errors = []
+
+    contacts_cache = {}
+
+    with transaction.atomic():
+        for line_number, row in enumerate(reader, start=2):
+            try:
+                obj, contact = _build_property(row, user, contacts_cache)
+                objects_by_model[type(obj)].append(obj)
+                # contacts теперь берём из кэша, а не добавляем повторно
+
+            except Exception as e:
+
+                logger.exception(
+                    "CSV import error on line %s | row=%s",
+                    line_number,
+                    row
+                )
+
+                errors.append({
+                    "line": line_number,
+                    "error_type": type(e).__name__,
+                    "error": str(e),
+                    "row": row
+                })
+
+        if errors:
+            transaction.set_rollback(True)
+            return 0, errors
+
+        # contacts_cache.values() — уникальные контакты без дублей
+        new_contacts = [c for c in contacts_cache.values() if c.pk is None]
+        Contact.objects.bulk_create(new_contacts, batch_size=500)
+
+        # создаём объекты недвижимости через save (multi-table наследование)
+        for model, objects in objects_by_model.items():
+            for obj in objects:
+                obj.save()
+                created += 1
+
+    return created, []
+
