@@ -4,64 +4,82 @@ from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
 
-DEBUG = True
+# Корневая директория проекта
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Загружаем .env файл
+ENV_FILE = BASE_DIR / ".env"
+load_dotenv(ENV_FILE)
+
+# Окружение: development | staging | production
+ENVIRONMENT = config('ENVIRONMENT', default='development')
+
+DEBUG = config('DEBUG', default=False, cast=bool)
+SECRET_KEY = config('SECRET_KEY')
+BASE_URL = config('BASE_URL', default='http://localhost:8000')
 APPEND_SLASH = False
 
-BASE_URL = "http://localhost:8000"                # Базовый URL (для формирования полных ссылок на файлы и т.д.)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
-# Настройки для работы с загружаемыми файлами    
+# Настройки для работы с загружаемыми файлами
 MAX_FILES = 25                                    # Допустимое Количество изображений на 1 объект недвижимости
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024    # Максимально допустимый размер файла для сервера (10 МБ)
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024    # Максимально допустимый размер загружаемого файла (10 МБ)
-BASE_DIR = Path(__file__).resolve().parent.parent # Корневая директория проекта
 MEDIA_URL = '/media/'                             # URL для доступа к медиафайлам
 MEDIA_ROOT = BASE_DIR / 'media'                   # Физический путь к медиафайлам
 TEMP_UPLOAD_DIR = MEDIA_ROOT / 'temp'             # Временная директория для загружаемых файлов
 PROPERTY_MEDIA_DIR = MEDIA_ROOT / 'property'      # Директория для постоянного хранения файлов объектов недвижимости
 
-# Настройки электронной почты (для отправки писем)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # TODO: Для локальных тестов SMTP ОК, но потом нужна боевая хрень.
-SECRET_KEY = 'django-insecure-a@xs*#59&$q=s(2*#323k9q^5azx@c@4@d^67y35-#y-@4cy)p'
+# Настройки электронной почты
+EMAIL_BACKEND = config(
+    'EMAIL_BACKEND',
+    default='django.core.mail.backends.console.EmailBackend'
+)
 
 # Используем базу данных для сессий
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
-ALLOWED_HOSTS = ['*']
+# Security-настройки — включаются только когда DEBUG=False (staging и production)
+if not DEBUG:
+    # Nginx принимает HTTPS и проксирует Django как HTTP.
+    # Эта настройка говорит Django: доверяй заголовку X-Forwarded-Proto от nginx,
+    # чтобы понимать, что исходный запрос был по HTTPS. Без этого — бесконечный редирект.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_HSTS_SECONDS = 31536000          # Браузер запоминает: только HTTPS, 1 год
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True   # Распространяется на поддомены
+    SECURE_SSL_REDIRECT = True              # HTTP → HTTPS редирект на уровне Django
+    SESSION_COOKIE_SECURE = True            # Cookie сессии только по HTTPS
+    CSRF_COOKIE_SECURE = True               # CSRF cookie только по HTTPS
+    SECURE_CONTENT_TYPE_NOSNIFF = True      # Запрет на угадывание MIME-типа браузером
 
-# Загружаем .env файл
-ENV_FILE = BASE_DIR / ".env"
-print(f"Загружаем файл: {ENV_FILE}")
-load_dotenv(ENV_FILE)
-
-# Читаем переменные из .env
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")  # Если Redis не используется, то localhost
-REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
-USE_REDIS = os.getenv("USE_REDIS", "False") == "True"  # Проверка, используется ли Redis
-
-print(f"REDIS_HOST: {REDIS_HOST}")
-print(f"USE_REDIS: {USE_REDIS}")
+# Читаем переменные Redis из .env
+REDIS_HOST = config('REDIS_HOST', default='localhost')
+REDIS_PORT = config('REDIS_PORT', default=6379, cast=int)
+REDIS_PASSWORD = config('REDIS_PASSWORD', default=None)
+USE_REDIS = config('USE_REDIS', default=False, cast=bool)
 
 # Условное подключение Redis
 if USE_REDIS:
-    # Используем Redis
+    _redis_location = (
+        f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/1"
+        if REDIS_PASSWORD
+        else f"redis://{REDIS_HOST}:{REDIS_PORT}/1"
+    )
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
+            "LOCATION": _redis_location,
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             }
         }
     }
-    print("Redis is enabled.")
 else:
-    # Используем локальный кэш, если Redis не используется
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
         }
     }
-    print("Redis is not enabled. Using local cache.")
 
 
 INSTALLED_APPS = [
@@ -107,9 +125,12 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 
     # Рендереры — чтобы API возвращал camelCase JSON
+    # BrowsableAPIRenderer доступен только на development и staging
     'DEFAULT_RENDERER_CLASSES': (
-        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
+        ('djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+         'rest_framework.renderers.BrowsableAPIRenderer',)
+        if ENVIRONMENT in ('development', 'staging')
+        else ('djangorestframework_camel_case.render.CamelCaseJSONRenderer',)
     ),
 
     # Парсеры — чтобы принимать camelCase JSON и multipart                   
@@ -201,9 +222,9 @@ WSGI_APPLICATION = 'realtor.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME', default='2testdb'), # Проверь нахуй .енв в следующий раз когда будут беды с базами
-        'USER': config('DATABASE_USER', default='postgres'),
-        'PASSWORD': config('DATABASE_PASSWORD', default='admin'),
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
         'HOST': config('DATABASE_HOST', default='localhost'),
         'PORT': config('DATABASE_PORT', default='5432'),
     }
@@ -230,15 +251,14 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Куда collectstatic складывает файлы (nginx раздаёт из этой папки)
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Настройки CORS
-# CORS_ALLOW_ALL_ORIGINS = True # Только для дебага. Удалить при поднятии на прод
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",
-    "http://127.0.0.1:4200",
-]
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='http://localhost:4200,http://127.0.0.1:4200'
+).split(',')
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
     "GET",
@@ -264,6 +284,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console"],
-        "level": "DEBUG",
+        # На development выводим всё, на staging/production только WARNING и выше
+        "level": "DEBUG" if ENVIRONMENT == 'development' else "WARNING",
     },
 }
