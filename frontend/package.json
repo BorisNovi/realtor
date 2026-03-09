@@ -2,15 +2,7 @@
   "name": "frontend",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "lint": "ng lint",
-    "lint-fix": "ng lint --fix",
-    "prettier-check": "npx prettier --check './src/**/*.{html,scss,ts}'",
-    "prettier-write": "npx prettier --write './src/**/*.{html,scss,ts}'"
+    "ng": "ng"
   },
   "private": true,
   "dependencies": {

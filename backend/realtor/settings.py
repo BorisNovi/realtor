@@ -25,7 +25,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(','
 MAX_FILES = 25                                    # Допустимое Количество изображений на 1 объект недвижимости
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024    # Максимально допустимый размер файла для сервера (10 МБ)
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024    # Максимально допустимый размер загружаемого файла (10 МБ)
-MEDIA_URL = '/media/'                             # URL для доступа к медиафайлам
+MEDIA_URL = '/uploads/'                           # URL для медиафайлов (/media/ занят Angular-ассетами шрифтов/иконок)
 MEDIA_ROOT = BASE_DIR / 'media'                   # Физический путь к медиафайлам
 TEMP_UPLOAD_DIR = MEDIA_ROOT / 'temp'             # Временная директория для загружаемых файлов
 PROPERTY_MEDIA_DIR = MEDIA_ROOT / 'property'      # Директория для постоянного хранения файлов объектов недвижимости
@@ -35,6 +35,12 @@ EMAIL_BACKEND = config(
     'EMAIL_BACKEND',
     default='django.core.mail.backends.console.EmailBackend'
 )
+EMAIL_HOST = config('EMAIL_HOST', default='')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@example.com')
 
 # Используем базу данных для сессий
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
@@ -47,7 +53,7 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_HSTS_SECONDS = 31536000          # Браузер запоминает: только HTTPS, 1 год
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True   # Распространяется на поддомены
-    SECURE_SSL_REDIRECT = True              # HTTP → HTTPS редирект на уровне Django
+    SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)  # Отключать для local-prod тестирования
     SESSION_COOKIE_SECURE = True            # Cookie сессии только по HTTPS
     CSRF_COOKIE_SECURE = True               # CSRF cookie только по HTTPS
     SECURE_CONTENT_TYPE_NOSNIFF = True      # Запрет на угадывание MIME-типа браузером
