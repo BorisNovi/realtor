@@ -2,7 +2,8 @@
   "name": "frontend",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng"
+    "ng": "ng",
+    "build": "ng build"
   },
   "private": true,
   "dependencies": {
