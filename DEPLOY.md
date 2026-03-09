@@ -1,163 +1,311 @@
-# Деплой — статус и инструкция
+# Руководство по деплою urbancrm.app
 
-Ветка: `chore/production-setup` (от `main`)
-Тег до изменений: `v0.1.1` (снимок состояния до деплой-изменений)
-
----
-
-## Что уже сделано в этой ветке
-
-### backend/realtor/settings.py
-- `DEBUG`, `SECRET_KEY`, `BASE_URL`, `ALLOWED_HOSTS`, `CORS_ALLOWED_ORIGINS`, `EMAIL_BACKEND` — перенесены из хардкода в `.env`
-- Добавлена переменная `ENVIRONMENT` (`development` | `staging` | `production`)
-- Redis поддерживает пароль (`REDIS_PASSWORD`)
-- `BrowsableAPIRenderer` только на `development` и `staging` (на проде скрыт)
-- Уровень логирования: `DEBUG` на dev, `WARNING` на staging/prod
-- Security-настройки (`HSTS`, `SSL redirect`, `secure cookies`) включаются автоматически при `DEBUG=False`
-- `SECURE_PROXY_SSL_HEADER` — Django доверяет заголовку nginx `X-Forwarded-Proto` (без этого был бы бесконечный редирект)
-- `STATIC_ROOT = BASE_DIR / 'staticfiles'` — куда collectstatic складывает файлы
-
-### backend/.env
-- Обновлён под новые имена переменных (`DATABASE_NAME` вместо `DB_NAME` и т.д.)
-- Добавлены все новые переменные (`ENVIRONMENT`, `SECRET_KEY`, `ALLOWED_HOSTS`, etc.)
-- Для локальной разработки: `DEBUG=True`, `USE_REDIS=False`
-
-### backend/.env.example
-- Полностью переписан: все переменные с комментариями и примерами для каждого окружения
-- Коммитится в git — восстановить `.env` всегда можно по нему
-
-### backend/.gitignore
-- Добавлены `.env.prod` и `.env.staging` (не коммитить!)
-
-### backend/requirements.txt
-- Перекодирован из UTF-16 в UTF-8
-- Добавлен `gunicorn==21.2.0`
-
-### backend/Dockerfile
-- Переименован из `dockerfile` → `Dockerfile` (с большой буквы — важно для Linux)
-
-### backend/Dockerfile.prod
-- Создан новый файл для production
-- Запускает: `collectstatic → migrate → gunicorn` (4 воркера)
-- Используется в `docker-compose.prod.yml`
-
-### docker-compose.yml (dev)
-- Убран хардкод паролей из `environment:` блока
-- `env_file: ./backend/.env` + переопределяем только docker-специфичное (`DATABASE_HOST=postgres`, `REDIS_HOST=redis`)
-- Redis пинован: `redis:7-alpine` вместо `latest`
-- Порты 5432 и 6379 остаются открытыми (для локальной отладки через pgAdmin/redis-cli)
-- Убран `sleep 10` (health check postgres делает это правильно)
-
-### docker-compose.prod.yml
-- Создан новый файл для staging и production
-- Postgres и Redis НЕ пробрасывают порты наружу (только внутри Docker-сети)
-- Backend за nginx (порт 8000 не открыт)
-- Redis с паролем: `redis-server --requirepass ${REDIS_PASSWORD}`
-- Nginx-контейнер: SSL, роутинг
-- Shared volumes: `mediafiles` и `staticfiles` между backend и nginx
-
-### nginx/prod.conf
-- Создан новый файл
-- HTTP → HTTPS редирект
-- Роутинг: `/api/*`, `/admin` → backend; `/media/` → volume напрямую; `/static/` → volume напрямую; `/` → frontend SPA
-- Заголовок `X-Forwarded-Proto` передаётся в Django
+Стек: Angular 21 + Django 5.1.6 + PostgreSQL 16 + Redis + Nginx + Docker
+Домен: **urbancrm.app** (Cloudflare)
+Сервер: **193.109.78.61** (FirstByte, Ubuntu 24.04, 1 CPU, 768 MB RAM)
 
 ---
 
-## Что ещё НЕ сделано
+## Часть 1 — Подготовка кода (делается один раз)
 
-### На сервере (делается вручную, не коммитится)
+### 1.1 Email — настройка Resend
 
-- [ ] Установить Docker: `curl -fsSL https://get.docker.com | sh`
-- [ ] Склонировать репозиторий: `git clone <repo> /opt/realtor`
-- [ ] Создать `backend/.env.prod` по шаблону `backend/.env.example`
-- [ ] Создать `backend/.env.staging` по шаблону `backend/.env.example`
-- [ ] Сгенерировать `SECRET_KEY`: `python3 -c "import secrets; print(secrets.token_urlsafe(50))"`
-- [ ] Поставить реальный домен в `nginx/prod.conf` (заменить `YOUR_DOMAIN`)
-- [ ] Настроить firewall: открыть только 80, 443, 22 (`ufw allow 80 && ufw allow 443 && ufw allow 22 && ufw enable`)
+1. Зарегистрируйся на [resend.com](https://resend.com)
+2. Добавь домен: **Domains → Add Domain → urbancrm.app**
+3. Добавь DNS-записи в Cloudflare (Resend покажет какие — обычно TXT и MX)
+4. Дождись верификации (статус Verified)
+5. Создай API-ключ: **API Keys → Create API Key** (scope: Sending access)
+6. Скопируй ключ вида `re_xxxxxxxxx` — он нужен для `.env.prod`
 
-### SSL-сертификат (Let's Encrypt)
-
-```bash
-sudo apt install certbot
-
-# Production:
-sudo certbot certonly --standalone \
-  -d yourdomain.com -d www.yourdomain.com \
-  --email your@email.com --agree-tos --no-eff-email
-
-# Staging:
-sudo certbot certonly --standalone \
-  -d staging.yourdomain.com \
-  --email your@email.com --agree-tos --no-eff-email
+В `backend/.env.prod` используются такие настройки:
+```
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.resend.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=resend
+EMAIL_HOST_PASSWORD=re_xxxxxxxxx       # твой API ключ
+DEFAULT_FROM_EMAIL=noreply@urbancrm.app
 ```
 
-Сертификаты появятся в `/etc/letsencrypt/live/yourdomain.com/` — nginx подключает их через volume.
+### 1.2 Cloudflare — DNS и SSL
 
-Автообновление (добавить в cron):
+1. Зайди на [dash.cloudflare.com](https://dash.cloudflare.com) → выбери домен `urbancrm.app`
+2. **DNS → Records** — добавь две записи:
+   - Тип `A`, имя `@`, значение `193.109.78.61`, Proxy статус **Proxied** (оранжевое облако)
+   - Тип `A`, имя `www`, значение `193.109.78.61`, Proxy статус **Proxied**
+3. **SSL/TLS → Overview** — выбери режим **Full (strict)**
+4. **SSL/TLS → Origin Server** → **Create Certificate**:
+   - Тип ключа: RSA
+   - Hostnames: `urbancrm.app`, `*.urbancrm.app`
+   - Срок: 15 лет
+   - Нажми **Create**
+5. Скопируй и сохрани два файла:
+   - **Origin Certificate** → `urbancrm.crt`
+   - **Private Key** → `urbancrm.key`
+
+   > Ключ показывается только один раз! Сохрани сразу.
+
+---
+
+## Часть 2 — Настройка сервера (делается один раз)
+
+### 2.1 Подключение к серверу
+
 ```bash
-sudo crontab -e
-# Добавить:
-0 3 * * * certbot renew --quiet && docker compose -f /opt/realtor/docker-compose.prod.yml restart nginx
+ssh root@193.109.78.61
 ```
 
-### Запуск на сервере
+### 2.2 Обновление системы
+
+```bash
+apt update && apt upgrade -y
+```
+
+### 2.3 Установка Docker (официальный репозиторий)
+
+> Важно: в Ubuntu 24.04 `docker-compose-plugin` нет в стандартных репозиториях.
+> Устанавливать нужно из официального репозитория Docker.
+
+```bash
+apt install -y gnupg ca-certificates curl
+
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
+  https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+apt update
+apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+Проверь:
+```bash
+docker --version
+docker compose version
+```
+
+### 2.4 Настройка файрвола
+
+```bash
+apt install -y ufw
+ufw allow ssh
+ufw allow 80
+ufw allow 443
+ufw enable
+ufw status
+```
+
+### 2.5 Установка SSL-сертификата (Cloudflare Origin CA)
+
+```bash
+mkdir -p /etc/ssl/cloudflare
+
+# Вставь содержимое Origin Certificate:
+cat > /etc/ssl/cloudflare/urbancrm.crt << 'CERTEOF'
+-----BEGIN CERTIFICATE-----
+<содержимое сертификата из Cloudflare>
+-----END CERTIFICATE-----
+CERTEOF
+
+# Вставь содержимое Private Key:
+cat > /etc/ssl/cloudflare/urbancrm.key << 'CERTEOF'
+-----BEGIN PRIVATE KEY-----
+<содержимое ключа из Cloudflare>
+-----END PRIVATE KEY-----
+CERTEOF
+
+chmod 644 /etc/ssl/cloudflare/urbancrm.crt
+chmod 600 /etc/ssl/cloudflare/urbancrm.key
+
+# Проверь:
+ls -la /etc/ssl/cloudflare/
+```
+
+---
+
+## Часть 3 — Деплой приложения
+
+### 3.1 Клонирование репозитория
+
+```bash
+cd /opt
+git clone https://github.com/BorisNovi/realtor.git
+cd realtor
+```
+
+При запросе логина/пароля — вводи GitHub username и Personal Access Token
+(GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → scope: repo)
+
+### 3.2 Создание .env.prod
+
+```bash
+cat > /opt/realtor/backend/.env.prod << 'EOF'
+ENVIRONMENT=production
+DEBUG=False
+SECRET_KEY=<сгенерируй ниже>
+ALLOWED_HOSTS=urbancrm.app,www.urbancrm.app
+BASE_URL=https://urbancrm.app
+CORS_ALLOWED_ORIGINS=https://urbancrm.app,https://www.urbancrm.app
+
+DATABASE_NAME=realtor_db
+DATABASE_USER=realtor_user
+DATABASE_PASSWORD=<сгенерируй ниже>
+DATABASE_HOST=postgres
+DATABASE_PORT=5432
+
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_DB=0
+REDIS_PASSWORD=<сгенерируй ниже>
+USE_REDIS=True
+
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.resend.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=resend
+EMAIL_HOST_PASSWORD=re_xxxxxxxxx
+DEFAULT_FROM_EMAIL=noreply@urbancrm.app
+
+SECURE_SSL_REDIRECT=False
+EOF
+```
+
+Генерация паролей:
+```bash
+echo "SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_urlsafe(50))")"
+echo "DATABASE_PASSWORD=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))")"
+echo "REDIS_PASSWORD=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))")"
+```
+
+### 3.3 Запуск
 
 ```bash
 cd /opt/realtor
-
-# Production:
 docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d --build
-
-# Staging (на том же сервере — отдельный проект Docker):
-docker compose -f docker-compose.prod.yml --env-file backend/.env.staging -p realtor-staging up -d --build
 ```
 
-Флаг `-p realtor-staging` задаёт имя проекта — staging и prod не конфликтуют по именам контейнеров и volumes.
+> Первый запуск занимает 10–20 минут (скачивает образы, компилирует Angular).
+> На VPS с 768 MB RAM фронтенд собирается долго — это нормально.
 
-### Если staging на том же сервере, что и prod
+### 3.4 Проверка
 
-Nginx-конфиг нужно расширить вторым `server` блоком для staging-домена.
-Либо создать отдельный `nginx/staging.conf` и передавать его через отдельный volume в staging-compose.
+```bash
+# Статус контейнеров:
+docker compose -f docker-compose.prod.yml ps
 
-### Ещё не решено
+# Логи всех контейнеров:
+docker compose -f docker-compose.prod.yml logs -f
 
-- [ ] Email в production: настроить SMTP (`EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend` + `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` в `.env.prod`)
-- [ ] Проверить, что `frontend/Dockerfile` собирает Angular с правильным `API_URL` (сейчас там может быть захардкожен `localhost:8000`)
-- [ ] Настроить GitHub Actions или другой CI/CD для автодеплоя при пуше в `main`
+# Логи только бэкенда:
+docker compose -f docker-compose.prod.yml logs -f backend
+```
 
----
+Все контейнеры должны быть в статусе `running`:
+- `realtor-frontend-1`
+- `realtor-backend-1`
+- `realtor-postgres-1`
+- `realtor-redis-1`
+- `realtor-nginx-1`
 
-## Архитектура окружений
-
-| Переменная | development | staging | production |
-|---|---|---|---|
-| `ENVIRONMENT` | `development` | `staging` | `production` |
-| `DEBUG` | `True` | `False` | `False` |
-| `BrowsableAPI` | Да | Да | Нет |
-| `Logging level` | DEBUG | WARNING | WARNING |
-| `Security headers` | Нет | Да | Да |
-| `Redis password` | Нет | Да | Да |
-| `Gunicorn` | Нет (runserver) | Да | Да |
-| `compose file` | `docker-compose.yml` | `docker-compose.prod.yml` | `docker-compose.prod.yml` |
-| `env file` | `backend/.env` | `backend/.env.staging` | `backend/.env.prod` |
+Открой в браузере: **https://urbancrm.app**
 
 ---
 
-## Структура новых файлов
+## Часть 4 — Обновление (повторный деплой)
+
+```bash
+cd /opt/realtor
+git pull
+docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d --build
+```
+
+Обновить только бэкенд (быстрее):
+```bash
+docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d --build backend
+```
+
+---
+
+## Часть 5 — Полезные команды на сервере
+
+```bash
+# Остановить всё:
+docker compose -f docker-compose.prod.yml down
+
+# Остановить и удалить данные (осторожно! БД тоже сотрётся):
+docker compose -f docker-compose.prod.yml down -v
+
+# Перезапустить один сервис:
+docker compose -f docker-compose.prod.yml restart backend
+
+# Войти в контейнер бэкенда:
+docker exec -it realtor-backend-1 bash
+
+# Выполнить manage.py команду:
+docker exec realtor-backend-1 python manage.py <команда>
+
+# Посмотреть использование памяти:
+free -m
+
+# Место на диске:
+df -h
+```
+
+---
+
+## Архитектура
+
+```
+Браузер → Cloudflare (proxy) → Nginx (443 SSL)
+                                    ├── /api/*, /admin → backend:8000 (Gunicorn + Django)
+                                    ├── /uploads/      → volume mediafiles (напрямую)
+                                    ├── /static/       → volume staticfiles (напрямую)
+                                    └── /             → frontend:80 (Nginx + Angular SPA)
+```
+
+SSL-сертификат: Cloudflare Origin CA (15 лет, только для трафика через Cloudflare proxy).
+Cloudflare → сервер: Full (strict) — шифруется на всём пути.
+
+---
+
+## Структура файлов проекта
 
 ```
 realtor/
-├── docker-compose.yml          # dev (обновлён)
-├── docker-compose.prod.yml     # staging + production (новый)
-├── nginx/
-│   └── prod.conf               # nginx конфиг (новый, домен нужно заменить)
+├── frontend/
+│   ├── Dockerfile          # Node 20 (сборка) + Nginx (раздача)
+│   └── src/
 ├── backend/
-│   ├── Dockerfile              # переименован из dockerfile
-│   ├── Dockerfile.prod         # новый, с gunicorn
-│   ├── requirements.txt        # добавлен gunicorn, перекодирован в UTF-8
-│   ├── .env                    # обновлён (не коммитить)
-│   ├── .env.example            # обновлён, коммитится в git
-│   └── realtor/
-│       └── settings.py         # всё через env vars, security-блок
+│   ├── Dockerfile          # dev: runserver
+│   ├── Dockerfile.prod     # prod: collectstatic + migrate + gunicorn
+│   ├── .env                # локальная разработка (не коммитить)
+│   ├── .env.prod           # production (не коммитить, создаётся на сервере)
+│   ├── .env.staging        # staging (не коммитить)
+│   └── .env.example        # шаблон (коммитится)
+├── nginx/
+│   └── prod.conf           # Cloudflare Origin CA + роутинг
+├── docker-compose.yml          # dev
+├── docker-compose.prod.yml     # staging + production
+└── package.json                # скрипты для удобства
 ```
+
+---
+
+## Переменные окружения (справочник)
+
+| Переменная | dev | prod |
+|---|---|---|
+| `ENVIRONMENT` | `development` | `production` |
+| `DEBUG` | `True` | `False` |
+| `DATABASE_HOST` | `localhost` | `postgres` (имя Docker-сервиса) |
+| `REDIS_HOST` | `localhost` | `redis` (имя Docker-сервиса) |
+| `USE_REDIS` | `False` | `True` |
+| `SECURE_SSL_REDIRECT` | `False` | `False` (nginx делает редирект) |
+| `EMAIL_BACKEND` | `console` | `smtp` |
