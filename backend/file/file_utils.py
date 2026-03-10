@@ -18,7 +18,7 @@ def make_files_permanent(temp_url: str) -> str:
     """
     # Оставляем путь относительно MEDIA_ROOT
     if temp_url.startswith("http://") or temp_url.startswith("https://"):
-        temp_url = temp_url.split("/media/")[-1]
+        temp_url = temp_url.split(settings.MEDIA_URL)[-1]
 
     temp_path = os.path.join(settings.MEDIA_ROOT, temp_url)
     permanent_dir = os.path.join(settings.MEDIA_ROOT, "permanent")
@@ -45,7 +45,7 @@ def make_files_permanent(temp_url: str) -> str:
     else:
         logger.warning(f"⚠️ Файл не найден: {temp_path}")
 
-    new_url = f"{baseurl}/media/permanent/{new_filename}"
+    new_url = f"{baseurl}{settings.MEDIA_URL}permanent/{new_filename}"
     return new_url
 
 
