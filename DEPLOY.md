@@ -2,7 +2,9 @@
 
 Стек: Angular 21 + Django 5.1.6 + PostgreSQL 16 + Redis + Nginx + Docker
 Домен: **urbancrm.app** (Cloudflare)
-Сервер: **193.109.78.61** (FirstByte, Ubuntu 24.04, 1 CPU, 768 MB RAM)
+Сервер: **185.174.138.68** (FirstByte, Ubuntu 24.04, 2 CPU, 2 GB RAM, 20 GB SSD)
+
+> Минимальные требования для сборки Angular на сервере: **2 GB RAM**. На 768 MB сборка падает по OOM.
 
 ---
 
@@ -14,7 +16,9 @@
 2. Добавь домен: **Domains → Add Domain → urbancrm.app**
 3. Добавь DNS-записи в Cloudflare (Resend покажет какие — обычно TXT и MX)
 4. Дождись верификации (статус Verified)
-5. Создай API-ключ: **API Keys → Create API Key** (scope: Sending access)
+5. Создай API-ключ: **API Keys → Create API Key**
+   - Permission: Sending access
+   - **Domain: выбери `urbancrm.app`** (не "All domains" — иначе 550 ошибка при отправке)
 6. Скопируй ключ вида `re_xxxxxxxxx` — он нужен для `.env.prod`
 
 В `backend/.env.prod` используются такие настройки:
@@ -46,6 +50,9 @@ DEFAULT_FROM_EMAIL=noreply@urbancrm.app
 
    > Ключ показывается только один раз! Сохрани сразу.
 
+6. **Speed → Optimization → Protocol Optimization → HTTP/3 (with QUIC) → Off**
+   > Cloudflare включает HTTP/3 по умолчанию, но nginx не поддерживает QUIC — JS-чанки падают с ERR_QUIC_PROTOCOL_ERROR.
+
 ---
 
 ## Часть 2 — Настройка сервера (делается один раз)
@@ -53,7 +60,7 @@ DEFAULT_FROM_EMAIL=noreply@urbancrm.app
 ### 2.1 Подключение к серверу
 
 ```bash
-ssh root@193.109.78.61
+ssh root@185.174.138.68
 ```
 
 ### 2.2 Обновление системы
@@ -192,7 +199,6 @@ docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d --b
 ```
 
 > Первый запуск занимает 10–20 минут (скачивает образы, компилирует Angular).
-> На VPS с 768 MB RAM фронтенд собирается долго — это нормально.
 
 ### 3.4 Проверка
 
@@ -229,6 +235,13 @@ docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d --b
 Обновить только бэкенд (быстрее):
 ```bash
 docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d --build backend
+```
+
+Обновить одну переменную в `.env.prod` и применить без пересборки:
+```bash
+sed -i 's/EMAIL_HOST_PASSWORD=.*/EMAIL_HOST_PASSWORD=re_новый_ключ/' /opt/realtor/backend/.env.prod
+# restart не подхватывает новый env — нужно пересоздать контейнер:
+docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d backend
 ```
 
 ---
