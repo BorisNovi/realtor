@@ -17,12 +17,7 @@
       [totalRecords]="tableData?.total || 0"
       [lazy]="true"
       [rowsPerPageOptions]="[10, 20, 50]"
-      [showCurrentPageReport]="true"
       paginatorDropdownAppendTo="body"
-      [currentPageReportTemplate]="
-        'CATALOG.TABLE.PAGINATOR.CURRENT_PAGE_REPORT'
-          | translate: { first: '{first}', last: '{last}', totalRecords: '{totalRecords}' }
-      "
       (onPage)="pageChange($event)"
       [customSort]="true"
       (onLazyLoad)="onLazyLoad($event)"
@@ -125,10 +120,6 @@
     [rows]="paginationS().rows"
     [loading]="loadingS()"
     [emptyText]="'CONTACTS.TABLE.EMPTY' | translate"
-    [currentPageReportTemplate]="
-      'CATALOG.TABLE.PAGINATOR.CURRENT_PAGE_REPORT'
-        | translate: { first: '{first}', last: '{last}', totalRecords: '{totalRecords}' }
-    "
     [trackBy]="contactTrackBy"
     (pageChange)="onCardsPageChange($event)"
   >

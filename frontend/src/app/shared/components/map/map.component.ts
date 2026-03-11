@@ -95,17 +95,25 @@ export class MapComponent implements AfterViewInit {
       this.currentBox.emit({ minLng: sw.lng, minLat: sw.lat, maxLng: ne.lng, maxLat: ne.lat });
     });
 
-    // Генерация ring chart иконок для кластеров
+    // Генерация ring chart иконок для кластеров + восстановление статических иконок
     map.on('styleimagemissing', (e: MapStyleImageMissingEvent) => {
       const id = e.id;
-      if (!id.startsWith('cluster-')) return;
 
-      const parts = id.replace('cluster-', '').split('-').map(Number);
-      if (parts.length !== 3 || parts.some(isNaN)) return;
+      if (id.startsWith('cluster-')) {
+        const parts = id.replace('cluster-', '').split('-').map(Number);
+        if (parts.length !== 3 || parts.some(isNaN)) return;
+        const [available, reserved, rented] = parts;
+        const imageData = generateClusterRingIcon({ available, reserved, rented });
+        map.addImage(id, imageData);
+        return;
+      }
 
-      const [available, reserved, rented] = parts;
-      const imageData = generateClusterRingIcon({ available, reserved, rented });
-      map.addImage(id, imageData);
+      const src = this.images()[id];
+      if (src) {
+        map.loadImage(src).then(img => {
+          if (!map.hasImage(id)) map.addImage(id, img.data);
+        });
+      }
     });
   }
 
@@ -193,16 +201,17 @@ export class MapComponent implements AfterViewInit {
     try {
       for (const [key, src] of Object.entries(icons)) {
         const img = await this.map.loadImage(src);
-        this.map.addImage(key, img.data);
+        if (!this.map.hasImage(key)) this.map.addImage(key, img.data);
       }
     } catch (err) {
       console.error(err);
     }
   }
 
-  #restoreSourcesAndLayers() {
+  async #restoreSourcesAndLayers() {
     const map = this.map;
     if (!map) return;
+    await this.#addImages(this.images());
     for (const [id, data] of Object.entries(this.#sources)) {
       this.addClusteredSource(id, data);
     }
