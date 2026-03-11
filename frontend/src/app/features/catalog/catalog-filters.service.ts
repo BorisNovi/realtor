@@ -1,39 +1,22 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
 
 @Injectable()
 export class CatalogFiltersService {
-  private filtersCountSubject = new BehaviorSubject<number>(0);
-  private filtersOpenSubject = new BehaviorSubject<boolean>(false);
+  #filtersOpen = signal<boolean>(false);
+  #filtersCounst = signal<number>(0);
 
-  filtersCount$ = this.filtersCountSubject.asObservable();
-  filtersOpen$ = this.filtersOpenSubject.asObservable();
+  filtersCount = this.#filtersCounst.asReadonly();
+  isOpen = this.#filtersOpen.asReadonly();
 
-  setFiltersCount(count: number) {
-    this.filtersCountSubject.next(count);
+  setFiltersCount(count: number): void {
+    this.#filtersCounst.set(count);
   }
 
-  openFilters() {
-    this.filtersOpenSubject.next(true);
+  openFilters(): void {
+    this.#filtersOpen.set(true);
   }
 
-  closeFilters() {
-    this.filtersOpenSubject.next(false);
-  }
-
-  toggleFilters() {
-    this.filtersOpenSubject.next(!this.filtersOpenSubject.getValue());
-  }
-
-  get currentCount() {
-    return this.filtersCountSubject.getValue();
-  }
-
-  get isOpen() {
-    return this.filtersOpenSubject.getValue();
-  }
-
-  set isOpen(value: boolean) {
-    this.filtersOpenSubject.next(value);
+  closeFilters(): void {
+    this.#filtersOpen.set(false);
   }
 }

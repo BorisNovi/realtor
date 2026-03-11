@@ -125,7 +125,12 @@ export class AddressPickerComponent implements OnInit {
   prepareOutput(feature: GeocodeFeature): void {
     const address = feature?.properties?.address;
     this.popupTitle.set([
-      { name: this.#translateService.instant('ADDRESS_PICKER.POPUP.CITY'), value: address?.city || '-' },
+      { name: this.#translateService.instant('ADDRESS_PICKER.POPUP.COUNTRY'), value: address?.country || '-' },
+      { name: this.#translateService.instant('ADDRESS_PICKER.POPUP.STATE'), value: address?.state || '-' },
+      {
+        name: this.#translateService.instant('ADDRESS_PICKER.POPUP.CITY'),
+        value: address?.city || address?.town || address?.village || address?.hamlet || '-',
+      },
       { name: this.#translateService.instant('ADDRESS_PICKER.POPUP.ROAD'), value: address?.road || '-' },
       { name: this.#translateService.instant('ADDRESS_PICKER.POPUP.HOUSE'), value: address?.house_number || '-' },
     ]);

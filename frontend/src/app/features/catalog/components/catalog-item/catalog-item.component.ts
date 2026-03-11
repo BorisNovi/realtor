@@ -90,6 +90,7 @@ export class CatalogItemComponent implements OnDestroy {
       width: '50vw',
       modal: true,
       closable: true,
+      dismissableMask: true,
       contentStyle: { overflow: 'auto' },
       focusOnShow: false,
       breakpoints: {

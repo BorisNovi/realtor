@@ -173,11 +173,11 @@ export class ListingsState {
 
   @Action(ListingsOperationFailed)
   onListingsOperationFailed(ctx: StateContext<ListingsStateModel>, { error, message }: ListingsOperationFailed) {
-    if (message) {
+    if (error || message) {
       this.#messageService.add({
         severity: 'error',
         summary: this.#translateService.instant('NOTIFICATIONS.ERROR'),
-        detail: this.#translateService.instant('LISTINGS.NOTIFICATION.' + message),
+        detail: message ? this.#translateService.instant('LISTINGS.NOTIFICATION.' + message) : error.message,
         life: 3000,
       });
     }

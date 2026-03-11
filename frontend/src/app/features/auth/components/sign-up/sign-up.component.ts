@@ -3,6 +3,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { InfoBlockComponent } from '@shared/components';
 import { matchValuesValidator } from '@shared/validators';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,6 +24,7 @@ import { AuthState } from 'src/app/core/auth/state/auth.state';
     RippleModule,
     ButtonModule,
     TranslatePipe,
+    InfoBlockComponent,
   ],
   templateUrl: './sign-up.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
