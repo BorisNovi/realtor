@@ -4,3 +4,47 @@
 .p-datepicker-input {
   width: inherit;
 }
+
+/* On mobile (< sm breakpoint) force all PrimeNG inputs to large size */
+@media (max-width: 639px) {
+  .p-inputtext,
+  .p-select-label,
+  .p-multiselect-label {
+    font-size: 1.125rem !important;
+    padding-block: 0.75rem !important;
+    padding-inline: 1.125rem !important;
+  }
+
+  .p-multiselect-label:has(.p-chip) {
+    padding-block: 0.5rem !important;
+    padding-inline: 0.5rem !important;
+  }
+
+  .p-select-dropdown .p-icon,
+  .p-multiselect-dropdown .p-icon {
+    font-size: 1.125rem !important;
+    width: 1.125rem !important;
+    height: 1.125rem !important;
+  }
+
+  .p-button {
+    font-size: 1.125rem !important;
+    padding: 0.75rem 0.9rem !important;
+  }
+
+  .p-button .p-button-icon {
+    font-size: 1.125rem !important;
+  }
+
+  .p-checkbox,
+  .p-checkbox .p-checkbox-box {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+
+  .p-checkbox .p-checkbox-icon {
+    font-size: 1rem !important;
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+}
