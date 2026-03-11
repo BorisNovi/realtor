@@ -300,12 +300,11 @@ realtor/
 │   ├── Dockerfile.prod     # prod: collectstatic + migrate + gunicorn
 │   ├── .env                # локальная разработка (не коммитить)
 │   ├── .env.prod           # production (не коммитить, создаётся на сервере)
-│   ├── .env.staging        # staging (не коммитить)
 │   └── .env.example        # шаблон (коммитится)
 ├── nginx/
 │   └── prod.conf           # Cloudflare Origin CA + роутинг
 ├── docker-compose.yml          # dev
-├── docker-compose.prod.yml     # staging + production
+├── docker-compose.prod.yml     # production
 └── package.json                # скрипты для удобства
 ```
 
