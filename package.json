@@ -17,9 +17,6 @@
     "prod": "docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d --build",
     "prod:down": "docker compose -f docker-compose.prod.yml down",
 
-    "staging": "docker compose -f docker-compose.prod.yml --env-file backend/.env.staging -p realtor-staging up -d --build",
-    "staging:down": "docker compose -f docker-compose.prod.yml -p realtor-staging down",
-
     "front:start": "cd frontend && npx ng serve",
     "front:build": "cd frontend && npx ng build",
     "front:watch": "cd frontend && npx ng build --watch --configuration development",
