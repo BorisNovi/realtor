@@ -1,6 +1,8 @@
 {
   "TOPBAR": {
-    "LANGUAGE": "English"
+    "LANGUAGE": "English",
+    "PROFILE": "Profile",
+    "THEME": "Theme"
   },
   "NOTIFICATIONS": {
     "SUCCESS": "Success",
@@ -163,9 +165,9 @@
     }
   },
   "AUTH": {
-    "WELCOME": "Welcome to REALTOR-X!",
+    "WELCOME": "Welcome to Urban CRM!",
     "SIGN_IN_TO_CONTINUE": "Sign in to continue",
-    "JOIN": "Join REALTOR-X!",
+    "JOIN": "Join Urban CRM!",
     "SIGN_UP_TO_GET_STARTED": "Sign up to get started",
     "RESET_PASSWORD": "Reset Password",
     "ENTER_YOUR_EMAIL_TO_CONTINUE": "Enter your email to continue",
