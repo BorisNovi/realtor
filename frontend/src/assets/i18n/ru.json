@@ -1,6 +1,8 @@
 {
   "TOPBAR": {
-    "LANGUAGE": "Русский"
+    "LANGUAGE": "Русский",
+    "PROFILE": "Профиль",
+    "THEME": "Тема"
   },
   "NOTIFICATIONS": {
     "SUCCESS": "Успех",
@@ -163,9 +165,9 @@
     }
   },
   "AUTH": {
-    "WELCOME": "Добро пожаловать в REALTOR-X!",
+    "WELCOME": "Добро пожаловать в Urban CRM!",
     "SIGN_IN_TO_CONTINUE": "Войдите, чтобы продолжить",
-    "JOIN": "Присоединяйтесь к REALTOR-X!",
+    "JOIN": "Присоединяйтесь к Urban CRM!",
     "SIGN_UP_TO_GET_STARTED": "Зарегистрируйтесь, чтобы начать",
     "RESET_PASSWORD": "Сбросить пароль",
     "ENTER_YOUR_EMAIL_TO_CONTINUE": "Введите ваш email, чтобы продолжить",
