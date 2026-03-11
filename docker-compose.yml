@@ -1,10 +1,10 @@
 services:
-  frontend: #FRONTEND
+  frontend:
     build: ./frontend
     ports:
       - '4200:80'
     depends_on:
-      - backend  
+      - backend
     networks:
       - app-network
 
@@ -12,17 +12,15 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    env_file: ./backend/.env  # Загружаем докер-версию переменных
+    env_file: ./backend/.env
+    environment:
+      # Переопределяем только то, что отличается от локалки:
+      # в Docker сервисы доступны по имени контейнера, а не localhost
+      - DATABASE_HOST=postgres
+      - REDIS_HOST=redis
+      - USE_REDIS=True
     ports:
       - '8000:8000'
-    environment:
-      - DATABASE_HOST=postgres
-      - DATABASE_NAME=testdb
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=admin
-      - DATABASE_PORT=5432
-      
-      - USE_REDIS=True
     depends_on:
       postgres:
         condition: service_healthy
@@ -31,34 +29,31 @@ services:
     networks:
       - app-network
 
-  postgres: # DATABASE
+  postgres:
     image: postgres:16
     environment:
-      - POSTGRES_DB=testdb
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=${DATABASE_NAME:-2testdb}
+      - POSTGRES_USER=${DATABASE_USER:-postgres}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-admin}
     ports:
-      - '5432:5432'
+      - '5432:5432'  # Открыт для локальной разработки (pgAdmin и т.д.)
     volumes:
-      - pgdata:/var/lib/postgresql/data  # Сохранение данных
+      - pgdata:/var/lib/postgresql/data
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d testdb"]
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-postgres}"]
       interval: 5s
       timeout: 3s
       retries: 5
 
   redis:
-    image: redis:latest
-    container_name: realtor_redis
+    image: redis:7-alpine  # Фиксированная версия вместо latest
     restart: always
     ports:
-      - "6379:6379"
+      - '6379:6379'  # Открыт для локальной разработки (redis-cli и т.д.)
     networks:
       - app-network
-    env_file:
-      - ./backend/.env
 
 networks:
   app-network:

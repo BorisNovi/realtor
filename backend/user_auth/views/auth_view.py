@@ -7,6 +7,7 @@ from django.db import IntegrityError
 from django.core.cache import cache
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
+from django.conf import settings
 from ..serializers import SignupSerializer, SigninSerializer
 
 User = get_user_model()
@@ -34,13 +35,13 @@ class AuthViewSet(viewsets.GenericViewSet):
         token = str(uuid.uuid4())
         cache.set(f"signup_token:{token}", user_data, timeout=CACHE_TIMEOUT)
 
-        activation_link = request.build_absolute_uri(f"/auth/activate/?token={token}")
+        activation_link = f"{settings.BASE_URL}/auth/sign-up?token={token}"
 
         try:
             send_mail(
                 subject="Подтверждение регистрации",
                 message=f"Нажмите ссылку для активации аккаунта: {activation_link}",
-                from_email="noreply@example.com",
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
                 fail_silently=False,
             )
