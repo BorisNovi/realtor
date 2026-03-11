@@ -18,6 +18,7 @@ export interface IUser extends IEntity, IUserEditable {
 }
 
 export interface IPasswordChange {
-  password: string;
-  password_confirmation: string;
+  oldPassword: string;
+  newPassword: string;
+  newPasswordConfirmation: string;
 }

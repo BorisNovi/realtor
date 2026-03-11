@@ -166,11 +166,11 @@ export class ContactsState {
 
   @Action(ContactsOperationFailed)
   onContactsOperationFailed(ctx: StateContext<ContactsStateModel>, { error, message }: ContactsOperationFailed) {
-    if (message) {
+    if (error || message) {
       this.#messageService.add({
         severity: 'error',
         summary: this.#translateService.instant('NOTIFICATIONS.ERROR'),
-        detail: this.#translateService.instant('CONTACTS.NOTIFICATION.' + message),
+        detail: message ? this.#translateService.instant('CONTACTS.NOTIFICATION.' + message) : error.message,
         life: 3000,
       });
     }

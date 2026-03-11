@@ -1,0 +1,47 @@
+<div class="p-4">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    <!-- Warning message -->
+    <div class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+      <div class="flex flex-col gap-2">
+        <div class="flex items-baseline gap-3">
+          <i class="pi pi-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
+          <h4 class="font-semibold !text-red-800 !dark:text-red-300 !mt-0">
+            {{ 'PROFILE.DELETE_ACCOUNT_WARNING_TITLE' | translate }}
+          </h4>
+        </div>
+        <p class="text-sm text-red-700 dark:text-red-400 !ml-8">
+          {{ 'PROFILE.DELETE_ACCOUNT_WARNING_MESSAGE' | translate }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Password input -->
+    <rx-input-wrapper
+      [control]="form.get('password')!"
+      [label]="'PROFILE.DELETE_ACCOUNT_PASSWORD_LABEL' | translate"
+      id="deletePassword"
+    >
+      <p-password
+        class="w-full"
+        id="deletePassword"
+        formControlName="password"
+        [toggleMask]="true"
+        [fluid]="true"
+        [feedback]="false"
+        [pAutoFocus]="true"
+        [placeholder]="'PROFILE.DELETE_ACCOUNT_PASSWORD_PLACEHOLDER' | translate"
+      ></p-password>
+    </rx-input-wrapper>
+
+    <!-- Buttons -->
+    <div class="flex justify-end gap-2 mt-4">
+      <p-button [label]="'ACTIONS.CANCEL' | translate" type="button" (click)="onCancel()" outlined />
+      <p-button
+        [label]="'PROFILE.DELETE_ACCOUNT_CONFIRM' | translate"
+        type="submit"
+        severity="danger"
+        [disabled]="form.invalid"
+      />
+    </div>
+  </form>
+</div>

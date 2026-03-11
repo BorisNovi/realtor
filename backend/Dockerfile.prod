@@ -1,0 +1,22 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Зависимости для PostgreSQL
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+# При старте контейнера (когда уже есть env vars):
+# 1. collectstatic — собирает статику Django (CSS/JS для /admin) в STATIC_ROOT
+# 2. migrate — применяет миграции
+# 3. gunicorn — запускает продовый сервер (4 worker-процесса)
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn realtor.wsgi:application --bind 0.0.0.0:8000 --workers 4"]

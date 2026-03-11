@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { tap } from 'rxjs';
 import { ChangePassword } from 'src/app/core/profile/state';
 
 @Component({
@@ -33,22 +34,32 @@ export class ChangePasswordComponent {
 
   form = this.#fb.group(
     {
-      password: ['', [Validators.required, Validators.minLength(8), strongPasswordValidator()]],
-      passwordConfirmation: ['', [Validators.required, Validators.minLength(8), strongPasswordValidator()]],
+      oldPassword: ['', [Validators.required]],
+      newPassword: ['', [Validators.required, Validators.minLength(8), strongPasswordValidator()]],
+      newPasswordConfirmation: ['', [Validators.required, Validators.minLength(8), strongPasswordValidator()]],
     },
     {
-      validators: matchValuesValidator('password', 'passwordConfirmation'),
+      validators: matchValuesValidator('password', 'newPasswordConfirmation'),
     },
   );
 
   onSubmit(): void {
-    const { password, passwordConfirmation } = this.form.value;
+    const { oldPassword, newPassword, newPasswordConfirmation } = this.form.value;
 
-    if (!this.form.valid || typeof password != 'string' || typeof passwordConfirmation != 'string') return;
+    if (
+      !this.form.valid ||
+      typeof oldPassword != 'string' ||
+      typeof newPassword != 'string' ||
+      typeof newPasswordConfirmation != 'string'
+    )
+      return;
 
     this.#store
-      .dispatch(new ChangePassword(password, passwordConfirmation))
-      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .dispatch(new ChangePassword(oldPassword, newPassword, newPasswordConfirmation))
+      .pipe(
+        tap(() => this.#ref.close()),
+        takeUntilDestroyed(this.#destroyRef),
+      )
       .subscribe();
   }
 

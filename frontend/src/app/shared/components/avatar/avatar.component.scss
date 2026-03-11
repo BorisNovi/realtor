@@ -1,0 +1,136 @@
+:host {
+  display: inline-block;
+}
+
+.avatar-container {
+  width: inherit;
+  height: inherit;
+  position: relative;
+  border-radius: var(--p-border-radius-md);
+  background-color: var(--p-surface-100);
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
+
+  &:not(.readonly) {
+    border: 2px dashed var(--p-surface-400);
+  }
+
+  &:hover:not(.readonly) {
+    border-color: var(--p-primary-color);
+    background-color: var(--p-surface-200);
+
+    .overlay {
+      opacity: 1;
+    }
+  }
+
+  &.drag-over {
+    border-color: var(--p-primary-color);
+    background-color: var(--p-highlight-background);
+  }
+
+  &.has-image {
+    border-style: solid;
+    border-color: var(--p-surface-300);
+  }
+
+  &.readonly {
+    cursor: default;
+  }
+}
+
+.file-input {
+  display: none;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 0.5rem;
+  color: var(--p-text-muted-color);
+
+  i {
+    font-size: 2rem;
+  }
+
+  .placeholder-text {
+    font-size: 0.875rem;
+  }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.2s;
+
+  i {
+    color: white;
+    font-size: 1.5rem;
+  }
+}
+
+.remove-button {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--p-red-500);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+
+  &:hover {
+    background-color: var(--p-red-600);
+  }
+
+  i {
+    font-size: 0.75rem;
+  }
+
+  .avatar-container:hover & {
+    opacity: 1;
+  }
+}
+
+.loading-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--p-primary-color);
+
+  i {
+    font-size: 2rem;
+  }
+}
+
+.error-message {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--p-red-500);
+}

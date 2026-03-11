@@ -1,4 +1,9 @@
-<p-drawer [header]="'CATALOG.FILTERS.LABEL' | translate" [(visible)]="filtersService.isOpen" position="right">
+<p-drawer
+  [header]="'CATALOG.FILTERS.LABEL' | translate"
+  [visible]="filtersService.isOpen()"
+  (visibleChange)="$event || filtersService.closeFilters()"
+  position="right"
+>
   <rx-filters (filtersChange)="onFiltersChange($event)" (filtersCount)="filtersService.setFiltersCount($event)"></rx-filters>
 </p-drawer>
 

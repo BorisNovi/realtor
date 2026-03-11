@@ -1,0 +1,55 @@
+<div class="card relative p-0!">
+  @if (loading()) {
+    <p-progressbar mode="indeterminate" [style]="{ height: '4px' }" class="w-[101%] h-1 top-0 -left-1 absolute! z-10" />
+  }
+
+  @if (captionTemplate()) {
+    <div class="p-4">
+      <ng-container *ngTemplateOutlet="captionTemplate()!" />
+    </div>
+  }
+
+  @if (items().length) {
+    <div class="grid gap-4 p-4 pt-0" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))">
+      @for (item of items(); track trackBy()(item)) {
+        <ng-container *ngTemplateOutlet="cardTemplate(); context: { $implicit: item }" />
+      }
+    </div>
+  } @else {
+    @if (emptyTemplate()) {
+      <ng-container *ngTemplateOutlet="emptyTemplate()!" />
+    } @else {
+      <div class="flex flex-col items-center gap-4 p-8">
+        <div>{{ emptyText() }}</div>
+      </div>
+    }
+  }
+
+  <div class="flex items-center justify-center px-4">
+    <div class="flex-1">
+      <p-paginator
+        [first]="first()"
+        [rows]="rows()"
+        [totalRecords]="totalRecords()"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="currentPageReportTemplate()"
+        appendTo="body"
+        (onPageChange)="onPageChange($event)"
+      />
+    </div>
+    <div class="justify-end">
+      <p-button
+        [icon]="viewMode() === ViewMode.Table ? 'pi pi-th-large' : 'pi pi-table'"
+        [pTooltip]="
+          (viewMode() === ViewMode.Table ? 'CATALOG.TABLE.PAGINATOR.CARDS_VIEW' : 'CATALOG.TABLE.PAGINATOR.TABLE_VIEW')
+            | translate
+        "
+        tooltipPosition="left"
+        text
+        rounded
+        (click)="toggleViewMode()"
+      />
+    </div>
+  </div>
+</div>

@@ -4,16 +4,20 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { CardsGridComponent, LinkSwitchComponent } from '@shared/components';
 import { LISTINGS_PAGINATION_KEY } from '@shared/constants';
 import { IListing, ISort } from '@shared/interfaces';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Menu, MenuModule } from 'primeng/menu';
+import { PaginatorState } from 'primeng/paginator';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
-import { DeletionConfirmationService, QueryParamsService } from 'src/app/core';
+import { TooltipModule } from 'primeng/tooltip';
+import { DeletionConfirmationService, QueryParamsService, ViewMode, ViewModeService } from 'src/app/core';
 import {
   ChangeListingAvaliability,
   DeleteListing,
@@ -23,7 +27,6 @@ import {
   SetListingsSort,
 } from 'src/app/core/listings/state';
 import { CreateListingComponent } from '../create-listing/create-listing.component';
-import { LinkSwitchComponent } from '@shared/components';
 
 @Component({
   selector: 'rx-listings-table',
@@ -40,13 +43,16 @@ import { LinkSwitchComponent } from '@shared/components';
     TranslatePipe,
     RouterLink,
     LinkSwitchComponent,
+    TooltipModule,
+    CardsGridComponent,
+    CardModule,
   ],
   providers: [DialogService],
   templateUrl: './listing-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListingsTableComponent implements AfterViewInit, OnDestroy {
-  readonly pTable = viewChild.required<Table>('pTable');
+  readonly pTable = viewChild<Table>('pTable');
   readonly menu = viewChild.required<Menu>('menu');
 
   #ref!: DynamicDialogRef | null;
@@ -55,6 +61,10 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   readonly #translateService = inject(TranslateService);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
   readonly #queryParamsService = inject(QueryParamsService);
+  readonly #viewModeService = inject(ViewModeService);
+
+  readonly viewMode = this.#viewModeService.viewMode;
+  readonly listingTrackBy = (item: IListing) => item.id;
 
   actionItems: MenuItem[] = [];
 
@@ -64,10 +74,15 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
 
   readonly search = model<string>('');
 
+  ViewMode = ViewMode;
+
   ngAfterViewInit(): void {
-    const pagination = this.paginationS();
-    this.pTable().first = pagination.first;
-    this.pTable().rows = pagination.rows;
+    const table = this.pTable();
+    if (table) {
+      const pagination = this.paginationS();
+      table.first = pagination.first;
+      table.rows = pagination.rows;
+    }
   }
 
   onSortChange(event: ISort): void {
@@ -104,16 +119,27 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
     }
 
     // Используется, чтобы перебить переключение пагинации при сортировке
-    if (this.pTable) {
+    const table = this.pTable();
+    if (table) {
       const pagination = this.paginationS();
-      this.pTable().first = pagination.first;
-      this.pTable().rows = pagination.rows;
+      table.first = pagination.first;
+      table.rows = pagination.rows;
     }
   }
 
   pageChange(event: TablePageEvent): void {
     this.#queryParamsService.updateQueryParams(event, LISTINGS_PAGINATION_KEY);
     this.#store.dispatch([new SetListingsPagination(event), new FetchListings()]);
+  }
+
+  onCardsPageChange(event: PaginatorState): void {
+    const pagination = { first: event.first ?? 0, rows: event.rows ?? 20 };
+    this.#queryParamsService.updateQueryParams(pagination, LISTINGS_PAGINATION_KEY);
+    this.#store.dispatch([new SetListingsPagination(pagination), new FetchListings()]);
+  }
+
+  toggleViewMode(): void {
+    this.#viewModeService.toggle();
   }
 
   openDialog(data?: IListing | null): void {
@@ -123,6 +149,7 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
       width: '620px',
       modal: true,
       closable: true,
+      dismissableMask: true,
       contentStyle: { overflow: 'auto' },
       breakpoints: {
         '640px': '90vw',
