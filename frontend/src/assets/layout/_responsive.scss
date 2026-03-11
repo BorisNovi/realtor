@@ -108,3 +108,28 @@
     }
   }
 }
+
+@media (max-width: 639px) {
+  .layout-wrapper {
+    .layout-main-container {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+  }
+
+  .layout-menu {
+    .layout-root-menuitem > .layout-menuitem-root-text {
+      font-size: 1rem;
+    }
+
+    ul a {
+      padding: 1rem 1.25rem;
+      font-size: 1.125rem;
+
+      .layout-menuitem-icon {
+        font-size: 1.25rem;
+        margin-right: 0.75rem;
+      }
+    }
+  }
+}

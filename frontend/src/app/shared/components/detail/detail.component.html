@@ -1,24 +1,27 @@
 @let pObject = propertyObject();
+@let hasPhotos = imagesTemp()?.length;
 <div class="flex flex-col md:flex-row md:gap-4 w-full">
   <div class="block md:hidden">
     <ng-container [ngTemplateOutlet]="headerTpl"></ng-container>
   </div>
-  <div class="md:w-[50%] h-fit mb-4 md:sticky md:top-24">
-    <p-galleria
-      class="border-transparent!"
-      [value]="imagesTemp()"
-      [responsiveOptions]="galleriaResponsiveOptions"
-      [numVisible]="5"
-    >
-      <ng-template #item let-item>
-        <img [src]="item.image" class="w-full h-[500px] object-contain" alt="image" />
-      </ng-template>
-      <ng-template #thumbnail let-item>
-        <img [src]="item.thumbnail" class="h-[100px] object-contain" alt="thumbnail" />
-      </ng-template>
-    </p-galleria>
-  </div>
-  <div class="md:w-[50%] xl:w-[60%]">
+  @if (hasPhotos) {
+    <div class="md:w-[50%] h-fit mb-4 md:sticky md:top-24">
+      <p-galleria
+        class="border-transparent!"
+        [value]="imagesTemp()"
+        [responsiveOptions]="galleriaResponsiveOptions"
+        [numVisible]="5"
+      >
+        <ng-template #item let-item>
+          <img [src]="item.image" class="w-full h-[500px] object-contain" alt="image" />
+        </ng-template>
+        <ng-template #thumbnail let-item>
+          <img [src]="item.thumbnail" class="h-[100px] object-contain" alt="thumbnail" />
+        </ng-template>
+      </p-galleria>
+    </div>
+  }
+  <div [class]="hasPhotos ? 'md:w-[50%]' : 'w-full'">
     <div class="hidden md:block">
       <ng-container [ngTemplateOutlet]="headerTpl"></ng-container>
     </div>

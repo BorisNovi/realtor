@@ -31,6 +31,7 @@ services:
 
   postgres:
     image: postgres:16
+    env_file: ./backend/.env
     environment:
       - POSTGRES_DB=${DATABASE_NAME:-2testdb}
       - POSTGRES_USER=${DATABASE_USER:-postgres}
