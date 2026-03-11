@@ -1,7 +1,7 @@
 openapi: 3.0.4
 
 info:
-  title: Realtor-X REST API
+  title: Urban CRM REST API
   description: API for managing listings for sale and rent of real estate. Supports authorization, filtering, searching and user management. 
   version: 0.0.1
 

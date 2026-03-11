@@ -15,7 +15,7 @@ export const publicLayoutRoutes: Routes = [
       ...publicListingsRoutes,
       {
         path: 'landing',
-        title: 'Realtor-X',
+        title: 'Urban CRM',
         loadComponent: () => import('../../features').then(c => c.LandingComponent),
       },
       // {
