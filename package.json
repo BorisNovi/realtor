@@ -1,0 +1,28 @@
+{
+  "name": "realtor",
+  "private": true,
+  "scripts": {
+    "dev": "docker compose up -d",
+    "dev:down": "docker compose down",
+    "dev:logs": "docker logs realtor-backend-1 --tail 50 -f",
+    "dev:rebuild": "docker compose up -d --build",
+
+    "local-prod": "docker compose -f docker-compose.local-prod.yml --env-file backend/.env.prod up -d --build",
+    "local-prod:down": "docker compose -f docker-compose.local-prod.yml down",
+    "local-prod:rebuild:back": "docker compose -f docker-compose.local-prod.yml --env-file backend/.env.prod up -d --build backend",
+    "local-prod:restart:back": "docker compose -f docker-compose.local-prod.yml --env-file backend/.env.prod restart backend",
+    "local-prod:logs": "docker logs realtor-backend-1 --tail 50 -f",
+    "local-prod:reset": "docker compose -f docker-compose.local-prod.yml down -v",
+
+    "prod": "docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d --build",
+    "prod:down": "docker compose -f docker-compose.prod.yml down",
+
+    "front:start": "cd frontend && npx ng serve",
+    "front:build": "cd frontend && npx ng build",
+    "front:watch": "cd frontend && npx ng build --watch --configuration development",
+    "front:lint": "cd frontend && npx ng lint",
+    "front:lint-fix": "cd frontend && npx ng lint --fix",
+    "front:prettier": "cd frontend && npx prettier --write './src/**/*.{html,scss,ts}'",
+    "front:test": "cd frontend && npx ng test"
+  }
+}

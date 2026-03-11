@@ -28,8 +28,10 @@ staticfiles/
 .DS_Store
 Thumbs.db
 
-# environment
+# environment — все .env файлы с секретами не коммитим
 .env
+.env.prod
+.env.staging
 
 # Pip installer bundle
 get-pip.py
