@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { authGuard, loggedInGuard } from './core';
-import { NotFoundComponent } from './features';
 
 export const routes: Routes = [
   {
@@ -18,5 +17,8 @@ export const routes: Routes = [
     canActivate: [loggedInGuard],
     loadChildren: () => import('./features').then(c => c.authRoutes),
   },
-  { path: '**', component: NotFoundComponent },
+  {
+    path: '**',
+    loadComponent: () => import('./features/not-found/not-found.component').then(c => c.NotFoundComponent),
+  },
 ];
