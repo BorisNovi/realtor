@@ -9,9 +9,18 @@ class ContactIDField(serializers.PrimaryKeyRelatedField):
             data = data['id']
         return super().to_internal_value(data)
 
+class UserFromContextDefault:
+    requires_context = True
+
+    def __call__(self, serializer_field):
+        context = serializer_field.context
+        if 'user' in context:
+            return context['user']
+        return context['request'].user
+
 class ContactSerializer(serializers.ModelSerializer):
     comment = serializers.CharField(required=False, allow_null=True, allow_blank=True)
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    user = serializers.HiddenField(default=UserFromContextDefault())
 
     class Meta:
         model = Contact
@@ -41,7 +50,7 @@ class ContactSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         phone = attrs.get('phone')
         name = attrs.get('name')
-        user = self.context['request'].user
+        user = self.context.get('user') or self.context['request'].user
 
         instance = getattr(self, 'instance', None)
 
@@ -55,12 +64,10 @@ class ContactSerializer(serializers.ModelSerializer):
             existing = qs.first()
             
             if not instance: 
-                raise serializers.ValidationError({
-                    "CONTACT_ALREADY_EXISTS"
-                })
+                raise serializers.ValidationError({"error": "CONTACT_ALREADY_EXISTS"})
             
             raise serializers.ValidationError({
-                "PHONE_ALREADY_USED_BY_ANOTHER_CONTACT"
+                "error": "PHONE_ALREADY_USED_BY_ANOTHER_CONTACT"
             })
 
         return attrs
@@ -77,7 +84,7 @@ class ContactSerializer(serializers.ModelSerializer):
         if new_phone != instance.phone:
             if Contact.objects.filter(phone=new_phone).exclude(pk=instance.pk).exists():
                 raise serializers.ValidationError(
-                    "PHONE_ALREADY_USED_BY_ANOTHER_CONTACT"
+                    {"error": "PHONE_ALREADY_USED_BY_ANOTHER_CONTACT"}
                 )
 
         # Обновляем поля, если они переданы, иначе оставляем старые
