@@ -7,6 +7,7 @@ urlpatterns = [
     path('/delete', DeleteProfileView.as_view(), name='delete-profile'),
     path('/export', export_csv_view, name='export-csv'),
     path('/import', ImportPropertiesCSVView.as_view(), name='import-csv'),
+    # path('/object-import-confirm', ImportPropertiesCSVView.as_view(), name='import-csv-confirmation'),
 ]
 
 # проверено, все работает. слэши в начале URLов нужны!
