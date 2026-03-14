@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
 class AddressSerializer(serializers.Serializer):
-    country = serializers.CharField(required=False, allow_null=True, allow_blank=True)
-    state = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    country = serializers.CharField(required=False, allow_null=True, allow_blank=True) # TODO: убрать обязательность после сноса тестовой базы
+    state = serializers.CharField(required=False, allow_null=True, allow_blank=True) # TODO: убрать обязательность после сноса тестовой базы
     city = serializers.CharField()
     road = serializers.CharField()
     house = serializers.CharField()

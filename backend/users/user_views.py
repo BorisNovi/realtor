@@ -4,8 +4,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import APIView, api_view
 from django.contrib.auth import get_user_model
 from .user_serializers import ProfileSerializer, ChangePasswordSerializer
-from users.data_transfering import export_properties_csv, import_properties_csv
-
+from users.import_csv import import_properties_csv
+from users.export_csv import export_properties_csv
 
 User = get_user_model()
 
@@ -68,17 +68,15 @@ class ImportPropertiesCSVView(APIView):
             return Response({"error": "CSV file required"}, status=400)
 
         try:
-            created, errors = import_properties_csv(file, request.user)
+            result = import_properties_csv(file, request.user)
 
         except ValueError as e:
             return Response({"error": str(e)}, status=400)
 
-        if errors:
-            return Response({
-                "created": 0,
-                "errors": errors
-            }, status=400)
+        response_data = {"created": result["created"]}
 
-        return Response({
-            "created": created
-        })
+        if result["errors"]:
+            response_data["invalid_rows"] = [e["line"] for e in result["errors"]]
+
+        status_code = 207 if result["errors"] else 200
+        return Response(response_data, status=status_code)
