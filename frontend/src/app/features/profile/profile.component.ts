@@ -61,17 +61,9 @@ export class ProfileComponent {
     {
       entityId: 'catalog',
       labelKey: 'IMPORT_EXPORT.CATALOG',
-      formats: ['csv', 'xlsx'],
+      formats: ['csv'],
       importEndpoint: 'property-object/import',
       exportEndpoint: 'property-object/export',
-      exportTypeSuffix: 'csv',
-    },
-    {
-      entityId: 'contacts',
-      labelKey: 'IMPORT_EXPORT.CONTACTS',
-      formats: ['csv', 'xlsx'],
-      importEndpoint: 'contact/import',
-      exportEndpoint: 'contact/export',
       exportTypeSuffix: 'csv',
     },
   ];

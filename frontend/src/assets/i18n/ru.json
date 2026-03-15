@@ -397,7 +397,16 @@
     "EXPORT": "Экспорт {{type}}",
     "UPLOADING": "Загружается...",
     "UPLOAD_SUCCESS": "Готово",
-    "UPLOAD_ERROR": "Ошибка"
+    "UPLOAD_ERROR": "Ошибка",
+    "RESULT": {
+      "TITLE": "Результат импорта",
+      "CREATED": "Создано записей: {{count}}",
+      "INVALID_ROWS": "Некорректные строки: {{count}}",
+      "INVALID_ROWS_LIST": "Номера строк"
+    }
+  },
+  "COMMON": {
+    "CLOSE": "Закрыть"
   },
   "PROFILE": {
     "INFO": "Основная информация профиля",
@@ -419,7 +428,9 @@
       "UPDATED": "Профиль успешно обновлен",
       "UPDATE_FAILED": "Не удалось обновить профиль",
       "ACCOUNT_DELETED": "Аккаунт успешно удален",
-      "ACCOUNT_DELETE_FAILED": "Не удалось удалить аккаунт"
+      "ACCOUNT_DELETE_FAILED": "Не удалось удалить аккаунт",
+      "PASSWORD_CHANGED": "Пароль успешно изменен",
+      "PASSWORD_CHANGE_FAILED": "Ошибка смены пароля"
     }
   },
   "ADDRESS_PICKER": {

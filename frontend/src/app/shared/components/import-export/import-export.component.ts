@@ -2,9 +2,10 @@ import { HttpEventType } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '@ngx-translate/core';
-import { IImportExportSection, ImportExportFormat } from '@shared/interfaces';
+import { IImportExportSection, IImportResult, ImportExportFormat } from '@shared/interfaces';
 import { ImportExportService } from 'src/app/core/services/import-export.service';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { FileUploadProgressComponent, UploadStatus } from '../file-upload-progress/file-upload-progress.component';
 
@@ -21,7 +22,7 @@ const FORMAT_ACCEPT: Record<ImportExportFormat, string> = {
 
 @Component({
   selector: 'rx-import-export',
-  imports: [ButtonModule, DividerModule, TranslatePipe, FileUploadProgressComponent],
+  imports: [ButtonModule, DialogModule, DividerModule, TranslatePipe, FileUploadProgressComponent],
   templateUrl: './import-export.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -32,6 +33,9 @@ export class ImportExportComponent {
   readonly sections = input<IImportExportSection[]>([]);
 
   readonly #states = new Map<string, ReturnType<typeof signal<IEntityState>>>();
+
+  readonly importResult = signal<IImportResult | null>(null);
+  readonly importResultVisible = signal(false);
 
   getState(entityId: string): IEntityState {
     return this.#getOrCreateState(entityId)();
@@ -85,6 +89,8 @@ export class ImportExportComponent {
           } else if (event.type === HttpEventType.Response) {
             state.set({ status: 'success', progress: 100 });
             setTimeout(() => state.set({ status: 'idle', progress: 0 }), 3000);
+            this.importResult.set(event.body as IImportResult);
+            this.importResultVisible.set(true);
           }
         },
         error: () => {
