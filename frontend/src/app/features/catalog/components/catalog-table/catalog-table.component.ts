@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { CardsGridComponent } from '@shared/components';
+import { CardsGridComponent, SearchInputComponent } from '@shared/components';
 import { CATALOG_PAGINATION_KEY, CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency, PropertyStatus } from '@shared/enums';
 import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
@@ -32,6 +32,7 @@ import {
   FetchPropertyObject,
   QueryParamsService,
   SetCatalogPagination,
+  SetCatalogSearch,
   SetCatalogSort,
   UpdateStatus,
   ViewMode,
@@ -60,6 +61,7 @@ import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalo
     TooltipModule,
     CardsGridComponent,
     CardModule,
+    SearchInputComponent,
   ],
   providers: [DialogService],
   templateUrl: './catalog-table.component.html',
@@ -109,6 +111,10 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
 
   getCurrencySymbol(key: string): string {
     return CURRENCY_SYMBOLS[key as Currency];
+  }
+
+  onSearch(query: string): void {
+    this.#store.dispatch([new SetCatalogSearch(query), new FetchCatalog()]);
   }
 
   onStatusChange(newStatus: PropertyStatus, id: number): void {

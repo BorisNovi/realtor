@@ -39,7 +39,7 @@
         />
       </ng-template>
       <ng-template #caption>
-        <div class="flex justify-between gap-4">
+        <div class="flex flex-wrap gap-4 items-center">
           <p-button
             [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
             [outlined]="true"
@@ -47,12 +47,11 @@
             (click)="openDialog()"
           />
 
-          <p-inputgroup>
-            <p-inputgroup-addon>
-              <i class="pi pi-search"></i>
-            </p-inputgroup-addon>
-            <input pInputText [placeholder]="'CONTACTS.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="search" />
-          </p-inputgroup>
+          <rx-search-input
+            class="grow basis-48"
+            [placeholder]="'CONTACTS.SEARCH_PLACEHOLDER' | translate"
+            (searchChange)="onSearch($event)"
+          />
         </div>
       </ng-template>
       <ng-template #header>
@@ -124,7 +123,7 @@
     (pageChange)="onCardsPageChange($event)"
   >
     <ng-template #caption>
-      <div class="flex justify-between gap-4">
+      <div class="flex flex-wrap gap-4 items-center">
         <p-button
           [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
           [outlined]="true"
@@ -132,12 +131,11 @@
           (click)="openDialog()"
         />
 
-        <p-inputgroup>
-          <p-inputgroup-addon>
-            <i class="pi pi-search"></i>
-          </p-inputgroup-addon>
-          <input pInputText [placeholder]="'CONTACTS.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="search" />
-        </p-inputgroup>
+        <rx-search-input
+          class="grow basis-48"
+          [placeholder]="'CONTACTS.SEARCH_PLACEHOLDER' | translate"
+          (searchChange)="onSearch($event)"
+        />
       </div>
     </ng-template>
 

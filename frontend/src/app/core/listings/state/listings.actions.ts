@@ -4,6 +4,11 @@ export class FetchListings {
   static readonly type = '[Listing] Fetch Listings';
 }
 
+export class SetListingsSearch {
+  public static readonly type = '[Listings] Set Listings Search';
+  constructor(public readonly search: string) {}
+}
+
 export class SetListingsPagination {
   public static readonly type = '[Listings] Set Listings Pagination';
   constructor(public readonly pagination: IPagination) {}

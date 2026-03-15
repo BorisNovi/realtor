@@ -14,12 +14,14 @@ import {
   ListingsOperationFailed,
   ListingsOperationSuccess,
   SetListingsPagination,
+  SetListingsSearch,
   SetListingsSort,
   UpdateListing,
 } from './listings.actions';
 
 interface ListingsStateModel {
   listings: ITableData<IListing>;
+  search: string;
   sort: ISort | null;
   listing: IListing | null;
   loading: boolean;
@@ -30,6 +32,7 @@ interface ListingsStateModel {
   name: 'listings',
   defaults: {
     listings: { items: [], total: 0 },
+    search: '',
     sort: null,
     listing: null,
     pagination: {
@@ -67,15 +70,20 @@ export class ListingsState {
   }
 
   // Actions
+  @Action(SetListingsSearch)
+  setListingsSearch(ctx: StateContext<ListingsStateModel>, { search }: SetListingsSearch) {
+    ctx.patchState({ search });
+  }
+
   @Action(FetchListings)
   FetchListings(ctx: StateContext<ListingsStateModel>) {
-    const { pagination, sort } = ctx.getState();
+    const { pagination, sort, search } = ctx.getState();
 
     if (pagination.first === undefined || pagination.rows === undefined) return;
 
     ctx.patchState({ loading: true });
 
-    return this.#listingsService.fetchListings({ pagination, sort }).pipe(
+    return this.#listingsService.fetchListings({ pagination, sort, search }).pipe(
       tap((listings: ITableData<IListing>) => ctx.patchState({ listings, loading: false })),
       catchError((error: Error) => ctx.dispatch(new ListingsOperationFailed(error))),
     );

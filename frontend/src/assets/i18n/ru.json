@@ -254,6 +254,7 @@
     }
   },
   "CATALOG": {
+    "SEARCH_PLACEHOLDER": "Название объекта",
     "TABLE": {
       "HEADERS": {
         "PHOTO": "Фото",
@@ -353,6 +354,7 @@
     }
   },
   "LISTINGS": {
+    "SEARCH_PLACEHOLDER": "Название подборки",
     "ACTIONS": {
       "ADD_OBJECT": "Добавить объект в подборку",
       "DELETE_OBJECT": "Удалить из подборки",
@@ -453,7 +455,7 @@
     }
   },
   "MAP": {
-    "LOCATE": "Текущее местоположение"
+    "LOCATE": "Моя локация"
   },
   "FILE_UPLOAD": {
     "UPLOAD": "Загрузить",
