@@ -1,0 +1,60 @@
+<div class="md:col-span-2">
+  <label for="photos" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.PHOTOS' | translate }}</label>
+  <p-fileupload
+    #fileUpload
+    [customUpload]="true"
+    [auto]="true"
+    (uploadHandler)="onUpload($event)"
+    [multiple]="true"
+    accept="image/*"
+    [fileLimit]="imagesLimit"
+    mode="advanced"
+  >
+    <ng-template #header let-files let-chooseCallback="chooseCallback">
+      @if (photosS().length > 0) {
+        <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
+          <div class="flex gap-2">
+            <p-button (onClick)="choose(chooseCallback)" icon="pi pi-plus" [rounded]="true" [text]="true" />
+          </div>
+        </div>
+      }
+    </ng-template>
+    <ng-template #file></ng-template>
+    <ng-template #content let-chooseCallback="chooseCallback">
+      @if (uploadErrorS()) {
+        <p-message severity="error" [text]="uploadErrorS() || ''" class="w-full mb-4" />
+      }
+
+      @if (photosS().length <= 0) {
+        <div class="flex items-center justify-center flex-col">
+          <p-button (click)="choose(chooseCallback)" [rounded]="true" [text]="true">
+            <i class="pi pi-plus p-8! text-4xl! text-muted-color!"></i>
+          </p-button>
+          <p class="mt-6 mb-0">{{ 'FORM.PLACEHOLDERS.UPLOAD_PHOTOS' | translate }}</p>
+        </div>
+      }
+
+      @if (photosS().length > 0) {
+        <div class="mt-4">
+          <div class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.PREVIEW' | translate }}</div>
+          <div class="flex flex-wrap gap-4">
+            @for (photo of photosS(); track photo; let i = $index) {
+              <div class="relative overflow-hidden aspect-square w-40">
+                <button
+                  pButton
+                  type="button"
+                  class="absolute! right-0 p-button-text p-button-sm"
+                  severity="danger"
+                  (click)="removePhoto(i)"
+                >
+                  <i class="pi pi-trash"></i>
+                </button>
+                <img [src]="photo" [alt]="photo || 'Photo'" class="w-full h-auto" />
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </ng-template>
+  </p-fileupload>
+</div>
