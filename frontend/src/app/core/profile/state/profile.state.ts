@@ -63,7 +63,8 @@ export class ProfileState {
     ctx.patchState({ loading: true });
     return this.#profileService.changePassword({ oldPassword, newPassword, newPasswordConfirmation }).pipe(
       tap(() => ctx.patchState({ loading: false })),
-      catchError((error: Error) => ctx.dispatch(new ProfileOperationFailed(error))),
+      tap(() => ctx.dispatch(new ProfileOperationSuccess('PASSWORD_CHANGED'))),
+      catchError((error: Error) => ctx.dispatch(new ProfileOperationFailed(error, 'PASSWORD_CHANGE_FAILED'))),
     );
   }
 
