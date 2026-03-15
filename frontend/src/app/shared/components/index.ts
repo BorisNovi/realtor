@@ -1,4 +1,5 @@
 export * from './address-picker/address-picker.component';
+export * from './search-input/search-input.component';
 export * from './avatar/avatar.component';
 export * from './import-export/import-export.component';
 export * from './file-upload-progress/file-upload-progress.component';

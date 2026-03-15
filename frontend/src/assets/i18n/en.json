@@ -254,6 +254,7 @@
     }
   },
   "CATALOG": {
+    "SEARCH_PLACEHOLDER": "Property name",
     "TABLE": {
       "HEADERS": {
         "PHOTO": "Photo",
@@ -353,6 +354,7 @@
     }
   },
   "LISTINGS" : {
+    "SEARCH_PLACEHOLDER": "Listing name",
     "ACTIONS": {
       "ADD_OBJECT": "Add object to listing",
       "DELETE_OBJECT": "Delete from listing",

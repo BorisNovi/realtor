@@ -40,13 +40,20 @@
         />
       </ng-template>
       <ng-template #caption>
-        <div class="flex justify-between gap-4">
+        <div class="flex flex-wrap gap-4 items-center justify-between">
           <p-button
             [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
             [outlined]="true"
             icon="pi pi-plus"
             (click)="openItemDialog()"
           />
+
+          <rx-search-input
+            class="grow basis-48 order-last sm:order-0"
+            [placeholder]="'CATALOG.SEARCH_PLACEHOLDER' | translate"
+            (searchChange)="onSearch($event)"
+          />
+
           <p-button
             [label]="'CATALOG.TABLE.BUTTONS.FILTERS' | translate"
             [outlined]="true"
@@ -202,13 +209,20 @@
     (pageChange)="onCardsPageChange($event)"
   >
     <ng-template #caption>
-      <div class="flex justify-between gap-4">
+      <div class="flex flex-wrap gap-4 items-center justify-between">
         <p-button
           [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
           [outlined]="true"
           icon="pi pi-plus"
           (click)="openItemDialog()"
         />
+
+        <rx-search-input
+          class="grow basis-48 order-last sm:order-0"
+          [placeholder]="'CATALOG.SEARCH_PLACEHOLDER' | translate"
+          (searchChange)="onSearch($event)"
+        />
+
         <p-button
           [label]="'CATALOG.TABLE.BUTTONS.FILTERS' | translate"
           [outlined]="true"

@@ -5,6 +5,11 @@ export class FetchCatalog {
   static readonly type = '[Catalog] Fetch Catalog';
 }
 
+export class SetCatalogSearch {
+  public static readonly type = '[Catalog] Set Catalog Search';
+  constructor(public readonly search: string) {}
+}
+
 export class FetchCatalogMap {
   static readonly type = '[Catalog] Fetch Catalog Map';
   constructor(public readonly box: IMapBox) {}
