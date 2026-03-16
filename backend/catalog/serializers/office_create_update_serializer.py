@@ -71,8 +71,11 @@ class OfficeCreateUpdateSerializer(BaseCreateUpdateSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        specifics = validated_data.pop('specifics', {})
-        validated_data.update(flatten_office_specifics(specifics))
+        specifics = validated_data.pop('specifics', None)
+
+        if specifics is not None:
+            validated_data.update(flatten_office_specifics(specifics))
+        
         return super().update(instance, validated_data)
 
 # Сериализатор для чтения объектов Office и возврата структурированного ответа

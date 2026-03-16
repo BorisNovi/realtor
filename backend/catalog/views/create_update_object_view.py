@@ -109,7 +109,7 @@ class PropertyObjectAPIView(APIView):
         print("Response data:", serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request, pk):
+    def update(self, request, pk, partial=False):
         print("Incoming data:", request.data)
         
         instance = self._get_property_instance(pk)
@@ -119,6 +119,7 @@ class PropertyObjectAPIView(APIView):
         serializer = serializer_class(
             instance,
             data=request.data,
+            partial=partial,
             context={'request': request}
         )
 
@@ -128,28 +129,11 @@ class PropertyObjectAPIView(APIView):
         read_serializer_class = PROPERTY_READ_SERIALIZER_MAP[property_type]
         read_serializer = read_serializer_class(instance, context={'request': request})
         
-        print("Response data:", read_serializer.data)
+        print("Updated data:", read_serializer.data)
         return Response(read_serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, pk):
+        return self.update(request, pk, partial=False)
 
     def patch(self, request, pk):
-        print("Incoming data:", request.data)
-        
-        instance = self._get_property_instance(pk)
-        property_type = instance.property_type
-        serializer_class = PROPERTY_WRITE_SERIALIZER_MAP[property_type]
- 
-        serializer = serializer_class(
-            instance,
-            data=request.data,
-            partial=True,
-            context={'request': request}
-        )
-
-        serializer.is_valid(raise_exception=True)
-        instance = serializer.save()
-
-        read_serializer_class = PROPERTY_READ_SERIALIZER_MAP[property_type]
-        read_serializer = read_serializer_class(instance, context={'request': request})
-        
-        print("Response data:", read_serializer.data)
-        return Response(read_serializer.data, status=status.HTTP_200_OK)
+        return self.update(request, pk, partial=True)
