@@ -4,6 +4,7 @@ from catalog.serializers.base_create_update_serializer import BaseCreateUpdateSe
 from django.db import transaction
 from catalog.serializers.catalog_address_serializer import AddressSerializer
 from catalog.serializers.catalog_price_serializer import build_price
+from catalog.serializers.house_create_update_serializer import flatten_house_specifics
 from contacts.contact_serializers import ContactSerializer
 
 def flatten_flat_specifics(specifics: dict | None) -> dict:
@@ -70,8 +71,11 @@ class FlatCreateUpdateSerializer(BaseCreateUpdateSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        specifics = validated_data.pop('specifics', {}) or {}
-        validated_data.update(flatten_flat_specifics(specifics))
+        specifics = validated_data.pop('specifics', None)
+
+        if specifics is not None:
+            validated_data.update(flatten_flat_specifics(specifics))
+        
         return super().update(instance, validated_data)
 
 # Сериализатор для чтения объектов Flat и возврата структурированного ответа
