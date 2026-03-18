@@ -17,6 +17,7 @@ import {
   FetchPropertyObject,
   SetCatalogFilters,
   SetCatalogPagination,
+  SetCatalogSearch,
   SetCatalogSort,
   UpdatePropertyObject,
   UpdateStatus,
@@ -28,6 +29,7 @@ interface CatalogStateModel {
   loadedBox: IMapBox | null;
   loadedBoxFilters: ICatalogFilters | null;
   filters: ICatalogFilters;
+  search: string;
   sort: ISort | null;
   propertyObject: IPropertyObject | null;
   loading: boolean;
@@ -42,6 +44,7 @@ interface CatalogStateModel {
     loadedBox: null,
     loadedBoxFilters: {},
     filters: {},
+    search: '',
     sort: null,
     propertyObject: null,
     pagination: {
@@ -94,15 +97,20 @@ export class CatalogState {
   }
 
   // Actions
+  @Action(SetCatalogSearch)
+  setCatalogSearch(ctx: StateContext<CatalogStateModel>, { search }: SetCatalogSearch) {
+    ctx.patchState({ search });
+  }
+
   @Action(FetchCatalog)
   fetchCatalog(ctx: StateContext<CatalogStateModel>) {
-    const { filters, pagination, sort } = ctx.getState();
+    const { filters, pagination, sort, search } = ctx.getState();
 
     if (pagination.first === undefined || pagination.rows === undefined) return;
 
     ctx.patchState({ loading: true });
 
-    return this.#catalogService.fetchCatalog({ filters, pagination, sort }).pipe(
+    return this.#catalogService.fetchCatalog({ filters, pagination, sort, search }).pipe(
       tap((catalog: ITableData<ICatalogItem>) => ctx.patchState({ catalog, loading: false })),
       catchError((error: Error) => ctx.dispatch(new CatalogOperationFailed(error))),
     );

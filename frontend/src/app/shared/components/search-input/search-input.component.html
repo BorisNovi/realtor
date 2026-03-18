@@ -1,0 +1,6 @@
+<p-inputgroup class="w-full">
+  <p-inputgroup-addon>
+    <i class="pi pi-search"></i>
+  </p-inputgroup-addon>
+  <input pInputText [placeholder]="placeholder()" [(ngModel)]="value" (ngModelChange)="onInput($event)" />
+</p-inputgroup>

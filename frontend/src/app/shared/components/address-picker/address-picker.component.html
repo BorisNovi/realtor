@@ -23,7 +23,6 @@
   <p-button
     class="absolute z-10 right-2 bottom-20"
     icon="pi pi-map-marker"
-    [outlined]="true"
     (click)="updateLocation(true)"
     [pTooltip]="'ADDRESS_PICKER.TOOLTIP.LOCATE' | translate"
     showDelay="300"
@@ -32,7 +31,6 @@
   <p-button
     class="absolute z-10 right-2 bottom-40"
     [icon]="sz ? 'pi pi-lock' : 'pi pi-lock-open'"
-    [outlined]="true"
     (click)="scrollZooomDisabled.set(!sz)"
     [pTooltip]="'ADDRESS_PICKER.TOOLTIP.' + (sz ? 'UNLOCK_SCROLL' : 'LOCK_SCROLL') | translate"
     showDelay="300"

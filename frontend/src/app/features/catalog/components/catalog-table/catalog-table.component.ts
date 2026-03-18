@@ -5,11 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { CardsGridComponent } from '@shared/components';
+import { CardsGridComponent, SearchInputComponent } from '@shared/components';
 import { CATALOG_PAGINATION_KEY, CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency, PropertyStatus } from '@shared/enums';
 import { ICatalogItem, IPropertyObject } from '@shared/interfaces';
-import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
+import { getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ButtonGroupModule } from 'primeng/buttongroup';
@@ -20,7 +20,7 @@ import { Menu, MenuModule } from 'primeng/menu';
 import { PaginatorState } from 'primeng/paginator';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
-import { Table, TableEditCompleteEvent, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
+import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { startWith, switchMap, tap } from 'rxjs';
@@ -32,6 +32,7 @@ import {
   FetchPropertyObject,
   QueryParamsService,
   SetCatalogPagination,
+  SetCatalogSearch,
   SetCatalogSort,
   UpdateStatus,
   ViewMode,
@@ -60,6 +61,7 @@ import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalo
     TooltipModule,
     CardsGridComponent,
     CardModule,
+    SearchInputComponent,
   ],
   providers: [DialogService],
   templateUrl: './catalog-table.component.html',
@@ -84,7 +86,6 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
   readonly catalogTrackBy = (item: ICatalogItem) => item.id;
 
   readonly getSeverity = getPropertyStatusSeverity;
-  readonly getStatusBackground = getPropertyStatusBackground;
   statuses: { label: string; value: string }[] = [];
 
   actionItems: MenuItem[] = [];
@@ -112,8 +113,8 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
     return CURRENCY_SYMBOLS[key as Currency];
   }
 
-  onEditComplete(event: TableEditCompleteEvent): void {
-    const { id, value: status } = event.data;
+  onSearch(query: string): void {
+    this.#store.dispatch([new SetCatalogSearch(query), new FetchCatalog()]);
   }
 
   onStatusChange(newStatus: PropertyStatus, id: number): void {
