@@ -36,6 +36,8 @@ def property_to_row(prop: Property) -> list:
         prop.price_value,
         prop.price_currency,
         prop.area,
+        addr.get("country", ""),
+        addr.get("region", ""),
         addr.get("city", ""),
         addr.get("road", ""),
         addr.get("house", ""),
