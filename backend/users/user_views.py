@@ -1,8 +1,11 @@
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.decorators import APIView, api_view
 from django.contrib.auth import get_user_model
 from .user_serializers import ProfileSerializer, ChangePasswordSerializer
+from users.import_csv import import_properties_csv
+from users.export_csv import export_properties_csv
 
 User = get_user_model()
 
@@ -49,3 +52,31 @@ class DeleteProfileView(generics.DestroyAPIView):
         # Тут можно потом добавить удаление связанных данных
         user.delete()
         return Response({"PROFILE_DELETED_SUCCESSFULLY"}, status=status.HTTP_200_OK)
+
+
+# === Экспорт и импорт CSV ===
+
+@api_view(["GET"])
+def export_csv_view(request):
+    return export_properties_csv(request.user)
+
+
+class ImportPropertiesCSVView(APIView):
+    def post(self, request):
+        file = request.FILES.get("file")
+        if not file:
+            return Response({"error": "CSV file required"}, status=400)
+
+        try:
+            result = import_properties_csv(file, request.user)
+
+        except ValueError as e:
+            return Response({"error": str(e)}, status=400)
+
+        response_data = {"created": result["created"]}
+
+        if result["errors"]:
+            response_data["invalid_rows"] = [e["line"] for e in result["errors"]]
+
+        status_code = 207 if result["errors"] else 200
+        return Response(response_data, status=status_code)

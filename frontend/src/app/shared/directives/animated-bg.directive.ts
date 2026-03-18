@@ -1,6 +1,7 @@
 import { Directive, effect, ElementRef, inject, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { PrivateLayoutService } from 'src/app/layouts/private-layout/shared';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 @Directive({
   selector: '[animatedBg]',
@@ -12,31 +13,31 @@ export class AnimatedBgDirective implements OnInit, OnDestroy {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
-  private particles: THREE.Mesh[] = [];
-  private material!: THREE.MeshStandardMaterial;
+  private particles: THREE.Object3D[] = [];
   private ambientLight!: THREE.AmbientLight;
   private pointLight!: THREE.PointLight;
   private animationFrameId!: number;
   private mouseX = 0;
   private mouseY = 0;
 
-  private currentColor = new THREE.Color(0xffffff);
-  private targetColor = new THREE.Color(0xffffff);
+  private readonly statusMaterials = [
+    new THREE.MeshStandardMaterial({ color: 0x50b04d, emissive: new THREE.Color(0x50b04d), emissiveIntensity: 0 }),
+    new THREE.MeshStandardMaterial({ color: 0xef8833, emissive: new THREE.Color(0xef8833), emissiveIntensity: 0 }),
+    new THREE.MeshStandardMaterial({ color: 0xea3423, emissive: new THREE.Color(0xea3423), emissiveIntensity: 0 }),
+  ];
+  private get freeMaterial() { return this.statusMaterials[0]; }
+  private get reservedMaterial() { return this.statusMaterials[1]; }
+  private get rentedMaterial() { return this.statusMaterials[2]; }
 
   constructor(
     private el: ElementRef,
     private dom: Renderer2,
   ) {
-    const root = document.documentElement;
-    const primary = getComputedStyle(root).getPropertyValue('--p-emerald-400');
-    const red = getComputedStyle(root).getPropertyValue('--p-red-600');
-
     effect(() => {
       const dark = this.layoutService.isDarkTheme();
-      if (this.ambientLight) this.ambientLight.intensity = dark ? 0.1 : 1;
-      if (this.pointLight) this.pointLight.power = dark ? 100 : 600;
-
-      this.targetColor.setStyle(dark ? red : primary);
+      if (this.ambientLight) this.ambientLight.intensity = dark ? 0.3 : 1;
+      if (this.pointLight) this.pointLight.power = dark ? 200 : 600;
+      this.statusMaterials.forEach(m => m.emissiveIntensity = dark ? 0.5 : 0.8);
     });
   }
 
@@ -67,22 +68,6 @@ export class AnimatedBgDirective implements OnInit, OnDestroy {
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-    const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load('assets/Swiborg.jpg');
-    const geometry = new THREE.SphereGeometry(0.2, 24, 24);
-    this.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
-    const textureMaterial = new THREE.MeshStandardMaterial({ map: texture });
-
-    for (let i = 0; i < 200; i++) {
-      const useTexture = Math.random() < 0.01;
-      const material = useTexture ? textureMaterial : this.material;
-      const particle = new THREE.Mesh(geometry, material);
-      particle.position.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40);
-      this.scene.add(particle);
-      particle.rotation.y = Math.PI / -2;
-      this.particles.push(particle);
-    }
-
     this.ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
     this.pointLight = new THREE.PointLight(0xffffff, 1);
     this.pointLight.position.set(5, 5, 5);
@@ -90,6 +75,41 @@ export class AnimatedBgDirective implements OnInit, OnDestroy {
     this.scene.add(this.ambientLight, this.pointLight);
 
     this.camera.position.z = 20;
+
+    this.loadHouseModel();
+  }
+
+  private loadHouseModel(): void {
+    const loader = new GLTFLoader();
+    loader.load('assets/house_realtor.glb', (gltf) => {
+      const template = gltf.scene;
+
+      const box = new THREE.Box3().setFromObject(template);
+      const size = new THREE.Vector3();
+      box.getSize(size);
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const normalizedScale = 1 / maxDim;
+
+      for (let i = 0; i < 200; i++) {
+        const clone = template.clone(true);
+
+        // 50% free, 25% reserved, 25% rented
+        const mat = i < 100 ? this.freeMaterial : i < 150 ? this.reservedMaterial : this.rentedMaterial;
+        clone.traverse((child) => {
+          if (child instanceof THREE.Mesh) child.material = mat;
+        });
+
+        clone.scale.setScalar(normalizedScale * (0.4 + Math.random() * 0.4));
+        clone.position.set(
+          (Math.random() - 0.5) * 40,
+          (Math.random() - 0.5) * 40,
+          (Math.random() - 0.5) * 40,
+        );
+        clone.rotation.set(0, Math.random() * Math.PI * 2, 0);
+        this.scene.add(clone);
+        this.particles.push(clone);
+      }
+    });
   }
 
   private animate = (): void => {
@@ -98,14 +118,12 @@ export class AnimatedBgDirective implements OnInit, OnDestroy {
     this.particles.forEach(particle => {
       particle.position.x += Math.sin(particle.position.y + Date.now() * 0.001) * 0.005;
       particle.position.y += Math.cos(particle.position.x + Date.now() * 0.001) * 0.005;
+      particle.rotation.y += 0.005;
     });
 
     this.camera.position.x += (this.mouseX * 10 - this.camera.position.x) * 0.05;
     this.camera.position.y += (this.mouseY * 10 - this.camera.position.y) * 0.05;
     this.camera.lookAt(this.scene.position);
-
-    this.currentColor.lerp(this.targetColor, 0.05);
-    this.material.color.copy(this.currentColor);
 
     this.renderer.render(this.scene, this.camera);
   };

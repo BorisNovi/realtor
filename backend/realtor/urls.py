@@ -13,6 +13,7 @@ urlpatterns = [
     path("api/v1/file", include("file.urls")),
     path("api/v1/listing", include("listings.urls")),
     path("api/v1/profile", include("users.urls")),
+    path("api/v1/property-object", include("users.urls")),
 ]
 
 if settings.DEBUG:
