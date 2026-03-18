@@ -1,0 +1,29 @@
+<ng-container [formGroup]="form()">
+  <p-divider align="left" type="solid" class="md:col-span-2">
+    <b>{{ 'FORM.LABELS.CONTACT' | translate }}</b>
+  </p-divider>
+
+  <p-button
+    class="w-fit md:col-start-2 justify-self-end mb-[-2rem]"
+    [label]="'FORM.LABELS.CREATE_CONTACT' | translate"
+    icon="pi pi-plus"
+    size="small"
+    [outlined]="true"
+    (click)="openContactDialog()"
+  />
+
+  <rx-input-wrapper
+    class="w-full md:col-span-2"
+    [control]="form().get('contact')!"
+    [label]="'FORM.LABELS.CONTACT' | translate"
+    id="contact"
+  >
+    <rx-select-single
+      [fetcher]="contactFetchMethod"
+      [mapToSelect]="contactMapToSelect"
+      [valueMapper]="contactValueMapper"
+      formControlName="contact"
+      withSearch
+    />
+  </rx-input-wrapper>
+</ng-container>
