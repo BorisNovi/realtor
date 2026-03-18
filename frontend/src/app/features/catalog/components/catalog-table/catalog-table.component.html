@@ -10,7 +10,6 @@
     }
     <p-table
       #pTable
-      (onEditComplete)="onEditComplete($event)"
       [scrollable]="true"
       [scrollHeight]="'calc(100vh - 15.4rem)'"
       [value]="tableData!.items"
@@ -41,13 +40,20 @@
         />
       </ng-template>
       <ng-template #caption>
-        <div class="flex justify-between gap-4">
+        <div class="flex flex-wrap gap-4 items-center justify-between">
           <p-button
             [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
             [outlined]="true"
             icon="pi pi-plus"
             (click)="openItemDialog()"
           />
+
+          <rx-search-input
+            class="grow basis-48 order-last sm:order-0"
+            [placeholder]="'CATALOG.SEARCH_PLACEHOLDER' | translate"
+            (searchChange)="onSearch($event)"
+          />
+
           <p-button
             [label]="'CATALOG.TABLE.BUTTONS.FILTERS' | translate"
             [outlined]="true"
@@ -97,6 +103,14 @@
           <td>{{ item.zoningType ? ('FORM.PROPERTIES.ZONING_TYPE.' + item.zoningType | translate) : '—' }}</td>
           <td class="max-w-36">
             @let a = item.address;
+            <div class="text-xs text-nowrap">
+              <div class="truncate">
+                {{ a.country }}
+                @if (a.state) {
+                  , {{ a.state }}
+                }
+              </div>
+            </div>
             <div class="truncate">{{ a.city }}</div>
             <div class="text-xs text-nowrap">
               <div class="truncate">{{ a.road }}</div>
@@ -109,37 +123,23 @@
           <td>{{ item.price.value | number }} {{ getCurrencySymbol(item.price.currency) }}</td>
           <td>{{ item.area }} m²</td>
           <td>{{ item.dateAdded | date: 'dd.MM.y' }}</td>
-          <td
-            [pEditableColumn]="{ id: item.id, value: item.status }"
-            pEditableColumnField="status"
-            (click)="$event.stopPropagation()"
-          >
-            <p-cellEditor class="relative">
-              <ng-template #input>
-                <p-select
-                  [options]="statuses"
-                  [ngModel]="item.status"
-                  (ngModelChange)="onStatusChange($event, item.id)"
-                  optionLabel="label"
-                  optionValue="value"
-                  appendTo="body"
-                  [ngStyle]="{ 'background-color': getStatusBackground(item.status) }"
-                  class="absolute! bottom-[-1.2rem]"
-                >
-                  <ng-template pTemplate="item" let-item>
-                    <div class="flex items-center">
-                      <p-tag [value]="item.label" [severity]="getSeverity(item.value)" />
-                    </div>
-                  </ng-template>
-                </p-select>
+          <td (click)="$event.stopPropagation()">
+            <p-select
+              [options]="statuses"
+              [ngModel]="item.status"
+              (ngModelChange)="onStatusChange($event, item.id)"
+              optionLabel="label"
+              optionValue="value"
+              appendTo="body"
+              class="w-full border-0! shadow-none! p-0! bg-transparent!"
+            >
+              <ng-template #selectedItem let-selected>
+                <p-tag [value]="selected.label" [severity]="getSeverity(selected.value)" />
               </ng-template>
-              <ng-template #output>
-                <p-tag
-                  [value]="'FORM.PROPERTIES.PROPERTY_STATUS.' + item.status | translate"
-                  [severity]="getSeverity(item.status)"
-                />
+              <ng-template #item let-opt>
+                <p-tag [value]="opt.label" [severity]="getSeverity(opt.value)" />
               </ng-template>
-            </p-cellEditor>
+            </p-select>
           </td>
 
           <td>
@@ -209,13 +209,20 @@
     (pageChange)="onCardsPageChange($event)"
   >
     <ng-template #caption>
-      <div class="flex justify-between gap-4">
+      <div class="flex flex-wrap gap-4 items-center justify-between">
         <p-button
           [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
           [outlined]="true"
           icon="pi pi-plus"
           (click)="openItemDialog()"
         />
+
+        <rx-search-input
+          class="grow basis-48 order-last sm:order-0"
+          [placeholder]="'CATALOG.SEARCH_PLACEHOLDER' | translate"
+          (searchChange)="onSearch($event)"
+        />
+
         <p-button
           [label]="'CATALOG.TABLE.BUTTONS.FILTERS' | translate"
           [outlined]="true"
@@ -229,13 +236,15 @@
     <ng-template #card let-item>
       <p-card class="border border-surface-200 dark:border-surface-700 rounded-xl overflow-hidden block">
         <ng-template #header>
-          @if (item.photos.length) {
-            <img [src]="item.photos[0]" [alt]="item.propertyType" class="w-full h-68 object-cover" />
-          } @else {
-            <div class="w-full h-68 bg-surface-200 dark:bg-surface-700 flex items-center justify-center">
-              <i class="pi pi-image text-surface-400 dark:text-surface-500 text-4xl"></i>
-            </div>
-          }
+          <a [routerLink]="['../', item.id]" class="cursor-pointer">
+            @if (item.photos.length) {
+              <img [src]="item.photos[0]" [alt]="item.propertyType" class="w-full h-68 object-cover" />
+            } @else {
+              <div class="w-full h-68 bg-surface-200 dark:bg-surface-700 flex items-center justify-center">
+                <i class="pi pi-image text-surface-400 dark:text-surface-500 text-4xl"></i>
+              </div>
+            }
+          </a>
         </ng-template>
 
         <div class="flex flex-col gap-2">
@@ -246,10 +255,23 @@
             <span class="font-semibold text-lg">
               {{ item.price.value | number }} {{ getCurrencySymbol(item.price.currency) }}
             </span>
-            <p-tag
-              [value]="'FORM.PROPERTIES.PROPERTY_STATUS.' + item.status | translate"
-              [severity]="getSeverity(item.status)"
-            />
+            <p-select
+              [options]="statuses"
+              [ngModel]="item.status"
+              (ngModelChange)="onStatusChange($event, item.id)"
+              optionLabel="label"
+              optionValue="value"
+              appendTo="body"
+              class="border-0! shadow-none! p-0! bg-transparent!"
+              (click)="$event.stopPropagation()"
+            >
+              <ng-template #selectedItem let-selected>
+                <p-tag [value]="selected.label" [severity]="getSeverity(selected.value)" />
+              </ng-template>
+              <ng-template #item let-opt>
+                <p-tag [value]="opt.label" [severity]="getSeverity(opt.value)" />
+              </ng-template>
+            </p-select>
           </div>
 
           <div class="flex items-center gap-2 text-sm text-surface-500">
@@ -266,6 +288,12 @@
 
           @let a = item.address;
           <div class="text-sm">
+            <div class="text-surface-400 text-xs">
+              {{ a.country }}
+              @if (a.state) {
+                , {{ a.state }}
+              }
+            </div>
             <div>{{ a.city }}, {{ a.road }}, № {{ a.house }}</div>
             @if (a.apartment) {
               <div>{{ 'PREFIXES.APARTMENT' | translate }} {{ a.apartment }}</div>

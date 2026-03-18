@@ -1,5 +1,8 @@
 export * from './address-picker/address-picker.component';
+export * from './search-input/search-input.component';
 export * from './avatar/avatar.component';
+export * from './import-export/import-export.component';
+export * from './file-upload-progress/file-upload-progress.component';
 export * from './cards-grid/cards-grid.component';
 export * from './detail/detail.component';
 export * from './fieldset-checkbox-group/fieldset-checkbox-group.component';
@@ -10,3 +13,4 @@ export * from './map/map.component';
 export * from './multiselect/multiselect.component';
 export * from './select-single/select-single.component';
 export * from './select/select.component';
+export * from './static-map/static-map.component';

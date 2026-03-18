@@ -5,6 +5,7 @@ export * from './contact.interface';
 export * from './entity.interface';
 export * from './fetch-options.interface';
 export * from './fieldset-config.interface';
+export * from './import-export-section.interface';
 export * from './fingerprint-data.interface';
 export * from './geocoder.interface';
 export * from './language-option.interface';

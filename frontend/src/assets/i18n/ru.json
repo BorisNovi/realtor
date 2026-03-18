@@ -254,6 +254,7 @@
     }
   },
   "CATALOG": {
+    "SEARCH_PLACEHOLDER": "Название объекта",
     "TABLE": {
       "HEADERS": {
         "PHOTO": "Фото",
@@ -294,7 +295,8 @@
     },
     "LABELS": {
       "ABOUT": "Об объекте",
-      "OPTIONS": "Опции"
+      "OPTIONS": "Опции",
+      "LOCATION": "Расположение"
     },
     "FILTERS": {
       "LABEL": "Фильтры",
@@ -352,11 +354,13 @@
     }
   },
   "LISTINGS": {
+    "SEARCH_PLACEHOLDER": "Название подборки",
     "ACTIONS": {
       "ADD_OBJECT": "Добавить объект в подборку",
       "DELETE_OBJECT": "Удалить из подборки",
       "DELETE_LISTING": "Удалить подборку",
-      "COPY_LINK": "Копировать ссылку"
+      "COPY_LINK": "Копировать ссылку",
+      "ALREADY_ADDED": "Уже добавлен"
     },
     "TABLE": {
       "HEADERS": {
@@ -388,6 +392,24 @@
       "LINK_COPIED": "Публичная ссылка скопирована в буфер обмена"
     }
   },
+  "IMPORT_EXPORT": {
+    "CATALOG": "Объекты недвижимости",
+    "CONTACTS": "Контакты",
+    "IMPORT": "Импорт {{type}}",
+    "EXPORT": "Экспорт {{type}}",
+    "UPLOADING": "Загружается...",
+    "UPLOAD_SUCCESS": "Готово",
+    "UPLOAD_ERROR": "Ошибка",
+    "RESULT": {
+      "TITLE": "Результат импорта",
+      "CREATED": "Создано записей: {{count}}",
+      "INVALID_ROWS": "Некорректные строки: {{count}}",
+      "INVALID_ROWS_LIST": "Номера строк"
+    }
+  },
+  "COMMON": {
+    "CLOSE": "Закрыть"
+  },
   "PROFILE": {
     "INFO": "Основная информация профиля",
     "EMAIL": "Email",
@@ -401,13 +423,16 @@
     "DELETE_ACCOUNT_PASSWORD_PLACEHOLDER": "Ваш текущий пароль",
     "DELETE_ACCOUNT_CONFIRM": "Удалить аккаунт навсегда",
     "ABOUT": "О профиле",
+    "IMPORT_EXPORT": "Импорт и экспорт",
     "DATE_ADDED": "Дата создания",
     "ROLE": "Роль",
     "NOTIFICATION": {
       "UPDATED": "Профиль успешно обновлен",
       "UPDATE_FAILED": "Не удалось обновить профиль",
       "ACCOUNT_DELETED": "Аккаунт успешно удален",
-      "ACCOUNT_DELETE_FAILED": "Не удалось удалить аккаунт"
+      "ACCOUNT_DELETE_FAILED": "Не удалось удалить аккаунт",
+      "PASSWORD_CHANGED": "Пароль успешно изменен",
+      "PASSWORD_CHANGE_FAILED": "Ошибка смены пароля"
     }
   },
   "ADDRESS_PICKER": {
@@ -430,7 +455,7 @@
     }
   },
   "MAP": {
-    "LOCATE": "Текущее местоположение"
+    "LOCATE": "Моя локация"
   },
   "FILE_UPLOAD": {
     "UPLOAD": "Загрузить",

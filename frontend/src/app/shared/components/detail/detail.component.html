@@ -47,7 +47,11 @@
           <span class="truncate text-wrap">
             @let a = pObject?.address;
             <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </span>
-            {{ a?.city }}, {{ a?.road }}, <span class="text-nowrap">№ {{ a?.house }}</span
+            {{ a?.country }}
+            @if (a?.state) {
+              , {{ a?.state }}
+            }
+            , {{ a?.city }}, {{ a?.road }}, <span class="text-nowrap">№ {{ a?.house }}</span
             >,
             @if (a?.apartment) {
               <span class="text-nowrap">{{ 'PREFIXES.APARTMENT' | translate }} {{ a?.apartment }}</span>
@@ -130,6 +134,14 @@
             </li>
           }
         </ul>
+      </div>
+    }
+
+    <!-- Map -->
+    @if (pObject?.address?.position) {
+      <div class="card">
+        <h5>{{ 'CATALOG.LABELS.LOCATION' | translate }}</h5>
+        <rx-static-map [coordinates]="pObject!.address.position" />
       </div>
     }
 
