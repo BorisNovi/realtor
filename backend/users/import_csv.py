@@ -141,7 +141,8 @@ def import_properties_csv(file, user):
     Валидные строки сохраняются, невалидные — пропускаются."""
 
     wrapper = io.TextIOWrapper(file.file, encoding="utf-8")
-    reader = csv.DictReader(wrapper)
+    reader = csv.DictReader(wrapper, delimiter=';')
+
 
     if reader.fieldnames and reader.fieldnames[0].startswith("\ufeff"):
         reader.fieldnames[0] = reader.fieldnames[0].replace("\ufeff", "")
