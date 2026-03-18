@@ -11,6 +11,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_FILE = BASE_DIR / ".env"
 load_dotenv(ENV_FILE)
 
+MAX_ROWS = 1000 # Максимальное количество строк в импортируемой CSV.
+
 # Окружение: development | staging | production
 ENVIRONMENT = config('ENVIRONMENT', default='development')
 
