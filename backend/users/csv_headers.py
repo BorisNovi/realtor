@@ -10,7 +10,7 @@ HEADERS = {
     "area": {"csv": "Area", "required": False, "default": 0},
     
     "address_country": {"csv": "Country", "required": True},
-    "address_region": {"csv": "Region", "required": True},
+    "address_region": {"csv": "Region", "required": False},
     "address_city": {"csv": "City", "required": True}, 
     "address_road": {"csv": "Street", "required": True},
     "address_house": {"csv": "House", "required": True},
