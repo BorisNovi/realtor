@@ -72,7 +72,7 @@ def export_properties_csv(user) -> StreamingHttpResponse:
     queryset = _build_queryset(user)
 
     pseudo_buffer = Echo()
-    writer = csv.writer(pseudo_buffer)
+    writer = csv.writer(pseudo_buffer, delimiter=';')
 
     def generate_rows():
         try:
