@@ -455,7 +455,8 @@
     }
   },
   "MAP": {
-    "LOCATE": "Моя локация"
+    "LOCATE": "Моя локация",
+    "SHOW_ON_MAP": "Показать на Google Maps"
   },
   "FILE_UPLOAD": {
     "UPLOAD": "Загрузить",

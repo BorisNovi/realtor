@@ -13,7 +13,6 @@ import { BaseSelect } from 'src/app/core';
 
 @Component({
   selector: 'rx-multiselect',
-  standalone: true,
   imports: [MultiSelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule, TranslatePipe],
   templateUrl: 'multiselect.component.html',
 
