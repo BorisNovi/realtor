@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import APIView, api_view
 from django.contrib.auth import get_user_model
+
+from catalog.catalog_models import Land, Property, Room, Flat, Office, House
 from .user_serializers import ProfileSerializer, ChangePasswordSerializer
 from users.import_csv import import_properties_csv
 from users.export_csv import export_properties_csv
@@ -42,15 +44,33 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 class DeleteProfileView(generics.DestroyAPIView):
     authentication_classes = [JWTAuthentication]  
+    http_method_names = ["post", "delete"]
+
+    def post(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
     def get_object(self):
         return self.request.user
-
+    
     def destroy(self, request, *args, **kwargs):
-        user = self.get_object()
-        # Тут можно потом добавить удаление связанных данных
+        password = request.data.get("password")
+        if not password or not request.user.check_password(password):
+            return Response({"detail": "Invalid password"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user
+
+        # сначала все дочерние подтипы
+        Flat.objects.filter(user=user).delete()
+        Land.objects.filter(user=user).delete()
+        Room.objects.filter(user=user).delete()
+        House.objects.filter(user=user).delete()
+        Office.objects.filter(user=user).delete()
+        
+        # потом родитель
+        Property.objects.filter(user=user).delete()
+
         user.delete()
-        return Response({"PROFILE_DELETED_SUCCESSFULLY"}, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # === Экспорт и импорт CSV ===

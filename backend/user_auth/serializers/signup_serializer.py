@@ -12,7 +12,13 @@ class SignupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'password_confirmation', 'name', 'company_name', 'company_logo')
+        fields = (
+            'email', 
+            'password', 
+            'password_confirmation', 
+            'company_name', 
+            'company_logo'
+        )
 
     def validate_email(self, value):
         value = value.lower()
