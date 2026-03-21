@@ -395,7 +395,7 @@
   "IMPORT_EXPORT": {
     "CATALOG": "Property objects",
     "CONTACTS": "Contacts",
-    "IMPORT": "Import {type}",
+    "IMPORT": "Import {{type}}",
     "EXPORT": "Export {{type}}",
     "UPLOADING": "Uploading...",
     "UPLOAD_SUCCESS": "Done",
