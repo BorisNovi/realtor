@@ -10,6 +10,7 @@ import { GalleriaModule, GalleriaResponsiveOptions } from 'primeng/galleria';
 import { ImageModule } from 'primeng/image';
 import { TagModule } from 'primeng/tag';
 import { StaticMapComponent } from '../static-map/static-map.component';
+import { AddressLinkComponent } from '../address-link/address-link.component';
 
 @Component({
   selector: 'rx-detail',
@@ -23,6 +24,7 @@ import { StaticMapComponent } from '../static-map/static-map.component';
     CamelToUpperSnakePipe,
     NotEmptyPipe,
     StaticMapComponent,
+    AddressLinkComponent
   ],
   styles: `
     ::ng-deep {

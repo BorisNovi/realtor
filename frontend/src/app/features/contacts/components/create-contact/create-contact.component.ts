@@ -7,6 +7,7 @@ import { InputWrapperComponent } from '@shared/components';
 import { WorldPhoneMasksDirective } from '@shared/directives';
 import { IContact } from '@shared/interfaces';
 import { clearPhone } from '@shared/utils';
+import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -27,6 +28,7 @@ import { ContactsState, CreateContact, UpdateContact } from 'src/app/core';
     WorldPhoneMasksDirective,
     InputWrapperComponent,
     TranslatePipe,
+    AutoFocusModule
   ],
   templateUrl: './create-contact.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

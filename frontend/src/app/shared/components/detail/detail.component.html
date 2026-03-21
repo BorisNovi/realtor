@@ -57,6 +57,7 @@
               <span class="text-nowrap">{{ 'PREFIXES.APARTMENT' | translate }} {{ a?.apartment }}</span>
             }
           </span>
+          <rx-address-link [address]="a!"></rx-address-link>
         </li>
         <li>
           <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }}: </span
