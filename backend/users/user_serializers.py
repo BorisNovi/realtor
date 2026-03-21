@@ -9,7 +9,13 @@ User = get_user_model()
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'company_logo', 'company_name', 'date_added', 'role']
+        fields = [
+            'email', 
+            'company_logo', 
+            'company_name', 
+            'date_added', 
+            'role'
+        ]
         read_only_fields = ['date_added', 'role']
 
     def update(self, instance, validated_data):

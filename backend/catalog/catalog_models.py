@@ -38,7 +38,6 @@ class Property(PolymorphicModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
-
     def soft_delete(self):
         self.is_deleted = True
         self.deleted_at = timezone.now()

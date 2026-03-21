@@ -69,7 +69,6 @@ class AuthViewSet(viewsets.GenericViewSet):
             user = User.objects.create_user(
                 email=user_data['email'],
                 password=user_data['password'],
-                name=user_data.get('name', ''),
                 company_name=user_data.get('company_name', ''),
                 company_logo=user_data.get('company_logo', ''),
             )
@@ -80,7 +79,6 @@ class AuthViewSet(viewsets.GenericViewSet):
                 'user': {
                     'id': user.id,
                     'email': user.email,
-                    'name': user.name,
                     'role': user.role,
                     'company_name': user.company_name,
                     'company_logo': user.company_logo,
@@ -108,7 +106,6 @@ class AuthViewSet(viewsets.GenericViewSet):
             'user': {
                 'id': user.id,
                 'email': user.email,
-                'name': user.name,
                 'role': user.role,
                 'company_name': user.company_name,
                 'company_logo': user.company_logo,

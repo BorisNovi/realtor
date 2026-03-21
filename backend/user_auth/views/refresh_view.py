@@ -31,7 +31,6 @@ class RefreshTokenView(APIView):
                 'user': {
                     'id': user.id,
                     'email': user.email,
-                    'name': user.name,
                     'role': user.role,
                     'company_name': user.company_name,
                     'company_logo': user.company_logo,

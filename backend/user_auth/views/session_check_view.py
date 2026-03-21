@@ -7,7 +7,6 @@ def check_session(request):
     return Response({
         "user": {
             "id": user.id,
-            "name": user.name,
             "email": user.email,
             "role": user.role,
             "date_added": user.date_added.isoformat(),
