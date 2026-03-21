@@ -40,7 +40,6 @@ class ChangePasswordView(generics.UpdateAPIView):
 
         return Response({"PASSWORD_CHANGED_SUCCESSFULLY"}, status=200)
 
-
 class DeleteProfileView(generics.DestroyAPIView):
     authentication_classes = [JWTAuthentication]  
 

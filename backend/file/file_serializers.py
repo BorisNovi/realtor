@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import FileUpload
 from file.file_utils import compress_image
+from realtor.settings import MAX_FILE_SIZE
 
 class FileUploadSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,8 +16,7 @@ class FileUploadSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "url", "created_at"]
 
     def validate_file(self, value):
-        max_size = 2 * 1024 * 1024  # 2 MB
-        if value.size > max_size:
+        if value.size > MAX_FILE_SIZE:
             raise serializers.ValidationError("TOO_HEAVY_FILE")
         return value
 
