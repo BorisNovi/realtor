@@ -1,13 +1,11 @@
 import { inject } from '@angular/core';
 import { ResolveFn, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { catchError, map, of } from 'rxjs';
-import { FetchListing } from 'src/app/core/listings/state';
+import { catchError, filter, map, of, take, timeout } from 'rxjs';
+import { FetchListing, ListingsState } from 'src/app/core/listings/state';
 
 export const publicListingResolver: ResolveFn<boolean> = (route, state) => {
   const store = inject(Store);
-  // TODO: потом заменить диспатч на то, что будет создано для публичной подборки
-  const token = route.queryParams['token'];
   const router = inject(Router);
 
   return store.dispatch(new FetchListing(route.queryParams['token'])).pipe(
@@ -17,5 +15,15 @@ export const publicListingResolver: ResolveFn<boolean> = (route, state) => {
       router.navigate(['/not-found']);
       return of(false);
     }),
+  );
+};
+
+export const publicListingTitleResolver: ResolveFn<string> = () => {
+  const store = inject(Store);
+  return store.select(ListingsState.listing).pipe(
+    filter(listing => listing !== null),
+    take(1),
+    map(listing => listing!.name ?? 'Listings'),
+    timeout({ each: 5000, with: () => of('Listings') }),
   );
 };
