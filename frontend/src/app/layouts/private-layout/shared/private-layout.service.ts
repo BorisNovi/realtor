@@ -1,4 +1,5 @@
-import { Injectable, effect, signal, computed, inject } from '@angular/core';
+import { Injectable, effect, signal, computed, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Subject } from 'rxjs';
 import { ILayoutConfig } from './layout-config.interface';
 import { StorageService } from 'src/app/core';
@@ -21,6 +22,7 @@ interface IMenuChangeEvent {
 })
 export class PrivateLayoutService {
   readonly #storageService = inject(StorageService);
+  readonly #isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   _config: ILayoutConfig = {
     preset: 'Aura',
@@ -105,6 +107,7 @@ export class PrivateLayoutService {
   }
 
   #handleDarkModeTransition(config: ILayoutConfig): void {
+    if (!this.#isBrowser) return;
     if ((document as Document).startViewTransition) {
       this.#startViewTransition(config);
     } else {
@@ -138,6 +141,7 @@ export class PrivateLayoutService {
   }
 
   #initSystemThemeListener(): void {
+    if (!this.#isBrowser) return;
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
       this.layoutConfig.update(config => ({
         ...config,
