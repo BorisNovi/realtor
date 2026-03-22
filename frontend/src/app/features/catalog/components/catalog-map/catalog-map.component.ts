@@ -10,6 +10,8 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { SLIDE } from '@shared/animations';
@@ -71,6 +73,8 @@ export class CatalogMapComponent implements AfterViewInit {
 
   readonly #store = inject(Store);
   readonly #destroyRef = inject(DestroyRef);
+  readonly #location = inject(Location);
+  readonly #route = inject(ActivatedRoute);
   readonly filtersService = inject(CatalogFiltersService);
   readonly #translateService = inject(TranslateService);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
@@ -144,11 +148,35 @@ export class CatalogMapComponent implements AfterViewInit {
     map.setMinZoom(MapHelper.ZOOM_CITY);
 
     map.on('load', () => {
-      getCurrentLocation()
-        .then(lngLat => {
-          (map.setCenter(lngLat), map.setZoom(this.minMapZoom));
-        })
-        .catch(err => console.warn('Could not get position:', err));
+      const targetId = this.#route.snapshot.paramMap.get('id');
+
+      if (targetId) {
+        this.#store
+          .dispatch(new FetchPropertyObject(Number(targetId)))
+          .pipe(
+            tap(() => {
+              const item = this.#store.selectSnapshot(CatalogState.propertyObject);
+              if (!item) return;
+
+              if (item.address?.position) {
+                const { lng, lat } = MapHelper.normalizeLngLat(item.address.position);
+                map.setCenter([lng, lat]);
+                map.setZoom(MapHelper.ZOOM_STREET);
+              }
+
+              this.detailedCache.set({ [item.id]: item });
+              this.onMarkerClick(item as ICatalogItem);
+            }),
+            takeUntilDestroyed(this.#destroyRef),
+          )
+          .subscribe();
+      } else {
+        getCurrentLocation()
+          .then(lngLat => {
+            (map.setCenter(lngLat), map.setZoom(this.minMapZoom));
+          })
+          .catch(err => console.warn('Could not get position:', err));
+      }
 
       // For slow PCs
       new Promise<void>(resolve => map.once('idle', resolve)).then(() => this.#setData());
@@ -257,10 +285,17 @@ export class CatalogMapComponent implements AfterViewInit {
       .catch(err => console.warn('Could not get position:', err));
   }
 
+  onDrawerClose(): void {
+    this.#location.replaceState('/catalog/map');
+  }
+
   onMarkerClick(item: ICatalogItem): void {
     this.selectedItem.set(item);
     this.drawerOpen.set(true);
-    if (item.id) this.#loadDetailedItem(item.id);
+    if (item.id) {
+      this.#location.replaceState(`/catalog/map/${item.id}`);
+      this.#loadDetailedItem(item.id);
+    }
   }
 
   deleteItem(id: number): void {

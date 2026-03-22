@@ -24,7 +24,7 @@ import { TagModule } from 'primeng/tag';
     SelectModule,
     TagModule,
     ButtonModule,
-    AutoFocusModule
+    AutoFocusModule,
   ],
 })
 export class PropertyBasicFieldsComponent {

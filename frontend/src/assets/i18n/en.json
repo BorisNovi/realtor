@@ -456,7 +456,8 @@
   },
   "MAP": {
     "LOCATE": "Current location",
-    "SHOW_ON_MAP": "Show on Google Maps"
+    "SHOW_ON_MAP": "Show on Google Maps",
+    "SHOW_ON_INTERNAL_MAP": "Show on map"
   },
   "FILE_UPLOAD": {
     "UPLOAD": "Upload",
