@@ -6,7 +6,7 @@ import { AuthState } from '../state';
 import { map } from 'rxjs';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  if (!isPlatformBrowser(inject(PLATFORM_ID))) return true;
+  if (!isPlatformBrowser(inject(PLATFORM_ID))) return inject(Router).createUrlTree(['/public', 'landing']);
 
   const store = inject(Store);
   const router = inject(Router);
