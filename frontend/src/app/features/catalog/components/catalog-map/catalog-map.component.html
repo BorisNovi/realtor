@@ -20,7 +20,13 @@
 </div>
 
 @let selected = selectedItem();
-<p-drawer [(visible)]="drawerOpen" [blockScroll]="true" position="right" styleClass="!w-full sm:!w-[30rem]">
+<p-drawer
+  [(visible)]="drawerOpen"
+  [blockScroll]="true"
+  position="right"
+  styleClass="!w-full sm:!w-[30rem]"
+  (onHide)="onDrawerClose()"
+>
   <ng-template #header>
     <div>
       @if (selected?.name) {

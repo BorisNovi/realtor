@@ -28,7 +28,7 @@ import { ContactsState, CreateContact, UpdateContact } from 'src/app/core';
     WorldPhoneMasksDirective,
     InputWrapperComponent,
     TranslatePipe,
-    AutoFocusModule
+    AutoFocusModule,
   ],
   templateUrl: './create-contact.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

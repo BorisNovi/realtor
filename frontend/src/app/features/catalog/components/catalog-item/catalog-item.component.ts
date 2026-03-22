@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal, viewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { DetailComponent, RxSelectItem, SelectComponent } from '@shared/components';
@@ -15,10 +15,22 @@ import { CatalogState, DeletePropertyObjects, DeletionConfirmationService } from
 import { ListingsService } from 'src/app/core/listings';
 import { ListingsState, UpdateListing } from 'src/app/core/listings/state';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'rx-catalog-item',
-  imports: [DetailComponent, Divider, Button, TranslatePipe, BreadcrumbModule, ConfirmDialog, PopoverModule, SelectComponent],
+  imports: [
+    DetailComponent,
+    Divider,
+    Button,
+    TranslatePipe,
+    BreadcrumbModule,
+    ConfirmDialog,
+    PopoverModule,
+    SelectComponent,
+    TooltipModule,
+    RouterLink,
+  ],
   providers: [DialogService],
   styles: `
     :host {

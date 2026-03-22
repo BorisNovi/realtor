@@ -1,21 +1,29 @@
-import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
-import { TranslatePipe } from "@ngx-translate/core";
-import { IAddress } from "@shared/interfaces";
-import { MapHelper } from "@shared/utils/map-helper.util";
-import { ButtonModule } from "primeng/button";
-import { TooltipModule } from "primeng/tooltip";
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
+import { IAddress } from '@shared/interfaces';
+import { MapHelper } from '@shared/utils/map-helper.util';
+import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'rx-address-link',
   imports: [ButtonModule, TooltipModule, TranslatePipe],
-  template: `
-  <a pButton [rounded]="true" [text]="true" [pTooltip]="'MAP.SHOW_ON_MAP' | translate" [href]="link()" target="_blank" icon="pi pi-map-marker"></a>`,
+  template: `<a
+    pButton
+    [rounded]="true"
+    [text]="true"
+    [pTooltip]="'MAP.SHOW_ON_MAP' | translate"
+    [href]="externalLink()"
+    target="_blank"
+    icon="pi pi-map-marker"
+  ></a>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddressLinkComponent {
   readonly address = input.required<IAddress>();
 
-  readonly link = computed(() => {
+  readonly externalLink = computed(() => {
     const addr = this.address();
     const addressParts = [addr.country, addr.state, addr.city, addr.road, addr.house].filter(Boolean);
     const addressStr = addressParts.join(',');

@@ -16,7 +16,7 @@ export class StaticMapComponent {
     const coords = this.coordinates();
     if (!coords) return null;
 
-    const {lng, lat} = MapHelper.normalizeLngLat(coords);
+    const { lng, lat } = MapHelper.normalizeLngLat(coords);
     const center = `lonlat:${lng},${lat}`;
     const marker = `lonlat:${lng},${lat};type:material;color:%2334d399`;
 

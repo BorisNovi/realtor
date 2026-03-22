@@ -24,7 +24,7 @@ import { AddressLinkComponent } from '../address-link/address-link.component';
     CamelToUpperSnakePipe,
     NotEmptyPipe,
     StaticMapComponent,
-    AddressLinkComponent
+    AddressLinkComponent,
   ],
   styles: `
     ::ng-deep {
