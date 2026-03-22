@@ -1,13 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Location } from '@angular/common';
@@ -16,22 +7,15 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { SLIDE } from '@shared/animations';
 import { MapComponent } from '@shared/components';
-import { CURRENCY_SYMBOLS } from '@shared/constants';
-import { Currency, PropertyStatus } from '@shared/enums';
+import { PropertyStatus } from '@shared/enums';
 import { ICatalogItem, IMapBox, IPropertyObject } from '@shared/interfaces';
-import { CamelToUpperSnakePipe, NotEmptyPipe, WorldPhoneMaskPipe } from '@shared/pipes';
 import { getCurrentLocation, MapHelper } from '@shared/utils';
-import { getMapPropertyStatusColor, getPropertyStatusSeverity } from '@shared/utils/property-status-severity.util';
+import { getMapPropertyStatusColor } from '@shared/utils/property-status-severity.util';
 import GeoJSON from 'geojson';
 import maplibregl, { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
-import { DividerModule } from 'primeng/divider';
-import { DrawerModule } from 'primeng/drawer';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { GalleriaModule } from 'primeng/galleria';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { TagModule } from 'primeng/tag';
 import { distinctUntilChanged, skip, tap } from 'rxjs';
 import {
   CatalogState,
@@ -44,24 +28,11 @@ import {
 import { CatalogFiltersService } from '../../catalog-filters.service';
 import { AddToListingComponent } from '../add-to-listing/add-to-listing.component';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
+import { CatalogMapDrawerComponent } from './catalog-map-drawer.component';
 
 @Component({
   selector: 'rx-catalog-map',
-  imports: [
-    MapComponent,
-    FormsModule,
-    ButtonModule,
-    TranslatePipe,
-    DrawerModule,
-    GalleriaModule,
-    ConfirmDialog,
-    TagModule,
-    DividerModule,
-    ProgressBarModule,
-    CamelToUpperSnakePipe,
-    WorldPhoneMaskPipe,
-    NotEmptyPipe,
-  ],
+  imports: [MapComponent, FormsModule, ButtonModule, TranslatePipe, ConfirmDialog, CatalogMapDrawerComponent],
   providers: [DialogService],
   templateUrl: './catalog-map.component.html',
   styleUrl: './catalog-map.component.scss',
@@ -88,27 +59,7 @@ export class CatalogMapComponent implements AfterViewInit {
   readonly detailedCache = signal<Record<number, IPropertyObject | null>>({});
   readonly detailedSelected = signal<IPropertyObject | null>(null);
 
-  readonly getSeverity = getPropertyStatusSeverity;
-  getCurrencySymbol(key: string): string {
-    return CURRENCY_SYMBOLS[key as Currency];
-  }
-
   #ref!: DynamicDialogRef | null;
-
-  // TODO: Помтом убрать. Сделанно временно, пока с бэка не возвращаются фото в { image: string; thumbnail: string; }[]
-  readonly imagesTemp = computed(() => this.selectedItem()?.photos.map(p => ({ image: p, thumbnail: p })));
-
-  readonly optionsArray = computed(() => {
-    const options = this.detailedSelected()?.specifics?.options;
-    if (!options) return [];
-
-    return Object.entries(options)
-      .map(([category, values]) => ({
-        category,
-        values: Object.entries(values as Record<string, boolean>).filter(opt => opt[1]),
-      }))
-      .filter(group => group.values.length > 0);
-  });
 
   // Можно переделать в массив
   readonly mapImages = {
@@ -146,47 +97,49 @@ export class CatalogMapComponent implements AfterViewInit {
     if (!map) return;
 
     map.setMinZoom(MapHelper.ZOOM_CITY);
+    map.on('load', () => this.#onMapLoad(map));
+    this.#setupMapEvents(map);
+  }
 
-    map.on('load', () => {
-      const targetId = this.#route.snapshot.paramMap.get('id');
+  #onMapLoad(map: maplibregl.Map): void {
+    const targetId = this.#route.snapshot.paramMap.get('id');
 
-      if (targetId) {
-        this.#store
-          .dispatch(new FetchPropertyObject(Number(targetId)))
-          .pipe(
-            tap(() => {
-              const item = this.#store.selectSnapshot(CatalogState.propertyObject);
-              if (!item) return;
+    if (targetId) {
+      this.#store
+        .dispatch(new FetchPropertyObject(Number(targetId)))
+        .pipe(
+          tap(() => {
+            const item = this.#store.selectSnapshot(CatalogState.propertyObject);
+            if (!item) return;
 
-              if (item.address?.position) {
-                const { lng, lat } = MapHelper.normalizeLngLat(item.address.position);
-                map.setCenter([lng, lat]);
-                map.setZoom(MapHelper.ZOOM_STREET);
-              }
+            if (item.address?.position) {
+              const { lng, lat } = MapHelper.normalizeLngLat(item.address.position);
+              map.setCenter([lng, lat]);
+              map.setZoom(MapHelper.ZOOM_STREET);
+            }
 
-              this.detailedCache.set({ [item.id]: item });
-              this.onMarkerClick(item as ICatalogItem);
-            }),
-            takeUntilDestroyed(this.#destroyRef),
-          )
-          .subscribe();
-      } else {
-        getCurrentLocation()
-          .then(lngLat => {
-            (map.setCenter(lngLat), map.setZoom(this.minMapZoom));
-          })
-          .catch(err => console.warn('Could not get position:', err));
-      }
+            this.detailedCache.set({ [item.id]: item });
+            this.onMarkerClick(item as ICatalogItem);
+          }),
+          takeUntilDestroyed(this.#destroyRef),
+        )
+        .subscribe();
+    } else {
+      getCurrentLocation()
+        .then(lngLat => {
+          (map.setCenter(lngLat), map.setZoom(this.minMapZoom));
+        })
+        .catch(err => console.warn('Could not get position:', err));
+    }
 
-      // For slow PCs
-      new Promise<void>(resolve => map.once('idle', resolve)).then(() => this.#setData());
-    });
+    // For slow PCs
+    new Promise<void>(resolve => map.once('idle', resolve)).then(() => this.#setData());
+  }
 
+  #setupMapEvents(map: maplibregl.Map): void {
     // Cluster zoom
     map.on('click', 'objects-clusters', async e => {
-      const features = map.queryRenderedFeatures(e.point, {
-        layers: ['objects-clusters'],
-      });
+      const features = map.queryRenderedFeatures(e.point, { layers: ['objects-clusters'] });
       const source = map.getSource('objects') as maplibregl.GeoJSONSource;
       try {
         const zoom = await source.getClusterExpansionZoom(features[0].properties?.['cluster_id']);
@@ -196,17 +149,13 @@ export class CatalogMapComponent implements AfterViewInit {
       }
     });
 
-    // Popup create and open
+    // Hover popup
     let hoverPopup: maplibregl.Popup | null = null;
     map.on('mouseenter', 'objects-unclustered-point', e => {
       map.getCanvas().style.cursor = 'pointer';
       const item = JSON.parse(e.features?.[0].properties['raw']) as IPropertyObject;
 
-      if (hoverPopup) {
-        hoverPopup.remove();
-        hoverPopup = null;
-      }
-
+      hoverPopup?.remove();
       hoverPopup = new maplibregl.Popup({ closeButton: false, closeOnMove: true })
         .setLngLat(e.lngLat)
         .setHTML(
@@ -221,16 +170,13 @@ export class CatalogMapComponent implements AfterViewInit {
         .addTo(map);
     });
 
-    // Popup close
     map.on('mouseout', 'objects-unclustered-point', () => {
       map.getCanvas().style.cursor = '';
-      if (hoverPopup) {
-        hoverPopup.remove();
-        hoverPopup = null;
-      }
+      hoverPopup?.remove();
+      hoverPopup = null;
     });
 
-    // Drawer with details open
+    // Marker click → drawer
     map.on('click', 'objects-unclustered-point', e => {
       const item = JSON.parse(e.features?.[0].properties['raw']) as IPropertyObject;
       this.onMarkerClick(item);
@@ -253,16 +199,12 @@ export class CatalogMapComponent implements AfterViewInit {
           return {
             type: 'Feature',
             id: item.id,
-            geometry: {
-              type: 'Point',
-              coordinates,
-            },
+            geometry: { type: 'Point', coordinates },
             properties: {
               id: item.id,
               color: getMapPropertyStatusColor(item.status),
               marker_type: `${item.propertyType.toLowerCase()}_${item.status.toLowerCase()}`,
               raw: item,
-              // Счётчики для агрегации в кластерах
               cnt_available: item.status === PropertyStatus.available ? 1 : 0,
               cnt_reserved: item.status === PropertyStatus.reserved ? 1 : 0,
               cnt_rented: item.status === PropertyStatus.rented ? 1 : 0,
@@ -286,6 +228,7 @@ export class CatalogMapComponent implements AfterViewInit {
   }
 
   onDrawerClose(): void {
+    this.drawerOpen.set(false);
     this.#location.replaceState('/catalog/map');
   }
 
@@ -349,7 +292,6 @@ export class CatalogMapComponent implements AfterViewInit {
       },
     });
 
-    // Перезагрузить данные карты после закрытия диалога
     this.#ref?.onClose.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe(() => {
       this.#refreshMapData();
     });
