@@ -1,10 +1,12 @@
-import { Injectable, signal, computed, effect } from '@angular/core';
+import { Injectable, signal, computed, effect, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { STORAGE_NAMESPACE } from '@shared/constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
+  readonly #isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   readonly #storageSignal = signal<Record<string, unknown>>(this.#loadInitialData());
 
   // Публичный сигнал для доступа к данным
@@ -13,6 +15,7 @@ export class StorageService {
   // Эффект для синхронизации с localStorage
   constructor() {
     effect(() => {
+      if (!this.#isBrowser) return;
       try {
         const currentData = this.#storageSignal();
         for (const [key, value] of Object.entries(currentData)) {
@@ -49,7 +52,7 @@ export class StorageService {
     this.#storageSignal.update(currentData => {
       const newData = { ...currentData };
       delete newData[namespacedKey];
-      localStorage.removeItem(namespacedKey);
+      if (this.#isBrowser) localStorage.removeItem(namespacedKey);
       return newData;
     });
   }
@@ -57,8 +60,10 @@ export class StorageService {
   // Очистка всех данных
   clear(): void {
     this.#storageSignal.update(currentData => {
-      for (const key of Object.keys(currentData)) {
-        localStorage.removeItem(key);
+      if (this.#isBrowser) {
+        for (const key of Object.keys(currentData)) {
+          localStorage.removeItem(key);
+        }
       }
       return {};
     });
@@ -66,6 +71,7 @@ export class StorageService {
 
   // Загрузка начальных данных из localStorage
   #loadInitialData(): Record<string, unknown> {
+    if (!this.#isBrowser) return {};
     const data: Record<string, unknown> = {};
     try {
       for (let i = 0; i < localStorage.length; i++) {

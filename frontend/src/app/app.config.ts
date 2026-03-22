@@ -35,7 +35,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
     importProvidersFrom(
       TranslateModule.forRoot({
-        defaultLanguage: 'en',
+        fallbackLang: 'en',
         loader: {
           provide: TranslateLoader,
           useFactory: () => new TranslateHttpLoader(),
