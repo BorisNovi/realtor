@@ -1,15 +1,15 @@
-from catalog.catalog_models import Property
-from ..utils.pagination import FrontendPagination
-from catalog.utils.filters import apply_catalog_filters
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from catalog.serializers.catalog_list_serializer import CatalogListSerializer
-from rest_framework import viewsets
-from realtor import mixins
-
-from realtor.helpers import build_prefix_tsquery
 from typing import Optional
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework import viewsets
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db.models import Q
+from realtor import mixins
+from realtor.helpers import build_prefix_tsquery
+from catalog.catalog_models import Property
+from catalog.utils.filters import apply_catalog_filters
+from catalog.serializers.catalog_list_serializer import CatalogListSerializer
+from ..utils.pagination import FrontendPagination
+
 
 # Этот класс отвечает за получение списка объектов недвижимости
 # Он использует пагинацию и фильтрацию для формирования ответа

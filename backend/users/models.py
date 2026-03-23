@@ -28,9 +28,12 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, max_length=255)
     username = models.CharField(max_length=255, blank=True, unique=True, null=True)
-    first_name = models.CharField(max_length=30, blank=True, default='')
-    last_name = models.CharField(max_length=30, blank=True, default='')
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
     phone = models.CharField(max_length=20, blank=True)
+    default_country = models.CharField(max_length=255, blank=True, null=True)
+    default_currency = models.CharField(max_length=255, blank=True, null=True)
+    
     
     company_name = models.CharField(max_length=255, blank=True)
     company_logo = models.URLField(max_length=500, blank=True)

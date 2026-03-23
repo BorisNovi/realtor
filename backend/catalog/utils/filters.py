@@ -93,4 +93,10 @@ def apply_catalog_filters(qs, query_params):
     if price_max is not None:
         qs = qs.filter(price_value__lte=price_max)
 
+    has_photos = get_param("hasPhotos", "has.photos")
+    if has_photos in ("true", "1"):
+        qs = qs.exclude(photos=[])      # photos != '[]'
+    elif has_photos in ("false", "0"):
+        qs = qs.filter(photos=[])       # photos = '[]'
+
     return qs
