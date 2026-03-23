@@ -11,8 +11,18 @@ class CatalogListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Property  
         fields = [
-            'id','property_type', 'status', 'photos', 'address', 'zoning_type',
-            'price', 'area','contact', 'comment','date_added', 'name'
+            'id',
+            'property_type', 
+            'status', 
+            'photos', 
+            'address', 
+            'zoning_type',
+            'price', 
+            'area',
+            'contact', 
+            'comment',
+            'date_added', 
+            'name'
         ]
         read_only_fields = ['id','date_added']
 

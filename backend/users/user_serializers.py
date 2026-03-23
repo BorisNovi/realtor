@@ -1,3 +1,4 @@
+import re
 from colorama import Fore
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
@@ -11,12 +12,33 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'email', 
-            'company_logo', 
+            'company_logo',
+            'first_name',
+            'last_name',
+            'phone',
+            'default_country',
+            'default_currency', 
             'company_name', 
             'date_added', 
-            'role'
+            'role',
+            'marketing_consent1',
+            'marketing_consent2',
         ]
         read_only_fields = ['date_added', 'role']
+
+    def validate_phone(self, value):
+        if not value:
+            return value
+        
+        phone = re.sub(r'[\s\-\(\)]', '', value)
+        
+        if not re.match(r'^\+?[1-9]\d{6,14}$', phone):
+            raise serializers.ValidationError(
+                'Введите корректный номер телефона. Формат: +995591234567'
+            )
+        
+        return phone
+      
 
     def update(self, instance, validated_data):
         logo = validated_data.get('company_logo')
