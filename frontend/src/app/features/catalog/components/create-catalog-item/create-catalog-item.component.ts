@@ -1,267 +1,153 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { AddressPickerComponent } from '@shared/components';
 import { SLIDE } from '@shared/animations';
-import {
-  AddressPickerComponent,
-  FieldsetCheckboxGroupComponent,
-  InputWrapperComponent,
-  SelectSingleComponent,
-} from '@shared/components';
-import { CURRENCY_SYMBOLS } from '@shared/constants';
-import { createItemsFieldsetConfig } from '@shared/constants/fieldset.configs';
-import { ScrollToTopOnShowDirective } from '@shared/directives';
-import {
-  Currency,
-  FurnishedStatus,
-  HeatingType,
-  KitchenType,
-  PropertyStatus,
-  PropertyType,
-  RenovationStatus,
-  ZoningType,
-} from '@shared/enums';
-import { IContact, IFetchOptions } from '@shared/interfaces';
+import { SPECIFICS_FIELDS_BY_TYPE, SpecificsFieldKey } from '@shared/constants/fieldset.configs';
+import { PropertyStatus, PropertyType } from '@shared/enums';
 import { IPickerAddress } from '@shared/interfaces/picker-address.interface';
+import { ScrollToTopOnShowDirective } from '@shared/directives';
 import { WorldPhoneMaskPipe } from '@shared/pipes';
-import { clearPhone, getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
+import { getPropertyStatusBackground, getPropertyStatusSeverity } from '@shared/utils';
 import { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { FileUpload, FileUploadHandlerEvent, FileUploadModule } from 'primeng/fileupload';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
-import { MessageModule } from 'primeng/message';
-import { SelectModule } from 'primeng/select';
-import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
-import { startWith, take, tap } from 'rxjs';
-import { ContactsService, CreatePropertyObject, FileUploadService, UpdatePropertyObject } from 'src/app/core';
-import { CreateContactComponent } from 'src/app/features/contacts';
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { startWith, tap } from 'rxjs';
+import { CreatePropertyObject, UpdatePropertyObject } from 'src/app/core';
 import { AddressFormComponent } from '../address-form/address-form.component';
+import { PropertyBasicFieldsComponent } from './shared/property-basic-fields/property-basic-fields.component';
+import { PropertyContactFieldsComponent } from './shared/property-contact-fields/property-contact-fields.component';
+import { PropertyPhotosFieldsComponent } from './shared/property-photos-fields/property-photos-fields.component';
+import { PropertyPriceFieldsComponent } from './shared/property-price-fields/property-price-fields.component';
+import { PropertySpecificsComponent } from './shared/property-specifics/property-specifics.component';
 
 @Component({
-  imports: [
-    FileUploadModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    InputNumberModule,
-    ButtonModule,
-    SelectModule,
-    TagModule,
-    DividerModule,
-    TextareaModule,
-    InputGroupModule,
-    InputGroupAddonModule,
-    MessageModule,
-    InputWrapperComponent,
-    TranslatePipe,
-    FieldsetCheckboxGroupComponent,
-    AddressPickerComponent,
-    ScrollToTopOnShowDirective,
-    AddressFormComponent,
-    SelectSingleComponent,
-  ],
+  selector: 'rx-create-catalog-item',
   templateUrl: './create-catalog-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [SLIDE],
-  providers: [WorldPhoneMaskPipe],
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    ButtonModule,
+    DividerModule,
+    TextareaModule,
+    AddressPickerComponent,
+    ScrollToTopOnShowDirective,
+    AddressFormComponent,
+    PropertyBasicFieldsComponent,
+    PropertyPhotosFieldsComponent,
+    PropertyPriceFieldsComponent,
+    PropertyContactFieldsComponent,
+    PropertySpecificsComponent,
+  ],
+  providers: [WorldPhoneMaskPipe, DialogService],
 })
 export class CreateCatalogItemComponent implements OnInit {
-  readonly fileUpload = viewChild.required<FileUpload>('fileUpload');
-
-  readonly #ref = inject(DynamicDialogRef);
-  readonly config = inject(DynamicDialogConfig);
   readonly #fb = inject(FormBuilder);
+  readonly #ref = inject(DynamicDialogRef);
   readonly #store = inject(Store);
   readonly #destroyRef = inject(DestroyRef);
-  readonly #fileUploadService = inject(FileUploadService);
-  readonly #translateService = inject(TranslateService);
-  readonly #dialogService = inject(DialogService);
-  readonly contactsService = inject(ContactsService);
-  readonly #worldPhoneMaskPipe = inject(WorldPhoneMaskPipe);
-
-  readonly contactFetchMethod = (options: IFetchOptions) => this.contactsService.fetchContacts(options);
-  readonly contactMapToSelect = (item: IContact) => ({
-    label: `${item?.name} ${this.#worldPhoneMaskPipe.transform(item?.phone)}`,
-    value: item,
-    id: item.id,
-  });
-  readonly contactValueMapper = (contact: IContact) => ({ id: contact.id });
-  readonly getSeverity = getPropertyStatusSeverity;
-  readonly getStatusBackground = getPropertyStatusBackground;
-  readonly fieldsetConfig = createItemsFieldsetConfig;
-  readonly position = signal<LngLatLike>([0, 0]);
+  readonly config = inject(DynamicDialogConfig);
 
   form!: FormGroup;
 
-  readonly photosS = signal<string[]>([]);
-  readonly uploadErrorS = signal<string | null>(null);
-  readonly maxImageSize = 4194304; // 4mb
-  readonly imagesLimit = 25;
-
-  readonly propertyTypes = mapEnumToOptions(PropertyType, value =>
-    this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_TYPE.${value}`),
-  );
-  readonly statuses = mapEnumToOptions(PropertyStatus, value =>
-    this.#translateService.instant(`FORM.PROPERTIES.PROPERTY_STATUS.${value}`),
-  );
-  readonly zoningTypes = mapEnumToOptions(ZoningType, value =>
-    this.#translateService.instant(`FORM.PROPERTIES.ZONING_TYPE.${value}`),
-  );
-  readonly heatingTypes = mapEnumToOptions(HeatingType, value =>
-    this.#translateService.instant(`FORM.PROPERTIES.HEATING_TYPE.${value}`),
-  );
-  readonly furnishedStatuses = mapEnumToOptions(FurnishedStatus, value =>
-    this.#translateService.instant(`FORM.PROPERTIES.FURNISHED_STATUS.${value}`),
-  );
-  readonly renovationStatuses = mapEnumToOptions(RenovationStatus, value =>
-    this.#translateService.instant(`FORM.PROPERTIES.RENOVATION_STATUS.${value}`),
-  );
-  readonly kitchenTypes = mapEnumToOptions(KitchenType, value =>
-    this.#translateService.instant(`FORM.PROPERTIES.KITCHEN_TYPE.${value}`),
-  );
-  readonly currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
-
-  readonly isCommentVisible = signal(!!this.config.data?.comment || false);
-  readonly isAdditionalParamsVisible = signal(!!this.config.data?.specifics || false);
+  readonly propertyTypeS = signal<PropertyType | null>(null);
   readonly isPickerOpen = signal(false);
+  readonly isAdditionalParamsVisible = signal(false);
+  readonly isCommentVisible = signal(false);
+  readonly position = signal<LngLatLike>([0, 0]);
+
+  readonly getSeverity = getPropertyStatusSeverity;
+  readonly getStatusBackground = getPropertyStatusBackground;
 
   get addressGroup(): FormGroup {
     return this.form.get('address') as FormGroup;
   }
 
-  ngOnInit(): void {
-    this.#initForm();
+  get specificsGroup(): FormGroup {
+    return this.form.get('specifics') as FormGroup;
   }
 
-  #initForm(): void {
+  ngOnInit(): void {
     const data = this.config.data;
+    const initialType: PropertyType | null = data?.propertyType ?? null;
+
+    this.isAdditionalParamsVisible.set(!!data?.specifics);
+    this.isCommentVisible.set(!!data?.comment);
+    this.propertyTypeS.set(initialType);
 
     this.form = this.#fb.group({
-      name: [data?.name],
-      photos: [data?.photos || []],
-      propertyType: [data?.propertyType || null, Validators.required],
-      zoningType: [data?.zoningType || null, Validators.required],
-      status: [data?.status || PropertyStatus.available, Validators.required],
+      name: [data?.name ?? null],
+      photos: [data?.photos ?? []],
+      propertyType: [initialType, Validators.required],
+      zoningType: [data?.zoningType ?? null, Validators.required],
+      status: [data?.status ?? PropertyStatus.available, Validators.required],
       address: this.#fb.group({}),
-      area: [data?.area || null, [Validators.required, Validators.min(1)]],
-
+      area: [data?.area ?? null, [Validators.required, Validators.min(1)]],
       price: this.#fb.group({
-        currency: [data?.price?.currency || null, Validators.required],
-        value: [data?.price?.value || null, [Validators.required, Validators.min(0)]],
+        currency: [data?.price?.currency ?? null, Validators.required],
+        value: [data?.price?.value ?? null, [Validators.required, Validators.min(0)]],
       }),
-
-      contact: [data?.contact],
-      comment: [data?.comment || null],
-
-      specifics: this.#fb.group({
-        rooms: [data?.specifics?.rooms || null, [Validators.min(1), Validators.max(200)]],
-        floor: this.#fb.group({
-          current: [data?.specifics?.floor?.current || null, [Validators.min(-10), Validators.max(200)]],
-          full: [data?.specifics?.floor?.full || null, Validators.min(1)],
-        }),
-        kitchen: [data?.specifics?.kitchen || null],
-        heating: [data?.specifics?.heating || null],
-        furnished: [data?.specifics?.furnished || null],
-        renovation: [data?.specifics?.renovation || null],
-
-        options: [data?.specifics?.options || null],
-      }),
+      contact: [data?.contact ?? null],
+      comment: [data?.comment ?? null],
+      specifics: initialType ? this.#buildSpecificsGroup(initialType) : this.#fb.group({}),
     });
 
-    this.photosS.set(data?.photos || []);
+    this.form
+      .get('propertyType')!
+      .valueChanges.pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe((type: PropertyType | null) => {
+        this.propertyTypeS.set(type);
+        this.form.setControl('specifics', type ? this.#buildSpecificsGroup(type) : this.#fb.group({}));
+      });
 
     const priceGroup = this.form.get('price') as FormGroup;
-    const currencyCtrl = priceGroup.get('currency');
-    const valueCtrl = priceGroup.get('value');
-    currencyCtrl?.valueChanges
+    const currencyCtrl = priceGroup.get('currency')!;
+    const valueCtrl = priceGroup.get('value')!;
+    currencyCtrl.valueChanges
       .pipe(startWith(currencyCtrl.value), takeUntilDestroyed(this.#destroyRef))
-      .subscribe(currency => (currency ? valueCtrl!.enable({ emitEvent: false }) : valueCtrl!.disable({ emitEvent: false })));
+      .subscribe(currency => (currency ? valueCtrl.enable({ emitEvent: false }) : valueCtrl.disable({ emitEvent: false })));
   }
 
-  choose(callback: VoidFunction): void {
-    callback();
-    this.uploadErrorS.set(null);
-  }
+  #buildSpecificsGroup(type: PropertyType): FormGroup {
+    const data = this.config.data?.specifics;
+    const allowed: SpecificsFieldKey[] = SPECIFICS_FIELDS_BY_TYPE[type];
+    const controls: Record<string, unknown> = {};
+    const hasCurrentFloor = allowed.includes('currentFloor');
+    const hasTotalFloors = allowed.includes('totalFloors');
 
-  onUpload(event: FileUploadHandlerEvent): void {
-    if (event && Array.isArray(event.files)) {
-      const oversized = event.files.filter(f => f.size > this.maxImageSize);
-      const validFiles = event.files.filter(f => f.size <= this.maxImageSize);
+    if (allowed.includes('rooms')) controls['rooms'] = [data?.rooms ?? null, [Validators.min(1), Validators.max(200)]];
 
-      if (oversized.length > 0) {
-        const sizeMb = this.maxImageSize / 1024 / 1024;
-        this.uploadErrorS.set(this.#translateService.instant('FILE_UPLOAD.ERRORS.FILE_TOO_LARGE', { size: sizeMb }));
-        this.fileUpload().clear();
-      }
+    if (hasCurrentFloor || hasTotalFloors)
+      controls['floor'] = this.#fb.group({
+        ...(hasCurrentFloor ? { current: [data?.floor?.current ?? null, [Validators.min(-10), Validators.max(200)]] } : {}),
+        ...(hasTotalFloors ? { full: [data?.floor?.full ?? null, Validators.min(1)] } : {}),
+      });
+    if (allowed.includes('kitchen')) controls['kitchen'] = [data?.kitchen ?? null];
+    if (allowed.includes('heating')) controls['heating'] = [data?.heating ?? null];
+    if (allowed.includes('furnished')) controls['furnished'] = [data?.furnished ?? null];
+    if (allowed.includes('renovation')) controls['renovation'] = [data?.renovation ?? null];
+    if (allowed.includes('options')) controls['options'] = [data?.options ?? null];
 
-      if (validFiles.length === 0) return;
-
-      this.#fileUploadService
-        .upload(validFiles)
-        .pipe(takeUntilDestroyed(this.#destroyRef))
-        .subscribe({
-          next: (newUrls: string[]) => {
-            this.photosS.update(currentUrls => [...currentUrls, ...newUrls]);
-            this.form.patchValue({ photos: this.photosS() });
-            this.fileUpload().clear();
-            if (oversized.length === 0) this.uploadErrorS.set(null);
-          },
-          error: err => {
-            this.uploadErrorS.set(this.#translateService.instant('FILE_UPLOAD.ERRORS.UPLOAD_FAILED'));
-            console.error('File upload failed:', err);
-            this.fileUpload().clear();
-          },
-        });
-    }
+    return this.#fb.group(controls);
   }
 
   onAddresPickerFill(picked: IPickerAddress | null): void {
-    this.position.set(picked?.coordinates || [0, 0]);
-    const address = this.form.get('address')! as FormGroup;
+    this.position.set(picked?.coordinates ?? [0, 0]);
+    const address = this.form.get('address') as FormGroup;
     address.get('country')?.setValue(picked?.address?.country);
     address.get('state')?.setValue(picked?.address?.state);
     address
       .get('city')
-      ?.setValue(picked?.address?.city || picked?.address?.town || picked?.address?.village || picked?.address?.hamlet);
+      ?.setValue(picked?.address?.city ?? picked?.address?.town ?? picked?.address?.village ?? picked?.address?.hamlet);
     address.get('road')?.setValue(picked?.address?.road);
     address.get('house')?.setValue(picked?.address?.house_number);
     address.get('position')?.setValue(picked?.coordinates);
-  }
-
-  removePhoto(index: number): void {
-    this.photosS.update(currentUrls => {
-      const updated = [...currentUrls];
-      updated.splice(index, 1);
-      return updated;
-    });
-    this.form.patchValue({ photos: this.photosS() });
-  }
-
-  openContactDialog(): void {
-    const dialogRef = this.#dialogService.open(CreateContactComponent, {
-      header: this.#translateService.instant('CONTACTS.DIALOG.ADD'),
-      appendTo: document.querySelector('.p-dynamic-dialog')!,
-      width: '480px',
-      modal: true,
-      closable: true,
-      dismissableMask: true,
-      focusOnShow: false,
-      breakpoints: {
-        '640px': '90vw',
-      },
-    });
-
-    dialogRef?.onClose.pipe(take(1), takeUntilDestroyed(this.#destroyRef)).subscribe(result => {
-      console.log(result);
-      this.form.get('contact')?.setValue(result);
-    });
   }
 
   onSubmit(): void {
@@ -270,21 +156,28 @@ export class CreateCatalogItemComponent implements OnInit {
       return;
     }
 
-    const formData = this.form.value;
+    const formData = this.form.getRawValue();
     const hasId = Boolean(this.config.data?.id);
+    const type: PropertyType = formData.propertyType;
+
+    const allowedFields: SpecificsFieldKey[] = SPECIFICS_FIELDS_BY_TYPE[type] ?? [];
+    const specifics = Object.fromEntries(
+      Object.entries(formData.specifics ?? {}).filter(([key]) => {
+        // floor в данных формы соответствует currentFloor / totalFloors в конфиге
+        if (key === 'floor') return allowedFields.includes('currentFloor') || allowedFields.includes('totalFloors');
+
+        return allowedFields.includes(key as SpecificsFieldKey);
+      }),
+    );
 
     const payload = hasId
       ? {
           ...this.config.data,
           ...formData,
+          specifics,
           price: { ...this.config.data!.price, ...formData.price },
-          specifics: { ...this.config.data!.specifics, ...formData.specifics },
-          photos: this.photosS(),
         }
-      : {
-          ...formData,
-          photos: this.photosS(),
-        };
+      : { ...formData, specifics };
 
     const action = hasId ? new UpdatePropertyObject(payload) : new CreatePropertyObject(payload);
 

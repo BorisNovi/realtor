@@ -1,10 +1,8 @@
 import { DatePipe } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject, model, OnDestroy, output, viewChild } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy, output, viewChild } from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { CardsGridComponent } from '@shared/components';
+import { CardsGridComponent, SearchInputComponent } from '@shared/components';
 import { IContact, IPagination } from '@shared/interfaces';
 import { WorldPhoneMaskPipe } from '@shared/pipes';
 import { MenuItem } from 'primeng/api';
@@ -12,15 +10,11 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputTextModule } from 'primeng/inputtext';
 import { Menu, MenuModule } from 'primeng/menu';
 import { PaginatorState } from 'primeng/paginator';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { debounceTime, map, skip } from 'rxjs';
 import { DeletionConfirmationService, ViewMode, ViewModeService } from 'src/app/core';
 import { DeleteContact, FetchContacts, SetContactsSearch } from 'src/app/core/contacts/state/contacts.actions';
 import { ContactsState } from 'src/app/core/contacts/state/contacts.state';
@@ -29,12 +23,8 @@ import { CreateContactComponent } from '../create-contact/create-contact.compone
 @Component({
   selector: 'rx-contacts-table',
   imports: [
-    FormsModule,
     TableModule,
     ButtonModule,
-    InputTextModule,
-    InputGroupModule,
-    InputGroupAddonModule,
     DatePipe,
     MenuModule,
     ConfirmDialog,
@@ -45,6 +35,7 @@ import { CreateContactComponent } from '../create-contact/create-contact.compone
     TooltipModule,
     CardsGridComponent,
     CardModule,
+    SearchInputComponent,
   ],
   providers: [DialogService],
   templateUrl: './contacts-table.component.html',
@@ -73,19 +64,10 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   readonly paginationS = this.#store.selectSignal(ContactsState.pagination);
   readonly loadingS = this.#store.selectSignal(ContactsState.loading);
 
-  readonly search = model<string>('');
-
   ViewMode = ViewMode;
 
-  constructor() {
-    toObservable(this.search)
-      .pipe(
-        skip(1),
-        debounceTime(500),
-        map(q => q.trim()),
-        takeUntilDestroyed(),
-      )
-      .subscribe(q => this.#store.dispatch([new SetContactsSearch(q), new FetchContacts()]));
+  onSearch(query: string): void {
+    this.#store.dispatch([new SetContactsSearch(query), new FetchContacts()]);
   }
 
   ngAfterViewInit(): void {

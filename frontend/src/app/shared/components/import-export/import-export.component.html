@@ -1,0 +1,74 @@
+<div class="flex flex-col gap-4">
+  @for (section of sections(); track section.entityId; let last = $last) {
+    <div class="flex flex-col gap-2">
+      <div class="font-semibold">{{ section.labelKey | translate }}</div>
+
+      <div class="flex gap-2 flex-wrap">
+        <p-button
+          icon="pi pi-upload"
+          variant="outlined"
+          size="small"
+          [label]="'IMPORT_EXPORT.IMPORT' | translate: { type: section.formats }"
+          [disabled]="getState(section.entityId).status === 'uploading'"
+          (click)="triggerImport(section)"
+        />
+        <p-button
+          icon="pi pi-download"
+          variant="outlined"
+          size="small"
+          [label]="'IMPORT_EXPORT.EXPORT' | translate: { type: section?.exportTypeSuffix }"
+          (click)="exportFile(section)"
+        />
+      </div>
+
+      <rx-file-upload-progress
+        [progress]="getState(section.entityId).progress"
+        [status]="getState(section.entityId).status"
+        [label]="'IMPORT_EXPORT.UPLOADING' | translate"
+      />
+    </div>
+
+    @if (!last) {
+      <p-divider class="my-0" />
+    }
+  }
+</div>
+
+<p-dialog
+  [header]="'IMPORT_EXPORT.RESULT.TITLE' | translate"
+  [modal]="true"
+  [closable]="true"
+  [dismissableMask]="true"
+  [visible]="importResultVisible()"
+  (visibleChange)="importResultVisible.set($event)"
+  styleClass="w-[420px] max-w-[90vw]"
+>
+  @if (importResult(); as result) {
+    <div class="flex flex-col gap-4">
+      <div class="flex items-center gap-3">
+        <i class="pi pi-check-circle text-green-500 text-2xl"></i>
+        <span>
+          {{ 'IMPORT_EXPORT.RESULT.CREATED' | translate: { count: result.created } }}
+        </span>
+      </div>
+
+      @if (result?.invalidRows?.length) {
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-3">
+            <i class="pi pi-exclamation-triangle text-yellow-500 text-2xl"></i>
+            <span>
+              {{ 'IMPORT_EXPORT.RESULT.INVALID_ROWS' | translate: { count: result.invalidRows.length } }}
+            </span>
+          </div>
+          <div class="text-sm text-surface-500 pl-9">
+            {{ 'IMPORT_EXPORT.RESULT.INVALID_ROWS_LIST' | translate }}: {{ result.invalidRows.join(', ') }}
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <ng-template #footer>
+    <p-button [label]="'COMMON.CLOSE' | translate" (click)="importResultVisible.set(false)" />
+  </ng-template>
+</p-dialog>

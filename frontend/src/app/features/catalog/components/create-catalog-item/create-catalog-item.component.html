@@ -1,144 +1,19 @@
 <div class="sm:p-4">
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <!-- Name -->
-    <rx-input-wrapper id="name" [control]="form.get('name')!" [label]="'FORM.LABELS.NAME' | translate" class="md:col-span-2">
-      <input id="name" pInputText type="text" formControlName="name" [placeholder]="'FORM.PLACEHOLDERS.NAME' | translate" />
-    </rx-input-wrapper>
+    <!-- Основные поля: название, тип, статус, категория, площадь -->
+    <rx-property-basic-fields [form]="form" class="contents" />
 
-    <!-- Photos (File Upload) -->
-    @let photos = photosS();
+    <!-- Фото -->
+    <rx-property-photos-fields [control]="form.get('photos')!" />
 
-    <div class="md:col-span-2">
-      <label for="photos" class="block text-sm lept-medium text-gray-700 mb-1">{{ 'FORM.LABELS.PHOTOS' | translate }}</label>
-      <p-fileupload
-        #fileUpload
-        [customUpload]="true"
-        [auto]="true"
-        (uploadHandler)="onUpload($event)"
-        [multiple]="true"
-        accept="image/*"
-        [fileLimit]="imagesLimit"
-        mode="advanced"
-      >
-        <ng-template #header let-files let-chooseCallback="chooseCallback">
-          @if (photos.length > 0) {
-            <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
-              <div class="flex gap-2">
-                <p-button (onClick)="choose(chooseCallback)" icon="pi pi-plus" [rounded]="true" [text]="true" />
-              </div>
-            </div>
-          }
-        </ng-template>
-        <ng-template #file></ng-template>
-        <ng-template #content let-chooseCallback="chooseCallback">
-          @if (uploadErrorS()) {
-            <p-message severity="error" [text]="uploadErrorS() || ''" class="w-full mb-4"></p-message>
-          }
-
-          @if (photos.length <= 0) {
-            <div class="flex items-center justify-center flex-col">
-              <p-button (click)="choose(chooseCallback)" [rounded]="true" [text]="true">
-                <i class="pi pi-plus !p-8 !text-4xl !text-muted-color"></i>
-              </p-button>
-              <p class="mt-6 mb-0">{{ 'FORM.PLACEHOLDERS.UPLOAD_PHOTOS' | translate }}</p>
-            </div>
-          }
-
-          @if (photos.length > 0) {
-            <div class="mt-4">
-              <div class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.PREVIEW' | translate }}</div>
-              <div class="flex flex-wrap gap-4">
-                @for (photo of photos; track photo; let i = $index) {
-                  <div class="relative overflow-hidden aspect-[1/1] w-[10rem]">
-                    <button
-                      pButton
-                      type="button"
-                      class="!absolute right-0 p-button-text p-button-sm"
-                      severity="danger"
-                      (click)="removePhoto(i)"
-                    >
-                      <i class="pi pi-trash"></i>
-                    </button>
-                    <img [src]="photo" [alt]="photo || 'Photo'" class="w-full h-auto" />
-                  </div>
-                }
-              </div>
-            </div>
-          }
-        </ng-template>
-      </p-fileupload>
-    </div>
-
-    <!-- Property Type (Select) -->
-    <rx-input-wrapper [control]="form.get('propertyType')!" [label]="'FORM.LABELS.PROPERTY_TYPE' | translate" id="propertyType">
-      <p-select
-        id="propertyType"
-        formControlName="propertyType"
-        [options]="propertyTypes"
-        optionLabel="label"
-        optionValue="value"
-        [placeholder]="'FORM.PLACEHOLDERS.PROPERTY_TYPE' | translate"
-        class="w-full"
-      />
-    </rx-input-wrapper>
-
-    <!-- Status (Select with Severity) -->
-    <rx-input-wrapper [control]="form.get('status')!" [label]="'FORM.LABELS.STATUS' | translate" id="status">
-      <p-select
-        id="status"
-        formControlName="status"
-        [options]="statuses"
-        optionLabel="label"
-        optionValue="value"
-        [placeholder]="'FORM.PLACEHOLDERS.STATUS' | translate"
-        class="w-full"
-        [style]="{
-          'background-color': getStatusBackground(form.controls['status'].value),
-        }"
-      >
-        <ng-template pTemplate="item" let-item>
-          <div class="flex items-center">
-            <p-tag [value]="item.label" [severity]="getSeverity(item.value)" />
-          </div>
-        </ng-template>
-      </p-select>
-    </rx-input-wrapper>
-
-    <!-- Zoning Type (Select) -->
-    <rx-input-wrapper [control]="form.get('zoningType')!" [label]="'FORM.LABELS.ZONING' | translate" id="zoningType">
-      <p-select
-        id="zoningType"
-        formControlName="zoningType"
-        [options]="zoningTypes"
-        optionLabel="label"
-        optionValue="value"
-        [placeholder]="'FORM.PLACEHOLDERS.ZONING' | translate"
-        class="w-full"
-      />
-    </rx-input-wrapper>
-
-    <!-- Area -->
-    <rx-input-wrapper [control]="form.get('area')!" [label]="'FORM.LABELS.AREA' | translate" id="area">
-      <p-inputnumber
-        inputId="area"
-        [showButtons]="true"
-        [step]="10"
-        [min]="0"
-        [max]="100_000_000_000"
-        formControlName="area"
-        [placeholder]="'FORM.PLACEHOLDERS.AREA' | translate"
-        class="w-full"
-      />
-    </rx-input-wrapper>
-
-    <!-- Address -->
+    <!-- Адрес -->
     <p-divider align="left" type="solid" class="md:col-span-2">
       <b>{{ 'FORM.LABELS.ADDRESS' | translate }}</b>
     </p-divider>
 
     @let pickerOpen = isPickerOpen();
     <p-button
-      class="w-fit md:col-start-2 justify-self-end mb-[-2rem]"
+      class="w-fit md:col-start-2 justify-self-end -mb-8"
       [label]="'FORM.LABELS.PICK' | translate"
       icon="pi pi-map"
       size="small"
@@ -146,254 +21,62 @@
       (click)="isPickerOpen.set(true)"
       [disabled]="pickerOpen"
     />
-    <rx-address-form @slide class="md:col-span-2" [form]="addressGroup" [value]="config.data?.address"></rx-address-form>
+    <rx-address-form @slide class="md:col-span-2" [form]="addressGroup" [value]="config.data?.address" />
 
-    <!-- Address Picker -->
     @if (pickerOpen) {
       <div @slide [rxScrollToTopOnShow]="pickerOpen" [scrollOffset]="150" class="md:col-span-2">
-        <rx-address-picker (address)="onAddresPickerFill($event); isPickerOpen.set(false)"></rx-address-picker>
+        <rx-address-picker (address)="onAddresPickerFill($event); isPickerOpen.set(false)" />
       </div>
     }
 
-    <!-- Price -->
-    <p-divider align="left" type="solid" class="md:col-span-2">
-      <b>{{ 'FORM.LABELS.PRICE' | translate }}</b>
-    </p-divider>
-    <ng-container formGroupName="price">
-      <!-- Price Currency -->
-      <rx-input-wrapper
-        [control]="form.get('price')?.get('currency')!"
-        [label]="'FORM.LABELS.CURRENCY' | translate"
-        id="currency"
-      >
-        <p-select
-          id="currency"
-          formControlName="currency"
-          [options]="currencies"
-          [filter]="true"
-          filterBy="value"
-          optionLabel="label"
-          optionValue="value"
-          [placeholder]="'FORM.PLACEHOLDERS.CURRENCY' | translate"
-          placeholder="e.g., USD"
-          class="w-full"
-        />
-      </rx-input-wrapper>
+    <!-- Цена -->
+    <rx-property-price-fields [form]="form" class="contents" />
 
-      <!-- Price Value -->
-      <rx-input-wrapper [control]="form.get('price')?.get('value')!" [label]="'FORM.LABELS.PRICE' | translate" id="price">
-        <p-inputgroup>
-          <p-inputgroup-addon>
-            <i class="pi pi-wallet"></i>
-          </p-inputgroup-addon>
-          <p-inputnumber
-            inputId="price"
-            formControlName="value"
-            [placeholder]="'FORM.PLACEHOLDERS.PRICE' | translate"
-            [showButtons]="true"
-            [step]="10"
-            [min]="0"
-            [max]="100_000_000_000"
-            mode="currency"
-            [currency]="form.controls['price'].value.currency || 'EUR'"
-            locale="de-DE"
-            class="w-full"
-          />
-        </p-inputgroup>
-      </rx-input-wrapper>
-    </ng-container>
+    <!-- Дополнительные параметры — меняются в зависимости от типа объекта -->
+    @if (propertyTypeS()) {
+      @let addParamsVisible = isAdditionalParamsVisible();
+      <p-divider align="left" type="solid" class="md:col-span-2">
+        <div class="flex items-center justify-between w-full gap-2">
+          <b>{{ 'FORM.LABELS.ADDITIONAL_PARAMS' | translate }}</b>
+          <button
+            pButton
+            type="button"
+            class="p-button-text p-button-sm"
+            (click)="isAdditionalParamsVisible.set(!addParamsVisible)"
+          >
+            <i [class]="addParamsVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up'"></i>
+          </button>
+        </div>
+      </p-divider>
 
-    <!-- Contact -->
-    <p-divider align="left" type="solid" class="md:col-span-2">
-      <b>{{ 'FORM.LABELS.CONTACT' | translate }}</b>
-    </p-divider>
+      @if (addParamsVisible) {
+        <div formGroupName="specifics" @slide class="md:col-span-2">
+          <rx-property-specifics [type]="propertyTypeS()" [form]="specificsGroup" />
+        </div>
+      }
+    }
 
-    <p-button
-      class="w-fit md:col-start-2 justify-self-end mb-[-2rem]"
-      [label]="'FORM.LABELS.CREATE_CONTACT' | translate"
-      icon="pi pi-plus"
-      size="small"
-      [outlined]="true"
-      (click)="openContactDialog()"
-    />
-    @let contactControl = form.get('contact');
-    <rx-input-wrapper
-      class="w-full md:col-span-2"
-      [control]="contactControl!"
-      [label]="'FORM.LABELS.CONTACT' | translate"
-      id="contact"
-    >
-      <rx-select-single
-        [fetcher]="contactFetchMethod"
-        [mapToSelect]="contactMapToSelect"
-        [valueMapper]="contactValueMapper"
-        formControlName="contact"
-        withSearch
-      >
-      </rx-select-single>
-    </rx-input-wrapper>
+    <!-- Контакт -->
+    <rx-property-contact-fields [form]="form" class="contents" />
 
+    <!-- Комментарий -->
     @let commentVisible = isCommentVisible();
     <p-divider align="left" type="solid" class="md:col-span-2">
       <div class="flex items-center justify-between w-full gap-2">
         <b>{{ 'FORM.LABELS.COMMENT' | translate }}</b>
         <button pButton type="button" class="p-button-text p-button-sm" (click)="isCommentVisible.set(!commentVisible)">
-          @let icon = commentVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
-          <i [class]="icon"></i>
+          <i [class]="commentVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up'"></i>
         </button>
       </div>
     </p-divider>
 
     @if (commentVisible) {
-      <div class="md:col-span-2" @slide>
-        <label for="comment" class="block text-sm font-medium text-gray-700 mb-1">{{
-          'FORM.LABELS.COMMENT' | translate
-        }}</label>
+      <div @slide class="md:col-span-2">
         <textarea pTextarea id="comment" formControlName="comment" [fluid]="true" rows="5"></textarea>
       </div>
     }
 
-    @let addParamsVisible = isAdditionalParamsVisible();
-    <p-divider align="left" type="solid" class="md:col-span-2">
-      <div class="flex items-center justify-between w-full gap-2">
-        <b>{{ 'FORM.LABELS.ADDITIONAL_PARAMS' | translate }}</b>
-        <button
-          pButton
-          type="button"
-          class="p-button-text p-button-sm"
-          (click)="isAdditionalParamsVisible.set(!addParamsVisible)"
-        >
-          @let iconAdditional = addParamsVisible ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
-          <i [class]="iconAdditional"></i>
-        </button>
-      </div>
-    </p-divider>
-
-    <!-- Additional Params Section -->
-    @if (addParamsVisible) {
-      <div formGroupName="specifics" @slide class="grid md:col-span-2 gap-8">
-        <div class="grid md:grid-cols-2 gap-4">
-          <!-- Floor -->
-          <ng-container formGroupName="floor">
-            <!-- Floor Current -->
-            <div>
-              <label for="currentFloor" class="block text-sm font-medium text-gray-700 mb-1">{{
-                'FORM.LABELS.CURRENT_FLOOR' | translate
-              }}</label>
-              <p-inputnumber
-                inputId="currentFloor"
-                formControlName="current"
-                [min]="0"
-                [max]="200"
-                [useGrouping]="false"
-                [placeholder]="'FORM.PLACEHOLDERS.CURRENT_FLOOR' | translate"
-                class="w-full"
-              />
-            </div>
-
-            <!-- Floor Full -->
-            <div>
-              <label for="totalFloors" class="block text-sm font-medium text-gray-700 mb-1">{{
-                'FORM.LABELS.TOTAL_FLOORS' | translate
-              }}</label>
-              <p-inputnumber
-                inputId="totalFloors"
-                formControlName="full"
-                [min]="0"
-                [max]="200"
-                [useGrouping]="false"
-                [placeholder]="'FORM.PLACEHOLDERS.TOTAL_FLOORS' | translate"
-                class="w-full"
-              />
-            </div>
-          </ng-container>
-
-          <!-- Rooms -->
-          <div>
-            <label for="rooms" class="block text-sm font-medium text-gray-700 mb-1">{{
-              'FORM.LABELS.ROOMS' | translate
-            }}</label>
-            <p-inputnumber
-              inputId="rooms"
-              formControlName="rooms"
-              [min]="0"
-              [max]="200"
-              [useGrouping]="false"
-              [placeholder]="'FORM.PLACEHOLDERS.ROOMS' | translate"
-              class="w-full"
-            />
-          </div>
-
-          <!-- Heating -->
-          <div>
-            <label for="heating" class="block text-sm font-medium text-gray-700 mb-1">{{
-              'FORM.LABELS.HEATING' | translate
-            }}</label>
-            <p-select
-              id="heating"
-              [options]="heatingTypes"
-              optionLabel="label"
-              optionValue="value"
-              formControlName="heating"
-              [placeholder]="'FORM.PLACEHOLDERS.HEATING' | translate"
-              class="w-full"
-            />
-          </div>
-
-          <!-- Furnished -->
-          <div>
-            <label for="furnished" class="block text-sm font-medium text-gray-700 mb-1">{{
-              'FORM.LABELS.FURNISHED' | translate
-            }}</label>
-            <p-select
-              id="furnished"
-              [options]="furnishedStatuses"
-              optionLabel="label"
-              optionValue="value"
-              formControlName="furnished"
-              [placeholder]="'FORM.PLACEHOLDERS.FURNISHED' | translate"
-              class="w-full"
-            />
-          </div>
-
-          <!-- Renovation -->
-          <div>
-            <label for="renovation" class="block text-sm font-medium text-gray-700 mb-1">{{
-              'FORM.LABELS.RENOVATION' | translate
-            }}</label>
-            <p-select
-              id="renovation"
-              [options]="renovationStatuses"
-              optionLabel="label"
-              optionValue="value"
-              formControlName="renovation"
-              [placeholder]="'FORM.PLACEHOLDERS.RENOVATION' | translate"
-              class="w-full"
-            />
-          </div>
-
-          <!-- Kitchen -->
-          <div>
-            <label for="kitchen" class="block text-sm font-medium text-gray-700 mb-1">{{
-              'FORM.LABELS.KITCHEN' | translate
-            }}</label>
-            <p-select
-              id="kitchen"
-              [options]="kitchenTypes"
-              optionLabel="label"
-              optionValue="value"
-              formControlName="kitchen"
-              [placeholder]="'FORM.PLACEHOLDERS.KITCHEN' | translate"
-              class="w-full"
-            />
-          </div>
-        </div>
-
-        <rx-fieldset-checkbox-group [fieldsetConfig]="fieldsetConfig" formControlName="options"></rx-fieldset-checkbox-group>
-      </div>
-    }
-
-    <!-- Buttons -->
+    <!-- Кнопки -->
     <div class="md:col-span-2 flex justify-end gap-2 mt-6 sticky bottom-0 z-10">
       <p-button
         [label]="'ACTIONS.CANCEL' | translate"

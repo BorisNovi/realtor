@@ -40,6 +40,7 @@ import {
   StorageService,
 } from 'src/app/core';
 import { CatalogFiltersService } from '../../catalog-filters.service';
+import { AddToListingComponent } from '../add-to-listing/add-to-listing.component';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
 @Component({
@@ -281,6 +282,19 @@ export class CatalogMapComponent implements AfterViewInit {
         takeUntilDestroyed(this.#destroyRef),
       )
       .subscribe();
+  }
+
+  openAddToListingDialog(id: number): void {
+    this.#ref = this.#dialogService.open(AddToListingComponent, {
+      data: id,
+      header: this.#translateService.instant('LISTINGS.ACTIONS.ADD_OBJECT'),
+      width: '370px',
+      height: '300px',
+      dismissableMask: true,
+      modal: true,
+      closable: true,
+      focusOnShow: false,
+    });
   }
 
   openEditDialog(item: ICatalogItem): void {

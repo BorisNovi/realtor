@@ -39,12 +39,18 @@
         />
       </ng-template>
       <ng-template #caption>
-        <div class="flex justify-between gap-4">
+        <div class="flex flex-wrap gap-4 items-center">
           <p-button
             [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
             [outlined]="true"
             icon="pi pi-plus"
             (click)="openDialog()"
+          />
+
+          <rx-search-input
+            class="grow basis-48"
+            [placeholder]="'LISTINGS.SEARCH_PLACEHOLDER' | translate"
+            (searchChange)="onSearch($event)"
           />
         </div>
       </ng-template>
@@ -120,12 +126,18 @@
     (pageChange)="onCardsPageChange($event)"
   >
     <ng-template #caption>
-      <div class="flex justify-between gap-4">
+      <div class="flex flex-wrap gap-4 items-center">
         <p-button
           [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
           [outlined]="true"
           icon="pi pi-plus"
           (click)="openDialog()"
+        />
+
+        <rx-search-input
+          class="grow basis-48"
+          [placeholder]="'LISTINGS.SEARCH_PLACEHOLDER' | translate"
+          (searchChange)="onSearch($event)"
         />
       </div>
     </ng-template>

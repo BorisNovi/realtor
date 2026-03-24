@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { GalleriaModule, GalleriaResponsiveOptions } from 'primeng/galleria';
 import { ImageModule } from 'primeng/image';
 import { TagModule } from 'primeng/tag';
+import { StaticMapComponent } from '../static-map/static-map.component';
 
 @Component({
   selector: 'rx-detail',
@@ -21,6 +22,7 @@ import { TagModule } from 'primeng/tag';
     WorldPhoneMaskPipe,
     CamelToUpperSnakePipe,
     NotEmptyPipe,
+    StaticMapComponent,
   ],
   styles: `
     ::ng-deep {

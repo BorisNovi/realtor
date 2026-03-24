@@ -254,6 +254,7 @@
     }
   },
   "CATALOG": {
+    "SEARCH_PLACEHOLDER": "Property name",
     "TABLE": {
       "HEADERS": {
         "PHOTO": "Photo",
@@ -294,7 +295,8 @@
     },
     "LABELS": {
       "ABOUT": "About",
-      "OPTIONS": "Options"
+      "OPTIONS": "Options",
+      "LOCATION": "Location"
     },
     "FILTERS": {
       "LABEL": "Filters",
@@ -352,11 +354,13 @@
     }
   },
   "LISTINGS" : {
+    "SEARCH_PLACEHOLDER": "Listing name",
     "ACTIONS": {
       "ADD_OBJECT": "Add object to listing",
       "DELETE_OBJECT": "Delete from listing",
       "DELETE_LISTING": "Delete listing",
-      "COPY_LINK": "Copy link"
+      "COPY_LINK": "Copy link",
+      "ALREADY_ADDED": "Already added"
     },
     "TABLE": {
       "HEADERS": {
@@ -388,6 +392,24 @@
       "LINK_COPIED": "Public link copied to clipboard"
     }
   },
+  "IMPORT_EXPORT": {
+    "CATALOG": "Property objects",
+    "CONTACTS": "Contacts",
+    "IMPORT": "Import {type}",
+    "EXPORT": "Export {{type}}",
+    "UPLOADING": "Uploading...",
+    "UPLOAD_SUCCESS": "Done",
+    "UPLOAD_ERROR": "Failed",
+    "RESULT": {
+      "TITLE": "Import result",
+      "CREATED": "Records created: {{count}}",
+      "INVALID_ROWS": "Invalid rows: {{count}}",
+      "INVALID_ROWS_LIST": "Row numbers"
+    }
+  },
+  "COMMON": {
+    "CLOSE": "Close"
+  },
   "PROFILE": {
     "INFO": "Main profile info",
     "EMAIL": "Email",
@@ -401,13 +423,16 @@
     "DELETE_ACCOUNT_PASSWORD_PLACEHOLDER": "Your current password",
     "DELETE_ACCOUNT_CONFIRM": "Delete account permanently",
     "ABOUT": "About profile",
+    "IMPORT_EXPORT": "Import and export",
     "DATE_ADDED": "Date added",
     "ROLE": "Role",
     "NOTIFICATION": {
       "UPDATED": "Profile updated successfully",
       "UPDATE_FAILED": "Failed to update profile",
       "ACCOUNT_DELETED": "Account deleted successfully",
-      "ACCOUNT_DELETE_FAILED": "Failed to delete account"
+      "ACCOUNT_DELETE_FAILED": "Failed to delete account",
+      "PASSWORD_CHANGED": "Password changed successfully",
+      "PASSWORD_CHANGE_FAILED": "Password change failed"
     }
   },
   "ADDRESS_PICKER": {
