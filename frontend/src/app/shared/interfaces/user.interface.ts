@@ -10,6 +10,9 @@ export interface IUserEditable {
   email: string;
   companyLogo: string;
   companyName: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
 }
 
 export interface IUser extends IEntity, IUserEditable {

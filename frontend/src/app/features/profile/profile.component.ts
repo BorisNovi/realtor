@@ -19,6 +19,8 @@ import { FileUploadService, Logout, Terminate } from 'src/app/core';
 import { EditProfile, ProfileState } from 'src/app/core/profile/state';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { DeleteAccountComponent } from './components/delete-account/delete-account.component';
+import { WorldPhoneMasksDirective } from '@shared/directives';
+import { clearPhone } from '@shared/utils';
 
 @Component({
   selector: 'rx-profile',
@@ -37,6 +39,7 @@ import { DeleteAccountComponent } from './components/delete-account/delete-accou
     ImportExportComponent,
     TranslatePipe,
     DatePipe,
+    WorldPhoneMasksDirective,
   ],
   providers: [DialogService],
   templateUrl: './profile.component.html',
@@ -72,6 +75,9 @@ export class ProfileComponent {
     email: [this.user()?.email, [Validators.required, Validators.email]],
     companyName: [this.user()?.companyName],
     companyLogo: [this.user()?.companyLogo],
+    firstName: [this.user()?.firstName],
+    lastName: [this.user()?.lastName],
+    phone: [this.user()?.phone],
   });
 
   onUpload(event: FileUploadHandlerEvent): void {
@@ -107,7 +113,7 @@ export class ProfileComponent {
     const dirtyPatch: Partial<IUser> = {};
 
     for (const [key, control] of Object.entries(this.userForm.controls))
-      if (control.dirty) (dirtyPatch as any)[key] = control.value;
+      if (control.dirty) (dirtyPatch as any)[key] = key === 'phone' ? clearPhone(control.value ?? '') : control.value;
 
     if (Object.keys(dirtyPatch).length === 0) return;
 
@@ -166,4 +172,7 @@ enum FieldEditing {
   CompanyName = 'companyName',
   CompanyLogo = 'companyLogo',
   Email = 'email',
+  FirstName = 'firstName',
+  LastName = 'lastName',
+  Phone = 'phone',
 }
