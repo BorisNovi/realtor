@@ -1,0 +1,46 @@
+<ng-container [formGroup]="form()">
+  <p-divider align="left" type="solid" class="md:col-span-2">
+    <b>{{ 'FORM.LABELS.PRICE' | translate }}</b>
+  </p-divider>
+
+  <ng-container formGroupName="price">
+    <rx-input-wrapper
+      [control]="form().get('price')?.get('currency')!"
+      [label]="'FORM.LABELS.CURRENCY' | translate"
+      id="currency"
+    >
+      <p-select
+        id="currency"
+        formControlName="currency"
+        [options]="currencies"
+        [filter]="true"
+        filterBy="value"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'FORM.PLACEHOLDERS.CURRENCY' | translate"
+        class="w-full"
+      />
+    </rx-input-wrapper>
+
+    <rx-input-wrapper [control]="form().get('price')?.get('value')!" [label]="'FORM.LABELS.PRICE' | translate" id="price">
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-wallet"></i>
+        </p-inputgroup-addon>
+        <p-inputnumber
+          inputId="price"
+          formControlName="value"
+          [placeholder]="'FORM.PLACEHOLDERS.PRICE' | translate"
+          [showButtons]="true"
+          [step]="10"
+          [min]="0"
+          [max]="100_000_000_000"
+          mode="currency"
+          [currency]="form().controls['price'].value.currency || 'EUR'"
+          locale="de-DE"
+          class="w-full"
+        />
+      </p-inputgroup>
+    </rx-input-wrapper>
+  </ng-container>
+</ng-container>

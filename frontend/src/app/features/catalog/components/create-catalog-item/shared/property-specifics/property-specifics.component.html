@@ -1,0 +1,120 @@
+<div [formGroup]="form()" class="grid md:grid-cols-2 gap-4">
+  @if (fields().has('rooms')) {
+    <rx-input-wrapper [control]="form().get('rooms')!" [label]="'FORM.LABELS.ROOMS' | translate" id="specificsRooms">
+      <p-inputnumber
+        inputId="specificsRooms"
+        formControlName="rooms"
+        [min]="0"
+        [max]="200"
+        [useGrouping]="false"
+        [placeholder]="'FORM.PLACEHOLDERS.ROOMS' | translate"
+        class="w-full"
+      />
+    </rx-input-wrapper>
+  }
+
+  @if (fields().has('currentFloor') || fields().has('totalFloors')) {
+    <ng-container formGroupName="floor">
+      @if (fields().has('currentFloor')) {
+        <rx-input-wrapper
+          [control]="form().get('floor')?.get('current')!"
+          [label]="'FORM.LABELS.CURRENT_FLOOR' | translate"
+          id="specificsCurrentFloor"
+        >
+          <p-inputnumber
+            inputId="specificsCurrentFloor"
+            formControlName="current"
+            [min]="0"
+            [max]="200"
+            [useGrouping]="false"
+            [placeholder]="'FORM.PLACEHOLDERS.CURRENT_FLOOR' | translate"
+            class="w-full"
+          />
+        </rx-input-wrapper>
+      }
+      @if (fields().has('totalFloors')) {
+        <rx-input-wrapper
+          [control]="form().get('floor')?.get('full')!"
+          [label]="'FORM.LABELS.TOTAL_FLOORS' | translate"
+          id="specificsTotalFloors"
+        >
+          <p-inputnumber
+            inputId="specificsTotalFloors"
+            formControlName="full"
+            [min]="0"
+            [max]="200"
+            [useGrouping]="false"
+            [placeholder]="'FORM.PLACEHOLDERS.TOTAL_FLOORS' | translate"
+            class="w-full"
+          />
+        </rx-input-wrapper>
+      }
+    </ng-container>
+  }
+
+  @if (fields().has('kitchen')) {
+    <rx-input-wrapper [control]="form().get('kitchen')!" [label]="'FORM.LABELS.KITCHEN' | translate" id="specificsKitchen">
+      <p-select
+        id="specificsKitchen"
+        formControlName="kitchen"
+        [options]="kitchenTypes"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'FORM.PLACEHOLDERS.KITCHEN' | translate"
+        class="w-full"
+      />
+    </rx-input-wrapper>
+  }
+
+  @if (fields().has('heating')) {
+    <rx-input-wrapper [control]="form().get('heating')!" [label]="'FORM.LABELS.HEATING' | translate" id="specificsHeating">
+      <p-select
+        id="specificsHeating"
+        formControlName="heating"
+        [options]="heatingTypes"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'FORM.PLACEHOLDERS.HEATING' | translate"
+        class="w-full"
+      />
+    </rx-input-wrapper>
+  }
+
+  @if (fields().has('furnished')) {
+    <rx-input-wrapper [control]="form().get('furnished')!" [label]="'FORM.LABELS.FURNISHED' | translate" id="specificsF">
+      <p-select
+        id="specificsF"
+        formControlName="furnished"
+        [options]="furnishedStatuses"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'FORM.PLACEHOLDERS.FURNISHED' | translate"
+        class="w-full"
+      />
+    </rx-input-wrapper>
+  }
+
+  @if (fields().has('renovation')) {
+    <rx-input-wrapper
+      [control]="form().get('renovation')!"
+      [label]="'FORM.LABELS.RENOVATION' | translate"
+      id="specificsRenovation"
+    >
+      <p-select
+        id="specificsRenovation"
+        formControlName="renovation"
+        [options]="renovationStatuses"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'FORM.PLACEHOLDERS.RENOVATION' | translate"
+        class="w-full"
+      />
+    </rx-input-wrapper>
+  }
+
+  @if (fields().has('options')) {
+    <div class="md:col-span-2">
+      <rx-fieldset-checkbox-group [fieldsetConfig]="fieldsetConfig()" formControlName="options" />
+    </div>
+  }
+</div>

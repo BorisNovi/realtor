@@ -9,5 +9,10 @@
 ></rx-select>
 
 <ng-template #itemTemplate let-item>
-  <div>{{ item.label }}</div>
+  <div
+    class="flex flex-1 items-center h-full"
+    [pTooltip]="disableListingWhithCurrentObject(item) ? ('LISTINGS.ACTIONS.ALREADY_ADDED' | translate) : undefined"
+  >
+    {{ item.label }}
+  </div>
 </ng-template>

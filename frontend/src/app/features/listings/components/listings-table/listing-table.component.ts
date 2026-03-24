@@ -1,10 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject, model, OnDestroy, viewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { CardsGridComponent, LinkSwitchComponent } from '@shared/components';
+import { CardsGridComponent, LinkSwitchComponent, SearchInputComponent } from '@shared/components';
 import { LISTINGS_PAGINATION_KEY } from '@shared/constants';
 import { IListing, ISort } from '@shared/interfaces';
 import { MenuItem } from 'primeng/api';
@@ -24,6 +23,7 @@ import {
   FetchListings,
   ListingsState,
   SetListingsPagination,
+  SetListingsSearch,
   SetListingsSort,
 } from 'src/app/core/listings/state';
 import { CreateListingComponent } from '../create-listing/create-listing.component';
@@ -31,7 +31,6 @@ import { CreateListingComponent } from '../create-listing/create-listing.compone
 @Component({
   selector: 'rx-listings-table',
   imports: [
-    FormsModule,
     RouterLink,
     TableModule,
     ButtonModule,
@@ -46,6 +45,7 @@ import { CreateListingComponent } from '../create-listing/create-listing.compone
     TooltipModule,
     CardsGridComponent,
     CardModule,
+    SearchInputComponent,
   ],
   providers: [DialogService],
   templateUrl: './listing-table.component.html',
@@ -72,8 +72,6 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
   readonly paginationS = this.#store.selectSignal(ListingsState.pagination);
   readonly loadingS = this.#store.selectSignal(ListingsState.loading);
 
-  readonly search = model<string>('');
-
   ViewMode = ViewMode;
 
   ngAfterViewInit(): void {
@@ -83,6 +81,10 @@ export class ListingsTableComponent implements AfterViewInit, OnDestroy {
       table.first = pagination.first;
       table.rows = pagination.rows;
     }
+  }
+
+  onSearch(query: string): void {
+    this.#store.dispatch([new SetListingsSearch(query), new FetchListings()]);
   }
 
   onSortChange(event: ISort): void {

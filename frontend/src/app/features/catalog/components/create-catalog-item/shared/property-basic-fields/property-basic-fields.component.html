@@ -1,0 +1,66 @@
+<ng-container [formGroup]="form()">
+  <!-- Name -->
+  <rx-input-wrapper id="name" [control]="form().get('name')!" [label]="'FORM.LABELS.NAME' | translate" class="md:col-span-2">
+    <input id="name" pInputText type="text" formControlName="name" [placeholder]="'FORM.PLACEHOLDERS.NAME' | translate" />
+  </rx-input-wrapper>
+
+  <!-- Property Type -->
+  <rx-input-wrapper [control]="form().get('propertyType')!" [label]="'FORM.LABELS.PROPERTY_TYPE' | translate" id="propertyType">
+    <p-select
+      id="propertyType"
+      formControlName="propertyType"
+      [options]="propertyTypes"
+      optionLabel="label"
+      optionValue="value"
+      [placeholder]="'FORM.PLACEHOLDERS.PROPERTY_TYPE' | translate"
+      class="w-full"
+    />
+  </rx-input-wrapper>
+
+  <!-- Status -->
+  <rx-input-wrapper [control]="form().get('status')!" [label]="'FORM.LABELS.STATUS' | translate" id="status">
+    <p-select
+      id="status"
+      formControlName="status"
+      [options]="statuses"
+      optionLabel="label"
+      optionValue="value"
+      [placeholder]="'FORM.PLACEHOLDERS.STATUS' | translate"
+      class="w-full"
+      [style]="{ 'background-color': getStatusBackground(form().controls['status'].value) }"
+    >
+      <ng-template pTemplate="item" let-item>
+        <div class="flex items-center">
+          <p-tag [value]="item.label" [severity]="getSeverity(item.value)" />
+        </div>
+      </ng-template>
+    </p-select>
+  </rx-input-wrapper>
+
+  <!-- Zoning Type -->
+  <rx-input-wrapper [control]="form().get('zoningType')!" [label]="'FORM.LABELS.ZONING' | translate" id="zoningType">
+    <p-select
+      id="zoningType"
+      formControlName="zoningType"
+      [options]="zoningTypes"
+      optionLabel="label"
+      optionValue="value"
+      [placeholder]="'FORM.PLACEHOLDERS.ZONING' | translate"
+      class="w-full"
+    />
+  </rx-input-wrapper>
+
+  <!-- Area -->
+  <rx-input-wrapper [control]="form().get('area')!" [label]="'FORM.LABELS.AREA' | translate" id="area">
+    <p-inputnumber
+      inputId="area"
+      [showButtons]="true"
+      [step]="10"
+      [min]="0"
+      [max]="100_000_000_000"
+      formControlName="area"
+      [placeholder]="'FORM.PLACEHOLDERS.AREA' | translate"
+      class="w-full"
+    />
+  </rx-input-wrapper>
+</ng-container>

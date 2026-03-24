@@ -5,6 +5,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
 import { withNgxsFormPlugin } from '@ngxs/form-plugin';
+import { environment } from '../environments/environment';
 import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
 import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { provideStore } from '@ngxs/store';
@@ -34,7 +35,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
     importProvidersFrom(
       TranslateModule.forRoot({
-        defaultLanguage: 'en',
+        fallbackLang: 'en',
         loader: {
           provide: TranslateLoader,
           useFactory: () => new TranslateHttpLoader(),
@@ -55,7 +56,7 @@ export const appConfig: ApplicationConfig = {
     ConfirmationService,
     provideStore(
       [AuthState, ProfileState, CatalogState, ListingsState, ContactsState],
-      withNgxsReduxDevtoolsPlugin(),
+      ...(environment.production ? [] : [withNgxsReduxDevtoolsPlugin()]),
       withNgxsFormPlugin(),
       withNgxsRouterPlugin(),
       withNgxsStoragePlugin({
