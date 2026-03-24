@@ -26,9 +26,15 @@ export class AnimatedBgDirective implements OnInit, OnDestroy {
     new THREE.MeshStandardMaterial({ color: 0xef8833, emissive: new THREE.Color(0xef8833), emissiveIntensity: 0 }),
     new THREE.MeshStandardMaterial({ color: 0xea3423, emissive: new THREE.Color(0xea3423), emissiveIntensity: 0 }),
   ];
-  private get freeMaterial() { return this.statusMaterials[0]; }
-  private get reservedMaterial() { return this.statusMaterials[1]; }
-  private get rentedMaterial() { return this.statusMaterials[2]; }
+  private get freeMaterial() {
+    return this.statusMaterials[0];
+  }
+  private get reservedMaterial() {
+    return this.statusMaterials[1];
+  }
+  private get rentedMaterial() {
+    return this.statusMaterials[2];
+  }
 
   readonly #isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
@@ -40,7 +46,7 @@ export class AnimatedBgDirective implements OnInit, OnDestroy {
       const dark = this.layoutService.isDarkTheme();
       if (this.ambientLight) this.ambientLight.intensity = dark ? 0.3 : 1;
       if (this.pointLight) this.pointLight.power = dark ? 200 : 600;
-      this.statusMaterials.forEach(m => m.emissiveIntensity = dark ? 0.5 : 0.8);
+      this.statusMaterials.forEach(m => (m.emissiveIntensity = dark ? 0.5 : 0.8));
     });
   }
 
@@ -85,7 +91,7 @@ export class AnimatedBgDirective implements OnInit, OnDestroy {
 
   private loadHouseModel(): void {
     const loader = new GLTFLoader();
-    loader.load('assets/house_realtor.glb', (gltf) => {
+    loader.load('assets/house_realtor.glb', gltf => {
       const template = gltf.scene;
 
       const box = new THREE.Box3().setFromObject(template);
@@ -99,16 +105,12 @@ export class AnimatedBgDirective implements OnInit, OnDestroy {
 
         // 50% free, 25% reserved, 25% rented
         const mat = i < 100 ? this.freeMaterial : i < 150 ? this.reservedMaterial : this.rentedMaterial;
-        clone.traverse((child) => {
+        clone.traverse(child => {
           if (child instanceof THREE.Mesh) child.material = mat;
         });
 
         clone.scale.setScalar(normalizedScale * (0.4 + Math.random() * 0.4));
-        clone.position.set(
-          (Math.random() - 0.5) * 40,
-          (Math.random() - 0.5) * 40,
-          (Math.random() - 0.5) * 40,
-        );
+        clone.position.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40);
         clone.rotation.set(0, Math.random() * Math.PI * 2, 0);
         this.scene.add(clone);
         this.particles.push(clone);

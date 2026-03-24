@@ -4,10 +4,7 @@ import { provideServerRendering } from '@angular/platform-server';
 import { appConfig } from './app.config';
 
 const serverConfig: ApplicationConfig = {
-  providers: [
-    provideServerRendering(),
-    provideAnimationsAsync('noop'),
-  ],
+  providers: [provideServerRendering(), provideAnimationsAsync('noop')],
 };
 
 export const config = mergeApplicationConfig(appConfig, serverConfig);
