@@ -36,7 +36,6 @@ export class LanguageSelectService {
 
   constructor() {
     this.#translateService.addLangs(this.availableLanguages);
-    this.#translateService.setDefaultLang(this.#currentLangSignal());
     this.#translateService.use(this.#currentLangSignal());
   }
 
