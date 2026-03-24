@@ -1,4 +1,5 @@
-import { Directive, effect, ElementRef, inject, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Directive, effect, ElementRef, inject, OnDestroy, OnInit, PLATFORM_ID, Renderer2 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { PrivateLayoutService } from 'src/app/layouts/private-layout/shared';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -35,6 +36,8 @@ export class AnimatedBgDirective implements OnInit, OnDestroy {
     return this.statusMaterials[2];
   }
 
+  readonly #isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   constructor(
     private el: ElementRef,
     private dom: Renderer2,
@@ -48,6 +51,7 @@ export class AnimatedBgDirective implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (!this.#isBrowser) return;
     this.createCanvas();
     this.initScene();
     this.animate();
@@ -142,6 +146,7 @@ export class AnimatedBgDirective implements OnInit, OnDestroy {
   };
 
   ngOnDestroy(): void {
+    if (!this.#isBrowser) return;
     cancelAnimationFrame(this.animationFrameId);
     window.removeEventListener('resize', this.onResize);
     document.removeEventListener('mousemove', this.onMouseMove);

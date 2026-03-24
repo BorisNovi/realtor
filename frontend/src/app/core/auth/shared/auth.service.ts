@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ISessionUser, IUser } from '@shared/interfaces';
-import { Observable, switchMap, shareReplay } from 'rxjs';
+import { Observable, switchMap, shareReplay, defer } from 'rxjs';
 import { environment } from '@environments/environment';
 import { FingerprintService } from '../../services';
 
@@ -12,7 +12,7 @@ export class AuthService {
   readonly #http = inject(HttpClient);
   readonly #fingerprintService = inject(FingerprintService);
 
-  readonly #fingerprint$ = this.#fingerprintService.getFingerprint().pipe(shareReplay(1));
+  readonly #fingerprint$ = defer(() => this.#fingerprintService.getFingerprint()).pipe(shareReplay(1));
 
   checkSession(): Observable<IUser> {
     return this.#fingerprint$.pipe(

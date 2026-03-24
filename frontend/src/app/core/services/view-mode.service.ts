@@ -13,7 +13,8 @@ export enum ViewMode {
 export class ViewModeService {
   readonly #storageService = inject(StorageService);
   readonly #viewMode = signal<ViewMode>(
-    this.#storageService.getItem<ViewMode>(VIEW_MODE_KEY) ?? (window.innerWidth <= 768 ? ViewMode.Cards : ViewMode.Table),
+    this.#storageService.getItem<ViewMode>(VIEW_MODE_KEY) ??
+      (typeof window !== 'undefined' && window.innerWidth <= 768 ? ViewMode.Cards : ViewMode.Table),
   );
 
   readonly viewMode = computed(() => this.#viewMode());
