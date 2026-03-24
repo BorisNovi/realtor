@@ -1,14 +1,12 @@
 services:
   frontend:
-    build: ./frontend
+    image: ghcr.io/borisnovi/realtor-frontend:latest
     # Нет прямого порта — nginx проксирует
     networks:
       - app-network
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.prod
+    image: ghcr.io/borisnovi/realtor-backend:latest
     env_file: ./backend/.env.prod  # Переопределяется через --env-file при запуске
     environment:
       # В Docker сервисы доступны по имени контейнера
