@@ -3,7 +3,7 @@
     <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
       <i class="pi pi-bars"></i>
     </button>
-    <a class="layout-topbar-logo" routerLink="/">
+    <a class="layout-topbar-logo" routerLink="/app">
       <!-- <span class="text-xs">pace here a logo</span> -->
       <span>Urban CRM</span>
     </a>
@@ -41,7 +41,7 @@
 
     <div class="layout-topbar-menu hidden lg:block">
       <div class="layout-topbar-menu-content">
-        <a class="layout-topbar-action" routerLink="/profile" routerLinkActive="layout-topbar-action_active">
+        <a class="layout-topbar-action" routerLink="/app/profile" routerLinkActive="layout-topbar-action_active">
           <i class="pi pi-user"></i>
           <span>{{ 'TOPBAR.PROFILE' | translate }}</span>
         </a>

@@ -4,6 +4,12 @@ import { authGuard, loggedInGuard } from './core';
 export const routes: Routes = [
   {
     path: '',
+    title: 'Urban CRM',
+    canActivate: [loggedInGuard],
+    loadComponent: () => import('./features').then(c => c.LandingComponent),
+  },
+  {
+    path: 'app',
     canActivate: [authGuard],
     loadChildren: () => import('./layouts').then(c => c.privateLayoutRoutes),
   },
@@ -19,6 +25,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    loadComponent: () => import('./features/not-found/not-found.component').then(c => c.NotFoundComponent),
+    loadComponent: () => import('./features').then(c => c.NotFoundComponent),
   },
 ];

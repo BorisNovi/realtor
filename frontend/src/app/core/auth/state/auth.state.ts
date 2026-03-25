@@ -149,7 +149,7 @@ export class AuthState {
       detail: this.translateService.instant('AUTH.NOTIFICATION.LOGIN_SUCCESS.DETAIL'),
       life: 3000,
     });
-    ctx.dispatch(new Navigate(['/']));
+    ctx.dispatch(new Navigate(['/app']));
   }
 
   @Action(LoginFailed)
@@ -233,7 +233,7 @@ export class AuthState {
       life: 3000,
     });
 
-    ctx.dispatch(new Navigate(['/']));
+    ctx.dispatch(new Navigate(['/app']));
   }
 
   @Action(ActivationAfterSignupFailed)
