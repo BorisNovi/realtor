@@ -2,9 +2,9 @@
 
 Стек: Angular 21 + Django 5.1.6 + PostgreSQL 16 + Redis + Nginx + Docker
 Домен: **urbancrm.app** (Cloudflare)
-Сервер: **185.174.138.68** (FirstByte, Ubuntu 24.04, 2 CPU, 2 GB RAM, 20 GB SSD)
+Сервер: **185.174.138.68** (Ubuntu 24.04, 2 CPU, 2 GB RAM, 20 GB SSD)
 
-> Минимальные требования для сборки Angular на сервере: **2 GB RAM**. На 768 MB сборка падает по OOM.
+**Деплой происходит автоматически через GitHub Actions** — образы собираются в облаке и пушатся в GHCR, сервер только скачивает готовые образы.
 
 ---
 
@@ -36,8 +36,8 @@ DEFAULT_FROM_EMAIL=noreply@urbancrm.app
 
 1. Зайди на [dash.cloudflare.com](https://dash.cloudflare.com) → выбери домен `urbancrm.app`
 2. **DNS → Records** — добавь две записи:
-   - Тип `A`, имя `@`, значение `193.109.78.61`, Proxy статус **Proxied** (оранжевое облако)
-   - Тип `A`, имя `www`, значение `193.109.78.61`, Proxy статус **Proxied**
+   - Тип `A`, имя `@`, значение `185.174.138.68`, Proxy статус **Proxied** (оранжевое облако)
+   - Тип `A`, имя `www`, значение `185.174.138.68`, Proxy статус **Proxied**
 3. **SSL/TLS → Overview** — выбери режим **Full (strict)**
 4. **SSL/TLS → Origin Server** → **Create Certificate**:
    - Тип ключа: RSA
@@ -136,9 +136,52 @@ ls -la /etc/ssl/cloudflare/
 
 ---
 
-## Часть 3 — Деплой приложения
+## Часть 3 — Настройка GitHub Actions CI/CD (делается один раз)
 
-### 3.1 Клонирование репозитория
+### 3.1 Генерация SSH-ключа для CI
+
+На локальной машине создай пару ключей специально для GitHub Actions:
+
+```bash
+ssh-keygen -t ed25519 -C "github-actions" -f ~/.ssh/github_actions -N ""
+```
+
+Добавь публичный ключ на сервер:
+```bash
+cat ~/.ssh/github_actions.pub | ssh root@185.174.138.68 "cat >> ~/.ssh/authorized_keys"
+```
+
+### 3.2 Добавление секретов в GitHub
+
+GitHub репозиторий → **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Secret | Значение |
+|---|---|
+| `SERVER_HOST` | `185.174.138.68` |
+| `SERVER_USER` | `root` |
+| `SERVER_SSH_KEY` | содержимое `~/.ssh/github_actions` (приватный ключ) |
+
+Просмотреть приватный ключ:
+```bash
+cat ~/.ssh/github_actions
+```
+
+### 3.3 Как работает CI/CD
+
+При каждом пуше в `main`:
+1. GitHub Actions собирает Docker-образы фронта и бэка (7 GB RAM, быстро)
+2. Пушит образы в GHCR: `ghcr.io/borisnovi/realtor-frontend:latest` и `ghcr.io/borisnovi/realtor-backend:latest`
+3. Копирует `docker-compose.prod.yml` на сервер через SCP
+4. Заходит на сервер по SSH, скачивает новые образы и перезапускает контейнеры
+
+При пуше git-тега `v*` (например `v1.2.0`):
+- Дополнительно создаётся версионный образ `ghcr.io/borisnovi/realtor-frontend:v1.2.0`
+
+---
+
+## Часть 4 — Первый деплой приложения
+
+### 4.1 Клонирование репозитория
 
 ```bash
 cd /opt
@@ -149,7 +192,7 @@ cd realtor
 При запросе логина/пароля — вводи GitHub username и Personal Access Token
 (GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → scope: repo)
 
-### 3.2 Создание .env.prod
+### 4.2 Создание .env.prod
 
 ```bash
 cat > /opt/realtor/backend/.env.prod << 'EOF'
@@ -191,26 +234,24 @@ echo "DATABASE_PASSWORD=$(python3 -c "import secrets; print(secrets.token_urlsaf
 echo "REDIS_PASSWORD=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))")"
 ```
 
-### 3.3 Запуск
+### 4.3 Первый запуск
+
+Запушь что-нибудь в `main` — GitHub Actions автоматически соберёт и задеплоит.
+Или запусти вручную через GitHub CLI:
+
+```bash
+gh workflow run deploy.yml --ref main
+```
+
+Или через GitHub UI: **Actions → Build & Deploy → Run workflow → main → Run workflow**
+
+> Первый запуск занимает 3–5 минут (скачивает образы из GHCR).
+
+### 4.4 Проверка
 
 ```bash
 cd /opt/realtor
-docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d --build
-```
-
-> Первый запуск занимает 10–20 минут (скачивает образы, компилирует Angular).
-
-### 3.4 Проверка
-
-```bash
-# Статус контейнеров:
-docker compose -f docker-compose.prod.yml ps
-
-# Логи всех контейнеров:
-docker compose -f docker-compose.prod.yml logs -f
-
-# Логи только бэкенда:
-docker compose -f docker-compose.prod.yml logs -f backend
+docker compose -f docker-compose.prod.yml --env-file backend/.env.prod ps
 ```
 
 Все контейнеры должны быть в статусе `running`:
@@ -224,20 +265,31 @@ docker compose -f docker-compose.prod.yml logs -f backend
 
 ---
 
-## Часть 4 — Обновление (повторный деплой)
+## Часть 5 — Обновление и откат
+
+### 5.1 Обычное обновление
+
+Просто пушишь в `main` — CI/CD сам всё сделает.
+
+### 5.2 Версионный деплой (с тегом)
 
 ```bash
-cd /opt/realtor
-git pull
-docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d --build
+git tag v1.2.0
+git push origin v1.2.0
 ```
 
-Обновить только бэкенд (быстрее):
-```bash
-docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d --build backend
-```
+Actions создаст образы с тегами `v1.2.0` и `latest`.
 
-Обновить одну переменную в `.env.prod` и применить без пересборки:
+### 5.3 Откат на предыдущую версию
+
+Через GitHub UI: **Actions → Build & Deploy → Run workflow**
+- Введи в поле `tag`: например `v1.1.0`
+- Нажми **Run workflow**
+
+Actions пропустит сборку и задеплоит указанную версию.
+
+### 5.4 Обновить только переменную окружения (без пересборки)
+
 ```bash
 sed -i 's/EMAIL_HOST_PASSWORD=.*/EMAIL_HOST_PASSWORD=re_новый_ключ/' /opt/realtor/backend/.env.prod
 # restart не подхватывает новый env — нужно пересоздать контейнер:
@@ -246,9 +298,18 @@ docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d bac
 
 ---
 
-## Часть 5 — Полезные команды на сервере
+## Часть 6 — Полезные команды на сервере
 
 ```bash
+# Статус контейнеров:
+docker compose -f docker-compose.prod.yml --env-file backend/.env.prod ps
+
+# Логи всех контейнеров:
+docker compose -f docker-compose.prod.yml logs -f
+
+# Логи только бэкенда:
+docker compose -f docker-compose.prod.yml logs -f backend
+
 # Остановить всё:
 docker compose -f docker-compose.prod.yml down
 
@@ -256,7 +317,7 @@ docker compose -f docker-compose.prod.yml down
 docker compose -f docker-compose.prod.yml down -v
 
 # Перезапустить один сервис:
-docker compose -f docker-compose.prod.yml restart backend
+docker compose -f docker-compose.prod.yml restart nginx
 
 # Войти в контейнер бэкенда:
 docker exec -it realtor-backend-1 bash
@@ -264,7 +325,15 @@ docker exec -it realtor-backend-1 bash
 # Выполнить manage.py команду:
 docker exec realtor-backend-1 python manage.py <команда>
 
-# Посмотреть использование памяти:
+# Посчитать зарегистрированных пользователей:
+DB_USER=$(grep ^DATABASE_USER backend/.env.prod | cut -d= -f2)
+DB_NAME=$(grep ^DATABASE_NAME backend/.env.prod | cut -d= -f2)
+docker compose -f docker-compose.prod.yml --env-file backend/.env.prod exec postgres psql -U $DB_USER -d $DB_NAME -c "SELECT COUNT(*) FROM users_user;"
+
+# Очистить кеш Docker (освобождает 1-3 GB, volumes не трогает):
+docker system prune -a
+
+# Использование памяти:
 free -m
 
 # Место на диске:
@@ -276,11 +345,19 @@ df -h
 ## Архитектура
 
 ```
+Разработчик → git push → GitHub Actions
+                              ├── сборка образов (ubuntu-latest, 7 GB RAM)
+                              ├── push в GHCR (ghcr.io/borisnovi/*)
+                              └── SSH deploy на сервер
+                                      ├── SCP docker-compose.prod.yml
+                                      ├── docker pull новых образов
+                                      └── docker compose up -d
+
 Браузер → Cloudflare (proxy) → Nginx (443 SSL)
                                     ├── /api/*, /admin → backend:8000 (Gunicorn + Django)
                                     ├── /uploads/      → volume mediafiles (напрямую)
                                     ├── /static/       → volume staticfiles (напрямую)
-                                    └── /             → frontend:80 (Nginx + Angular SPA)
+                                    └── /              → frontend:80 (Nginx + Angular SPA + SSR)
 ```
 
 SSL-сертификат: Cloudflare Origin CA (15 лет, только для трафика через Cloudflare proxy).
@@ -292,8 +369,11 @@ Cloudflare → сервер: Full (strict) — шифруется на всём 
 
 ```
 realtor/
+├── .github/workflows/
+│   └── deploy.yml          # CI/CD: сборка образов + деплой
 ├── frontend/
-│   ├── Dockerfile          # Node 20 (сборка) + Nginx (раздача)
+│   ├── Dockerfile          # Node 20 Alpine (сборка) + Nginx (раздача)
+│   ├── nginx.conf          # конфиг nginx внутри frontend-контейнера
 │   └── src/
 ├── backend/
 │   ├── Dockerfile          # dev: runserver
@@ -304,7 +384,7 @@ realtor/
 ├── nginx/
 │   └── prod.conf           # Cloudflare Origin CA + роутинг
 ├── docker-compose.yml          # dev
-├── docker-compose.prod.yml     # production
+├── docker-compose.prod.yml     # production (образы из GHCR)
 └── package.json                # скрипты для удобства
 ```
 
