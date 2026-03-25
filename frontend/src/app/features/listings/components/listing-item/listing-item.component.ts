@@ -78,7 +78,7 @@ export class ListingItemComponent implements OnDestroy {
     this.#deletionConfirmationService.confirm(
       () => {
         this.#store.dispatch(new DeleteListing([this.item()?.id || 0]));
-        this.#router.navigate(['/listings']);
+        this.#router.navigate(['/app/listings']);
       },
       { header: 'LISTINGS.DIALOG.DELETE_REQUEST_SINGLE' },
     );
