@@ -41,11 +41,13 @@ class ProfileSerializer(serializers.ModelSerializer):
       
 
     def update(self, instance, validated_data):
-        logo = validated_data.get('company_logo')
+        logo = validated_data.get('company_logo', None)
         if logo and logo != instance.company_logo:
             instance.company_logo = make_files_permanent(logo)
 
-        instance.company_name = validated_data.get('company_name', instance.company_name)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)       
+        
         instance.save()
         return instance
 

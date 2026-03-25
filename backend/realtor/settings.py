@@ -114,6 +114,7 @@ INSTALLED_APPS = [
     'contacts',
     'file',
     'listings',                     
+    'countries',
     # 'ai_assistant',                 # Может зависеть от users или user_auth
     # 'payments',                     # Платежи, может зависеть от users
 ]

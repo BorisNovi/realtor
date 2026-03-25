@@ -14,6 +14,7 @@ urlpatterns = [
     path("api/v1/listing", include("listings.urls")),
     path("api/v1/profile", include("users.urls")),
     path("api/v1/property-object", include("users.urls")),
+    path("api/v1/country", include("countries.urls")),
 ]
 
 if settings.DEBUG:
