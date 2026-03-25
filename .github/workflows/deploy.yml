@@ -82,8 +82,9 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /opt/realtor
-            git pull
+            git pull || true
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker compose -f docker-compose.prod.yml --env-file backend/.env.prod pull
+            docker pull ghcr.io/borisnovi/realtor-frontend:latest
+            docker pull ghcr.io/borisnovi/realtor-backend:latest
             docker compose -f docker-compose.prod.yml --env-file backend/.env.prod up -d
             docker image prune -f
