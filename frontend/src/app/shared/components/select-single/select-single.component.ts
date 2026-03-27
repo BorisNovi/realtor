@@ -16,6 +16,11 @@ import { SelectComponent } from '../select/select.component';
   standalone: true,
   imports: [SelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule],
   templateUrl: 'select-single.component.html',
+  styles: `
+    :host {
+      display: contents;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {

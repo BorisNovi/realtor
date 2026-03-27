@@ -13,6 +13,7 @@ export interface IUserEditable {
   firstName: string;
   lastName: string;
   phone: string;
+  country: string;
 }
 
 export interface IUser extends IEntity, IUserEditable {

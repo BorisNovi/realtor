@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
-import { IPasswordChange, IUser, IUserEditable } from '@shared/interfaces';
+import { ICountry, IFetchOptions, IPasswordChange, ITableData, IUser, IUserEditable } from '@shared/interfaces';
 import { CrudBaseService } from '../../base';
 
 @Injectable({
@@ -13,6 +13,10 @@ export class ProfileService extends CrudBaseService {
 
   fetchProfile() {
     return this.http.get<IUser>(`${this.baseUrl}/profile`);
+  }
+
+  fetchCountries(options: IFetchOptions) {
+    return this.fetchList<ITableData<ICountry>>(`${this.baseUrl}/country/list`, options);
   }
 
   changePassword(body: IPasswordChange) {
