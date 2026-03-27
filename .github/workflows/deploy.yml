@@ -1,0 +1,133 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag to deploy (e.g. v1.2.0). Leave empty to deploy latest.'
+        required: false
+        default: 'latest'
+
+jobs:
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    # Пропускаем сборку если деплоим конкретный тег (откат)
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.tag == 'latest'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/borisnovi/realtor-frontend
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=latest
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend
+
+  build-backend:
+    name: Build Backend
+    runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.tag == 'latest'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/borisnovi/realtor-backend
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=latest
+
+      - name: Build and push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile.prod
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,mode=max,scope=backend
+
+  deploy:
+    name: Deploy to server
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-backend]
+    if: always() && (needs.build-frontend.result == 'success' || needs.build-frontend.result == 'skipped') && (needs.build-backend.result == 'success' || needs.build-backend.result == 'skipped')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Copy docker-compose to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "docker-compose.prod.yml"
+          target: "/opt/realtor/"
+
+      - name: SSH deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          envs: GITHUB_TOKEN,DEPLOY_TAG
+          script: |
+            TAG=${{ github.event.inputs.tag || 'latest' }}
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker pull ghcr.io/borisnovi/realtor-frontend:$TAG
+            docker pull ghcr.io/borisnovi/realtor-backend:$TAG
+            sed -i "s|ghcr.io/borisnovi/realtor-frontend:.*|ghcr.io/borisnovi/realtor-frontend:$TAG|" /opt/realtor/docker-compose.prod.yml
+            sed -i "s|ghcr.io/borisnovi/realtor-backend:.*|ghcr.io/borisnovi/realtor-backend:$TAG|" /opt/realtor/docker-compose.prod.yml
+            docker compose -f /opt/realtor/docker-compose.prod.yml --env-file /opt/realtor/backend/.env.prod up -d
+            docker image prune -f

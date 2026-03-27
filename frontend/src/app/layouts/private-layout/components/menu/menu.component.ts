@@ -18,26 +18,13 @@ export class MenuComponent implements OnInit {
         visible: true,
         label: 'MENU.CATALOG',
         items: [
-          {
-            label: 'MENU.LIST',
-            icon: 'pi pi-fw pi-list',
-            routerLink: ['catalog/list'],
-            queryParamsHandling: 'preserve',
-            state: { activeUrlPattern: '^/catalog/(?!map)' },
-          },
-          { label: 'MENU.MAP', icon: 'pi pi-fw pi-map', routerLink: ['catalog/map'], queryParamsHandling: 'preserve' },
+          { label: 'MENU.LIST', icon: 'pi pi-fw pi-list', routerLink: ['/app/catalog/list'], queryParamsHandling: 'preserve' },
+          { label: 'MENU.MAP', icon: 'pi pi-fw pi-map', routerLink: ['/app/catalog/map'], queryParamsHandling: 'preserve' },
         ],
       },
       {
         label: 'MENU.SHARING',
-        items: [
-          {
-            label: 'MENU.LISTINGS',
-            icon: 'pi pi-fw pi-list-check',
-            routerLink: ['/listings'],
-            routerLinkActiveOptions: { paths: 'subset', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' },
-          },
-        ],
+        items: [{ label: 'MENU.LISTINGS', icon: 'pi pi-fw pi-list-check', routerLink: ['/app/listings'] }],
       },
       {
         label: 'AI',
@@ -50,7 +37,7 @@ export class MenuComponent implements OnInit {
       },
       {
         label: 'MENU.INFO',
-        items: [{ label: 'MENU.CONTACTS', icon: 'pi pi-fw pi-id-card', routerLink: ['/contacts'] }],
+        items: [{ label: 'MENU.CONTACTS', icon: 'pi pi-fw pi-id-card', routerLink: ['/app/contacts'] }],
       },
       {
         label: 'Analytics',

@@ -22,7 +22,7 @@ export const contactsResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapsh
       };
 
       if (!Object.keys(paginationFromQuery).length) {
-        router.navigate(['/contacts'], {
+        router.navigate(['/app/contacts'], {
           queryParams: newQueryParams,
           replaceUrl: false,
         });
