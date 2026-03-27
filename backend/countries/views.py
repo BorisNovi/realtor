@@ -1,4 +1,5 @@
 from typing import Optional
+from django.db.models import Q
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import permissions
@@ -14,8 +15,6 @@ class CountryViewSet(ReadOnlyModelViewSet):
     serializer_class = CountrySerializer
     lookup_field = "code" # На случай прямого запроса страны из адресной строки
     pagination_class = FrontendPagination
-
-    permission_classes = [permissions.AllowAny]
 
     def _build_prefix(self, text: str) -> Optional[SearchQuery]:
         return build_prefix_tsquery(text)
