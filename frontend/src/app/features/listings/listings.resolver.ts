@@ -24,7 +24,7 @@ export const listingsResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapsh
         // Сделано для того, чтобы при переходе на определенный маршрут не перебрасывало на конрневой (/catalog)
         const segments = route.children.map(child => child.url.map(segment => segment.toString()).join('/')).filter(Boolean);
 
-        router.navigate(['/listings', ...segments], {
+        router.navigate(['/app/listings', ...segments], {
           queryParams: newQueryParams,
           replaceUrl: false,
         });

@@ -74,7 +74,7 @@ export class CatalogItemComponent implements OnDestroy {
   deleteItem(): void {
     this.#deletionConfirmationService.confirm(() => {
       this.#store.dispatch(new DeletePropertyObjects([this.item()?.id || 0]));
-      this.#router.navigate(['/']);
+      this.#router.navigate(['/app/catalog']);
     });
   }
 
