@@ -16,7 +16,7 @@ export class ProfileService extends CrudBaseService {
   }
 
   fetchCountries(options: IFetchOptions) {
-    return this.fetchList<ITableData<ICountry>>(`${this.baseUrl}/country/list`, options);
+    return this.fetchList<ITableData<ICountry>>(`country/list`, options);
   }
 
   changePassword(body: IPasswordChange) {
