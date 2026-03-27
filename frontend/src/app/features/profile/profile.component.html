@@ -153,6 +153,39 @@
             </p-inputgroup>
           </rx-input-wrapper>
 
+          @let isCountryEditing = fieldEdititng() == FieldEditing.Country;
+          <rx-input-wrapper [control]="userForm.get('country')!" [label]="'PROFILE.COUNTRY' | translate" id="country">
+            <p-inputgroup>
+              <!-- TODO: сделать disabled и работу с p-inputgroup -->
+              <rx-select-single
+                [fetcher]="countryFetchMethod"
+                [mapToSelect]="countryMapToSelect"
+                [valueMapper]="countryValueMapper"
+                [disabled]="!isCountryEditing"
+                formControlName="country"
+                withSearch
+              />
+
+              @if (isCountryEditing) {
+                <p-inputgroup-addon>
+                  <p-button
+                    icon="pi pi-save"
+                    severity="primary"
+                    (onClick)="fieldEdititng.set(false); updateProfile()"
+                    [disabled]="!userForm.get('country')?.dirty"
+                  />
+                </p-inputgroup-addon>
+              }
+              <p-inputgroup-addon>
+                <p-button
+                  [icon]="isCountryEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isCountryEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.Country)"
+                />
+              </p-inputgroup-addon>
+            </p-inputgroup>
+          </rx-input-wrapper>
+
           @let isCompanyLogoEditing = fieldEdititng() == FieldEditing.CompanyLogo;
           <div class="flex flex-col gap-1">
             <label for="companyLogo" class="block text-sm font-medium text-gray-700">{{

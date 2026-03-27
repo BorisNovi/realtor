@@ -4,8 +4,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { AvatarComponent, ImportExportComponent, InputWrapperComponent } from '@shared/components';
-import { IImportExportSection, IUser } from '@shared/interfaces';
+import { AvatarComponent, ImportExportComponent, InputWrapperComponent, SelectSingleComponent } from '@shared/components';
+import { ICountry, IFetchOptions, IImportExportSection, IUser } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -21,6 +21,7 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
 import { DeleteAccountComponent } from './components/delete-account/delete-account.component';
 import { WorldPhoneMasksDirective } from '@shared/directives';
 import { clearPhone } from '@shared/utils';
+import { ProfileService } from 'src/app/core/profile/shared';
 
 @Component({
   selector: 'rx-profile',
@@ -40,6 +41,7 @@ import { clearPhone } from '@shared/utils';
     TranslatePipe,
     DatePipe,
     WorldPhoneMasksDirective,
+    SelectSingleComponent,
   ],
   providers: [DialogService],
   templateUrl: './profile.component.html',
@@ -47,6 +49,7 @@ import { clearPhone } from '@shared/utils';
 })
 export class ProfileComponent {
   readonly #store = inject(Store);
+  readonly #profileService = inject(ProfileService);
   readonly #destroyRef = inject(DestroyRef);
   readonly #fileUploadService = inject(FileUploadService);
   readonly #fb = inject(FormBuilder);
@@ -56,6 +59,14 @@ export class ProfileComponent {
   #ref!: DynamicDialogRef | null;
 
   readonly user = this.#store.selectSignal(ProfileState.user);
+
+  readonly countryFetchMethod = (options: IFetchOptions) => this.#profileService.fetchCountries(options);
+  readonly countryMapToSelect = (item: ICountry) => ({
+    label: `${item?.name}`,
+    value: item,
+    id: item.id,
+  });
+  readonly countryValueMapper = (country: ICountry) => ({ id: country.id });
 
   readonly FieldEditing = FieldEditing;
   readonly fieldEdititng = signal<FieldEditing | false>(false);
@@ -78,6 +89,7 @@ export class ProfileComponent {
     firstName: [this.user()?.firstName],
     lastName: [this.user()?.lastName],
     phone: [this.user()?.phone],
+    country: [this.user()?.country],
   });
 
   onUpload(event: FileUploadHandlerEvent): void {
@@ -175,4 +187,5 @@ enum FieldEditing {
   FirstName = 'firstName',
   LastName = 'lastName',
   Phone = 'phone',
+  Country = 'country',
 }

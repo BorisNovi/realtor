@@ -15,7 +15,11 @@ import { BaseSelect } from 'src/app/core';
   selector: 'rx-multiselect',
   imports: [MultiSelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule, TranslatePipe],
   templateUrl: 'multiselect.component.html',
-
+  styles: `
+    :host {
+      display: contents;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
