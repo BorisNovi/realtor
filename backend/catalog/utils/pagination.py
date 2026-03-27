@@ -8,6 +8,7 @@ class FrontendPagination(BasePagination):
 
     def paginate_queryset(self, queryset, request, view=None):
         # Получаем сдвиг (offset) и размер страницы (limit)
+        print("PAGINATION CALLED")  # временно
         first = int(request.query_params.get(self.page_query_param, 0))  # Сдвиг
         rows = int(request.query_params.get(self.page_size_query_param, 10))  # Количество объектов на странице
 
