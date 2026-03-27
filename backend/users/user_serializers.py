@@ -3,11 +3,12 @@ from colorama import Fore
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from countries.models import Country
 from file.file_utils import make_files_permanent
 
 User = get_user_model()
 
-class ProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):   
     class Meta:
         model = User
         fields = [
@@ -38,8 +39,20 @@ class ProfileSerializer(serializers.ModelSerializer):
             )
         
         return phone
+    
+    def validate_default_country(self, value):
+        value = value.strip().lower()
+
+        if len(value) != 2 or not value.isalpha():
+            raise serializers.ValidationError("INVALID_FORMAT")
+
+        if not Country.objects.filter(code=value).exists():
+            raise serializers.ValidationError("DOES_NOT_MATCH_ANY_COUNTRY")
+
+        return value
+            
+
       
-    # тут нужна валидация страны и запись оной в БД как ключ-отсылка one-to-one. 
 
     def update(self, instance, validated_data):
         logo = validated_data.get('company_logo', None)
