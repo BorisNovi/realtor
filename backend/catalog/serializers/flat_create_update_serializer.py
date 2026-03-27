@@ -4,7 +4,6 @@ from catalog.serializers.base_create_update_serializer import BaseCreateUpdateSe
 from django.db import transaction
 from catalog.serializers.catalog_address_serializer import AddressSerializer
 from catalog.serializers.catalog_price_serializer import build_price
-from catalog.serializers.house_create_update_serializer import flatten_house_specifics
 from contacts.contact_serializers import ContactSerializer
 
 def flatten_flat_specifics(specifics: dict | None) -> dict:

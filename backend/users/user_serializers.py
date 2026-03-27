@@ -39,6 +39,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         
         return phone
       
+    # тут нужна валидация страны и запись оной в БД как ключ-отсылка one-to-one. 
 
     def update(self, instance, validated_data):
         logo = validated_data.get('company_logo', None)

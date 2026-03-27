@@ -13,6 +13,6 @@ country_list = CountryViewSet.as_view({'get': 'list'})
 country_detail = CountryViewSet.as_view({'get': 'retrieve'})
 
 urlpatterns = [
-    path("", country_list),
+    path("/list", country_list),
     path("/<str:code>", country_detail), 
 ]
