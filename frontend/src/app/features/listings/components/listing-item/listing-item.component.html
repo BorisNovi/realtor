@@ -64,7 +64,10 @@
     </rx-detail>
   }
 } @else {
-  Empty
+  <div class="flex flex-col items-center justify-center py-16 gap-3 text-color-secondary">
+    <i class="pi pi-inbox text-5xl! opacity-40"></i>
+    <span class="text-lg text-center">{{ 'LISTINGS.ITEM.EMPTY' | translate }}</span>
+  </div>
 }
 
 <p-popover

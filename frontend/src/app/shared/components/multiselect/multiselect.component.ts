@@ -15,6 +15,9 @@ import { BaseSelect } from 'src/app/core';
   selector: 'rx-multiselect',
   imports: [MultiSelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule, TranslatePipe],
   templateUrl: 'multiselect.component.html',
+  host: {
+    class: 'p-inputwrapper',
+  },
   styles: `
     :host {
       display: contents;

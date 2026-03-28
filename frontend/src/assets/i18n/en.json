@@ -380,6 +380,9 @@
       "AVAILABLE": "Available",
       "UNAVAILABLE": "Unavailable"
     },
+    "ITEM": {
+      "EMPTY": "There are no property objects in this listing"
+    },
     "NOTIFICATION": {
       "CREATED": "Listing created successfully",
       "CREATE_FAILED": "Failed to create listing",
@@ -492,5 +495,8 @@
     "MAP_DESC": "View properties on a map, search by address",
     "CONTACTS_TITLE": "Owner Contacts",
     "CONTACTS_DESC": "Keep property owner contacts at hand"
+  },
+  "SELECT": {
+    "EMPTY": "List is empty"
   }
 }

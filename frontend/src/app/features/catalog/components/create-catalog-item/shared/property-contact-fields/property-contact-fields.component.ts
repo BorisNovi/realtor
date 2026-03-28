@@ -52,6 +52,7 @@ export class PropertyContactFieldsComponent {
       modal: true,
       closable: true,
       dismissableMask: true,
+      draggable: false,
       focusOnShow: false,
       breakpoints: { '640px': '90vw' },
     });
