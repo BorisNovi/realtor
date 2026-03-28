@@ -1,31 +1,37 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { RxSelectItem, SelectComponent } from '@shared/components';
 import { IFetchOptions, IListing } from '@shared/interfaces';
 import { ButtonModule } from 'primeng/button';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogConfig, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { Tooltip } from 'primeng/tooltip';
 import { first } from 'rxjs';
 import { ListingsService } from 'src/app/core/listings';
 import { ListingsState, UpdateListing } from 'src/app/core/listings/state';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Tooltip } from 'primeng/tooltip';
+import { CreateListingComponent } from 'src/app/features/listings/components/create-listing/create-listing.component';
 
 @Component({
-  imports: [ButtonModule, SelectComponent, Tooltip, TranslatePipe],
+  imports: [ButtonModule, SelectComponent, Tooltip, TranslatePipe, DynamicDialogModule],
+  providers: [DialogService],
   templateUrl: 'add-to-listing.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddToListingComponent {
-  readonly #ref = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
   readonly #store = inject(Store);
   readonly #listingsService = inject(ListingsService);
+  readonly #dialogService = inject(DialogService);
+  readonly #translateService = inject(TranslateService);
+
+  protected readonly select = viewChild.required(SelectComponent);
 
   readonly #listingLoading = this.#store.selectSignal(ListingsState.loading);
 
   readonly listingsAlreadyHasObject = signal<number[]>([]);
 
-  disableListingWhithCurrentObject = (item: RxSelectItem) => item.value.propertyObjectIds.includes(this.config.data ?? -1);
+  readonly disableListingWhithCurrentObject = (item: RxSelectItem) =>
+    item.value.propertyObjectIds.includes(this.config.data ?? -1);
   readonly listingsFetchMethod = (options: IFetchOptions) => this.#listingsService.fetchListings(options);
   readonly lisitingsMapToSelect = (item: IListing) => ({
     label: `${item.name}`,
@@ -46,7 +52,18 @@ export class AddToListingComponent {
       .subscribe(() => this.listingsAlreadyHasObject.update(arr => (arr = [...arr, listing.id])));
   }
 
-  onCancel(): void {
-    this.#ref.close();
+  openCreateListingDialog(): void {
+    const ref = this.#dialogService.open(CreateListingComponent, {
+      header: this.#translateService.instant('LISTINGS.DIALOG.ADD'),
+      width: '620px',
+      modal: true,
+      closable: true,
+      dismissableMask: true,
+      draggable: false,
+      contentStyle: { overflow: 'auto' },
+      breakpoints: { '640px': '90vw' },
+    });
+
+    ref?.onClose.pipe(first()).subscribe(() => this.select().reload());
   }
 }

@@ -229,14 +229,14 @@ export class CatalogMapComponent implements AfterViewInit {
 
   onDrawerClose(): void {
     this.drawerOpen.set(false);
-    this.#location.replaceState('/catalog/map');
+    this.#location.replaceState('app/catalog/map');
   }
 
   onMarkerClick(item: ICatalogItem): void {
     this.selectedItem.set(item);
     this.drawerOpen.set(true);
     if (item.id) {
-      this.#location.replaceState(`/catalog/map/${item.id}`);
+      this.#location.replaceState(`app/catalog/map/${item.id}`);
       this.#loadDetailedItem(item.id);
     }
   }
@@ -269,6 +269,7 @@ export class CatalogMapComponent implements AfterViewInit {
       width: '370px',
       height: '300px',
       dismissableMask: true,
+      draggable: false,
       modal: true,
       closable: true,
       focusOnShow: false,
@@ -283,6 +284,7 @@ export class CatalogMapComponent implements AfterViewInit {
       modal: true,
       closable: true,
       dismissableMask: true,
+      draggable: false,
       contentStyle: { overflow: 'auto' },
       focusOnShow: false,
       breakpoints: {

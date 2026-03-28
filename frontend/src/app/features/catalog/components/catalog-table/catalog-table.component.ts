@@ -220,6 +220,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
       modal: true,
       closable: true,
       focusOnShow: false,
+      draggable: false,
     });
   }
 
@@ -231,6 +232,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
       modal: true,
       closable: true,
       dismissableMask: true,
+      draggable: false,
       focusOnShow: false,
       breakpoints: {
         '960px': '75vw',

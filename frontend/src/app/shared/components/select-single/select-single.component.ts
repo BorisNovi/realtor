@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, input, model, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, input, model } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IFetchOptions, ITableData } from '@shared/interfaces';
@@ -6,16 +6,18 @@ import { SelectItem } from 'primeng/api';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputText } from 'primeng/inputtext';
-import { Select, SelectModule } from 'primeng/select';
+import { SelectModule } from 'primeng/select';
 import { Observable, skip } from 'rxjs';
 import { BaseSelect } from 'src/app/core';
-import { SelectComponent } from '../select/select.component';
 
 @Component({
   selector: 'rx-select-single',
   standalone: true,
   imports: [SelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule],
   templateUrl: 'select-single.component.html',
+  host: {
+    class: 'p-inputwrapper',
+  },
   styles: `
     :host {
       display: contents;

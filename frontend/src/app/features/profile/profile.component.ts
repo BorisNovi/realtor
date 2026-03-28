@@ -158,6 +158,7 @@ export class ProfileComponent {
       modal: true,
       closable: true,
       dismissableMask: true,
+      draggable: false,
       contentStyle: { overflow: 'auto' },
       breakpoints: {
         '640px': '90vw',
@@ -172,6 +173,7 @@ export class ProfileComponent {
       modal: true,
       closable: true,
       dismissableMask: true,
+      draggable: false,
       contentStyle: { overflow: 'auto' },
       breakpoints: {
         '640px': '90vw',
