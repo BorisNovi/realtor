@@ -156,7 +156,7 @@
           @let isCountryEditing = fieldEdititng() == FieldEditing.Country;
           <rx-input-wrapper [control]="userForm.get('country')!" [label]="'PROFILE.COUNTRY' | translate" id="country">
             <p-inputgroup>
-              <!-- TODO: сделать disabled и работу с p-inputgroup -->
+              <!-- TODO: сделать disabled -->
               <rx-select-single
                 [fetcher]="countryFetchMethod"
                 [mapToSelect]="countryMapToSelect"

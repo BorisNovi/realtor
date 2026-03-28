@@ -36,7 +36,7 @@ export class AvatarComponent implements ControlValueAccessor {
 
   readonly fileInput = viewChild<ElementRef<HTMLInputElement>>('fileInput');
 
-  readonly maxFileSize = input<number>(1000000);
+  readonly maxFileSize = input<number>(10_485_760); // 10 MB
   readonly readonly = input(false, { transform: booleanAttribute });
 
   readonly imageUrl = signal<string | null>(null);
