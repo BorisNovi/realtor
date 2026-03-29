@@ -18,7 +18,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { startWith, tap } from 'rxjs';
 import { CreatePropertyObject, UpdatePropertyObject } from 'src/app/core';
-import { AddressFormComponent } from '../address-form/address-form.component';
+import { AddressFormComponent } from './shared/address-form/address-form.component';
 import { PropertyBasicFieldsComponent } from './shared/property-basic-fields/property-basic-fields.component';
 import { PropertyContactFieldsComponent } from './shared/property-contact-fields/property-contact-fields.component';
 import { PropertyPhotosFieldsComponent } from './shared/property-photos-fields/property-photos-fields.component';

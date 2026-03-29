@@ -14,6 +14,17 @@
       [placeholder]="'FORM.PLACEHOLDERS.COUNTRY' | translate"
       class="w-full"
     />
+
+    <!-- TODO: как только бэк начнет отдавать страну в объекте - раскомментировать и пересмотерть. -->
+    <!-- <rx-select-single
+      id="address-country"
+      [fetcher]="countryFetchMethod"
+      [mapToSelect]="countryMapToSelect"
+      [valueMapper]="countryValueMapper"
+      [placeholder]="'FORM.PLACEHOLDERS.COUNTRY' | translate"
+      formControlName="country"
+      withSearch
+    /> -->
   </rx-input-wrapper>
 
   <rx-input-wrapper

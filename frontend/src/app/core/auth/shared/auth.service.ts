@@ -14,11 +14,11 @@ export class AuthService {
 
   readonly #fingerprint$ = defer(() => this.#fingerprintService.getFingerprint()).pipe(shareReplay(1));
 
-  checkSession(): Observable<IUser> {
+  checkSession(): Observable<{ user: IUser }> {
     return this.#fingerprint$.pipe(
       switchMap(fingerprint => {
         const body = { fingerprint };
-        return this.#http.post<IUser>(`${environment.apiUrl}/auth/sessions/check`, body);
+        return this.#http.post<{ user: IUser }>(`${environment.apiUrl}/auth/sessions/check`, body);
       }),
     );
   }

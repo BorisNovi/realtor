@@ -15,13 +15,16 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { catchError, of } from 'rxjs';
-import { FileUploadService, Logout, Terminate } from 'src/app/core';
+import { CountryService, FileUploadService, Logout, Terminate } from 'src/app/core';
 import { EditProfile, ProfileState } from 'src/app/core/profile/state';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { DeleteAccountComponent } from './components/delete-account/delete-account.component';
 import { WorldPhoneMasksDirective } from '@shared/directives';
-import { clearPhone } from '@shared/utils';
 import { ProfileService } from 'src/app/core/profile/shared';
+import { mapEnumToOptions } from '@shared/utils';
+import { Currency } from '@shared/enums';
+import { CURRENCY_SYMBOLS } from '@shared/constants';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'rx-profile',
@@ -42,6 +45,7 @@ import { ProfileService } from 'src/app/core/profile/shared';
     DatePipe,
     WorldPhoneMasksDirective,
     SelectSingleComponent,
+    SelectModule,
   ],
   providers: [DialogService],
   templateUrl: './profile.component.html',
@@ -50,6 +54,7 @@ import { ProfileService } from 'src/app/core/profile/shared';
 export class ProfileComponent {
   readonly #store = inject(Store);
   readonly #profileService = inject(ProfileService);
+  readonly #countryService = inject(CountryService);
   readonly #destroyRef = inject(DestroyRef);
   readonly #fileUploadService = inject(FileUploadService);
   readonly #fb = inject(FormBuilder);
@@ -60,13 +65,13 @@ export class ProfileComponent {
 
   readonly user = this.#store.selectSignal(ProfileState.user);
 
-  readonly countryFetchMethod = (options: IFetchOptions) => this.#profileService.fetchCountries(options);
+  readonly countryFetchMethod = (options: IFetchOptions) => this.#countryService.fetchCountries(options);
   readonly countryMapToSelect = (item: ICountry) => ({
-    label: `${item?.name}`,
+    label: this.#translateService.instant(`COUNTRIES.${item?.name}`),
     value: item,
     id: item.id,
   });
-  readonly countryValueMapper = (country: ICountry) => ({ id: country.id });
+  readonly countryValueMapper = ({ name }: ICountry) => ({ name });
 
   readonly FieldEditing = FieldEditing;
   readonly fieldEdititng = signal<FieldEditing | false>(false);
@@ -90,8 +95,10 @@ export class ProfileComponent {
     lastName: [this.user()?.lastName],
     phone: [this.user()?.phone],
     country: [this.user()?.country],
+    currency: [this.user()?.currency],
   });
 
+  readonly currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
   onUpload(event: FileUploadHandlerEvent): void {
     if (event && Array.isArray(event.files)) {
       const files: File[] = event.files;
@@ -125,7 +132,7 @@ export class ProfileComponent {
     const dirtyPatch: Partial<IUser> = {};
 
     for (const [key, control] of Object.entries(this.userForm.controls))
-      if (control.dirty) (dirtyPatch as any)[key] = key === 'phone' ? clearPhone(control.value ?? '') : control.value;
+      if (control.dirty) (dirtyPatch as any)[key] = control.value;
 
     if (Object.keys(dirtyPatch).length === 0) return;
 
@@ -190,4 +197,5 @@ enum FieldEditing {
   LastName = 'lastName',
   Phone = 'phone',
   Country = 'country',
+  Currency = 'currency',
 }
