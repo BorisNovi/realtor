@@ -31,8 +31,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     phone = models.CharField(max_length=20, blank=True)
-    default_country = models.CharField(max_length=255, blank=True, null=True)
-    default_currency = models.CharField(max_length=255, blank=True, null=True)
+    default_country = models.CharField(max_length=255, blank=True, null=True, default='null')
+    default_currency = models.CharField(max_length=255, blank=True, null=True, default='null')
     
     
     company_name = models.CharField(max_length=255, blank=True)
