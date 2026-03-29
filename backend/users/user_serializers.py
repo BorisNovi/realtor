@@ -27,6 +27,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['date_added', 'role']
 
+        # TODO: дублируется с user_response!!!!!!!!!
+
     def validate_phone(self, value):
         if not value:
             return value
@@ -62,6 +64,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True, required=True)
     new_password = serializers.CharField(write_only=True, required=True)
@@ -71,10 +74,16 @@ class ChangePasswordSerializer(serializers.Serializer):
         user = self.context['request'].user
 
         if not user.check_password(attrs['old_password']):
-            raise serializers.ValidationError({'INVALID_OLD_PASSWORD'})
+            raise serializers.ValidationError({
+                "error": "INVALID_OLD_PASSWORD",
+                "message": "Old password is incorrect"
+            })
 
         if attrs['new_password'] != attrs['new_password_confirmation']:
-            raise serializers.ValidationError({'PASSWORDS_DO_NOT_MATCH'})
+            raise serializers.ValidationError({
+                "error": "PASSWORDS_DO_NOT_MATCH",
+                "message": "New passwords do not match"
+            })
 
         validate_password(attrs['new_password'], user)
         return attrs

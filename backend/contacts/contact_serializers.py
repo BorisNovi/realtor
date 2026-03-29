@@ -24,27 +24,47 @@ class ContactSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contact
-        fields = ['id', 'dateAdded', 'name', 'phone', 'additional_phone', 'comment', 'user']
+        fields = [
+            'id', 
+            'dateAdded', 
+            'name', 
+            'phone', 
+            'additional_phone', 
+            'comment', 
+            'user'
+        ]
         read_only_fields = ['id', 'dateAdded', 'user']
 
     def validate_name(self, value):
         if len(value) > 50:
-            raise serializers.ValidationError("Максимум 50 символов.")
+            raise serializers.ValidationError({
+                "error": "NAME_TOO_LONG",
+                "message": "Name is too long. Maximum allowed length is 50 characters."
+            })
         return value
 
     def validate_phone(self, value):
         if not re.fullmatch(r'\d+', value):
-            raise serializers.ValidationError("Телефон должен содержать только цифры.")
+            raise serializers.ValidationError({
+                "error": "INVALID_PHONE",
+                "message": "Phone number must contain only digits."
+            })
         return value
 
     def validate_additional_phone(self, value):
         if value and not re.fullmatch(r'\d+', value):
-            raise serializers.ValidationError("Телефон должен содержать только цифры.")
+            raise serializers.ValidationError({
+                "error": "INVALID_ADDITIONAL_PHONE",
+                "message": "Additional phone number must contain only digits."
+            })
         return value
 
     def validate_comment(self, value):
         if value and len(value) > 200:
-            raise serializers.ValidationError("Максимум 200 символов.")
+            raise serializers.ValidationError({
+                "error": "COMMENT_TOO_LONG",
+                "message": "Comment is too long. Maximum allowed length is 200 characters."
+            })
         return value
 
     def validate(self, attrs):
@@ -64,10 +84,14 @@ class ContactSerializer(serializers.ModelSerializer):
             existing = qs.first()
             
             if not instance: 
-                raise serializers.ValidationError({"error": "CONTACT_ALREADY_EXISTS"})
+                raise serializers.ValidationError({
+                "error": "PHONE_ALREADY_EXISTS",
+                "message": "Contact with this phone number already exists."
+            })
             
             raise serializers.ValidationError({
-                "error": "PHONE_ALREADY_USED_BY_ANOTHER_CONTACT"
+                "error": "PHONE_ALREADY_USED_BY_ANOTHER_CONTACT",
+                "message": "Contact with this phone number is already used by another contact."
             })
 
         return attrs
@@ -83,9 +107,10 @@ class ContactSerializer(serializers.ModelSerializer):
         # и если он уже используется другим контактом, выбрасываем ошибку 
         if new_phone != instance.phone:
             if Contact.objects.filter(phone=new_phone).exclude(pk=instance.pk).exists():
-                raise serializers.ValidationError(
-                    {"error": "PHONE_ALREADY_USED_BY_ANOTHER_CONTACT"}
-                )
+                raise serializers.ValidationError({
+                    "error": "PHONE_ALREADY_EXISTS",
+                    "message": "Contact with this phone number already exists."
+                })
 
         # Обновляем поля, если они переданы, иначе оставляем старые
         instance.name = validated_data.get('name', instance.name)
