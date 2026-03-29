@@ -8,8 +8,21 @@ def check_session(request):
         "user": {
             "id": user.id,
             "email": user.email,
+            "username": user.username,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "phone": user.phone,
+            "default_country": user.default_country,
+            "default_currency": user.default_currency,
+            "company_name": user.company_name,
+            "company_logo": user.company_logo,
+            "marketing_consent1": user.marketing_consent1,
+            "marketing_consent2": user.marketing_consent2,
             "role": user.role,
+            "is_active": user.is_active,
+            "is_staff": user.is_staff,
+            "banned_at": user.banned_at.isoformat() if user.banned_at else None,
+            "last_logout_at": user.last_logout_at.isoformat() if user.last_logout_at else None,
             "date_added": user.date_added.isoformat(),
-            "banned_at": user.banned_at.isoformat() if user.banned_at else None
         }
     })

@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import APIView, api_view
 from django.contrib.auth import get_user_model
-
 from catalog.catalog_models import Land, Property, Room, Flat, Office, House
 from .user_serializers import ProfileSerializer, ChangePasswordSerializer
 from users.import_csv import import_properties_csv

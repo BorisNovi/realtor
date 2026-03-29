@@ -51,9 +51,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         return value
             
-
-      
-
     def update(self, instance, validated_data):
         logo = validated_data.get('company_logo', None)
         if logo and logo != instance.company_logo:
