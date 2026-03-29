@@ -18,9 +18,15 @@ class SigninSerializer(serializers.Serializer):
 
         user = authenticate(username=email, password=password)
         if not user:
-            raise serializers.ValidationError("Неверный email или пароль")
+            raise serializers.ValidationError({
+                "error": "INVALID_CREDENTIALS",
+                "message": "Invalid email or password"
+            })
         if not user.is_active:
-            raise serializers.ValidationError("Аккаунт не активирован")
+            raise serializers.ValidationError({
+                "error": "INACTIVE_ACCOUNT",
+                "message": "Account is inactive"
+            })
 
         refresh = RefreshToken.for_user(user)
         attrs['access'] = str(refresh.access_token)

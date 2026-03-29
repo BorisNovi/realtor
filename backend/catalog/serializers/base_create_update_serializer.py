@@ -26,17 +26,28 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = None
         fields = [
-            'property_type', 'name', 'status', 'photos', 'address', 'zoning_type',
-            'price', 'area','contact', 'comment','date_added', 'user',
+            'property_type', 
+            'name', 
+            'status', 
+            'photos', 
+            'address', 
+            'zoning_type',
+            'price', 
+            'area',
+            'contact', 
+            'comment',
+            'date_added', 
+            'user',
         ]
         read_only_fields = ['date_added', 'user']
 
     # ВАЛИДАЦИЯ КОЛИЧЕСТВА ФОТО
     def validate_photos(self, value):
         if len(value) > MAX_FILES:
-            raise serializers.ValidationError(
-                f"TOO_MANY_FILES. MAX_ALLOWED_IS_{MAX_FILES}."
-            )
+            raise serializers.ValidationError({
+                "error": "TOO_MANY_FILES",
+                "message": f"Too many files. Maximum allowed is {MAX_FILES}."
+            })
         return value
     
     @transaction.atomic
