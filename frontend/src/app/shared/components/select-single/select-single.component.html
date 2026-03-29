@@ -9,9 +9,11 @@
   [loading]="loading()"
   (onShow)="onShow()"
   [placeholder]="placeholder()"
+  [disabled]="disabled()"
   [filter]="true"
   [emptyMessage]="emptyMessage()"
   [showClear]="true"
+  class="flex items-center"
 >
   @if (withSearch()) {
     <ng-template #filter>

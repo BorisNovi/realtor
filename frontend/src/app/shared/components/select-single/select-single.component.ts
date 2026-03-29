@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, input, model } from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, forwardRef, input, model } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IFetchOptions, ITableData } from '@shared/interfaces';
@@ -37,6 +37,7 @@ export class SelectSingleComponent extends BaseSelect {
   readonly mapToSelect = input.required<(item: any) => SelectItem>();
   readonly valueMapper = input<(item: any) => any>(v => v);
   readonly placeholder = input('Select item');
+  readonly disabled = input(false, { transform: booleanAttribute });
   readonly emptyMessage = input('');
   readonly withSearch = input(false, { transform: v => v === '' || !!v });
 

@@ -156,12 +156,13 @@
           @let isCountryEditing = fieldEdititng() == FieldEditing.Country;
           <rx-input-wrapper [control]="userForm.get('country')!" [label]="'PROFILE.COUNTRY' | translate" id="country">
             <p-inputgroup>
-              <!-- TODO: сделать disabled -->
               <rx-select-single
+                id="country"
                 [fetcher]="countryFetchMethod"
                 [mapToSelect]="countryMapToSelect"
                 [valueMapper]="countryValueMapper"
                 [disabled]="!isCountryEditing"
+                placeholder=""
                 formControlName="country"
                 withSearch
               />
@@ -181,6 +182,41 @@
                   [icon]="isCountryEditing ? 'pi pi-times' : 'pi pi-pencil'"
                   [severity]="isCountryEditing ? 'danger' : 'secondary'"
                   (onClick)="editProfile(FieldEditing.Country)"
+                />
+              </p-inputgroup-addon>
+            </p-inputgroup>
+          </rx-input-wrapper>
+
+          @let isCurrencyEditing = fieldEdititng() == FieldEditing.Currency;
+          <rx-input-wrapper [control]="userForm.get('currency')!" [label]="'PROFILE.CURRENCY' | translate" id="currency">
+            <p-inputgroup>
+              <p-select
+                id="currency"
+                formControlName="currency"
+                [options]="currencies"
+                [filter]="true"
+                filterBy="value"
+                optionLabel="label"
+                optionValue="value"
+                [disabled]="!isCurrencyEditing"
+                class="w-full"
+              />
+
+              @if (isCurrencyEditing) {
+                <p-inputgroup-addon>
+                  <p-button
+                    icon="pi pi-save"
+                    severity="primary"
+                    (onClick)="fieldEdititng.set(false); updateProfile()"
+                    [disabled]="!userForm.get('currency')?.dirty"
+                  />
+                </p-inputgroup-addon>
+              }
+              <p-inputgroup-addon>
+                <p-button
+                  [icon]="isCurrencyEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isCurrencyEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.Currency)"
                 />
               </p-inputgroup-addon>
             </p-inputgroup>

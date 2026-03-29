@@ -6,7 +6,6 @@ import { Store } from '@ngxs/store';
 import { InputWrapperComponent } from '@shared/components';
 import { WorldPhoneMasksDirective } from '@shared/directives';
 import { IContact } from '@shared/interfaces';
-import { clearPhone } from '@shared/utils';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -81,10 +80,8 @@ export class CreateContactComponent implements OnInit {
       ? {
           ...this.config.data,
           ...formData,
-          phone: clearPhone(formData.phone),
-          additionalPhone: clearPhone(formData.additionalPhone),
         }
-      : { ...formData, phone: clearPhone(formData.phone), additionalPhone: clearPhone(formData.additionalPhone) };
+      : { ...formData };
 
     const action = hasId ? new UpdateContact(payload) : new CreateContact(payload);
 

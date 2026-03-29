@@ -11,10 +11,11 @@
   [loading]="loading()"
   (onPanelShow)="onShow()"
   [placeholder]="placeholder()"
+  [disabled]="disabled()"
   [filter]="false"
   [emptyMessage]="emptyMessage()"
   display="chip"
-  class="w-full"
+  class="flex items-center"
 >
   @if (withSearch()) {
     <ng-template #filter>
