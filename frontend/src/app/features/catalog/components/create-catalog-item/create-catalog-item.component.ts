@@ -17,7 +17,7 @@ import { DividerModule } from 'primeng/divider';
 import { TextareaModule } from 'primeng/textarea';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { startWith, tap } from 'rxjs';
-import { CreatePropertyObject, UpdatePropertyObject } from 'src/app/core';
+import { AuthState, CreatePropertyObject, UpdatePropertyObject } from 'src/app/core';
 import { AddressFormComponent } from './shared/address-form/address-form.component';
 import { PropertyBasicFieldsComponent } from './shared/property-basic-fields/property-basic-fields.component';
 import { PropertyContactFieldsComponent } from './shared/property-contact-fields/property-contact-fields.component';
@@ -53,6 +53,8 @@ export class CreateCatalogItemComponent implements OnInit {
   readonly #store = inject(Store);
   readonly #destroyRef = inject(DestroyRef);
   readonly config = inject(DynamicDialogConfig);
+
+  readonly #user = this.#store.selectSignal(AuthState.user);
 
   form!: FormGroup;
 
@@ -90,7 +92,7 @@ export class CreateCatalogItemComponent implements OnInit {
       address: this.#fb.group({}),
       area: [data?.area ?? null, [Validators.required, Validators.min(1)]],
       price: this.#fb.group({
-        currency: [data?.price?.currency ?? null, Validators.required],
+        currency: [data?.price?.currency ?? this.#user()?.currency ?? null, Validators.required],
         value: [data?.price?.value ?? null, [Validators.required, Validators.min(0)]],
       }),
       contact: [data?.contact ?? null],
