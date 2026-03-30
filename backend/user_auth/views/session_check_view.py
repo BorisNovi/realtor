@@ -1,9 +1,18 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from countries.models import Country
 
 @api_view(['POST'])
 def check_session(request):
     user = request.user
+    
+    country = Country.objects.filter(code=user.country).first()
+    country_data = {
+        "id": country.id,
+        "name": country.code,
+        "position": [country.capital_lng, country.capital_lat],
+    } if country else None
+
     return Response({
         "user": {
             "id": user.id,
@@ -12,8 +21,8 @@ def check_session(request):
             "first_name": user.first_name,
             "last_name": user.last_name,
             "phone": user.phone,
-            "default_country": user.default_country,
-            "default_currency": user.default_currency,
+            "country": country_data,
+            "currency": user.currency,
             "company_name": user.company_name,
             "company_logo": user.company_logo,
             "marketing_consent1": user.marketing_consent1,
