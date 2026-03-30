@@ -7,12 +7,12 @@ from realtor.helpers import build_prefix_tsquery
 from catalog.utils.filters import apply_catalog_filters
 from catalog.utils.pagination import FrontendPagination
 from .models import Country
-from .serializers import CountrySerializer
+from .serializers import CountryInputSerializer, CountryReadOnlySerializer, CountrySerializer
 
 
 class CountryViewSet(ReadOnlyModelViewSet):
     queryset = Country.objects.filter()
-    serializer_class = CountrySerializer
+    serializer_class = CountryReadOnlySerializer
     lookup_field = "code" # На случай прямого запроса страны из адресной строки
     pagination_class = FrontendPagination
 
