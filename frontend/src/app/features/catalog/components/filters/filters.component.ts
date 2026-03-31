@@ -88,7 +88,7 @@ export class FiltersComponent implements OnInit {
         from: [filters?.dateAdded?.from || null],
         to: [filters?.dateAdded?.to || null],
       }),
-      hasPhotos: [filters?.hasPhotos || false],
+      hasPhotos: [filters?.hasPhotos || null],
       status: [filters?.status || null],
       propertyType: [filters?.propertyType || []],
       zoningType: [filters?.zoningType || []],
