@@ -44,6 +44,12 @@
       <b>{{ 'CATALOG.FILTERS.PROPERTIES' | translate }}</b>
     </p-divider>
 
+    <!-- Has photos -->
+    <div class="flex items-center gap-2">
+      <p-checkbox formControlName="hasPhotos" [trueValue]="true" [falseValue]="null" [binary]="true" inputId="hasPhotos" />
+      <label for="hasPhotos"> {{ 'CATALOG.FILTERS.HAS_PHOTOS' | translate }} </label>
+    </div>
+  
     <!-- Status (Select with Severity) -->
     <div>
       <label for="status" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.STATUS' | translate }}</label>

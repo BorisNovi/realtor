@@ -301,6 +301,7 @@
     "FILTERS": {
       "LABEL": "Filters",
       "RESET": "Reset",
+      "HAS_PHOTOS": "Only with photos",
       "DATE": {
         "LABEL": "Date",
         "FROM": "Date from",
