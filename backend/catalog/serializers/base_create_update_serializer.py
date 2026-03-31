@@ -60,6 +60,10 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
         price_data = validated_data.pop('price')
         address_data = validated_data.pop('address', {})
 
+        # Оставляем только поля, которые есть у этой модели
+        model_fields = {f.name for f in self.Meta.model._meta.get_fields()}
+        validated_data = {k: v for k, v in validated_data.items() if k in model_fields}
+
         # создаём основной объект
         instance = self.Meta.model.objects.create(
             address=address_data,
@@ -77,6 +81,7 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
         print(Fore.GREEN + "=== Property created successfully ===" + Fore.RESET)
         print(f"Created instance: {instance}")
         return instance
+
 
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -97,9 +102,10 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
             instance.price_value = price_data.get('value', instance.price_value)
             instance.price_currency = price_data.get('currency', instance.price_currency)
 
-        # Обновляем остальные поля
+
+        model_fields = {f.name for f in self.Meta.model._meta.get_fields()}
         for attr, value in validated_data.items():
-            if attr != 'photos':  # фото обработаем отдельно
+            if attr != 'photos' and attr in model_fields: 
                 setattr(instance, attr, value)
 
         instance.save()
