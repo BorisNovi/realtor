@@ -53,36 +53,39 @@ def flatten_specifics(specifics: dict | None) -> dict:
 
 def build_specifics(obj):
     return {
-        "rooms": obj.rooms,
-        "floor": {"current": obj.floor_current, "full": obj.floor_full},
-        "kitchen": obj.kitchen_type,
-        "heating": obj.heating,
-        "furnished": obj.furnished,
-        "renovation": obj.renovation,
+        "rooms": getattr(obj, "rooms", None),
+        "floor": {
+            "current": getattr(obj, "floor_current", None),
+            "full": getattr(obj, "floor_full", None)
+        },
+        "kitchen": getattr(obj, "kitchen_type", None),
+        "heating": getattr(obj, "heating", None),
+        "furnished": getattr(obj, "furnished", None),
+        "renovation": getattr(obj, "renovation", None),
         "options": {
             "sharedFacilities": {
-                "kitchen": obj.shared_kitchen,
-                "bathroom": obj.shared_bathroom
+                "kitchen": getattr(obj, "shared_kitchen", False),
+                "bathroom": getattr(obj, "shared_bathroom", False)
             },
             "utilities": {
-                "electricity": obj.electricity,
-                "waterSupply": obj.water_supply,
-                "naturalGas": obj.natural_gas,
-                "sewerage": obj.sewerage,
-                "internet": obj.internet
+                "electricity": getattr(obj, "electricity", False),
+                "waterSupply": getattr(obj, "water_supply", False),
+                "naturalGas": getattr(obj, "natural_gas", False),
+                "sewerage": getattr(obj, "sewerage", False),
+                "internet": getattr(obj, "internet", False)
             },
             "other": {
-                "parking": obj.parking,
-                "bath": obj.bath,
-                "shower": obj.shower,
-                "airConditioning": obj.air_conditioning,
-                "fireplace": obj.fireplace,
-                "beautifulView": obj.beautiful_view,
-                "newBuilding": obj.new_building,
-                "elevator": obj.elevator,
-                "balcony": obj.balcony,
-                "garden": obj.garden,
-                "garage": obj.garage
+                "parking": getattr(obj, "parking", False),
+                "bath": getattr(obj, "bath", False),
+                "shower": getattr(obj, "shower", False),
+                "airConditioning": getattr(obj, "air_conditioning", False),
+                "fireplace": getattr(obj, "fireplace", False),
+                "beautifulView": getattr(obj, "beautiful_view", False),
+                "newBuilding": getattr(obj, "new_building", False),
+                "elevator": getattr(obj, "elevator", False),
+                "balcony": getattr(obj, "balcony", False),
+                "garden": getattr(obj, "garden", False),
+                "garage": getattr(obj, "garage", False)
             }
         }
     }
