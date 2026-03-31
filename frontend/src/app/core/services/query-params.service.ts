@@ -166,6 +166,10 @@ export class QueryParamsService {
           console.error('JSON parsing failed!', e);
           finalValue = value;
         }
+      } else if (value === 'true') {
+        finalValue = true;
+      } else if (value === 'false') {
+        finalValue = false;
       } else if (typeof value === 'string' && /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*Z/.test(value)) {
         // Handle dates (e.g., '2023-01-01T00:00:00.000Z' -> Date)
         const date = new Date(value);
