@@ -3,10 +3,11 @@ from django.http import StreamingHttpResponse
 from catalog.catalog_models import Property
 from realtor.mixins import filter_by_user
 from users.csv_headers import HEADERS
+from polymorphic.query import PolymorphicQuerySet
 
 logger = logging.getLogger(__name__)
 
-# Т.к. сохранять файл мы никуда не планируем, надо создать псевдо-буфер, 
+# Т.к. сохранять файл мы никуда не планируем (используем стриминг), надо создать псевдо-буфер, 
 # который будет возвращать строку напрямую, а не сохранять её в память.
 class Echo:
     """Псевдо-буфер для csv.writer — возвращает строку напрямую."""
@@ -26,6 +27,14 @@ def property_to_row(prop: Property) -> list:
     lat = position[1] if len(position) > 1 else ""
 
     c = prop.contact
+
+    # Приводим к реальному дочернему типу — тогда getattr найдёт его личные поля
+    real = prop.get_real_instance()
+
+    def get(field):
+        val = getattr(real, field, "")
+        # None → пустая строка, False/True булевых оставляем как есть
+        return "" if val is None else val
 
     return [
         prop.id,
@@ -50,12 +59,46 @@ def property_to_row(prop: Property) -> list:
         c.comment if c else "",
         prop.comment or "",
         prop.date_added.strftime("%Y-%m-%d %H:%M:%S") if prop.date_added else "",
+        # Specifics
+        get("rooms"),
+        get("floor_current"),
+        get("floor_full"),
+        get("kitchen_type"),
+        get("heating"),
+        get("furnished"),
+        get("renovation"),
+        # Shared facilities
+        get("shared_kitchen"),
+        get("shared_bathroom"),
+        # Utilities
+        get("electricity"),
+        get("water_supply"),
+        get("natural_gas"),
+        get("sewerage"),
+        get("internet"),
+        # Options
+        get("bath"),
+        get("shower"),
+        get("air_conditioning"),
+        get("fireplace"),
+        get("beautiful_view"),
+        get("new_building"),
+        get("elevator"),
+        # Other options
+        get("parking"),
+        get("balcony"),
+        get("garden"),
+        get("garage"),
     ]
 
 
 # Строим queryset с нужными связями.
 def _build_queryset(user):
-    qs = Property.objects.filter(is_deleted=False).select_related("contact")
+    qs = (
+        Property.objects
+        .filter(is_deleted=False)
+        .select_related("contact", "polymorphic_ctype")
+    )
     return filter_by_user(qs, user)
 
 

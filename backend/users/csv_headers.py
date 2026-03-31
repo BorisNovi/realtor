@@ -25,6 +25,41 @@ HEADERS = {
     
     "comment": {"csv": "Comment", "required": False},
     "date_added": {"csv": "Date Added", "required": False},
+    
+    # Specifics (поля со всех дочерних типов)
+    "rooms": {"csv": "Rooms", "required": False},
+    "floor_current": {"csv": "Floor", "required": False},
+    "floor_full": {"csv": "Total Floors", "required": False},
+    "kitchen_type": {"csv": "Kitchen Type", "required": False},
+    "heating": {"csv": "Heating", "required": False},
+    "furnished": {"csv": "Furnished", "required": False},
+    "renovation": {"csv": "Renovation", "required": False},
+
+    # Shared facilities
+    "shared_kitchen": {"csv": "Shared Kitchen", "required": False},
+    "shared_bathroom": {"csv": "Shared Bathroom", "required": False},
+
+    # Utilities
+    "electricity": {"csv": "Electricity", "required": False},
+    "water_supply": {"csv": "Water Supply", "required": False},
+    "natural_gas": {"csv": "Natural Gas", "required": False},
+    "sewerage": {"csv": "Sewerage", "required": False},
+    "internet": {"csv": "Internet", "required": False},
+
+    # Options
+    "bath": {"csv": "Bath", "required": False},
+    "shower": {"csv": "Shower", "required": False},
+    "air_conditioning": {"csv": "Air Conditioning", "required": False},
+    "fireplace": {"csv": "Fireplace", "required": False},
+    "beautiful_view": {"csv": "Beautiful View", "required": False},
+    "new_building": {"csv": "New Building", "required": False},
+    "elevator": {"csv": "Elevator", "required": False},
+
+    # Other options
+    "parking": {"csv": "Parking", "required": False},
+    "balcony": {"csv": "Balcony", "required": False},
+    "garden": {"csv": "Garden", "required": False},
+    "garage": {"csv": "Garage", "required": False},
 }
 
 CSV_TO_FIELD = {v["csv"]: k for k, v in HEADERS.items()}

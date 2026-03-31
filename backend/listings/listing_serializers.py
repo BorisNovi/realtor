@@ -96,9 +96,15 @@ class ListingSerializer(serializers.ModelSerializer):
     # Ручная валидация поля property_object_ids, чтобы убедиться, что все фронт не шлет хуйню
     def validate_property_object_ids(self, ids):
         if not isinstance(ids, list):
-            raise serializers.ValidationError("Должен быть список")
+            raise serializers.ValidationError({
+                "error": "MUST_BE_LIST",
+                "message": "Property object IDs must be a list."
+            })
         if not all(isinstance(i, int) for i in ids):
-            raise serializers.ValidationError("Все элементы должны быть числами")
+            raise serializers.ValidationError({
+                "error": "INVALID_PROPERTY_OBJECT_IDS",
+                "message": "All elements must be integers."
+            })
         return ids
 
 
