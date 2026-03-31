@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { InputWrapperComponent, SelectSingleComponent } from '@shared/components';
 import { IAddress, ICountry, IFetchOptions } from '@shared/interfaces';
@@ -18,18 +18,20 @@ export class AddressFormComponent implements OnInit {
   readonly form = input.required<FormGroup>();
 
   readonly #store = inject(Store);
-  readonly #translateService = inject(TranslateService);
   readonly #countryService = inject(CountryService);
 
   readonly #user = this.#store.selectSignal(AuthState.user);
 
   readonly countryFetchMethod = (options: IFetchOptions) => this.#countryService.fetchCountries(options);
-  readonly countryMapToSelect = (item: ICountry) => ({
-    label: this.#translateService.instant(`COUNTRIES.${item?.name}`),
-    value: item,
-    id: item.id,
-  });
-  readonly countryValueMapper = (country: ICountry) => ({ country: country?.name });
+  readonly countryMapToSelect = (item: ICountry | string) => {
+    const countryKey = typeof item === 'string' ? item : item?.name;
+    return {
+      label: `COUNTRIES.${countryKey}`,
+      value: typeof item === 'string' ? { name: item, id: countryKey } : item,
+      id: typeof item === 'string' ? countryKey : item?.name,
+    };
+  };
+  readonly countryValueMapper = (country: ICountry) => country?.name;
 
   ngOnInit(): void {
     const f = this.form();

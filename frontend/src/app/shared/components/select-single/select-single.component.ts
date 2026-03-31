@@ -1,19 +1,19 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, forwardRef, input, model } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { booleanAttribute, ChangeDetectionStrategy, Component, forwardRef, input, signal } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { IFetchOptions, ITableData } from '@shared/interfaces';
 import { SelectItem } from 'primeng/api';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputText } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
-import { Observable, skip } from 'rxjs';
+import { Observable } from 'rxjs';
 import { BaseSelect } from 'src/app/core';
 
 @Component({
   selector: 'rx-select-single',
   standalone: true,
-  imports: [SelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule],
+  imports: [SelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule, TranslatePipe],
   templateUrl: 'select-single.component.html',
   host: {
     class: 'p-inputwrapper',
@@ -40,19 +40,12 @@ export class SelectSingleComponent extends BaseSelect {
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly emptyMessage = input('');
   readonly withSearch = input(false, { transform: v => v === '' || !!v });
+  readonly translateLabels = input(false, { transform: booleanAttribute });
 
-  readonly selected = model<SelectItem | null>(null);
+  readonly selected = signal<SelectItem | null>(null);
 
   #onChange: (value: any) => void = () => {};
   #onTouched: () => void = () => {};
-
-  constructor() {
-    super();
-
-    toObservable(this.selected)
-      .pipe(skip(1), takeUntilDestroyed())
-      .subscribe(value => this.emitValue(value));
-  }
 
   protected override fetchMethod(options: IFetchOptions) {
     return this.fetcher()(options);
@@ -64,6 +57,13 @@ export class SelectSingleComponent extends BaseSelect {
 
   onShow(): void {
     this.onShowBase();
+  }
+
+  onModelChange(value: any): void {
+    this.selected.set(value);
+    const mapped = value == null ? null : this.valueMapper()(value);
+    this.#onChange(mapped);
+    this.#onTouched();
   }
 
   writeValue(value: any): void {
@@ -80,10 +80,5 @@ export class SelectSingleComponent extends BaseSelect {
 
   registerOnTouched(fn: any): void {
     this.#onTouched = fn;
-  }
-
-  private emitValue(value: any): void {
-    const mapped = this.valueMapper()(value);
-    this.#onChange(mapped);
   }
 }

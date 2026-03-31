@@ -47,7 +47,7 @@
           <span class="truncate text-wrap">
             @let a = pObject?.address;
             <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </span>
-            {{ a?.country }}
+            {{ 'COUNTRIES.' + a?.country | translate }}
             @if (a?.state) {
               , {{ a?.state }}
             }

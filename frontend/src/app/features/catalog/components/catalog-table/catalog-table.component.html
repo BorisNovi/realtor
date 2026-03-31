@@ -100,7 +100,7 @@
             @let a = item.address;
             <div class="text-xs text-nowrap">
               <div class="truncate">
-                {{ a.country }}
+                {{ 'COUNTRIES.' + a.country | translate }}
                 @if (a.state) {
                   , {{ a.state }}
                 }
@@ -274,7 +274,7 @@
           @let a = item.address;
           <div class="text-sm">
             <div class="text-surface-400 text-xs">
-              {{ a.country }}
+              {{ 'COUNTRIES.' + a.country | translate }}
               @if (a.state) {
                 , {{ a.state }}
               }

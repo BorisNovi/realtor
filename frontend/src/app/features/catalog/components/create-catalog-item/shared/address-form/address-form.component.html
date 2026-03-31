@@ -6,17 +6,7 @@
     [label]="'FORM.LABELS.COUNTRY' | translate"
     class="md:col-span-1"
   >
-    <input
-      id="address-country"
-      pInputText
-      type="text"
-      formControlName="country"
-      [placeholder]="'FORM.PLACEHOLDERS.COUNTRY' | translate"
-      class="w-full"
-    />
-
-    <!-- TODO: как только бэк начнет отдавать страну в объекте - раскомментировать и пересмотерть. -->
-    <!-- <rx-select-single
+    <rx-select-single
       id="address-country"
       [fetcher]="countryFetchMethod"
       [mapToSelect]="countryMapToSelect"
@@ -24,7 +14,8 @@
       [placeholder]="'FORM.PLACEHOLDERS.COUNTRY' | translate"
       formControlName="country"
       withSearch
-    /> -->
+      translateLabels
+    />
   </rx-input-wrapper>
 
   <rx-input-wrapper
