@@ -9,6 +9,7 @@ import { Currency, PropertyStatus, PropertyType, ZoningType } from '@shared/enum
 import { ICatalogFilters } from '@shared/interfaces';
 import { countTruthyFields, getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DividerModule } from 'primeng/divider';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -22,6 +23,7 @@ import { CatalogState } from 'src/app/core';
   selector: 'rx-filters',
   imports: [
     CommonModule,
+    CheckboxModule,
     ReactiveFormsModule,
     DatePickerModule,
     DividerModule,
@@ -86,6 +88,7 @@ export class FiltersComponent implements OnInit {
         from: [filters?.dateAdded?.from || null],
         to: [filters?.dateAdded?.to || null],
       }),
+      hasPhotos: [filters?.hasPhotos || false],
       status: [filters?.status || null],
       propertyType: [filters?.propertyType || []],
       zoningType: [filters?.zoningType || []],

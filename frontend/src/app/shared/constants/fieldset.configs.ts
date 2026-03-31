@@ -155,6 +155,7 @@ const landFieldsetConfig: IFieldsetConfig[] = [
       { formControlName: 'beautifulView', label: 'FORM.LABELS.BEAUTIFUL_VIEW' },
       { formControlName: 'garden', label: 'FORM.LABELS.GARDEN' },
       { formControlName: 'garage', label: 'FORM.LABELS.GARAGE' },
+      { formControlName: 'internet', label: 'FORM.LABELS.INTERNET' },
     ],
   },
 ];
