@@ -1,11 +1,15 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, Injector, runInInjectionContext, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { AvatarComponent, ImportExportComponent, InputWrapperComponent, SelectSingleComponent } from '@shared/components';
+import { CURRENCY_SYMBOLS } from '@shared/constants';
+import { WorldPhoneMasksDirective } from '@shared/directives';
+import { Currency } from '@shared/enums';
 import { ICountry, IFetchOptions, IImportExportSection, IUser } from '@shared/interfaces';
+import { mapEnumToOptions } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -14,17 +18,12 @@ import { FluidModule } from 'primeng/fluid';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 import { catchError, of } from 'rxjs';
 import { CountryService, FileUploadService, Logout, Terminate } from 'src/app/core';
 import { EditProfile, ProfileState } from 'src/app/core/profile/state';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { DeleteAccountComponent } from './components/delete-account/delete-account.component';
-import { WorldPhoneMasksDirective } from '@shared/directives';
-import { ProfileService } from 'src/app/core/profile/shared';
-import { mapEnumToOptions } from '@shared/utils';
-import { Currency } from '@shared/enums';
-import { CURRENCY_SYMBOLS } from '@shared/constants';
-import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'rx-profile',
@@ -53,7 +52,6 @@ import { SelectModule } from 'primeng/select';
 })
 export class ProfileComponent {
   readonly #store = inject(Store);
-  readonly #profileService = inject(ProfileService);
   readonly #countryService = inject(CountryService);
   readonly #destroyRef = inject(DestroyRef);
   readonly #fileUploadService = inject(FileUploadService);
@@ -67,11 +65,11 @@ export class ProfileComponent {
 
   readonly countryFetchMethod = (options: IFetchOptions) => this.#countryService.fetchCountries(options);
   readonly countryMapToSelect = (item: ICountry) => ({
-    label: this.#translateService.instant(`COUNTRIES.${item?.name}`),
-    value: item,
-    id: item.id,
+    label: `COUNTRIES.${item.name}`,
+    value: { name: item.name, id: item.name },
+    id: item.name,
   });
-  readonly countryValueMapper = ({ name }: ICountry) => ({ name });
+  readonly countryValueMapper = (country: ICountry) => ({ name: country?.name });
 
   readonly FieldEditing = FieldEditing;
   readonly fieldEdititng = signal<FieldEditing | false>(false);

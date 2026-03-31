@@ -142,7 +142,8 @@ export class CreateCatalogItemComponent implements OnInit {
   onAddresPickerFill(picked: IPickerAddress | null): void {
     this.position.set(picked?.coordinates ?? [0, 0]);
     const address = this.form.get('address') as FormGroup;
-    address.get('country')?.setValue(picked?.address?.country);
+    console.log(address);
+    address.get('country')?.setValue(picked?.address?.country_code);
     address.get('state')?.setValue(picked?.address?.state);
     address
       .get('city')
@@ -150,6 +151,9 @@ export class CreateCatalogItemComponent implements OnInit {
     address.get('road')?.setValue(picked?.address?.road);
     address.get('house')?.setValue(picked?.address?.house_number);
     address.get('position')?.setValue(picked?.coordinates);
+
+    address.get('country')?.markAsDirty();
+    console.log(address.valid);
   }
 
   onSubmit(): void {

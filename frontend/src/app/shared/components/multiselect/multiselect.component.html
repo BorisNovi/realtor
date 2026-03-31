@@ -1,6 +1,6 @@
 <p-multi-select
   [ngModel]="selectedMulti()"
-  (ngModelChange)="selectedMulti.set($event)"
+  (ngModelChange)="onModelChange($event)"
   [options]="items()"
   appendTo="body"
   [virtualScroll]="true"
@@ -17,6 +17,9 @@
   display="chip"
   class="flex items-center"
 >
+  <ng-template #item let-item>
+    {{ translateLabels() ? (item.label | translate) : item.label }}
+  </ng-template>
   @if (withSearch()) {
     <ng-template #filter>
       <p-inputgroup>

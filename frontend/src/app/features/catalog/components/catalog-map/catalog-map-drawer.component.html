@@ -60,7 +60,11 @@
         <span class="truncate text-wrap">
           @let a = selected?.address;
           <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </span>
-          {{ a?.city }}, {{ a?.road }}, <span class="text-nowrap">№ {{ a?.house }}</span
+          {{ 'COUNTRIES.' + a?.country | translate }}
+          @if (a?.state) {
+            , {{ a?.state }}
+          }
+          , {{ a?.city }}, {{ a?.road }}, <span class="text-nowrap">№ {{ a?.house }}</span
           >,
           @if (a?.apartment) {
             <span class="text-nowrap">{{ 'PREFIXES.APARTMENT' | translate }} {{ a?.apartment }}</span>
