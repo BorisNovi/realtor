@@ -6,6 +6,9 @@ export interface IListing extends IEntity {
   propertyObjects: IPropertyObject[];
   companyName?: string; // Изменяется в настройках профиля
   companyLogo?: string; // Изменяется в настройках профиля
+  firstName?: string; // Имя риелтора. Изменяется в настройках профиля
+  lastName?: string; // Фамилия риелтора. Изменяется в настройках профиля
+  phone?: string; // Телефон риелтора. Изменяется в настройках профиля
   publicLink: IPublicLink;
 }
 
