@@ -10,6 +10,7 @@ export interface ICatalogFilters {
   status?: PropertyStatus | null;
   propertyType?: PropertyType[] | null;
   zoningType?: ZoningType[] | null;
+  contact?: number | null;
   area?: {
     min?: number | null;
     max?: number | null;

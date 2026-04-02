@@ -112,6 +112,19 @@
       />
     </div>
 
+    <!-- By contact -->
+    <div>
+      <label for="contact" class="block text-sm font-medium text-gray-700 mb-1">{{ 'FORM.LABELS.CONTACT' | translate }}</label>
+      <rx-select-single
+        [fetcher]="contactFetchMethod"
+        [mapToSelect]="contactMapToSelect"
+        [valueMapper]="contactValueMapper"
+        formControlName="contact"
+        class="w-full"
+        withSearch
+      />
+    </div>
+
     <!-- Area -->
     <p-divider align="left" type="solid">
       <b>{{ 'CATALOG.FILTERS.AREA.LABEL' | translate }}</b>
