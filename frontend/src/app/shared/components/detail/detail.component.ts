@@ -40,7 +40,7 @@ import { AddressLinkComponent } from '../address-link/address-link.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailComponent {
-  readonly propertyObject = input<IPropertyObject>();
+  readonly propertyObject = input.required<IPropertyObject>();
 
   readonly getSeverity = getPropertyStatusSeverity;
 
