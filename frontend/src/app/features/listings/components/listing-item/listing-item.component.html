@@ -2,7 +2,7 @@
 
 @let listing = item();
 
-@if (mode() === Mode.Share && listing && (listing.companyLogo || listing.companyName)) {
+@if (mode() === Mode.Share && listing) {
   <div class="flex items-center gap-4 mb-6">
     @if (listing.companyLogo) {
       <img [src]="listing?.companyLogo" class="h-12 w-auto object-contain" />
@@ -12,6 +12,13 @@
         {{ listing?.companyName }}
       </span>
     }
+  </div>
+  <div>
+    {{ listing?.firstName }}
+    {{ listing?.lastName }}
+    <a [href]="'tel:+' + listing?.phone" class="text-primary font-bold hover:underline">{{
+      listing?.phone | worldPhoneMask
+    }}</a>
   </div>
 }
 
