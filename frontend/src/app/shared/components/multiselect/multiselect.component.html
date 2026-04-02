@@ -15,7 +15,7 @@
   [filter]="false"
   [emptyMessage]="emptyMessage()"
   display="chip"
-  class="flex items-center"
+  class="flex items-center w-[inherit]"
 >
   <ng-template #item let-item>
     {{ translateLabels() ? (item.label | translate) : item.label }}

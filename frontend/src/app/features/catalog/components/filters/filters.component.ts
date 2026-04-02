@@ -4,9 +4,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
+import { SelectSingleComponent } from '@shared/components';
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency, PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
-import { ICatalogFilters } from '@shared/interfaces';
+import { ICatalogFilters, IContact, IFetchOptions } from '@shared/interfaces';
+import { WorldPhoneMaskPipe } from '@shared/pipes';
 import { countTruthyFields, getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -17,7 +19,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { debounceTime, distinctUntilChanged, startWith } from 'rxjs';
-import { CatalogState } from 'src/app/core';
+import { CatalogState, ContactsService } from 'src/app/core';
 
 @Component({
   selector: 'rx-filters',
@@ -29,11 +31,13 @@ import { CatalogState } from 'src/app/core';
     DividerModule,
     ButtonModule,
     SelectModule,
+    SelectSingleComponent,
     MultiSelectModule,
     TagModule,
     InputNumberModule,
     TranslatePipe,
   ],
+  providers: [WorldPhoneMaskPipe],
   templateUrl: './filters.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -44,7 +48,9 @@ export class FiltersComponent implements OnInit {
   readonly #fb = inject(FormBuilder);
   readonly #destroyRef = inject(DestroyRef);
   readonly #store = inject(Store);
+  readonly #contactsService = inject(ContactsService);
   readonly #translateService = inject(TranslateService);
+  readonly #worldPhoneMaskPipe = inject(WorldPhoneMaskPipe);
 
   readonly getSeverity = getPropertyStatusSeverity;
   readonly getStatusBackground = getPropertyStatusBackground;
@@ -59,12 +65,32 @@ export class FiltersComponent implements OnInit {
 
   readonly isResetDisabled = signal(true);
 
+  readonly contactFetchMethod = (options: IFetchOptions) => this.#contactsService.fetchContacts(options);
+  readonly contactMapToSelect = (item: IContact) => ({
+    label: `${item?.name} ${this.#worldPhoneMaskPipe.transform(item?.phone)}`,
+    value: item,
+    id: item.id,
+  });
+  readonly contactValueMapper = ({ id }: IContact) => id;
+
   ngOnInit(): void {
     const storedFilters = this.#store.selectSnapshot(CatalogState.filters);
 
-    this.#initForm(storedFilters);
     this.#initPropsTranlstes();
+    this.#initForm(storedFilters);
+    this.#setupFormListeners();
 
+    if (storedFilters?.contact) {
+      this.#contactsService
+        .fetchContact(storedFilters.contact)
+        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .subscribe(contact => {
+          this.form.patchValue({ contact });
+        });
+    }
+  }
+
+  #setupFormListeners(): void {
     this.form.valueChanges
       .pipe(
         debounceTime(300),
@@ -72,14 +98,22 @@ export class FiltersComponent implements OnInit {
         takeUntilDestroyed(this.#destroyRef),
       )
       .subscribe(filters => {
-        this.filtersChange.emit(filters as ICatalogFilters);
+        this.filtersChange.emit(this.#normalizeFilters(filters));
       });
 
     this.form.valueChanges.pipe(startWith(this.form.value), takeUntilDestroyed(this.#destroyRef)).subscribe(filters => {
-      const count = countTruthyFields(filters);
+      const count = countTruthyFields(this.#normalizeFilters(filters));
       this.filtersCount.emit(count);
       this.isResetDisabled.set(!count);
     });
+  }
+
+  #normalizeFilters(filters: any): ICatalogFilters {
+    const contact = filters.contact;
+    return {
+      ...filters,
+      contact: contact != null && typeof contact === 'object' ? (contact as IContact).id : contact,
+    };
   }
 
   #initForm(filters?: ICatalogFilters): void {
@@ -92,6 +126,7 @@ export class FiltersComponent implements OnInit {
       status: [filters?.status || null],
       propertyType: [filters?.propertyType || []],
       zoningType: [filters?.zoningType || []],
+      contact: [null],
       area: this.#fb.group({
         min: [filters?.area?.min || null],
         max: [filters?.area?.max || null],
