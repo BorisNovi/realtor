@@ -25,6 +25,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(','
 
 # Настройки для работы с загружаемыми файлами
 MAX_FILES = 25                                    # Допустимое Количество изображений на 1 объект недвижимости
+MAX_FILE_SIZE = 10 * 1024 * 1024                       # Максимальный размер одного файла (10 МБ)
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024    # Максимально допустимый размер файла для сервера (10 МБ)
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024    # Максимально допустимый размер загружаемого файла (10 МБ)
 MEDIA_URL = '/uploads/'                           # URL для медиафайлов (/media/ занят Angular-ассетами шрифтов/иконок)
@@ -113,6 +114,7 @@ INSTALLED_APPS = [
     'contacts',
     'file',
     'listings',                     
+    'countries',
     # 'ai_assistant',                 # Может зависеть от users или user_auth
     # 'payments',                     # Платежи, может зависеть от users
 ]
@@ -235,6 +237,7 @@ DATABASES = {
         'PASSWORD': config('DATABASE_PASSWORD'),
         'HOST': config('DATABASE_HOST', default='localhost'),
         'PORT': config('DATABASE_PORT', default='5432'),
+        'ATOMIC_REQUESTS': True,
     }
 }
 
@@ -245,6 +248,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        } 
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',

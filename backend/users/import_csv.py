@@ -1,16 +1,37 @@
-import csv, io, logging
+import csv, io, logging, re
 from collections import defaultdict
+from rest_framework.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.utils import timezone
+from realtor.settings import MAX_ROWS
 from catalog.catalog_models import PropertyStatus
 from catalog.views.create_update_object_view import PROPERTY_WRITE_SERIALIZER_MAP
 from contacts.contact_serializers import ContactSerializer
 from contacts.models import Contact
-from realtor.settings import MAX_ROWS
 from users.csv_headers import HEADERS, REQUIRED_HEADERS
 
 logger = logging.getLogger(__name__)
+ISO_ALPHA2_RE = re.compile(r'^[A-Z]{2}$')
+
+# Базовые поля, которые есть у всех Property
+BASE_FIELDS = {
+    "name", "status", "zoning_type", "price_value", "price_currency",
+    "area", "comment", "date_added",
+}
+
+# Все специфичные поля дочерних моделей
+SPECIFIC_FIELDS = {
+    "rooms", "floor_current", "floor_full", "kitchen_type", "heating",
+    "furnished", "renovation", "shared_kitchen", "shared_bathroom",
+    "electricity", "water_supply", "natural_gas", "sewerage", "internet",
+    "bath", "shower", "air_conditioning", "fireplace", "beautiful_view",
+    "new_building", "elevator", "parking", "balcony", "garden", "garage",
+}
+
+# Да, такой список у нас уже есть для экспорта, но ничего не поделать. 
+# Ключевое различие списков - разделить поля на базовые (есть у всех) и специфичные (только у дочерних), 
+# и передавать специфичные через **kwargs. 
 
 # Проверяем статус
 def _validate_status(value, model):
@@ -26,6 +47,15 @@ def _validate_status(value, model):
 
 # Проверяем адрес на наличие всех обязательных полей.
 def _validate_address(row):
+    # Валидация страны по ISO Alpha-2
+    country = get_row_value(row, "address_country")
+    if country:
+        if not ISO_ALPHA2_RE.match(str(country).strip().upper()):
+            raise ValidationError(
+                f"Invalid country code '{country}'. "
+                f"Use ISO Alpha-2 format (e.g. 'US', 'GE', 'DE')."
+            )
+            
     missing = [
         HEADERS[field]["csv"]
         for field in HEADERS
@@ -80,13 +110,11 @@ def _build_property(row, user, contacts_cache: dict):
     if phone:
         if phone in contacts_cache:
             contact = contacts_cache[phone]
-
         else:
             existing = Contact.objects.filter(phone=phone, user=user).first()
 
             if existing:
                 contact = existing
-
             else:
                 contact_data = {
                     "name": get_row_value(row, "contact_name"),
@@ -101,7 +129,6 @@ def _build_property(row, user, contacts_cache: dict):
                 )
 
                 serializer.is_valid(raise_exception=True)
-
                 contact = Contact(**serializer.validated_data)
 
             contacts_cache[phone] = contact
@@ -109,7 +136,7 @@ def _build_property(row, user, contacts_cache: dict):
     position = [lng, lat] if lng is not None and lat is not None else []
 
     address = {
-        "country": get_row_value(row, "address_country"),
+        "country": str(get_row_value(row, "address_country")).strip().upper(),
         "region": get_row_value(row, "address_region"),
         "city": get_row_value(row, "address_city"),
         "road": get_row_value(row, "address_road"),
@@ -118,10 +145,32 @@ def _build_property(row, user, contacts_cache: dict):
         "position": position,
     }
 
+    # Собираем специфичные поля — только те, что реально есть у этой модели
+    specific_kwargs = {}
+    model_fields = {f.name for f in model._meta.get_fields()}
+
+    for field in SPECIFIC_FIELDS:
+        if field not in model_fields:
+            continue  # этой модели поле не принадлежит — пропускаем
+
+        value = get_row_value(row, field)
+
+        if value in (None, ""):
+            continue  # не передаём пустые — пусть сработает default модели
+
+        # Булевые поля из CSV приходят строкой — конвертируем
+        model_field = model._meta.get_field(field)
+        if model_field.get_internal_type() == "BooleanField":
+            specific_kwargs[field] = str(value).strip().lower() in ("true", "1", "yes")
+        elif model_field.get_internal_type() in ("IntegerField", "PositiveIntegerField"):
+            specific_kwargs[field] = int(value)
+        else:
+            specific_kwargs[field] = value
+
     obj = model(
         polymorphic_ctype=polymorphic_ctype,
         name=get_row_value(row, "name"),
-        status = _validate_status(get_row_value(row, "status"), model),
+        status=_validate_status(get_row_value(row, "status"), model),
         zoning_type=get_row_value(row, "zoning_type"),
         price_value=price,
         price_currency=get_row_value(row, "price_currency"),
@@ -131,6 +180,7 @@ def _build_property(row, user, contacts_cache: dict):
         user=user,
         contact=contact,
         date_added=get_row_value(row, "date_added") or timezone.now(),
+        **specific_kwargs, 
     )
 
     return obj, contact

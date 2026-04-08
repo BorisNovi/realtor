@@ -26,18 +26,30 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = None
         fields = [
-            'property_type', 'name', 'status', 'photos', 'address', 'zoning_type',
-            'price', 'area','contact', 'comment','date_added', 'user',
+            'property_type', 
+            'name', 
+            'status', 
+            'photos', 
+            'address', 
+            'zoning_type',
+            'price', 
+            'area',
+            'contact', 
+            'comment',
+            'date_added', 
+            'user',
         ]
         read_only_fields = ['date_added', 'user']
 
     # ВАЛИДАЦИЯ КОЛИЧЕСТВА ФОТО
     def validate_photos(self, value):
         if len(value) > MAX_FILES:
-            raise serializers.ValidationError(
-                f"TOO_MANY_FILES. MAX_ALLOWED_IS_{MAX_FILES}."
-            )
+            raise serializers.ValidationError({
+                "error": "TOO_MANY_FILES",
+                "message": f"Too many files. Maximum allowed is {MAX_FILES}."
+            })
         return value
+    
     
     @transaction.atomic
     def create(self, validated_data):
@@ -48,6 +60,10 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
         photos = validated_data.pop('photos', [])
         price_data = validated_data.pop('price')
         address_data = validated_data.pop('address', {})
+
+        # Оставляем только поля, которые есть у этой модели
+        model_fields = {f.name for f in self.Meta.model._meta.get_fields()}
+        validated_data = {k: v for k, v in validated_data.items() if k in model_fields}
 
         # создаём основной объект
         instance = self.Meta.model.objects.create(
@@ -66,6 +82,7 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
         print(Fore.GREEN + "=== Property created successfully ===" + Fore.RESET)
         print(f"Created instance: {instance}")
         return instance
+
 
     @transaction.atomic
     def update(self, instance, validated_data):
@@ -86,9 +103,10 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
             instance.price_value = price_data.get('value', instance.price_value)
             instance.price_currency = price_data.get('currency', instance.price_currency)
 
-        # Обновляем остальные поля
+
+        model_fields = {f.name for f in self.Meta.model._meta.get_fields()}
         for attr, value in validated_data.items():
-            if attr != 'photos':  # фото обработаем отдельно
+            if attr != 'photos' and attr in model_fields: 
                 setattr(instance, attr, value)
 
         instance.save()

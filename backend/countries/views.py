@@ -1,23 +1,20 @@
 from typing import Optional
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework import viewsets
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db.models import Q
-from realtor import mixins
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework import permissions
 from realtor.helpers import build_prefix_tsquery
-from catalog.catalog_models import Property
 from catalog.utils.filters import apply_catalog_filters
-from catalog.serializers.catalog_list_serializer import CatalogListSerializer
-from ..utils.pagination import FrontendPagination
+from catalog.utils.pagination import FrontendPagination
+from .models import Country
+from .serializers import CountryInputSerializer, CountryReadOnlySerializer, CountrySerializer
 
 
-# Этот класс отвечает за получение списка объектов недвижимости
-# Он использует пагинацию и фильтрацию для формирования ответа
-class CatalogListView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
-    serializer_class = CatalogListSerializer
+class CountryViewSet(ReadOnlyModelViewSet):
+    queryset = Country.objects.filter()
+    serializer_class = CountryReadOnlySerializer
+    lookup_field = "code" # На случай прямого запроса страны из адресной строки
     pagination_class = FrontendPagination
-    authentication_classes = [JWTAuthentication]
-    queryset = Property.objects.filter(is_deleted=False) 
 
     def _build_prefix(self, text: str) -> Optional[SearchQuery]:
         return build_prefix_tsquery(text)
@@ -28,8 +25,8 @@ class CatalogListView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
         qs = apply_catalog_filters(qs, self.request.query_params)
         
         sort_field = self.request.query_params.get("sortField")
-        if sort_field == "dateAdded":
-            sort_field = "date_added"
+        if sort_field == "name":
+            sort_field = "name"
         if sort_field:
             direction = "-" if self.request.query_params.get("sortOrder", "desc").lower() == "desc" else ""
             qs = qs.order_by(direction + sort_field)
@@ -50,8 +47,3 @@ class CatalogListView(mixins.CurrentUserQuerysetMixin, viewsets.ModelViewSet):
 
 
         return qs
-
-
-
-
-

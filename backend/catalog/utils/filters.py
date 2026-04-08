@@ -55,7 +55,9 @@ def apply_catalog_filters(qs, query_params):
         except:
             return None
 
-    # --- Фильтры ---
+    # ===================== ФИЛЬТРЫ ========================
+
+    # Дата добавления
     date_from = parse_date(get_param("dateAdded[from]", "dateAdded.from"))
     date_to   = parse_date(get_param("dateAdded[to]", "dateAdded.to"))
     if date_from:
@@ -63,18 +65,27 @@ def apply_catalog_filters(qs, query_params):
     if date_to:
         qs = qs.filter(date_added__lte=date_to)
 
+    # Статус
     status = get_param("status")
     if status:
         qs = qs.filter(status=status)
 
+    # Контакт
+    contact = get_param("contact")
+    if contact:
+        qs = qs.filter(contact=contact)
+
+    # Тип недвижимости
     property_types = get_list("propertyType", "property.type")
     if property_types:
         qs = qs.filter(polymorphic_ctype__model__in=property_types)
 
+    # Тип собственности
     zoning_types = get_list("zoningType", "zoning.type")
     if zoning_types:
         qs = qs.filter(zoning_type__in=zoning_types)
-
+    
+    # Площадь
     area_min = parse_float(get_param("area[min]", "area.min"))
     area_max = parse_float(get_param("area[max]", "area.max"))
     if area_min is not None:
@@ -82,6 +93,7 @@ def apply_catalog_filters(qs, query_params):
     if area_max is not None:
         qs = qs.filter(area__lte=area_max)
 
+    # Цена
     price_min  = parse_float(get_param("price[min]", "price.min"))
     price_max  = parse_float(get_param("price[max]", "price.max"))
     currency   = get_param("price[currency]", "price.currency")
@@ -92,5 +104,12 @@ def apply_catalog_filters(qs, query_params):
         qs = qs.filter(price_value__gte=price_min)
     if price_max is not None:
         qs = qs.filter(price_value__lte=price_max)
+
+    # Наличие фото
+    has_photos = get_param("hasPhotos", "has.photos")
+    if has_photos in ("true", "1"):
+        qs = qs.exclude(photos=[])      # photos != '[]'
+    elif has_photos in ("false", "0"):
+        qs = qs.filter(photos=[])       # photos = '[]'
 
     return qs

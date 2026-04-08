@@ -12,12 +12,21 @@ class SignupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'password_confirmation', 'name', 'company_name', 'company_logo')
+        fields = (
+            'email', 
+            'password', 
+            'password_confirmation', 
+            'company_name', 
+            'company_logo'
+        )
 
     def validate_email(self, value):
         value = value.lower()
         if User.objects.filter(email=value).exists():
-            raise ValidationError("USER_ALREADY_EXISTS")
+            raise ValidationError({
+                "error": "USER_ALREADY_EXISTS",
+                "message": "A user with that email already exists."
+            })
         return value
 
     def validate(self, attrs):
@@ -25,7 +34,10 @@ class SignupSerializer(serializers.ModelSerializer):
         password_confirmation = attrs.pop('password_confirmation', None)
 
         if password != password_confirmation:
-            raise ValidationError({'PASSWORDS_DO_NOT_MATCH'})
+            raise ValidationError({
+                "error": "PASSWORDS_DO_NOT_MATCH",
+                "message": "New passwords do not match"
+            })
 
         # Стандартные проверки безопасности Django
         validate_password(password)
