@@ -30,8 +30,11 @@ export class AddToListingComponent {
 
   readonly listingsAlreadyHasObject = signal<number[]>([]);
 
-  readonly disableListingWhithCurrentObject = (item: RxSelectItem) =>
-    item.value.propertyObjectIds.includes(this.config.data ?? -1);
+  readonly disableListingWhithCurrentObject = (item: RxSelectItem) => {
+    const ids = this.config.data as number[];
+    if (!ids?.length) return false;
+    return ids.every(id => item.value.propertyObjectIds.includes(id));
+  };
   readonly listingsFetchMethod = (options: IFetchOptions) => this.#listingsService.fetchListings(options);
   readonly lisitingsMapToSelect = (item: IListing) => ({
     label: `${item.name}`,
@@ -41,12 +44,13 @@ export class AddToListingComponent {
 
   onListingClick(event: any): void {
     const listing = event.value as IListing;
-    const objectId = this.config.data as number;
-    if (!objectId || this.#listingLoading()) return;
+    // To prevent adding existing ids
+    const objectIds = (this.config.data as number[]).filter(id => !listing.propertyObjectIds.includes(id));
+    if (!objectIds || this.#listingLoading()) return;
 
     this.#store
       .dispatch(
-        new UpdateListing({ ...listing, propertyObjectIds: [...listing.propertyObjectIds, objectId] }, { getList: false }),
+        new UpdateListing({ ...listing, propertyObjectIds: [...listing.propertyObjectIds, ...objectIds] }, { getList: false }),
       )
       .pipe(first())
       .subscribe(() => this.listingsAlreadyHasObject.update(arr => (arr = [...arr, listing.id])));

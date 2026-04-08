@@ -78,7 +78,7 @@
           </td>
           <td class="text-sm text-gray-300">{{ item.comment }}</td>
           <td class="whitespace-nowrap">{{ item.dateAdded | date: 'dd.MM.y' }}</td>
-          <td>
+          <td pFrozenColumn alignFrozen="right">
             <p-button
               icon="pi pi-ellipsis-v"
               (click)="onActionClick($event, item); $event.stopPropagation()"

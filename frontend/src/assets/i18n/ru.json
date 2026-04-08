@@ -130,7 +130,7 @@
       "ZONING_TYPE": {
         "residential": "Жилая",
         "commercial": "Коммерческая",
-        "agricultural": "Сельскохозяйственная",
+        "agricultural": "C/X",
         "mixed": "Смешанная"
       },
       "FURNISHED_STATUS": {
