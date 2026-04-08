@@ -1,4 +1,7 @@
+import { version } from '../../package.json';
+
 export const environment = {
+  version,
   production: true,
   apiUrl: '/api/v1',
   tilesLightUrl: 'https://api.maptiler.com/maps/basic-v2/style.json?key=avRs8Wpb6tLavx9UIcJA',
