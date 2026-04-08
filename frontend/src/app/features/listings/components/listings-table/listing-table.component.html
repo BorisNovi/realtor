@@ -40,12 +40,7 @@
       </ng-template>
       <ng-template #caption>
         <div class="flex flex-wrap gap-4 items-center">
-          <p-button
-            [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
-            [outlined]="true"
-            icon="pi pi-plus"
-            (click)="openDialog()"
-          />
+          <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openDialog()" />
 
           <rx-search-input
             class="grow basis-48"
@@ -86,7 +81,7 @@
               [disabled]="loadingS()"
             ></rx-link-switch>
           </td>
-          <td>
+          <td pFrozenColumn alignFrozen="right">
             <p-button
               icon="pi pi-ellipsis-v"
               (click)="onActionClick($event, item); $event.stopPropagation()"
@@ -102,12 +97,7 @@
           <td colspan="5">
             <div class="flex flex-col items-center gap-4">
               <div>{{ 'LISTINGS.TABLE.EMPTY' | translate }}</div>
-              <p-button
-                [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
-                [outlined]="true"
-                icon="pi pi-plus"
-                (click)="openDialog()"
-              />
+              <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openDialog()" />
             </div>
           </td>
         </tr>
@@ -127,12 +117,7 @@
   >
     <ng-template #caption>
       <div class="flex flex-wrap gap-4 items-center">
-        <p-button
-          [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
-          [outlined]="true"
-          icon="pi pi-plus"
-          (click)="openDialog()"
-        />
+        <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openDialog()" />
 
         <rx-search-input
           class="grow basis-48"
@@ -194,12 +179,7 @@
     <ng-template #empty>
       <div class="flex flex-col items-center gap-4 p-8">
         <div>{{ 'LISTINGS.TABLE.EMPTY' | translate }}</div>
-        <p-button
-          [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
-          [outlined]="true"
-          icon="pi pi-plus"
-          (click)="openDialog()"
-        />
+        <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openDialog()" />
       </div>
     </ng-template>
   </rx-cards-grid>

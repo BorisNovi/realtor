@@ -9,7 +9,7 @@ import { DetailComponent, LinkSwitchComponent, SelectComponent } from '@shared/c
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { Currency } from '@shared/enums';
 import { ICatalogItem, IFetchOptions } from '@shared/interfaces';
-import { NotEmptyPipe } from '@shared/pipes';
+import { NotEmptyPipe, WorldPhoneMaskPipe } from '@shared/pipes';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Divider } from 'primeng/divider';
@@ -32,6 +32,7 @@ import { ChangeListingAvaliability, DeleteListing, ListingsState, UpdateListing 
     PopoverModule,
     SelectComponent,
     LinkSwitchComponent,
+    WorldPhoneMaskPipe,
   ],
   animations: [SLIDE],
   templateUrl: './listing-item.component.html',
@@ -113,9 +114,7 @@ export class ListingItemComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.#ref) {
-      this.#ref.close();
-    }
+    if (this.#ref) this.#ref.close();
   }
 }
 

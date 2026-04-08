@@ -1,6 +1,6 @@
 <p-select
   [ngModel]="selected()"
-  (ngModelChange)="selected.set($event)"
+  (ngModelChange)="onModelChange($event)"
   [options]="items()"
   appendTo="body"
   [virtualScroll]="true"
@@ -9,11 +9,18 @@
   [loading]="loading()"
   (onShow)="onShow()"
   [placeholder]="placeholder()"
+  [disabled]="disabled()"
   [filter]="true"
   [emptyMessage]="emptyMessage()"
   [showClear]="true"
-  class="w-full"
+  class="flex items-center w-[inherit]"
 >
+  <ng-template #selectedItem let-item>
+    {{ translateLabels() ? (item.label | translate) : item.label }}
+  </ng-template>
+  <ng-template #item let-item>
+    {{ translateLabels() ? (item.label | translate) : item.label }}
+  </ng-template>
   @if (withSearch()) {
     <ng-template #filter>
       <p-inputgroup>

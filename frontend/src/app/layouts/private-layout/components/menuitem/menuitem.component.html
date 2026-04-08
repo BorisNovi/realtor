@@ -25,6 +25,7 @@
       [ngClass]="mItem?.styleClass"
       [routerLink]="mItem?.routerLink"
       routerLinkActive="active-route"
+      [class.active-route-pattern]="patternActiveRoute()"
       [routerLinkActiveOptions]="
         mItem?.routerLinkActiveOptions || {
           paths: 'exact',

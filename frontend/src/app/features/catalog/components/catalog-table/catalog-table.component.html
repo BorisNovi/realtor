@@ -41,12 +41,7 @@
       </ng-template>
       <ng-template #caption>
         <div class="flex flex-wrap gap-4 items-center justify-between">
-          <p-button
-            [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
-            [outlined]="true"
-            icon="pi pi-plus"
-            (click)="openItemDialog()"
-          />
+          <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openItemDialog()" />
 
           <rx-search-input
             class="grow basis-48 order-last sm:order-0"
@@ -65,11 +60,12 @@
       </ng-template>
       <ng-template #header>
         <tr>
-          <th><p-tableHeaderCheckbox /></th>
+          <th pFrozenColumn><p-tableHeaderCheckbox /></th>
           <th class="min-w-24">{{ 'CATALOG.TABLE.HEADERS.PHOTO' | translate }}</th>
           <th>{{ 'CATALOG.TABLE.HEADERS.NAME' | translate }}</th>
-          <th>{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}</th>
-          <th>{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}</th>
+          <th class="text-nowrap">
+            {{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }} / {{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}
+          </th>
           <th>{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}</th>
           <th class="min-w-32" pSortableColumn="price">
             {{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }} <p-sortIcon field="price" />
@@ -86,7 +82,7 @@
       </ng-template>
       <ng-template #body let-item>
         <tr class="cursor-pointer" [routerLink]="['../', item.id]">
-          <td>
+          <td pFrozenColumn>
             <p-tableCheckbox [value]="item" (click)="$event.stopPropagation()" />
           </td>
           <td>
@@ -99,13 +95,15 @@
             }
           </td>
           <td>{{ item.name || '—' }}</td>
-          <td>{{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + item.propertyType | translate }}</td>
-          <td>{{ item.zoningType ? ('FORM.PROPERTIES.ZONING_TYPE.' + item.zoningType | translate) : '—' }}</td>
+          <td>
+            {{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + item.propertyType | translate }}
+            {{ item.zoningType ? ('FORM.PROPERTIES.ZONING_TYPE.' + item.zoningType | translate) : '—' }}
+          </td>
           <td class="max-w-36">
             @let a = item.address;
             <div class="text-xs text-nowrap">
               <div class="truncate">
-                {{ a.country }}
+                {{ 'COUNTRIES.' + a.country | translate }}
                 @if (a.state) {
                   , {{ a.state }}
                 }
@@ -141,8 +139,7 @@
               </ng-template>
             </p-select>
           </td>
-
-          <td>
+          <td pFrozenColumn alignFrozen="right">
             <p-button
               icon="pi pi-ellipsis-v"
               (click)="onActionClick($event, item); $event.stopPropagation()"
@@ -156,17 +153,17 @@
       @if (selectedItems.length) {
         <ng-template #footer>
           <tr>
-            <td colspan="9" class="text-right font-bold">
+            <td colspan="2" class="text-right font-bold">
               {{ 'CATALOG.TABLE.FOOTER.SELECTED' | translate: { count: selectedItems.length } }}
             </td>
-            <td colspan="3">
+            <td colspan="9">
               <p-buttongroup class="flex justify-end">
                 <p-button
                   [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate"
                   icon="pi pi-plus"
                   class="text-nowrap"
                   outlined
-                  (onClick)="(null)"
+                  (onClick)="openAddToListingDialog(selectedItems)"
                 />
                 <p-button
                   severity="danger"
@@ -185,12 +182,7 @@
           <td colspan="11">
             <div class="flex flex-col items-center gap-4">
               <div>{{ 'CATALOG.TABLE.EMPTY' | translate }}</div>
-              <p-button
-                [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
-                [outlined]="true"
-                icon="pi pi-plus"
-                (click)="openItemDialog()"
-              />
+              <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openItemDialog()" />
             </div>
           </td>
         </tr>
@@ -210,12 +202,7 @@
   >
     <ng-template #caption>
       <div class="flex flex-wrap gap-4 items-center justify-between">
-        <p-button
-          [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
-          [outlined]="true"
-          icon="pi pi-plus"
-          (click)="openItemDialog()"
-        />
+        <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openItemDialog()" />
 
         <rx-search-input
           class="grow basis-48 order-last sm:order-0"
@@ -289,7 +276,7 @@
           @let a = item.address;
           <div class="text-sm">
             <div class="text-surface-400 text-xs">
-              {{ a.country }}
+              {{ 'COUNTRIES.' + a.country | translate }}
               @if (a.state) {
                 , {{ a.state }}
               }
@@ -345,12 +332,7 @@
     <ng-template #empty>
       <div class="flex flex-col items-center gap-4 p-8">
         <div>{{ 'CATALOG.TABLE.EMPTY' | translate }}</div>
-        <p-button
-          [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
-          [outlined]="true"
-          icon="pi pi-plus"
-          (click)="openItemDialog()"
-        />
+        <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openItemDialog()" />
       </div>
     </ng-template>
   </rx-cards-grid>

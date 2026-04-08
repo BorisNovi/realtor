@@ -131,7 +131,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
       {
         label: this.#translateService.instant('CATALOG.TABLE.BUTTONS.ADD_TO_LISTING'),
         icon: 'pi pi-list-check',
-        command: () => this.openAddToListingDialog(item.id),
+        command: () => this.openAddToListingDialog([item]),
       },
       {
         label: this.#translateService.instant('ACTIONS.EDIT'),
@@ -210,9 +210,9 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
       .subscribe();
   }
 
-  openAddToListingDialog(id: number): void {
+  openAddToListingDialog(itemList: ICatalogItem[]): void {
     this.#ref = this.#dialogService.open(AddToListingComponent, {
-      data: id,
+      data: itemList.map(i => i.id),
       header: this.#translateService.instant('LISTINGS.ACTIONS.ADD_OBJECT'),
       width: '370px',
       height: '300px',
@@ -220,6 +220,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
       modal: true,
       closable: true,
       focusOnShow: false,
+      draggable: false,
     });
   }
 
@@ -231,6 +232,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
       modal: true,
       closable: true,
       dismissableMask: true,
+      draggable: false,
       focusOnShow: false,
       breakpoints: {
         '960px': '75vw',

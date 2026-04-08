@@ -5,6 +5,31 @@
         <div class="font-semibold text-xl">{{ 'PROFILE.INFO' | translate }}</div>
 
         <form class="flex flex-col gap-4" [formGroup]="userForm">
+          @let isEmailEditing = fieldEdititng() == FieldEditing.Email;
+          <rx-input-wrapper [control]="userForm.get('email')!" [label]="'PROFILE.EMAIL' | translate" id="email">
+            <p-inputgroup>
+              <input pInputText id="email" type="email" formControlName="email" [class.p-disabled]="!isEmailEditing" />
+
+              @if (isEmailEditing) {
+                <p-inputgroup-addon>
+                  <p-button
+                    icon="pi pi-save"
+                    severity="primary"
+                    (onClick)="fieldEdititng.set(false); updateProfile()"
+                    [disabled]="!userForm.get('email')?.dirty"
+                  />
+                </p-inputgroup-addon>
+              }
+              <p-inputgroup-addon>
+                <p-button
+                  [icon]="isEmailEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isEmailEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.Email)"
+                />
+              </p-inputgroup-addon>
+            </p-inputgroup>
+          </rx-input-wrapper>
+
           @let isCompanyNameEditing = fieldEdititng() == FieldEditing.CompanyName;
           <rx-input-wrapper
             [control]="userForm.get('companyName')!"
@@ -40,26 +65,159 @@
             </p-inputgroup>
           </rx-input-wrapper>
 
-          @let isEmailEditing = fieldEdititng() == FieldEditing.Email;
-          <rx-input-wrapper [control]="userForm.get('email')!" [label]="'PROFILE.EMAIL' | translate" id="email">
+          @let isFirstNameEditing = fieldEdititng() == FieldEditing.FirstName;
+          <rx-input-wrapper [control]="userForm.get('firstName')!" [label]="'PROFILE.FIRST_NAME' | translate" id="firstName">
             <p-inputgroup>
-              <input pInputText id="email" type="text" formControlName="email" [class.p-disabled]="!isEmailEditing" />
+              <input
+                pInputText
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                [class.p-disabled]="!isFirstNameEditing"
+              />
 
-              @if (isEmailEditing) {
+              @if (isFirstNameEditing) {
                 <p-inputgroup-addon>
                   <p-button
                     icon="pi pi-save"
                     severity="primary"
                     (onClick)="fieldEdititng.set(false); updateProfile()"
-                    [disabled]="!userForm.get('email')?.dirty"
+                    [disabled]="!userForm.get('firstName')?.dirty"
                   />
                 </p-inputgroup-addon>
               }
               <p-inputgroup-addon>
                 <p-button
-                  [icon]="isEmailEditing ? 'pi pi-times' : 'pi pi-pencil'"
-                  [severity]="isEmailEditing ? 'danger' : 'secondary'"
-                  (onClick)="editProfile(FieldEditing.Email)"
+                  [icon]="isFirstNameEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isFirstNameEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.FirstName)"
+                />
+              </p-inputgroup-addon>
+            </p-inputgroup>
+          </rx-input-wrapper>
+
+          @let isLastNameEditing = fieldEdititng() == FieldEditing.LastName;
+          <rx-input-wrapper [control]="userForm.get('lastName')!" [label]="'PROFILE.LAST_NAME' | translate" id="lastName">
+            <p-inputgroup>
+              <input pInputText id="lastName" type="text" formControlName="lastName" [class.p-disabled]="!isLastNameEditing" />
+
+              @if (isLastNameEditing) {
+                <p-inputgroup-addon>
+                  <p-button
+                    icon="pi pi-save"
+                    severity="primary"
+                    (onClick)="fieldEdititng.set(false); updateProfile()"
+                    [disabled]="!userForm.get('lastName')?.dirty"
+                  />
+                </p-inputgroup-addon>
+              }
+              <p-inputgroup-addon>
+                <p-button
+                  [icon]="isLastNameEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isLastNameEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.LastName)"
+                />
+              </p-inputgroup-addon>
+            </p-inputgroup>
+          </rx-input-wrapper>
+
+          @let isPhoneEditing = fieldEdititng() == FieldEditing.Phone;
+          <rx-input-wrapper [control]="userForm.get('phone')!" [label]="'PROFILE.PHONE' | translate" id="phone">
+            <p-inputgroup>
+              <input
+                pInputText
+                rxWorldPhoneMasks
+                id="phone"
+                type="text"
+                formControlName="phone"
+                [class.p-disabled]="!isPhoneEditing"
+              />
+
+              @if (isPhoneEditing) {
+                <p-inputgroup-addon>
+                  <p-button
+                    icon="pi pi-save"
+                    severity="primary"
+                    (onClick)="fieldEdititng.set(false); updateProfile()"
+                    [disabled]="!userForm.get('phone')?.dirty"
+                  />
+                </p-inputgroup-addon>
+              }
+              <p-inputgroup-addon>
+                <p-button
+                  [icon]="isPhoneEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isPhoneEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.Phone)"
+                />
+              </p-inputgroup-addon>
+            </p-inputgroup>
+          </rx-input-wrapper>
+
+          @let isCountryEditing = fieldEdititng() == FieldEditing.Country;
+          <rx-input-wrapper [control]="userForm.get('country')!" [label]="'PROFILE.COUNTRY' | translate" id="country">
+            <p-inputgroup>
+              <rx-select-single
+                id="country"
+                [fetcher]="countryFetchMethod"
+                [mapToSelect]="countryMapToSelect"
+                [valueMapper]="countryValueMapper"
+                [disabled]="!isCountryEditing"
+                placeholder=""
+                formControlName="country"
+                withSearch
+                translateLabels
+              />
+
+              @if (isCountryEditing) {
+                <p-inputgroup-addon>
+                  <p-button
+                    icon="pi pi-save"
+                    severity="primary"
+                    (onClick)="fieldEdititng.set(false); updateProfile()"
+                    [disabled]="!userForm.get('country')?.dirty"
+                  />
+                </p-inputgroup-addon>
+              }
+              <p-inputgroup-addon>
+                <p-button
+                  [icon]="isCountryEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isCountryEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.Country)"
+                />
+              </p-inputgroup-addon>
+            </p-inputgroup>
+          </rx-input-wrapper>
+
+          @let isCurrencyEditing = fieldEdititng() == FieldEditing.Currency;
+          <rx-input-wrapper [control]="userForm.get('currency')!" [label]="'PROFILE.CURRENCY' | translate" id="currency">
+            <p-inputgroup>
+              <p-select
+                id="currency"
+                formControlName="currency"
+                [options]="currencies"
+                [filter]="true"
+                filterBy="value"
+                optionLabel="label"
+                optionValue="value"
+                [disabled]="!isCurrencyEditing"
+                class="w-full"
+              />
+
+              @if (isCurrencyEditing) {
+                <p-inputgroup-addon>
+                  <p-button
+                    icon="pi pi-save"
+                    severity="primary"
+                    (onClick)="fieldEdititng.set(false); updateProfile()"
+                    [disabled]="!userForm.get('currency')?.dirty"
+                  />
+                </p-inputgroup-addon>
+              }
+              <p-inputgroup-addon>
+                <p-button
+                  [icon]="isCurrencyEditing ? 'pi pi-times' : 'pi pi-pencil'"
+                  [severity]="isCurrencyEditing ? 'danger' : 'secondary'"
+                  (onClick)="editProfile(FieldEditing.Currency)"
                 />
               </p-inputgroup-addon>
             </p-inputgroup>

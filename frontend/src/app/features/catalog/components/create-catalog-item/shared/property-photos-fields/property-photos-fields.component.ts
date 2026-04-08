@@ -26,7 +26,7 @@ export class PropertyPhotosFieldsComponent implements OnInit {
 
   readonly photosS = signal<string[]>([]);
   readonly uploadErrorS = signal<string | null>(null);
-  readonly maxImageSize = 4_194_304; // 4 MB
+  readonly maxImageSize = 10_485_760; // 10 MB
   readonly imagesLimit = 25;
 
   ngOnInit(): void {

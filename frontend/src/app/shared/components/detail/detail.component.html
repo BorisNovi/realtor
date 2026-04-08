@@ -1,5 +1,5 @@
 @let pObject = propertyObject();
-@let hasPhotos = imagesTemp()?.length;
+@let hasPhotos = imagesTemp().length;
 <div class="flex flex-col md:flex-row md:gap-4 w-full">
   <div class="block md:hidden">
     <ng-container [ngTemplateOutlet]="headerTpl"></ng-container>
@@ -47,7 +47,7 @@
           <span class="truncate text-wrap">
             @let a = pObject?.address;
             <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </span>
-            {{ a?.country }}
+            {{ 'COUNTRIES.' + a?.country | translate }}
             @if (a?.state) {
               , {{ a?.state }}
             }
@@ -57,6 +57,7 @@
               <span class="text-nowrap">{{ 'PREFIXES.APARTMENT' | translate }} {{ a?.apartment }}</span>
             }
           </span>
+          <rx-address-link [address]="a!"></rx-address-link>
         </li>
         <li>
           <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }}: </span
@@ -82,37 +83,45 @@
         <li>
           <span class="text-gray-500">{{ 'FORM.LABELS.AREA' | translate }}: </span><span>{{ pObject?.area || '—' }} m²</span>
         </li>
-        <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.CURRENT_FLOOR' | translate }}: </span
-          ><span>{{ specifics?.floor?.current || '—' }}</span>
-        </li>
-        <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.TOTAL_FLOORS' | translate }}: </span
-          ><span>{{ specifics?.floor?.full || '—' }}</span>
-        </li>
-        <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.ROOMS' | translate }}: </span><span>{{ specifics?.rooms || '—' }}</span>
-        </li>
-        <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.HEATING' | translate }}: </span
-          ><span>{{ specifics?.heating ? ('FORM.PROPERTIES.HEATING_TYPE.' + specifics?.heating | translate) : '—' }}</span>
-        </li>
-        <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.RENOVATION' | translate }}: </span
-          ><span>{{
-            specifics?.renovation ? ('FORM.PROPERTIES.RENOVATION_STATUS.' + specifics?.renovation | translate) : '—'
-          }}</span>
-        </li>
-        <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.FURNISHED' | translate }}: </span
-          ><span>{{
-            specifics?.furnished ? ('FORM.PROPERTIES.FURNISHED_STATUS.' + specifics?.furnished | translate) : '—'
-          }}</span>
-        </li>
-        <li>
-          <span class="text-gray-500">{{ 'FORM.LABELS.KITCHEN' | translate }}: </span
-          ><span>{{ specifics?.kitchen ? ('FORM.PROPERTIES.KITCHEN_TYPE.' + specifics?.kitchen | translate) : '—' }}</span>
-        </li>
+        @if (specifics?.floor?.current; as floorCurr) {
+          <li>
+            <span class="text-gray-500">{{ 'FORM.LABELS.CURRENT_FLOOR' | translate }}: </span><span>{{ floorCurr }}</span>
+          </li>
+        }
+        @if (specifics?.floor?.full; as floorFull) {
+          <li>
+            <span class="text-gray-500">{{ 'FORM.LABELS.TOTAL_FLOORS' | translate }}: </span><span>{{ floorFull }}</span>
+          </li>
+        }
+        @if (specifics?.rooms; as rooms) {
+          <li>
+            <span class="text-gray-500">{{ 'FORM.LABELS.ROOMS' | translate }}: </span><span>{{ rooms }}</span>
+          </li>
+        }
+        @if (specifics?.heating; as heating) {
+          <li>
+            <span class="text-gray-500">{{ 'FORM.LABELS.HEATING' | translate }}: </span
+            ><span>{{ 'FORM.PROPERTIES.HEATING_TYPE.' + specifics?.heating | translate }}</span>
+          </li>
+        }
+        @if (specifics?.renovation; as renovation) {
+          <li>
+            <span class="text-gray-500">{{ 'FORM.LABELS.RENOVATION' | translate }}: </span
+            ><span>{{ 'FORM.PROPERTIES.RENOVATION_STATUS.' + renovation | translate }}</span>
+          </li>
+        }
+        @if (specifics?.furnished; as furnished) {
+          <li>
+            <span class="text-gray-500">{{ 'FORM.LABELS.FURNISHED' | translate }}: </span
+            ><span>{{ 'FORM.PROPERTIES.FURNISHED_STATUS.' + furnished | translate }}</span>
+          </li>
+        }
+        @if (specifics?.kitchen; as kitchen) {
+          <li>
+            <span class="text-gray-500">{{ 'FORM.LABELS.KITCHEN' | translate }}: </span>
+            <span>{{ 'FORM.PROPERTIES.KITCHEN_TYPE.' + specifics?.kitchen | translate }}</span>
+          </li>
+        }
       </ul>
     </div>
 

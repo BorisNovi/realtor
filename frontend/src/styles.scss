@@ -29,11 +29,19 @@
 
   .p-button {
     font-size: 1.125rem !important;
-    padding: 0.75rem 0.9rem !important;
+    padding: var(--p-button-lg-padding-y) var(--p-button-lg-padding-x) !important;
+
+    &.p-button-icon {
+      font-size: 1.125rem !important;
+    }
+
+    &.p-button-icon-only:not(.p-button-rounded) {
+      width: fit-content;
+    }
   }
 
-  .p-button .p-button-icon {
-    font-size: 1.125rem !important;
+  .p-inputgroupaddon > p-button {
+    height: 100% !important;
   }
 
   .p-checkbox,

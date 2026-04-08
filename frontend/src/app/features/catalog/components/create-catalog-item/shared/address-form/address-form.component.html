@@ -6,13 +6,15 @@
     [label]="'FORM.LABELS.COUNTRY' | translate"
     class="md:col-span-1"
   >
-    <input
+    <rx-select-single
       id="address-country"
-      pInputText
-      type="text"
-      formControlName="country"
+      [fetcher]="countryFetchMethod"
+      [mapToSelect]="countryMapToSelect"
+      [valueMapper]="countryValueMapper"
       [placeholder]="'FORM.PLACEHOLDERS.COUNTRY' | translate"
-      class="w-full"
+      formControlName="country"
+      withSearch
+      translateLabels
     />
   </rx-input-wrapper>
 

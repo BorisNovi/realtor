@@ -1,21 +1,28 @@
-import { ChangeDetectionStrategy, Component, forwardRef, input, model, viewChild } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { booleanAttribute, ChangeDetectionStrategy, Component, forwardRef, input, signal } from '@angular/core';
 import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { IFetchOptions, ITableData } from '@shared/interfaces';
 import { SelectItem } from 'primeng/api';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputText } from 'primeng/inputtext';
-import { Select, SelectModule } from 'primeng/select';
-import { Observable, skip } from 'rxjs';
+import { SelectModule } from 'primeng/select';
+import { Observable } from 'rxjs';
 import { BaseSelect } from 'src/app/core';
-import { SelectComponent } from '../select/select.component';
 
 @Component({
   selector: 'rx-select-single',
   standalone: true,
-  imports: [SelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule],
+  imports: [SelectModule, FormsModule, InputText, InputGroup, InputGroupAddonModule, TranslatePipe],
   templateUrl: 'select-single.component.html',
+  host: {
+    class: 'p-inputwrapper',
+  },
+  styles: `
+    :host {
+      display: contents;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
@@ -30,21 +37,15 @@ export class SelectSingleComponent extends BaseSelect {
   readonly mapToSelect = input.required<(item: any) => SelectItem>();
   readonly valueMapper = input<(item: any) => any>(v => v);
   readonly placeholder = input('Select item');
+  readonly disabled = input(false, { transform: booleanAttribute });
   readonly emptyMessage = input('');
   readonly withSearch = input(false, { transform: v => v === '' || !!v });
+  readonly translateLabels = input(false, { transform: booleanAttribute });
 
-  readonly selected = model<SelectItem | null>(null);
+  readonly selected = signal<SelectItem | null>(null);
 
   #onChange: (value: any) => void = () => {};
   #onTouched: () => void = () => {};
-
-  constructor() {
-    super();
-
-    toObservable(this.selected)
-      .pipe(skip(1), takeUntilDestroyed())
-      .subscribe(value => this.emitValue(value));
-  }
 
   protected override fetchMethod(options: IFetchOptions) {
     return this.fetcher()(options);
@@ -56,6 +57,13 @@ export class SelectSingleComponent extends BaseSelect {
 
   onShow(): void {
     this.onShowBase();
+  }
+
+  onModelChange(value: any): void {
+    this.selected.set(value);
+    const mapped = value == null ? null : this.valueMapper()(value);
+    this.#onChange(mapped);
+    this.#onTouched();
   }
 
   writeValue(value: any): void {
@@ -72,10 +80,5 @@ export class SelectSingleComponent extends BaseSelect {
 
   registerOnTouched(fn: any): void {
     this.#onTouched = fn;
-  }
-
-  private emitValue(value: any): void {
-    const mapped = this.valueMapper()(value);
-    this.#onChange(mapped);
   }
 }

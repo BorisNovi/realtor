@@ -1,7 +1,14 @@
 <ng-container [formGroup]="form()">
   <!-- Name -->
   <rx-input-wrapper id="name" [control]="form().get('name')!" [label]="'FORM.LABELS.NAME' | translate" class="md:col-span-2">
-    <input id="name" pInputText type="text" formControlName="name" [placeholder]="'FORM.PLACEHOLDERS.NAME' | translate" />
+    <input
+      id="name"
+      pInputText
+      type="text"
+      formControlName="name"
+      [pAutoFocus]="true"
+      [placeholder]="'FORM.PLACEHOLDERS.NAME' | translate"
+    />
   </rx-input-wrapper>
 
   <!-- Property Type -->

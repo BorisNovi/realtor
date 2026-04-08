@@ -1,7 +1,8 @@
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, model, output, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, TemplateRef, input, model, output, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 import { IFetchOptions, ITableData } from '@shared/interfaces';
 import { Subject, switchMap, tap } from 'rxjs';
 
@@ -12,8 +13,7 @@ export interface RxSelectItem {
 
 @Component({
   selector: 'rx-select',
-  standalone: true,
-  imports: [ScrollingModule, NgTemplateOutlet],
+  imports: [ScrollingModule, NgTemplateOutlet, TranslatePipe],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +27,7 @@ export class SelectComponent<T = any> {
   readonly selectable = input(false, { transform: v => v === '' || !!v });
   readonly multiple = input(false, { transform: v => v === '' || !!v });
   readonly open = input<boolean>(false);
+  readonly emptyTpl = input<TemplateRef<any> | null>(null);
 
   readonly value = model<RxSelectItem[]>([]);
   readonly valueClick = output<RxSelectItem>();
@@ -37,7 +38,7 @@ export class SelectComponent<T = any> {
 
   private readonly loadPage$ = new Subject<{ first: number; rows: number }>();
   private total = 0;
-  private initialLoaded = false;
+  readonly initialLoaded = signal(false);
 
   viewport = viewChild(CdkVirtualScrollViewport);
 
@@ -52,7 +53,7 @@ export class SelectComponent<T = any> {
               const mapped = res.items.map(i => this.mapToSelect()(i));
               this.items.update(curr => [...curr, ...mapped]);
               this.loading.set(false);
-              this.initialLoaded = true;
+              this.initialLoaded.set(true);
             }),
           ),
         ),
@@ -84,7 +85,7 @@ export class SelectComponent<T = any> {
   onShow(): void {
     setTimeout(() => this.viewport()?.checkViewportSize(), 0);
 
-    if (this.items().length && this.initialLoaded) return;
+    if (this.items().length && this.initialLoaded()) return;
 
     this.items.set([]);
     this.loadPage$.next({ first: 0, rows: this.pageSize() });
@@ -118,5 +119,11 @@ export class SelectComponent<T = any> {
     if (this.isDisabled(item)) return;
 
     this.valueClick.emit(item);
+  }
+
+  reload(): void {
+    this.items.set([]);
+    this.initialLoaded.set(false);
+    this.loadPage$.next({ first: 0, rows: this.pageSize() });
   }
 }

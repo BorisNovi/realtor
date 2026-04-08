@@ -1,11 +1,15 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, Injector, runInInjectionContext, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { AvatarComponent, ImportExportComponent, InputWrapperComponent } from '@shared/components';
-import { IImportExportSection, IUser } from '@shared/interfaces';
+import { AvatarComponent, ImportExportComponent, InputWrapperComponent, SelectSingleComponent } from '@shared/components';
+import { CURRENCY_SYMBOLS } from '@shared/constants';
+import { WorldPhoneMasksDirective } from '@shared/directives';
+import { Currency } from '@shared/enums';
+import { ICountry, IFetchOptions, IImportExportSection, IUser } from '@shared/interfaces';
+import { mapEnumToOptions } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -14,8 +18,9 @@ import { FluidModule } from 'primeng/fluid';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 import { catchError, of } from 'rxjs';
-import { FileUploadService, Logout, Terminate } from 'src/app/core';
+import { CountryService, FileUploadService, Logout, Terminate } from 'src/app/core';
 import { EditProfile, ProfileState } from 'src/app/core/profile/state';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { DeleteAccountComponent } from './components/delete-account/delete-account.component';
@@ -37,6 +42,9 @@ import { DeleteAccountComponent } from './components/delete-account/delete-accou
     ImportExportComponent,
     TranslatePipe,
     DatePipe,
+    WorldPhoneMasksDirective,
+    SelectSingleComponent,
+    SelectModule,
   ],
   providers: [DialogService],
   templateUrl: './profile.component.html',
@@ -44,6 +52,7 @@ import { DeleteAccountComponent } from './components/delete-account/delete-accou
 })
 export class ProfileComponent {
   readonly #store = inject(Store);
+  readonly #countryService = inject(CountryService);
   readonly #destroyRef = inject(DestroyRef);
   readonly #fileUploadService = inject(FileUploadService);
   readonly #fb = inject(FormBuilder);
@@ -53,6 +62,14 @@ export class ProfileComponent {
   #ref!: DynamicDialogRef | null;
 
   readonly user = this.#store.selectSignal(ProfileState.user);
+
+  readonly countryFetchMethod = (options: IFetchOptions) => this.#countryService.fetchCountries(options);
+  readonly countryMapToSelect = (item: ICountry) => ({
+    label: `COUNTRIES.${item.name}`,
+    value: { name: item.name, id: item.name },
+    id: item.name,
+  });
+  readonly countryValueMapper = (country: ICountry) => ({ name: country?.name });
 
   readonly FieldEditing = FieldEditing;
   readonly fieldEdititng = signal<FieldEditing | false>(false);
@@ -72,8 +89,14 @@ export class ProfileComponent {
     email: [this.user()?.email, [Validators.required, Validators.email]],
     companyName: [this.user()?.companyName],
     companyLogo: [this.user()?.companyLogo],
+    firstName: [this.user()?.firstName],
+    lastName: [this.user()?.lastName],
+    phone: [this.user()?.phone],
+    country: [this.user()?.country],
+    currency: [this.user()?.currency],
   });
 
+  readonly currencies = mapEnumToOptions(Currency, value => `${CURRENCY_SYMBOLS[value]} (${value})`);
   onUpload(event: FileUploadHandlerEvent): void {
     if (event && Array.isArray(event.files)) {
       const files: File[] = event.files;
@@ -140,6 +163,7 @@ export class ProfileComponent {
       modal: true,
       closable: true,
       dismissableMask: true,
+      draggable: false,
       contentStyle: { overflow: 'auto' },
       breakpoints: {
         '640px': '90vw',
@@ -154,6 +178,7 @@ export class ProfileComponent {
       modal: true,
       closable: true,
       dismissableMask: true,
+      draggable: false,
       contentStyle: { overflow: 'auto' },
       breakpoints: {
         '640px': '90vw',
@@ -166,4 +191,9 @@ enum FieldEditing {
   CompanyName = 'companyName',
   CompanyLogo = 'companyLogo',
   Email = 'email',
+  FirstName = 'firstName',
+  LastName = 'lastName',
+  Phone = 'phone',
+  Country = 'country',
+  Currency = 'currency',
 }

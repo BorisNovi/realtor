@@ -4,6 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { InputWrapperComponent } from '@shared/components';
 import { PropertyStatus, PropertyType, ZoningType } from '@shared/enums';
 import { getPropertyStatusBackground, getPropertyStatusSeverity, mapEnumToOptions } from '@shared/utils';
+import { AutoFocusModule } from 'primeng/autofocus';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,6 +24,7 @@ import { TagModule } from 'primeng/tag';
     SelectModule,
     TagModule,
     ButtonModule,
+    AutoFocusModule,
   ],
 })
 export class PropertyBasicFieldsComponent {

@@ -22,7 +22,7 @@ export class WorldPhoneMasksDirective implements ControlValueAccessor {
     const { formattedValue, isValid } = this.#addPhoneMask(value);
 
     input.value = formattedValue;
-    this.#onChange(formattedValue);
+    this.#onChange(this.#cleanInput(formattedValue));
     this.valid.emit(isValid);
   }
 
