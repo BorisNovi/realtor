@@ -50,6 +50,7 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
             })
         return value
     
+    
     @transaction.atomic
     def create(self, validated_data):
         print(Fore.YELLOW + "=== Initiating Creating Property... ===" + Fore.RESET)
