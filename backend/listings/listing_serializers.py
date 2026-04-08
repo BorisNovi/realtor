@@ -11,10 +11,15 @@ class ListingSerializer(serializers.ModelSerializer):
     )
     public_link = serializers.JSONField(required=False)
     property_objects = serializers.SerializerMethodField()
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault()) # TODO: Вообще используется?!
 
     company_name = serializers.SerializerMethodField()
     company_logo = serializers.SerializerMethodField()
+    
+    first_name = serializers.SerializerMethodField()
+    last_name = serializers.SerializerMethodField()
+    phone = serializers.SerializerMethodField()
 
     class Meta:
         model = Listing
@@ -27,14 +32,20 @@ class ListingSerializer(serializers.ModelSerializer):
             'date_added',
             'property_object_ids',
             'property_objects', 
-            'user'
-            ] 
+            'user',
+            'first_name',
+            'last_name',
+            'phone'
+        ] 
         read_only_fields = [
             'id', 
             'date_added', 
             'property_objects',
             'user',
-            ]
+            'first_name',
+            'last_name',
+            'phone'
+        ]
 
     # Ищем запрашиваемые объекты
     def get_property_objects(self, obj):
@@ -54,25 +65,48 @@ class ListingSerializer(serializers.ModelSerializer):
             for p in properties
         ]
 
-    # Берем имя компании через пользователя
+
+    # -------------------- ДОСТАЕМ АТРИБУТЫ ПОЛЬЗОВАТЕЛЯ --------------------
+    
     def get_company_name(self, obj):
         if obj.user:
             return obj.user.company_name
         return None
 
-    # Берем логотип компании через пользователя
     def get_company_logo(self, obj):
         if obj.user:
             return obj.user.company_logo
         return None
 
+    def get_first_name(self, obj):
+        if obj.user:
+            return obj.user.first_name
+        return None
+    
+    def get_last_name(self, obj):
+        if obj.user:
+            return obj.user.last_name
+        return None
+    
+    def get_phone(self, obj):
+        if obj.user:
+            return obj.user.phone
+        return None
+
     # Ручная валидация поля property_object_ids, чтобы убедиться, что все фронт не шлет хуйню
     def validate_property_object_ids(self, ids):
         if not isinstance(ids, list):
-            raise serializers.ValidationError("Должен быть список")
+            raise serializers.ValidationError({
+                "error": "MUST_BE_LIST",
+                "message": "Property object IDs must be a list."
+            })
         if not all(isinstance(i, int) for i in ids):
-            raise serializers.ValidationError("Все элементы должны быть числами")
+            raise serializers.ValidationError({
+                "error": "INVALID_PROPERTY_OBJECT_IDS",
+                "message": "All elements must be integers."
+            })
         return ids
+
 
     # -------------------- ЛОГИКА ГЕНЕРАЦИИ PUBLIC LINK --------------------
     def _generate_token(self) -> str:

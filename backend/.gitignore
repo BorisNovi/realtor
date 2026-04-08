@@ -35,3 +35,5 @@ Thumbs.db
 
 # Pip installer bundle
 get-pip.py
+
+test_users.txt

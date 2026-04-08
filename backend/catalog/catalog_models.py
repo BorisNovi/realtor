@@ -38,7 +38,6 @@ class Property(PolymorphicModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
-
     def soft_delete(self):
         self.is_deleted = True
         self.deleted_at = timezone.now()
@@ -204,39 +203,13 @@ class Office(Property):
 
 # Модель для земельных участков
 class Land(Property):
- 
-    # specifics
-    rooms = models.IntegerField(null=True, blank=True)
-    floor_current = models.PositiveIntegerField(null=True, blank=True)
-    floor_full = models.PositiveIntegerField(null=True, blank=True)
-    kitchen_type = models.CharField(max_length=50, null=True, blank=True)
-    heating = models.CharField(max_length=50, null=True, blank=True)
-    furnished = models.CharField(max_length=50, null=True, blank=True)
-    renovation = models.CharField(max_length=50, null=True, blank=True)
-
-    # specifics.sharedFacilities
-    shared_kitchen = models.BooleanField(default=False)
-    shared_bathroom = models.BooleanField(default=False)
-
-    # specifics.utilities
     electricity = models.BooleanField(default=False)
     water_supply = models.BooleanField(default=False)
     natural_gas = models.BooleanField(default=False)
     sewerage = models.BooleanField(default=False)
     internet = models.BooleanField(default=False)
-
-    # specifics.options
-    bath = models.BooleanField(default=False)
-    shower = models.BooleanField(default=False)
-    air_conditioning = models.BooleanField(default=False)
-    fireplace = models.BooleanField(default=False)
     beautiful_view = models.BooleanField(default=False)
-    new_building = models.BooleanField(default=False)
-    elevator = models.BooleanField(default=False)
-
-    # specifics.options.other
     parking = models.BooleanField(default=False)
-    balcony = models.BooleanField(default=False)
     garden = models.BooleanField(default=False)
     garage = models.BooleanField(default=False)
 

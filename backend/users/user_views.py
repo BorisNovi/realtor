@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.decorators import APIView, api_view
 from django.contrib.auth import get_user_model
+from catalog.catalog_models import Land, Property, Room, Flat, Office, House
 from .user_serializers import ProfileSerializer, ChangePasswordSerializer
 from users.import_csv import import_properties_csv
 from users.export_csv import export_properties_csv
@@ -40,18 +41,35 @@ class ChangePasswordView(generics.UpdateAPIView):
 
         return Response({"PASSWORD_CHANGED_SUCCESSFULLY"}, status=200)
 
-
 class DeleteProfileView(generics.DestroyAPIView):
     authentication_classes = [JWTAuthentication]  
+    http_method_names = ["post", "delete"]
+
+    def post(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
     def get_object(self):
         return self.request.user
-
+    
     def destroy(self, request, *args, **kwargs):
-        user = self.get_object()
-        # Тут можно потом добавить удаление связанных данных
+        password = request.data.get("password")
+        if not password or not request.user.check_password(password):
+            return Response({"detail": "Invalid password"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user
+
+        # сначала все дочерние подтипы
+        Flat.objects.filter(user=user).delete()
+        Land.objects.filter(user=user).delete()
+        Room.objects.filter(user=user).delete()
+        House.objects.filter(user=user).delete()
+        Office.objects.filter(user=user).delete()
+        
+        # потом родитель
+        Property.objects.filter(user=user).delete()
+
         user.delete()
-        return Response({"PROFILE_DELETED_SUCCESSFULLY"}, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # === Экспорт и импорт CSV ===
@@ -80,3 +98,61 @@ class ImportPropertiesCSVView(APIView):
 
         status_code = 207 if result["errors"] else 200
         return Response(response_data, status=status_code)
+    
+
+# новый формат ошибок:
+# class ImportPropertiesCSVView(APIView):
+#     def post(self, request):
+#         file = request.FILES.get("file")
+#         if not file:
+#             return Response({"error": "CSV file required"}, status=400)
+
+#         try:
+#             result = import_properties_csv(file, request.user)
+
+#         except ValueError as e:
+#             # Критические ошибки файла целиком (нет обязательных колонок и т.п.)
+#             return Response({"error": str(e)}, status=400)
+
+#         response_data = {
+#             "created": result["created"],
+#             "errors": result["errors"],  # всегда включаем, даже если пустой список
+#         }
+
+#         status_code = 207 if result["errors"] else 200
+#         return Response(response_data, status=status_code)
+
+
+# Для импорта:
+# Убери ValidationError из импортов, используй только ValueError везде
+# и формируй понятную структуру ошибки
+
+# for line_number, row in enumerate(reader, start=2):
+#     ...
+#     try:
+#         obj, contact = _build_property(row, user, contacts_cache)
+#         valid_objects.append(obj)
+#     except Exception as e:
+#         errors.append({
+#             "line": line_number,
+#             "error_type": type(e).__name__,
+#             "error": str(e),
+#         })
+
+
+# def _validate_address(row):
+#     country = get_row_value(row, "address_country")
+#     if country:
+#         if not ISO_ALPHA2_RE.match(str(country).strip().upper()):
+#             raise ValueError(
+#                 f"Invalid country code '{country}'. "
+#                 f"Use ISO Alpha-2 format (e.g. 'US', 'GE', 'DE')."
+#             )
+
+#     missing = [
+#         HEADERS[field]["csv"]
+#         for field in HEADERS
+#         if field.startswith("address_") and HEADERS[field].get("required") and not get_row_value(row, field)
+#     ]
+#     if missing:
+#         raise ValueError(f"Missing required address fields: {', '.join(missing)}")
