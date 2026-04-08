@@ -82,7 +82,8 @@
         transition: transform var(--element-transition-duration);
       }
 
-      &.active-route {
+      &.active-route,
+      &.active-route-pattern {
         font-weight: 700;
         color: var(--primary-color);
       }

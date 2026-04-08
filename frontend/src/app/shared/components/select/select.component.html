@@ -1,15 +1,26 @@
-<cdk-virtual-scroll-viewport itemSize="36" class="rx-select-viewport" (scrolledIndexChange)="onScrolled()">
-  <div
-    *cdkVirtualFor="let item of items(); trackBy: trackByValue"
-    class="container"
-    [class.disabled]="isDisabled(item)"
-    [class.selected]="isSelected(item)"
-    (click)="toggle(item); onItemClick(item)"
-  >
-    <ng-container *ngTemplateOutlet="itemTpl(); context: { $implicit: item }"></ng-container>
-  </div>
-</cdk-virtual-scroll-viewport>
-
+@if (items().length) {
+  <cdk-virtual-scroll-viewport itemSize="36" class="rx-select-viewport" (scrolledIndexChange)="onScrolled()">
+    <div
+      *cdkVirtualFor="let item of items(); trackBy: trackByValue"
+      class="container"
+      [class.disabled]="isDisabled(item)"
+      [class.selected]="isSelected(item)"
+      (click)="toggle(item); onItemClick(item)"
+    >
+      <ng-container *ngTemplateOutlet="itemTpl(); context: { $implicit: item }"></ng-container>
+    </div>
+  </cdk-virtual-scroll-viewport>
+}
+@if (!loading() && !items().length && initialLoaded()) {
+  @if (emptyTpl()) {
+    <ng-container [ngTemplateOutlet]="emptyTpl()!"></ng-container>
+  } @else {
+    <div class="flex flex-col items-center justify-center py-4 gap-2 text-color-secondary">
+      <i class="pi pi-inbox text-2xl! text-center opacity-40"></i>
+      <span class="text-sm text-center">{{ 'SELECT.EMPTY' | translate }}</span>
+    </div>
+  }
+}
 @if (loading()) {
   <div class="loader">Loading…</div>
 }

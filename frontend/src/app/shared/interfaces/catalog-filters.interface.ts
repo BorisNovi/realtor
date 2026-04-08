@@ -6,9 +6,11 @@ export interface ICatalogFilters {
     from?: Date | string | null;
     to?: Date | string | null;
   };
+  hasPhotos?: boolean | null;
   status?: PropertyStatus | null;
   propertyType?: PropertyType[] | null;
   zoningType?: ZoningType[] | null;
+  contact?: number | null;
   area?: {
     min?: number | null;
     max?: number | null;

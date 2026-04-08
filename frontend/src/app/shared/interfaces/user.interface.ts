@@ -1,3 +1,4 @@
+import { ICountry } from './country.interface';
 import { IEntity } from './entity.interface';
 
 export interface ISessionUser {
@@ -10,6 +11,12 @@ export interface IUserEditable {
   email: string;
   companyLogo: string;
   companyName: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  country: ICountry;
+  defaultCountry: ICountry;
+  currency: string;
 }
 
 export interface IUser extends IEntity, IUserEditable {

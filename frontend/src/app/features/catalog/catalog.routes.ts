@@ -26,6 +26,10 @@ export const catalogRoutes: Routes = [
         loadComponent: () => import('./components/catalog-map/catalog-map.component').then(c => c.CatalogMapComponent),
       },
       {
+        path: 'map/:id',
+        loadComponent: () => import('./components/catalog-map/catalog-map.component').then(c => c.CatalogMapComponent),
+      },
+      {
         path: ':id',
         component: CatalogItemComponent,
         resolve: { data: itemResolver },

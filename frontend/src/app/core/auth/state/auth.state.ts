@@ -100,7 +100,7 @@ export class AuthState {
 
     return this.#authService.checkSession().pipe(
       tap(res => {
-        // const { user } = ctx.getState();
+        ctx.patchState({ user: res.user });
         // if (!this.socketService.socket && user) {
         //   this.socketService.connect(user, token);
         // }

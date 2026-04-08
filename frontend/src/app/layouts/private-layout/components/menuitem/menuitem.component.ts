@@ -1,12 +1,12 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnInit, computed, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { RippleModule } from 'primeng/ripple';
-import { Subscription, filter } from 'rxjs';
+import { filter } from 'rxjs';
 import { PrivateLayoutService } from '../../shared';
 
 @Component({
@@ -33,7 +33,7 @@ import { PrivateLayoutService } from '../../shared';
     ]),
   ],
 })
-export class MenuitemComponent implements OnInit, OnDestroy {
+export class MenuitemComponent implements OnInit {
   readonly #router = inject(Router);
   readonly #layoutService = inject(PrivateLayoutService);
 
@@ -48,8 +48,8 @@ export class MenuitemComponent implements OnInit, OnDestroy {
   }
 
   #active = false;
-  #menuSourceSubscription: Subscription;
-  #menuResetSubscription: Subscription;
+
+  readonly patternActiveRoute = signal(false);
 
   readonly key = computed(() => {
     const i = this.index();
@@ -58,19 +58,19 @@ export class MenuitemComponent implements OnInit, OnDestroy {
   });
 
   constructor() {
-    this.#menuSourceSubscription = this.#layoutService.menuSource$.pipe(takeUntilDestroyed()).subscribe(value => {
+    this.#layoutService.menuSource$.pipe(takeUntilDestroyed()).subscribe(value => {
       Promise.resolve(null).then(() => {
         if (value.routeEvent) {
-          this.#active = value.key === this.key() || value.key.startsWith(this.key + '-') ? true : false;
+          this.#active = value.key === this.key() || value.key.startsWith(this.key() + '-');
         } else {
-          if (value.key !== this.key() && !value.key.startsWith(this.key + '-')) {
+          if (value.key !== this.key() && !value.key.startsWith(this.key() + '-')) {
             this.#active = false;
           }
         }
       });
     });
 
-    this.#menuResetSubscription = this.#layoutService.resetSource$.pipe(takeUntilDestroyed()).subscribe(() => {
+    this.#layoutService.resetSource$.pipe(takeUntilDestroyed()).subscribe(() => {
       this.#active = false;
     });
 
@@ -79,29 +79,32 @@ export class MenuitemComponent implements OnInit, OnDestroy {
         filter(event => event instanceof NavigationEnd),
         takeUntilDestroyed(),
       )
-      .subscribe(params => {
-        if (this.item()?.routerLink) {
-          this.updateActiveStateFromRoute();
-        }
-      });
+      .subscribe(() => this.updateActiveState());
   }
 
   ngOnInit() {
-    if (this.item()?.routerLink) {
-      this.updateActiveStateFromRoute();
-    }
+    this.updateActiveState();
   }
 
-  updateActiveStateFromRoute() {
-    const activeRoute = this.#router.isActive(this.item()?.routerLink[0], {
-      paths: 'exact',
-      queryParams: 'ignored',
-      matrixParams: 'ignored',
-      fragment: 'ignored',
-    });
+  updateActiveState() {
+    const item = this.item();
 
-    if (activeRoute) {
-      this.#layoutService.onMenuStateChange({ key: this.key(), routeEvent: true });
+    if (item?.routerLink) {
+      const activeRoute = this.#router.isActive(item.routerLink[0], {
+        paths: item.routerLinkActiveOptions?.paths ?? 'exact',
+        queryParams: 'ignored',
+        matrixParams: 'ignored',
+        fragment: 'ignored',
+      });
+      if (activeRoute) {
+        this.#layoutService.onMenuStateChange({ key: this.key(), routeEvent: true });
+      }
+    }
+
+    const pattern = item?.state?.['activeUrlPattern'];
+    if (pattern) {
+      const url = this.#router.url.split('?')[0];
+      this.patternActiveRoute.set(new RegExp(pattern).test(url));
     }
   }
 
@@ -133,15 +136,5 @@ export class MenuitemComponent implements OnInit, OnDestroy {
   @HostBinding('class.active-menuitem')
   get activeClass() {
     return this.#active && !this.root();
-  }
-
-  ngOnDestroy() {
-    if (this.#menuSourceSubscription) {
-      this.#menuSourceSubscription.unsubscribe();
-    }
-
-    if (this.#menuResetSubscription) {
-      this.#menuResetSubscription.unsubscribe();
-    }
   }
 }

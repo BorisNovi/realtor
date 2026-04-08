@@ -2,7 +2,7 @@
 
 @let listing = item();
 
-@if (mode() === Mode.Share && listing && (listing.companyLogo || listing.companyName)) {
+@if (mode() === Mode.Share && listing) {
   <div class="flex items-center gap-4 mb-6">
     @if (listing.companyLogo) {
       <img [src]="listing?.companyLogo" class="h-12 w-auto object-contain" />
@@ -12,6 +12,13 @@
         {{ listing?.companyName }}
       </span>
     }
+  </div>
+  <div>
+    {{ listing?.firstName }}
+    {{ listing?.lastName }}
+    <a [href]="'tel:+' + listing?.phone" class="text-primary font-bold hover:underline">{{
+      listing?.phone | worldPhoneMask
+    }}</a>
   </div>
 }
 
@@ -64,7 +71,10 @@
     </rx-detail>
   }
 } @else {
-  Empty
+  <div class="flex flex-col items-center justify-center py-16 gap-3 text-color-secondary">
+    <i class="pi pi-inbox text-5xl! opacity-40"></i>
+    <span class="text-lg text-center">{{ 'LISTINGS.ITEM.EMPTY' | translate }}</span>
+  </div>
 }
 
 <p-popover

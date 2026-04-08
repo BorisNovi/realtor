@@ -1,6 +1,6 @@
 <p-confirmDialog></p-confirmDialog>
 
-<div class="relative h-full rounded-md overflow-hidden bg-[var(--surface-card)]">
+<div class="relative h-full rounded-md overflow-hidden bg-(--surface-card)">
   <div class="flex justify-end w-full gap-4 px-4 py-3 absolute z-10 backdrop-brightness-50">
     <p-button [label]="'MAP.LOCATE' | translate" [outlined]="true" icon="pi pi-map-marker" (click)="updateLocation()" />
     <p-button
@@ -19,178 +19,12 @@
   ></rx-map>
 </div>
 
-@let selected = selectedItem();
-<p-drawer [(visible)]="drawerOpen" [blockScroll]="true" position="right" styleClass="!w-full sm:!w-[30rem]">
-  <ng-template #header>
-    <div>
-      @if (selected?.name) {
-        <h3 class="font-semibold text-xl mb-1">{{ selected?.name }}</h3>
-      } @else {
-        <h3 class="font-semibold text-xl mb-2">
-          {{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + selected?.propertyType | translate }} {{ selected?.area || 0 }} m² —
-          {{ selected?.price?.value || 0 }}
-          {{ getCurrencySymbol((selected?.price)!.currency) }}
-        </h3>
-      }
-    </div>
-  </ng-template>
-
-  @if (selected?.photos?.length) {
-    <div class="-mr-6 -ml-6">
-      <p-galleria
-        class="border-transparent!"
-        className="galeria"
-        [value]="imagesTemp()"
-        [numVisible]="3"
-        [showItemNavigators]="true"
-        [circular]="true"
-        [showThumbnails]="false"
-        [numVisible]="5"
-      >
-        <ng-template #item let-item>
-          <img [src]="item.image" style="width: 100%" alt="image" />
-        </ng-template>
-      </p-galleria>
-    </div>
-  }
-
-  <div class="mt-4">
-    <ul class="space-y-2">
-      <li>
-        <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.TYPE' | translate }}: </span
-        ><span>{{ 'FORM.PROPERTIES.PROPERTY_TYPE.' + selected?.propertyType | translate }}</span>
-      </li>
-      <li>
-        <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.STATUS' | translate }}: </span
-        ><p-tag
-          class="h-6"
-          [value]="'FORM.PROPERTIES.PROPERTY_STATUS.' + selected?.status | translate"
-          [severity]="getSeverity(selected?.status || '')"
-        ></p-tag>
-      </li>
-      <li>
-        <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.ZONING' | translate }}: </span>
-        <span>{{ 'FORM.PROPERTIES.ZONING_TYPE.' + selected?.zoningType | translate }}</span>
-      </li>
-      <li>
-        <span class="truncate text-wrap">
-          @let a = selected?.address;
-          <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.ADDRESS' | translate }}: </span>
-          {{ a?.city }}, {{ a?.road }}, <span class="text-nowrap">№ {{ a?.house }}</span
-          >,
-          @if (a?.apartment) {
-            <span class="text-nowrap">{{ 'PREFIXES.APARTMENT' | translate }} {{ a?.apartment }}</span>
-          }
-        </span>
-      </li>
-      <li>
-        <span class="text-gray-500">{{ 'CATALOG.TABLE.HEADERS.PRICE' | translate }}: </span
-        ><a>{{ selected?.price?.value || '—' }} {{ getCurrencySymbol(selected?.price?.currency || '') }}</a>
-      </li>
-    </ul>
-
-    @if (detailedSelected(); as detailed) {
-      <!-- Comment -->
-      @if (detailed.comment; as comment) {
-        <div>
-          <p-divider align="left" type="solid" class="font-bold">{{ 'FORM.LABELS.COMMENT' | translate }}</p-divider>
-          <span>{{ comment }}</span>
-        </div>
-      }
-
-      <!-- Specifics -->
-      @let specifics = detailed.specifics;
-      <div>
-        <p-divider align="left" type="solid" class="font-bold">{{ 'CATALOG.LABELS.ABOUT' | translate }}</p-divider>
-        <ul class="columns-1 sm:columns-2 gap-4 space-y-2">
-          <li>
-            <span class="text-gray-500">{{ 'FORM.LABELS.AREA' | translate }}: </span><span>{{ detailed?.area || '—' }} m²</span>
-          </li>
-          <li>
-            <span class="text-gray-500">{{ 'FORM.LABELS.CURRENT_FLOOR' | translate }}: </span
-            ><span>{{ specifics?.floor?.current || '—' }}</span>
-          </li>
-          <li>
-            <span class="text-gray-500">{{ 'FORM.LABELS.TOTAL_FLOORS' | translate }}: </span
-            ><span>{{ specifics?.floor?.full || '—' }}</span>
-          </li>
-          <li>
-            <span class="text-gray-500">{{ 'FORM.LABELS.ROOMS' | translate }}: </span><span>{{ specifics?.rooms || '—' }}</span>
-          </li>
-          <li>
-            <span class="text-gray-500">{{ 'FORM.LABELS.HEATING' | translate }}: </span
-            ><span>{{ specifics?.heating || '—' }}</span>
-          </li>
-          <li>
-            <span class="text-gray-500">{{ 'FORM.LABELS.RENOVATION' | translate }}: </span
-            ><span>{{
-              specifics?.renovation ? ('FORM.PROPERTIES.RENOVATION_STATUS.' + specifics?.renovation | translate) : '—'
-            }}</span>
-          </li>
-          <li>
-            <span class="text-gray-500">{{ 'FORM.LABELS.FURNISHED' | translate }}: </span
-            ><span>{{
-              specifics?.furnished ? ('FORM.PROPERTIES.FURNISHED_STATUS.' + specifics?.furnished | translate) : '—'
-            }}</span>
-          </li>
-          <li>
-            <span class="text-gray-500">{{ 'FORM.LABELS.KITCHEN' | translate }}: </span
-            ><span>{{ specifics?.kitchen ? ('FORM.PROPERTIES.KITCHEN_TYPE.' + specifics?.kitchen | translate) : '—' }}</span>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Options -->
-      @if (optionsArray() | notEmpty; as options) {
-        <div>
-          <p-divider align="left" type="solid" class="font-bold">{{ 'CATALOG.LABELS.OPTIONS' | translate }}</p-divider>
-          <ul class="columns-1 sm:columns-2 gap-4 space-y-2">
-            @for (group of options; track group.category) {
-              <li class="pb-4 break-inside-avoid">
-                <strong>{{ 'FORM.LABELS.' + group.category | camelToUpperSnake | translate }}</strong>
-                <ul class="pl-4 pt-2 space-y-1 list-disc">
-                  @for (opt of group.values; track opt[0]) {
-                    <li>
-                      <span>{{ 'FORM.LABELS.' + opt[0] | camelToUpperSnake | translate }}</span>
-                    </li>
-                  }
-                </ul>
-              </li>
-            }
-          </ul>
-        </div>
-      }
-
-      <!-- Contact -->
-      <div>
-        <p-divider align="left" type="solid" class="font-bold">{{ 'FORM.LABELS.CONTACT' | translate }}</p-divider>
-        <ul class="space-y-1">
-          <li>
-            <span class="text-gray-500">Contact person: </span><span>{{ detailed?.contact?.name || '—' }}</span>
-          </li>
-          <li>
-            <span class="text-gray-500">Contact phone: </span><span>{{ detailed?.contact?.phone | worldPhoneMask }}</span>
-          </li>
-        </ul>
-      </div>
-    } @else {
-      <div class="-mr-6 -ml-6">
-        <p-progressbar mode="indeterminate" [style]="{ height: '4px' }" />
-      </div>
-    }
-  </div>
-
-  <ng-template #footer>
-    <div class="flex gap-4 justify-between">
-      <div class="flex gap-2">
-        <p-button icon="pi pi-trash" severity="danger" (onClick)="deleteItem(selected?.id || 0)" />
-        <p-button icon="pi pi-pencil" (onClick)="edit(selected?.id || 0)" />
-      </div>
-      <p-button
-        [label]="'CATALOG.TABLE.BUTTONS.ADD_TO_LISTING' | translate"
-        icon="pi pi-list-check"
-        (onClick)="openAddToListingDialog(selected?.id || 0)"
-      />
-    </div>
-  </ng-template>
-</p-drawer>
+<rx-catalog-map-drawer
+  [open]="drawerOpen()"
+  [item]="selectedItem()"
+  [detailedItem]="detailedSelected()"
+  (closed)="onDrawerClose()"
+  (deleteRequested)="deleteItem($event)"
+  (editRequested)="edit($event)"
+  (addToListingRequested)="openAddToListingDialog($event)"
+/>

@@ -3,7 +3,7 @@ import { ListingItemComponent, Mode } from './components/listing-item/listing-it
 import { ListingsTableComponent } from './components/listings-table/listing-table.component';
 import { listingResolver } from './listing.resolver';
 import { listingsResolver } from './listings.resolver';
-import { publicListingResolver } from './public-listing.resolver';
+import { publicListingResolver, publicListingTitleResolver } from './public-listing.resolver';
 
 export const listingsRoutes: Routes = [
   {
@@ -33,11 +33,11 @@ export const listingsRoutes: Routes = [
 export const publicListingsRoutes = [
   {
     path: 'listings',
-    title: 'Listings',
     loadComponent: () => import('./listings.component').then(c => c.ListingsComponent),
     children: [
       {
         path: '',
+        title: publicListingTitleResolver,
         component: ListingItemComponent,
         resolve: { data: publicListingResolver },
         data: { mode: Mode.Share },
