@@ -8,7 +8,7 @@
           @let isEmailEditing = fieldEdititng() == FieldEditing.Email;
           <rx-input-wrapper [control]="userForm.get('email')!" [label]="'PROFILE.EMAIL' | translate" id="email">
             <p-inputgroup>
-              <input pInputText id="email" type="text" formControlName="email" [class.p-disabled]="!isEmailEditing" />
+              <input pInputText id="email" type="email" formControlName="email" [class.p-disabled]="!isEmailEditing" />
 
               @if (isEmailEditing) {
                 <p-inputgroup-addon>

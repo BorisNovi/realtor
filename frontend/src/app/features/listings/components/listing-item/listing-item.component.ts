@@ -114,9 +114,7 @@ export class ListingItemComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.#ref) {
-      this.#ref.close();
-    }
+    if (this.#ref) this.#ref.close();
   }
 }
 
