@@ -93,7 +93,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         return ret
 
     def update(self, instance, validated_data):        
-        logo = validated_data.get('company_logo', None)
+        logo = validated_data.pop('company_logo', None)
         if logo and logo != instance.company_logo:
             instance.company_logo = make_files_permanent(logo)
 

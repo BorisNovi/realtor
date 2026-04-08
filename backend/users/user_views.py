@@ -100,7 +100,7 @@ class ImportPropertiesCSVView(APIView):
         return Response(response_data, status=status_code)
     
 
-# новый формат:
+# новый формат ошибок:
 # class ImportPropertiesCSVView(APIView):
 #     def post(self, request):
 #         file = request.FILES.get("file")
