@@ -15,7 +15,7 @@ import { routes } from './app.routes';
 import { authInterceptor, AuthState, CatalogState } from './core';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TRANSLATE_HTTP_LOADER_CONFIG, TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TransferStateLoader } from './shared/utils/translate-loader';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ContactsState } from './core/contacts/state/contacts.state';
 import { ListingsState } from './core/listings/state';
@@ -38,11 +38,10 @@ export const appConfig: ApplicationConfig = {
         fallbackLang: 'en',
         loader: {
           provide: TranslateLoader,
-          useFactory: () => new TranslateHttpLoader(),
+          useClass: TransferStateLoader,
         },
       }),
     ),
-    { provide: TRANSLATE_HTTP_LOADER_CONFIG, useValue: { prefix: './assets/i18n/', suffix: '.json' } },
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {

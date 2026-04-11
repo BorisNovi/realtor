@@ -499,6 +499,59 @@
     "CONTACTS_TITLE": "Owner Contacts",
     "CONTACTS_DESC": "Keep property owner contacts at hand"
   },
+  "LANDING": {
+    "NAV": {
+      "ABOUT": "About Us",
+      "SOLUTIONS": "Solutions",
+      "FAQS": "FAQs",
+      "CONTACT": "Contact Us"
+    },
+    "HERO": {
+      "TITLE": "See And Manage Your Properties",
+      "SUBTITLE": "Manage your property listings with a convenient map view. Create personalized selections and share them with clients.",
+      "TRY_FREE": "Try It For Free",
+      "LEARN_MORE": "Learn More",
+      "CTA": "Get Started"
+    },
+    "ABOUT": {
+      "LABEL": "about us",
+      "TITLE": "See And Manage Your Properties",
+      "TEXT": "Manage your property listings with a convenient map view. Create personalized selections and share them with clients. Assign statuses, link contacts, and keep everything in one place."
+    },
+    "FEATURES": {
+      "LABEL": "features",
+      "ITEM_1_TITLE": "Create and manage property lists",
+      "ITEM_1_DESC": "Easily create, sort, and filter properties the way you like. Assign types, statuses, and characteristics to properties, link contacts, and add notes.",
+      "ITEM_2_TITLE": "Create selections for your clients",
+      "ITEM_2_DESC": "Add properties to personalized collections and share them with clients. Easily manage availability with a visibility toggle.",
+      "ITEM_3_TITLE": "All your properties — on the map",
+      "ITEM_3_DESC": "See your area of influence: no need to constantly search for addresses or remember locations — the map is already built into your CRM."
+    },
+    "FAQ": {
+      "LABEL": "FAQ",
+      "TITLE": "What Is Urban CRM?",
+      "Q1": "How do I get started?",
+      "A1": "Simply sign up for a free account and start adding your properties right away. No credit card required.",
+      "Q2": "Can I import an existing database of properties or contacts?",
+      "A2": "Yes, you can import your properties and contacts via CSV to start working with up-to-date data immediately.",
+      "Q3": "Is my data secure?",
+      "A3": "Your data is stored securely and is only accessible to you and the team members you invite."
+    },
+    "CTA": {
+      "TITLE": "Become part",
+      "SUBTITLE": "of a simple and accessible system that makes managing your property database easy and convenient!",
+      "BUTTON": "Get Started"
+    },
+    "FOOTER": {
+      "EMAIL_LABEL": "Email Us",
+      "EMAIL": "hello@urbancrm.app",
+      "PHONE_LABEL": "Call Us",
+      "PHONE": "+1 800 555 35 35",
+      "TERMS": "Terms",
+      "PRIVACY": "Privacy Policy",
+      "COPY": "Urban CRM 2025"
+    }
+  },
   "SELECT": {
     "EMPTY": "List is empty"
   },
