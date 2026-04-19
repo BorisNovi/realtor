@@ -515,8 +515,41 @@
     },
     "ABOUT": {
       "LABEL": "about us",
-      "TITLE": "See And Manage Your Properties",
-      "TEXT": "Manage your property listings with a convenient map view. Create personalized selections and share them with clients. Assign statuses, link contacts, and keep everything in one place."
+      "TITLE_1": "Tired of Chaos?",
+      "TITLE_2": "We fixed that.",
+
+      "ITEM_1_TITLE": "Unified property database",
+      "ITEM_1_1_DESC": "Store all your listings in one place.",
+      "ITEM_1_2_DESC": "Each property includes full address (auto-detected via map), up to 25 photos, type (apartment, house, office, land), size, floor, price, status, interior details, and contact person.",
+      "ITEM_1_3_DESC": "Filter by date, type, status, zoning, size, or price.",
+
+      "ITEM_2_TITLE": "Interactive property map",
+      "ITEM_2_1_DESC": "All listings are displayed on a smart map with clustering. Icons reflect property type and status.",
+      "ITEM_2_2_DESC": "Hover to preview, click to open full gallery.",
+      "ITEM_2_3_DESC": "Perfect for working on the go — even from your phone.",
+
+      "ITEM_3_TITLE": "Client-ready collections",
+      "ITEM_3_1_DESC": "Select properties, group them into a named collection, and share via link.",
+      "ITEM_3_2_DESC": "Clients open it on any device — no login, no PDFs, no friction.",
+      "ITEM_3_3_DESC": "Branded with your agency logo and details.",
+
+      "ITEM_4_TITLE": "Revocable access",
+      "ITEM_4_1_DESC": "Finished working with a client?",
+      "ITEM_4_2_DESC": "Disable access to the collection with one click.",
+      "ITEM_4_3_DESC": "No more outdated links or uncontrolled sharing.",
+
+      "ITEM_5_TITLE": "Contact database",
+      "ITEM_5_1_DESC": "Store all owners and contacts in one place.",
+      "ITEM_5_2_DESC": "Search by name or phone.",
+      "ITEM_5_3_DESC": "Link contacts to properties or add them on the fly.",
+
+      "ITEM_6_TITLE": "Company branding",
+      "ITEM_6_1_DESC": "Add your agency name and logo.",
+      "ITEM_6_2_DESC": "They automatically appear on client-facing pages.",
+
+      "ITEM_7_TITLE": "Import & export",
+      "ITEM_7_1_DESC": "Upload your existing data from Excel or Google Sheets (CSV).",
+      "ITEM_7_2_DESC": "Export anytime for reporting, backups, or migration."
     },
     "FEATURES": {
       "LABEL": "features",

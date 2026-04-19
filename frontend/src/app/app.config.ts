@@ -1,5 +1,5 @@
 import { ApplicationConfig, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
-import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
+import { provideRouter, TitleStrategy, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -20,6 +20,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ContactsState } from './core/contacts/state/contacts.state';
 import { ListingsState } from './core/listings/state';
 import { ProfileState } from './core/profile/state';
+import { TitleService } from './core/services';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,6 +33,7 @@ export const appConfig: ApplicationConfig = {
       }),
       withEnabledBlockingInitialNavigation(),
     ),
+    { provide: TitleStrategy, useClass: TitleService },
     provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
     importProvidersFrom(
       TranslateModule.forRoot({

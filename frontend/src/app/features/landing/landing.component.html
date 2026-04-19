@@ -90,10 +90,33 @@
       <span class="about__label">{{ 'LANDING.ABOUT.LABEL' | translate }}</span>
 
       <div class="about__heading-wrap">
-        <h2 class="about__title">{{ 'LANDING.ABOUT.TITLE' | translate }}</h2>
+        <h2 class="about__title">
+          <div>{{ 'LANDING.ABOUT.TITLE_1' | translate }}</div>
+          <div>{{ 'LANDING.ABOUT.TITLE_2' | translate }}</div>
+        </h2>
       </div>
 
-      <p class="about__text">{{ 'LANDING.ABOUT.TEXT' | translate }}</p>
+      <div class="about__carousel-wrap">
+        <p-carousel #aboutCarousel class="about__carousel" [value]="aboutFeatures" [circular]="true" [showNavigators]="false" [showIndicators]="false" [autoplayInterval]="5000">
+          <ng-template let-feature #item>
+            <h4 class="about__carousel__title" >{{ feature.titleKey | translate }}</h4>
+            <ul class="about__carousel__list">
+              @for (descKey of feature.descKeys; track $index) {
+                <li class="about__carousel__list__item">—&nbsp;&nbsp;{{ descKey | translate }}</li>
+              }
+            </ul>
+          </ng-template>
+        </p-carousel>
+  
+        <div class="about__carousel-nav">
+          <button class="about__carousel-nav__btn" (click)="carousel().navBackward($event)">
+            <i class="pi pi-arrow-left"></i>
+          </button>
+          <button class="about__carousel-nav__btn" (click)="carousel().navForward($event)">
+            <i class="pi pi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </section>

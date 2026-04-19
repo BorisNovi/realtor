@@ -1,21 +1,26 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageSelectService } from 'src/app/core';
+import { Carousel, CarouselModule } from 'primeng/carousel';
 
-interface FaqItem {
+interface IAboutFeature {
+  titleKey: string;
+  descKeys: string[];
+}
+interface IFaqItem {
   questionKey: string;
   answerKey: string;
 }
 
-interface Feature {
+interface IFeature {
   titleKey: string;
   descKey: string;
 }
 
 @Component({
   selector: 'rx-landing',
-  imports: [RouterLink, TranslateModule],
+  imports: [RouterLink, TranslateModule, CarouselModule],
   templateUrl: 'landing.component.html',
   styleUrl: 'landing.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,17 +28,50 @@ interface Feature {
 export class LandingComponent {
   readonly #languageSelectService = inject(LanguageSelectService);
 
+  readonly carousel = viewChild.required<Carousel>('aboutCarousel');
+
   readonly mobileMenuOpen = signal(false);
   readonly openFaqIndex = signal<number | null>(null);
   readonly currentLanguage = this.#languageSelectService.currentLanguageOption;
 
-  readonly features: Feature[] = [
+  readonly aboutFeatures: IAboutFeature[] = [
+    {
+      titleKey: 'LANDING.ABOUT.ITEM_1_TITLE',
+      descKeys: ['LANDING.ABOUT.ITEM_1_1_DESC', 'LANDING.ABOUT.ITEM_1_2_DESC', 'LANDING.ABOUT.ITEM_1_3_DESC']
+    },
+    {
+      titleKey: 'LANDING.ABOUT.ITEM_2_TITLE',
+      descKeys: ['LANDING.ABOUT.ITEM_2_1_DESC', 'LANDING.ABOUT.ITEM_2_2_DESC', 'LANDING.ABOUT.ITEM_2_3_DESC']
+    },
+    {
+      titleKey: 'LANDING.ABOUT.ITEM_3_TITLE',
+      descKeys: ['LANDING.ABOUT.ITEM_3_1_DESC', 'LANDING.ABOUT.ITEM_3_2_DESC', 'LANDING.ABOUT.ITEM_3_3_DESC']
+    },
+    {
+      titleKey: 'LANDING.ABOUT.ITEM_4_TITLE',
+      descKeys: ['LANDING.ABOUT.ITEM_4_1_DESC', 'LANDING.ABOUT.ITEM_4_2_DESC', 'LANDING.ABOUT.ITEM_4_3_DESC']
+    },
+    {
+      titleKey: 'LANDING.ABOUT.ITEM_5_TITLE',
+      descKeys: ['LANDING.ABOUT.ITEM_5_1_DESC', 'LANDING.ABOUT.ITEM_5_2_DESC', 'LANDING.ABOUT.ITEM_5_3_DESC']
+    },
+    {
+      titleKey: 'LANDING.ABOUT.ITEM_6_TITLE',
+      descKeys: ['LANDING.ABOUT.ITEM_6_1_DESC', 'LANDING.ABOUT.ITEM_6_2_DESC',]
+    },
+    {
+      titleKey: 'LANDING.ABOUT.ITEM_7_TITLE',
+      descKeys: ['LANDING.ABOUT.ITEM_7_1_DESC', 'LANDING.ABOUT.ITEM_7_2_DESC',]
+    }
+  ];
+
+  readonly features: IFeature[] = [
     { titleKey: 'LANDING.FEATURES.ITEM_1_TITLE', descKey: 'LANDING.FEATURES.ITEM_1_DESC' },
     { titleKey: 'LANDING.FEATURES.ITEM_2_TITLE', descKey: 'LANDING.FEATURES.ITEM_2_DESC' },
     { titleKey: 'LANDING.FEATURES.ITEM_3_TITLE', descKey: 'LANDING.FEATURES.ITEM_3_DESC' },
   ];
 
-  readonly faqItems: FaqItem[] = [
+  readonly faqItems: IFaqItem[] = [
     { questionKey: 'LANDING.FAQ.Q1', answerKey: 'LANDING.FAQ.A1' },
     { questionKey: 'LANDING.FAQ.Q2', answerKey: 'LANDING.FAQ.A2' },
     { questionKey: 'LANDING.FAQ.Q3', answerKey: 'LANDING.FAQ.A3' },
