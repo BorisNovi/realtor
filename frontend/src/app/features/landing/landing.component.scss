@@ -1,34 +1,62 @@
-// =============================================================
-// Брейкпоинты
-// =============================================================
+$bp-sm: 640px;
 $bp-md: 768px;
 $bp-lg: 1024px;
+
+$tr-color: color 0.15s;
+$tr-bg: background 0.15s;
+
+$r-btn: 0.6rem;
+$r-card: 0.75rem;
+
+$gap-sm: 2rem;
+$gap-lg: 3rem;
 
 // =============================================================
 // Миксины
 // =============================================================
-@mixin container {
-  max-width: 85rem;
+@mixin container($max: 85rem) {
+  max-width: $max;
   margin-inline: auto;
   padding-inline: 1rem;
 
   @media (min-width: $bp-md) {
     padding-inline: 1.5rem;
   }
-
   @media (min-width: $bp-lg) {
     padding-inline: 2rem;
   }
 }
 
-@mixin section-padding {
-  padding-block: 5rem;
+// $bottom по умолчанию равен $top; на lg масштабируются только если не заданы явно
+@mixin section-padding($top: 5rem, $bottom: $top, $top-lg: 7rem, $bottom-lg: $bottom) {
+  padding-top: $top;
+  padding-bottom: $bottom;
 
   @media (min-width: $bp-lg) {
-    padding-block: 7rem;
+    padding-top: $top-lg;
+    padding-bottom: $bottom-lg;
   }
 }
 
+// Лейблы секций (features, faq)
+@mixin section-label {
+  padding-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--p-green-500);
+}
+
+// Базовый сброс для ссылок
+@mixin link-base {
+  text-decoration: none;
+  transition: $tr-color;
+}
+
+// =============================================================
+// Host
+// =============================================================
 :host {
   display: block;
   font-family: 'Manrope', sans-serif;
@@ -38,9 +66,9 @@ $bp-lg: 1024px;
 // Navbar
 // =============================================================
 .landing-nav {
-  padding-top: 4.3rem;
   position: relative;
   z-index: 10;
+  padding-top: 4.3rem;
 
   &__inner {
     @include container;
@@ -51,9 +79,13 @@ $bp-lg: 1024px;
   }
 
   &__logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+
     img {
-      height: 1.6rem;
       width: auto;
+      height: 1.6rem;
     }
   }
 
@@ -68,9 +100,9 @@ $bp-lg: 1024px;
   }
 
   &__link {
+    @include link-base;
     font-size: 1.1rem;
     color: var(--p-surface-600);
-    transition: color 0.15s;
 
     &:hover {
       color: var(--p-surface-900);
@@ -84,15 +116,15 @@ $bp-lg: 1024px;
   }
 
   &__lang {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--p-surface-500);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.25rem 0.5rem;
     font-family: inherit;
-    transition: color 0.15s;
+    color: var(--p-surface-500);
+    transition: $tr-color;
 
     &:hover {
       color: var(--p-surface-900);
@@ -103,14 +135,14 @@ $bp-lg: 1024px;
     display: none;
     align-items: center;
     padding: 0.75rem 1.75rem;
+    border-radius: $r-btn;
     background: var(--p-surface-900);
-    color: var(--p-surface-0);
+    text-decoration: none;
     font-size: 1rem;
     font-weight: 500;
     font-family: inherit;
-    border-radius: 0.6rem;
-    text-decoration: none;
-    transition: background 0.15s;
+    color: var(--p-surface-0);
+    transition: $tr-bg;
 
     @media (min-width: $bp-md) {
       display: inline-flex;
@@ -124,34 +156,34 @@ $bp-lg: 1024px;
   &__burger {
     display: flex;
     padding: 0.5rem;
+    border: none;
     border-radius: 0.5rem;
     background: none;
-    border: none;
     cursor: pointer;
     color: var(--p-surface-600);
-    transition: background 0.15s;
+    transition: $tr-bg;
 
     @media (min-width: $bp-md) {
       display: none;
-    }
-
-    &:hover {
-      background: var(--p-surface-50);
     }
 
     svg {
       width: 1.25rem;
       height: 1.25rem;
     }
+
+    &:hover {
+      background: var(--p-surface-50);
+    }
   }
 
   &__mobile {
-    border-top: 1px solid var(--p-surface-100);
-    background: var(--p-surface-0);
-    padding: 1rem 1rem 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    padding: 1rem 1rem 1.25rem;
+    border-top: 1px solid var(--p-surface-100);
+    background: var(--p-surface-0);
 
     @media (min-width: $bp-md) {
       display: none;
@@ -159,25 +191,26 @@ $bp-lg: 1024px;
   }
 
   &__mobile-link {
+    @include link-base;
+    display: block;
+    padding-block: 0.25rem;
     font-size: 0.875rem;
     color: var(--p-surface-700);
-    text-decoration: none;
-    padding-block: 0.25rem;
   }
 
   &__mobile-cta {
-    margin-top: 0.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 0.25rem;
     padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
     background: var(--p-surface-900);
-    color: var(--p-surface-0);
+    text-decoration: none;
     font-size: 0.875rem;
     font-weight: 500;
     font-family: inherit;
-    border-radius: 0.5rem;
-    text-decoration: none;
+    color: var(--p-surface-0);
   }
 }
 
@@ -190,15 +223,15 @@ $bp-lg: 1024px;
   background: var(--p-green-50);
 
   &__glow {
-    display: none;
     position: absolute;
     top: 0;
     right: 0;
+    z-index: 0;
+    display: none;
     width: 100%;
     height: 1050px;
     border-radius: 50%;
     transform: translate(33%, -33%);
-    z-index: 0;
     pointer-events: none;
     opacity: 0.5;
     background: radial-gradient(circle, var(--p-green-400) 0%, transparent 70%);
@@ -209,9 +242,11 @@ $bp-lg: 1024px;
   }
 
   &__inner {
-    @include container;
     position: relative;
     z-index: 1;
+    @include container;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
 
     @media (min-width: $bp-lg) {
       padding-top: 4rem;
@@ -221,7 +256,7 @@ $bp-lg: 1024px;
 
   &__grid {
     display: grid;
-    gap: 3rem;
+    gap: $gap-lg;
     align-items: center;
     min-height: 400px;
 
@@ -238,13 +273,13 @@ $bp-lg: 1024px;
   }
 
   &__title {
-    text-transform: uppercase;
-    font-size: 2.5rem;
-    letter-spacing: 1px;
-    font-weight: 800;
-    color: var(--p-surface-900);
-    line-height: 1.05;
     margin: 0;
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    line-height: 1.05;
+    text-transform: uppercase;
+    color: var(--p-surface-900);
 
     @media (min-width: $bp-md) {
       font-size: 3rem;
@@ -257,12 +292,12 @@ $bp-lg: 1024px;
   }
 
   &__subtitle {
-    color: var(--p-surface-500);
+    max-width: 35rem;
+    margin: 0;
     font-size: 1rem;
     line-height: 1.5;
     letter-spacing: 0.8px;
-    max-width: 35rem;
-    margin: 0;
+    color: var(--p-surface-500);
 
     @media (min-width: $bp-md) {
       font-size: 1.125rem;
@@ -279,21 +314,21 @@ $bp-lg: 1024px;
   &__btn {
     display: inline-flex;
     align-items: center;
+    border-radius: $r-btn;
+    text-decoration: none;
     font-size: 1rem;
-    letter-spacing: 1px;
     font-weight: 600;
     font-family: inherit;
-    border-radius: 0.6rem;
-    text-decoration: none;
+    letter-spacing: 1px;
     transition:
-      background 0.15s,
+      $tr-bg,
       border-color 0.15s;
 
     &--primary {
       padding: 0.75rem 3.5rem;
+      border: none;
       background: var(--p-green-500);
       color: var(--p-surface-0);
-      border: none;
 
       &:hover {
         background: var(--p-green-600);
@@ -323,9 +358,9 @@ $bp-lg: 1024px;
     }
 
     img {
-      left: 18%;
-      top: -22%;
       position: absolute;
+      top: -22%;
+      left: 18%;
       width: 1200px;
       height: 700px;
       object-fit: contain;
@@ -338,42 +373,51 @@ $bp-lg: 1024px;
 // =============================================================
 .about {
   z-index: 1;
+  @include section-padding(5rem, 5.5rem, 7rem, 5.5rem);
   background: var(--p-green-500);
-  @include section-padding;
-  padding-bottom: 5.5rem;
 
   &__inner {
-    @include container;
-    max-width: 100rem;
+    @include container(100rem);
   }
 
   &__grid {
     display: grid;
-    gap: 2rem;
+    gap: $gap-sm;
     align-items: flex-start;
 
     @media (min-width: $bp-lg) {
       grid-template-columns: 10rem 1fr 1fr;
-      gap: 3rem;
+      gap: $gap-lg;
     }
   }
 
   &__label {
-    text-wrap: nowrap;
-    font-size: 1.1rem;
-    font-weight: 400;
-    color: var(--p-surface-0);
-    letter-spacing: .5px;
-    border-right: 1px solid var(--p-surface-0);
-    padding-right: 1.5rem;
     display: block;
     width: fit-content;
+    padding-right: 1.5rem;
+    border-right: 1px solid var(--p-surface-0);
+    font-size: 1.1rem;
+    font-weight: 400;
     line-height: 1rem;
+    letter-spacing: 0.5px;
+    text-wrap: nowrap;
+    color: var(--p-surface-0);
+
+    // На мобильном border-right теряет смысл — заменяем на bottom
+    @media (max-width: #{$bp-lg - 1px}) {
+      padding-right: 0;
+      padding-bottom: 0.5rem;
+      border-right: none;
+      border-bottom: 1px solid var(--p-surface-0);
+    }
   }
 
   &__heading-wrap {
-    padding-left: 3rem;
+    padding-left: 0;
 
+    @media (min-width: $bp-md) {
+      padding-left: 3rem;
+    }
     @media (min-width: $bp-lg) {
       padding-left: 2.5rem;
     }
@@ -381,28 +425,34 @@ $bp-lg: 1024px;
 
   &__title {
     max-width: 40rem;
+    margin-top: -5px;
+    margin-bottom: 0;
     font-size: 1.875rem;
     font-weight: 800;
-    color: var(--p-surface-0);
+    letter-spacing: 1.5px;
     line-height: 1;
     text-transform: capitalize;
-    margin-top: -5px;
-    letter-spacing: 1.5px;
+    color: var(--p-surface-0);
 
     @media (min-width: $bp-md) {
       font-size: 2.25rem;
     }
-
     @media (min-width: $bp-lg) {
       font-size: 4rem;
     }
   }
 
+  // TODO: надо придумать, как обыграть, на маленьких ширинах выпрет
+  // &__title-line {
+  //   display: block;
+  //   white-space: nowrap;
+  // }
+
   &__carousel-wrap {
-    max-width: 40rem;
-    gap: 3rem;
     display: flex;
     flex-direction: column;
+    gap: $gap-lg;
+    max-width: 40rem;
   }
 
   &__carousel {
@@ -411,27 +461,27 @@ $bp-lg: 1024px;
     &__title {
       font-size: 1.75rem;
       font-weight: 800;
-      letter-spacing: .5px;
+      letter-spacing: 0.5px;
     }
 
     &__list {
       display: flex;
       flex-direction: column;
-      gap: .25rem;
-      &__item {}
+      gap: 0.25rem;
     }
   }
 
   &__carousel-nav {
     display: flex;
     gap: 1.5rem;
-    padding-left: .5rem;
+    padding-left: 0.5rem;
 
     &__btn {
-      border: 1px solid var(--p-surface-0);
-      padding: 4px 10px;
-      border-radius: 8px;
       display: flex;
+      padding: 4px 10px;
+      border: 1px solid var(--p-surface-0);
+      border-radius: 8px;
+      transition: $tr-bg;
 
       &:hover {
         background: var(--p-green-400);
@@ -444,8 +494,8 @@ $bp-lg: 1024px;
 // Features
 // =============================================================
 .features {
-  background: var(--p-surface-0);
   @include section-padding;
+  background: var(--p-surface-0);
 
   &__inner {
     @include container;
@@ -453,21 +503,16 @@ $bp-lg: 1024px;
 
   &__grid {
     display: grid;
-    gap: 2rem;
+    gap: $gap-sm;
 
     @media (min-width: $bp-lg) {
       grid-template-columns: 4.5rem 1fr;
-      gap: 3rem;
+      gap: $gap-lg;
     }
   }
 
   &__label {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--p-green-500);
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    padding-top: 0.25rem;
+    @include section-label;
   }
 
   &__list {
@@ -476,10 +521,10 @@ $bp-lg: 1024px;
 
   &__item {
     display: grid;
-    gap: 2rem;
+    gap: $gap-sm;
+    align-items: center;
     padding-block: 3rem;
     border-bottom: 1px solid var(--p-surface-100);
-    align-items: center;
 
     @media (min-width: $bp-md) {
       grid-template-columns: 1fr 1fr;
@@ -493,11 +538,11 @@ $bp-lg: 1024px;
   }
 
   &__bar {
+    flex-shrink: 0;
     width: 4px;
     min-height: 4.5rem;
-    background: var(--p-green-500);
     border-radius: 9999px;
-    flex-shrink: 0;
+    background: var(--p-green-500);
   }
 
   &__item-text {
@@ -507,11 +552,11 @@ $bp-lg: 1024px;
   }
 
   &__item-title {
+    margin: 0;
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--p-surface-900);
     line-height: 1.3;
-    margin: 0;
+    color: var(--p-surface-900);
 
     @media (min-width: $bp-lg) {
       font-size: 1.5rem;
@@ -519,22 +564,22 @@ $bp-lg: 1024px;
   }
 
   &__item-desc {
-    color: var(--p-surface-500);
+    margin: 0;
     font-size: 0.875rem;
     line-height: 1.7;
-    margin: 0;
+    color: var(--p-surface-500);
   }
 
   &__item-image {
-    aspect-ratio: 16 / 9;
-    border-radius: 0.75rem;
-    border: 1px solid var(--p-surface-200);
-    background: var(--p-surface-50);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--p-surface-300);
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--p-surface-200);
+    border-radius: $r-card;
     font-size: 0.75rem;
+    color: var(--p-surface-300);
+    background: var(--p-surface-50);
     user-select: none;
   }
 }
@@ -543,8 +588,8 @@ $bp-lg: 1024px;
 // FAQ
 // =============================================================
 .faq {
-  background: var(--p-surface-50);
   @include section-padding;
+  background: var(--p-surface-50);
 
   &__inner {
     @include container;
@@ -552,33 +597,27 @@ $bp-lg: 1024px;
 
   &__grid {
     display: grid;
-    gap: 2rem;
+    gap: $gap-sm;
 
     @media (min-width: $bp-lg) {
       grid-template-columns: 4.5rem 1fr;
-      gap: 3rem;
+      gap: $gap-lg;
     }
   }
 
   &__label {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--p-green-500);
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    padding-top: 0.25rem;
+    @include section-label;
   }
 
   &__title {
+    margin: 0 0 3rem;
     font-size: 1.875rem;
     font-weight: 800;
     color: var(--p-surface-900);
-    margin: 0 0 3rem;
 
     @media (min-width: $bp-md) {
       font-size: 2.25rem;
     }
-
     @media (min-width: $bp-lg) {
       font-size: 3rem;
     }
@@ -593,16 +632,16 @@ $bp-lg: 1024px;
   }
 
   &__question {
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-block: 1.25rem;
-    text-align: left;
-    background: none;
-    border: none;
-    cursor: pointer;
     gap: 1rem;
+    width: 100%;
+    padding-block: 1.25rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
     font-family: inherit;
 
     &-text {
@@ -612,10 +651,10 @@ $bp-lg: 1024px;
     }
 
     &-icon {
+      flex-shrink: 0;
       width: 1.25rem;
       height: 1.25rem;
       color: var(--p-surface-400);
-      flex-shrink: 0;
       transition: transform 0.2s;
 
       &--open {
@@ -625,11 +664,11 @@ $bp-lg: 1024px;
   }
 
   &__answer {
+    margin: 0;
     padding-bottom: 1.25rem;
-    color: var(--p-surface-500);
     font-size: 0.875rem;
     line-height: 1.7;
-    margin: 0;
+    color: var(--p-surface-500);
   }
 }
 
@@ -637,8 +676,8 @@ $bp-lg: 1024px;
 // CTA
 // =============================================================
 .cta {
-  background: var(--p-green-50);
   padding-top: 5rem;
+  background: var(--p-green-50);
 
   @media (min-width: $bp-lg) {
     padding-top: 7rem;
@@ -651,40 +690,39 @@ $bp-lg: 1024px;
   }
 
   &__title {
+    margin: 0 0 1rem;
     font-size: 2.5rem;
     font-weight: 800;
     color: var(--p-surface-900);
-    margin: 0 0 1rem;
 
     @media (min-width: $bp-md) {
       font-size: 3rem;
     }
-
     @media (min-width: $bp-lg) {
       font-size: 3.75rem;
     }
   }
 
   &__subtitle {
-    color: var(--p-surface-500);
-    font-size: 1.125rem;
-    line-height: 1.7;
     max-width: 28rem;
     margin: 0 auto 2.5rem;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--p-surface-500);
   }
 
   &__btn {
     display: inline-flex;
     align-items: center;
     padding: 0.875rem 2rem;
+    border-radius: 0.5rem;
     background: var(--p-surface-900);
-    color: var(--p-surface-0);
+    text-decoration: none;
     font-size: 0.875rem;
     font-weight: 600;
     font-family: inherit;
-    border-radius: 0.5rem;
-    text-decoration: none;
-    transition: background 0.15s;
+    color: var(--p-surface-0);
+    transition: $tr-bg;
 
     &:hover {
       background: var(--p-surface-800);
@@ -692,8 +730,8 @@ $bp-lg: 1024px;
   }
 
   &__cityscape svg {
-    width: 100%;
     display: block;
+    width: 100%;
   }
 }
 
@@ -701,9 +739,9 @@ $bp-lg: 1024px;
 // Footer
 // =============================================================
 .site-footer {
-  background: var(--p-green-950);
   padding-top: 3.5rem;
   padding-bottom: 2rem;
+  background: var(--p-green-950);
 
   &__inner {
     @include container;
@@ -717,7 +755,6 @@ $bp-lg: 1024px;
     @media (min-width: $bp-md) {
       grid-template-columns: 1fr 1fr;
     }
-
     @media (min-width: $bp-lg) {
       grid-template-columns: 1fr 1fr 1fr;
     }
@@ -737,16 +774,15 @@ $bp-lg: 1024px;
 
   &__contact-label {
     font-size: 0.75rem;
-    text-transform: uppercase;
     letter-spacing: 0.2em;
+    text-transform: uppercase;
     color: color-mix(in srgb, var(--p-green-400) 50%, transparent);
   }
 
   &__contact-value {
+    @include link-base;
     font-size: 0.875rem;
     color: var(--p-surface-0);
-    text-decoration: none;
-    transition: color 0.15s;
 
     &:hover {
       color: var(--p-green-400);
@@ -760,10 +796,9 @@ $bp-lg: 1024px;
   }
 
   &__social-link {
+    @include link-base;
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.4);
-    text-decoration: none;
-    transition: color 0.15s;
 
     &:hover {
       color: rgba(255, 255, 255, 0.8);
@@ -771,8 +806,8 @@ $bp-lg: 1024px;
   }
 
   &__brand {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 2.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   &__brand-logo {
@@ -783,10 +818,10 @@ $bp-lg: 1024px;
   }
 
   &__brand-icon {
+    flex-shrink: 0;
     width: 2.5rem;
     height: 2.5rem;
     color: var(--p-surface-0);
-    flex-shrink: 0;
 
     @media (min-width: $bp-md) {
       width: 3rem;
@@ -803,7 +838,6 @@ $bp-lg: 1024px;
     @media (min-width: $bp-md) {
       font-size: 3.75rem;
     }
-
     @media (min-width: $bp-lg) {
       font-size: 4.5rem;
     }
@@ -811,7 +845,6 @@ $bp-lg: 1024px;
     &--solid {
       color: var(--p-surface-0);
     }
-
     &--outline {
       color: transparent;
       -webkit-text-stroke: 2px var(--p-surface-0);
@@ -838,10 +871,9 @@ $bp-lg: 1024px;
   }
 
   &__legal-link {
+    @include link-base;
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.35);
-    text-decoration: none;
-    transition: color 0.15s;
 
     &:hover {
       color: rgba(255, 255, 255, 0.6);
