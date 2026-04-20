@@ -5,11 +5,11 @@ import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 @Injectable()
 export class TitleService extends TitleStrategy {
   constructor(private readonly title: Title) {
-    super()
+    super();
   }
 
   // TODO: расширить сервис тайтлов на все кейсы
   override updateTitle(snapshot: RouterStateSnapshot): void {
-    this.title.setTitle(this.buildTitle(snapshot) + ' - Urban CRM')
+    this.title.setTitle(this.buildTitle(snapshot) + ' - Urban CRM');
   }
 }
