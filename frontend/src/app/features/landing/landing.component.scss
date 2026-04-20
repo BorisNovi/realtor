@@ -38,7 +38,7 @@ $bp-lg: 1024px;
 // Navbar
 // =============================================================
 .landing-nav {
-  padding-top: 4rem;
+  padding-top: 4.3rem;
   position: relative;
   z-index: 10;
 
@@ -195,7 +195,7 @@ $bp-lg: 1024px;
     top: 0;
     right: 0;
     width: 100%;
-    height: 1000px;
+    height: 1050px;
     border-radius: 50%;
     transform: translate(33%, -33%);
     z-index: 0;
@@ -214,7 +214,8 @@ $bp-lg: 1024px;
     z-index: 1;
 
     @media (min-width: $bp-lg) {
-      padding-block: 0rem;
+      padding-top: 4rem;
+      padding-bottom: 6rem;
     }
   }
 
@@ -233,13 +234,13 @@ $bp-lg: 1024px;
     z-index: 10;
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
+    gap: 1rem;
   }
 
   &__title {
     text-transform: uppercase;
     font-size: 2.5rem;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     font-weight: 800;
     color: var(--p-surface-900);
     line-height: 1.05;
@@ -250,7 +251,8 @@ $bp-lg: 1024px;
     }
 
     @media (min-width: $bp-lg) {
-      font-size: 3.75rem;
+      width: 45rem;
+      font-size: 4.5rem;
     }
   }
 
@@ -270,14 +272,13 @@ $bp-lg: 1024px;
   &__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem;
-    padding-top: 0.5rem;
+    gap: 1rem;
+    padding-top: 2rem;
   }
 
   &__btn {
     display: inline-flex;
     align-items: center;
-    padding: 0.75rem 1.75rem;
     font-size: 1rem;
     letter-spacing: 1px;
     font-weight: 600;
@@ -289,6 +290,7 @@ $bp-lg: 1024px;
       border-color 0.15s;
 
     &--primary {
+      padding: 0.75rem 3.5rem;
       background: var(--p-green-500);
       color: var(--p-surface-0);
       border: none;
@@ -299,9 +301,10 @@ $bp-lg: 1024px;
     }
 
     &--outline {
-      background: transparent;
+      padding: 0.75rem 3rem;
+      background: var(--p-surface-0);
       color: var(--p-surface-700);
-      border: 1px solid var(--p-surface-300);
+      box-shadow: 6px 10px 10px -10px #0003;
 
       &:hover {
         background: var(--p-surface-0);
@@ -321,7 +324,7 @@ $bp-lg: 1024px;
 
     img {
       left: 18%;
-      top: -28%;
+      top: -22%;
       position: absolute;
       width: 1200px;
       height: 700px;
@@ -337,9 +340,11 @@ $bp-lg: 1024px;
   z-index: 1;
   background: var(--p-green-500);
   @include section-padding;
+  padding-bottom: 5.5rem;
 
   &__inner {
     @include container;
+    max-width: 100rem;
   }
 
   &__grid {
@@ -348,23 +353,26 @@ $bp-lg: 1024px;
     align-items: flex-start;
 
     @media (min-width: $bp-lg) {
-      grid-template-columns: 4.5rem 1fr 1fr;
+      grid-template-columns: 10rem 1fr 1fr;
       gap: 3rem;
     }
   }
 
   &__label {
     text-wrap: nowrap;
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 1.1rem;
+    font-weight: 400;
     color: var(--p-surface-0);
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: .5px;
+    border-right: 1px solid var(--p-surface-0);
+    padding-right: 1.5rem;
+    display: block;
+    width: fit-content;
+    line-height: 1rem;
   }
 
   &__heading-wrap {
-    border-left: 2px solid var(--p-surface-0);
-    padding-left: 2rem;
+    padding-left: 3rem;
 
     @media (min-width: $bp-lg) {
       padding-left: 2.5rem;
@@ -372,25 +380,27 @@ $bp-lg: 1024px;
   }
 
   &__title {
-    max-width: 30rem;
+    max-width: 40rem;
     font-size: 1.875rem;
     font-weight: 800;
     color: var(--p-surface-0);
-    line-height: 1.2;
-    margin: 0;
+    line-height: 1;
+    text-transform: capitalize;
+    margin-top: -5px;
+    letter-spacing: 1.5px;
 
     @media (min-width: $bp-md) {
       font-size: 2.25rem;
     }
 
     @media (min-width: $bp-lg) {
-      font-size: 3rem;
+      font-size: 4rem;
     }
   }
 
   &__carousel-wrap {
     max-width: 40rem;
-    gap: 2rem;
+    gap: 3rem;
     display: flex;
     flex-direction: column;
   }
@@ -398,9 +408,16 @@ $bp-lg: 1024px;
   &__carousel {
     max-width: 30rem;
 
-    &__title {}
+    &__title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: .5px;
+    }
 
-    &__lsit {
+    &__list {
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
       &__item {}
     }
   }
@@ -408,10 +425,11 @@ $bp-lg: 1024px;
   &__carousel-nav {
     display: flex;
     gap: 1.5rem;
+    padding-left: .5rem;
 
     &__btn {
       border: 1px solid var(--p-surface-0);
-      padding: 6px 14px;
+      padding: 4px 10px;
       border-radius: 8px;
       display: flex;
 
