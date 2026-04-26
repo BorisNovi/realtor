@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { LanguageSelectService } from './core/services';
+import { LanguageSelectService } from './core';
 import { Toast } from 'primeng/toast';
 
 @Component({

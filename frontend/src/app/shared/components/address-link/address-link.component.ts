@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IAddress } from '@shared/interfaces';
 import { MapHelper } from '@shared/utils/map-helper.util';

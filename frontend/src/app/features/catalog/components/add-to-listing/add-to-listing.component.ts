@@ -7,8 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogService, DynamicDialogConfig, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { Tooltip } from 'primeng/tooltip';
 import { first } from 'rxjs';
-import { ListingsService } from 'src/app/core/listings';
-import { ListingsState, UpdateListing } from 'src/app/core/listings/state';
+import { ListingsService, ListingsState, UpdateListing } from 'src/app/core';
 import { CreateListingComponent } from 'src/app/features/listings/components/create-listing/create-listing.component';
 
 @Component({

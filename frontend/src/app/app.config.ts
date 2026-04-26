@@ -5,22 +5,18 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
 import { withNgxsFormPlugin } from '@ngxs/form-plugin';
-import { environment } from '../environments/environment';
 import { withNgxsRouterPlugin } from '@ngxs/router-plugin';
 import { withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { provideStore } from '@ngxs/store';
 import Aura from '@primeng/themes/aura';
 import { providePrimeNG } from 'primeng/config';
+import { environment } from '../environments/environment';
 import { routes } from './app.routes';
-import { authInterceptor, AuthState, CatalogState } from './core';
+import { authInterceptor, AuthState, CatalogState, ContactsState, ListingsState, ProfileState, TitleService } from './core';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TransferStateLoader } from './shared/utils/translate-loader';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ContactsState } from './core/contacts/state/contacts.state';
-import { ListingsState } from './core/listings/state';
-import { ProfileState } from './core/profile/state';
-import { TitleService } from './core/services';
+import { TransferStateLoader } from './shared/utils/translate-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [

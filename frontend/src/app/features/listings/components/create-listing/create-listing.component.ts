@@ -13,8 +13,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToggleButton } from 'primeng/togglebutton';
 import { tap } from 'rxjs';
-import { CatalogService } from 'src/app/core';
-import { CreateListing, UpdateListing } from 'src/app/core/listings/state';
+import { CatalogService, CreateListing, UpdateListing } from 'src/app/core';
 
 @Component({
   imports: [

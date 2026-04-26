@@ -3,19 +3,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
-import { AddressPickerComponent } from '@shared/components';
 import { SLIDE } from '@shared/animations';
+import { AddressPickerComponent } from '@shared/components';
 import { SPECIFICS_FIELDS_BY_TYPE, SpecificsFieldKey } from '@shared/constants/fieldset.configs';
+import { ScrollToTopOnShowDirective } from '@shared/directives';
 import { PropertyStatus, PropertyType } from '@shared/enums';
 import { IPickerAddress } from '@shared/interfaces/picker-address.interface';
-import { ScrollToTopOnShowDirective } from '@shared/directives';
 import { WorldPhoneMaskPipe } from '@shared/pipes';
 import { getPropertyStatusBackground, getPropertyStatusSeverity } from '@shared/utils';
 import { LngLatLike } from 'maplibre-gl';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
-import { TextareaModule } from 'primeng/textarea';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TextareaModule } from 'primeng/textarea';
 import { startWith, tap } from 'rxjs';
 import { AuthState, CreatePropertyObject, UpdatePropertyObject } from 'src/app/core';
 import { AddressFormComponent } from './shared/address-form/address-form.component';
@@ -142,7 +142,6 @@ export class CreateCatalogItemComponent implements OnInit {
   onAddresPickerFill(picked: IPickerAddress | null): void {
     this.position.set(picked?.coordinates ?? [0, 0]);
     const address = this.form.get('address') as FormGroup;
-    console.log(address);
     address.get('country')?.setValue(picked?.address?.country_code);
     address.get('state')?.setValue(picked?.address?.state);
     address

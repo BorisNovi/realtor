@@ -7,8 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
-import { Login } from 'src/app/core/auth/state/auth.actions';
-import { AuthState } from 'src/app/core/auth/state/auth.state';
+import { AuthState, Login } from 'src/app/core';
 
 @Component({
   selector: 'rx-sign-in',

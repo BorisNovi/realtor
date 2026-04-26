@@ -10,7 +10,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { PasswordModule } from 'primeng/password';
-import { DeleteAccount } from 'src/app/core/profile/state';
+import { DeleteAccount } from 'src/app/core';
 
 @Component({
   imports: [

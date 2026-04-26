@@ -29,6 +29,7 @@ import {
   DeletePropertyObjects,
   DeletionConfirmationService,
   FetchCatalog,
+  FetchProfile,
   FetchPropertyObject,
   QueryParamsService,
   SetCatalogPagination,
@@ -225,28 +226,39 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
   }
 
   openDialog(data?: IPropertyObject): void {
-    this.#ref = this.#dialogService.open(CreateCatalogItemComponent, {
-      data: data,
-      header: this.#translateService.instant(data?.id ? 'CATALOG.TABLE.DIALOG.EDIT' : 'CATALOG.TABLE.DIALOG.ADD'),
-      width: '50vw',
-      modal: true,
-      closable: true,
-      dismissableMask: true,
-      draggable: false,
-      focusOnShow: false,
-      breakpoints: {
-        '960px': '75vw',
-        '768px': '90vw',
-        '640px': '95vw',
-      },
-    });
+    const open = () => {
+      this.#ref = this.#dialogService.open(CreateCatalogItemComponent, {
+        data: data,
+        header: this.#translateService.instant(data?.id ? 'CATALOG.TABLE.DIALOG.EDIT' : 'CATALOG.TABLE.DIALOG.ADD'),
+        width: '50vw',
+        modal: true,
+        closable: true,
+        dismissableMask: true,
+        draggable: false,
+        focusOnShow: false,
+        breakpoints: {
+          '960px': '75vw',
+          '768px': '90vw',
+          '640px': '95vw',
+        },
+      });
 
-    this.#ref?.onClose
-      .pipe(
-        takeUntilDestroyed(this.#destroyRef),
-        switchMap(() => this.#store.dispatch(new FetchCatalog())),
-      )
-      .subscribe();
+      this.#ref?.onClose
+        .pipe(
+          takeUntilDestroyed(this.#destroyRef),
+          switchMap(() => this.#store.dispatch(new FetchCatalog())),
+        )
+        .subscribe();
+    };
+
+    if (data?.id) {
+      open();
+    } else {
+      this.#store
+        .dispatch(FetchProfile)
+        .pipe(tap(open), takeUntilDestroyed(this.#destroyRef))
+        .subscribe();
+    }
   }
 
   deleteItems(items: ICatalogItem[]): void {

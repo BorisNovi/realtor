@@ -9,8 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
-import { ActivateAfterSignup, Signup } from 'src/app/core/auth/state/auth.actions';
-import { AuthState } from 'src/app/core/auth/state/auth.state';
+import { ActivateAfterSignup, AuthState, Signup } from 'src/app/core';
 
 @Component({
   selector: 'rx-sign-up',
