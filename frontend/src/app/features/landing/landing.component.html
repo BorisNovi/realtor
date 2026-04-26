@@ -1,5 +1,208 @@
-<div class="flex flex-col items-center justify-center min-h-screen gap-6 text-center px-4">
-  <h1 class="text-4xl font-bold">Urban CRM</h1>
-  <p class="text-lg text-gray-500 max-w-md">Modern CRM for real estate agents. Coming soon.</p>
-  <p-button routerLink="/auth/sign-in" label="Sign in" />
-</div>
+<!-- ===================== HERO + NAVBAR ===================== -->
+<section class="hero">
+  <div class="hero__glow"></div>
+
+  <header class="landing-nav">
+    <div class="landing-nav__inner">
+      <a routerLink="/" class="landing-nav__logo">
+        <img src="assets/images/logo.png" alt="Urban CRM" />
+      </a>
+
+      <nav class="landing-nav__links">
+        <a href="#about" class="landing-nav__link">{{ 'LANDING.NAV.ABOUT' | translate }}</a>
+        <a href="#features" class="landing-nav__link">{{ 'LANDING.NAV.FEATURES' | translate }}</a>
+        <!-- <a href="#faq" class="landing-nav__link">{{ 'LANDING.NAV.FAQS' | translate }}</a> -->
+        <a href="#contact" class="landing-nav__link">{{ 'LANDING.NAV.CONTACT' | translate }}</a>
+      </nav>
+
+      <div class="landing-nav__actions">
+        <button class="landing-nav__lang" (click)="toggleLanguage()">
+          {{ currentLanguage().label }}
+        </button>
+        <a routerLink="/auth/sign-in" class="landing-nav__cta">
+          {{ 'LANDING.HERO.CTA' | translate }}
+        </a>
+        <button
+          class="landing-nav__burger"
+          (click)="mobileMenuOpen.set(!mobileMenuOpen())"
+          [attr.aria-expanded]="mobileMenuOpen()"
+        >
+          @if (mobileMenuOpen()) {
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          } @else {
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          }
+        </button>
+      </div>
+    </div>
+
+    @if (mobileMenuOpen()) {
+      <nav class="landing-nav__mobile">
+        <a href="#about" class="landing-nav__mobile-link" (click)="mobileMenuOpen.set(false)">{{
+          'LANDING.NAV.ABOUT' | translate
+        }}</a>
+        <a href="#features" class="landing-nav__mobile-link" (click)="mobileMenuOpen.set(false)">{{
+          'LANDING.NAV.FEATURES' | translate
+        }}</a>
+        <a href="#faq" class="landing-nav__mobile-link" (click)="mobileMenuOpen.set(false)">{{
+          'LANDING.NAV.FAQS' | translate
+        }}</a>
+        <a href="#contact" class="landing-nav__mobile-link" (click)="mobileMenuOpen.set(false)">{{
+          'LANDING.NAV.CONTACT' | translate
+        }}</a>
+        <a routerLink="/auth/sign-in" class="landing-nav__mobile-cta">
+          {{ 'LANDING.HERO.CTA' | translate }}
+        </a>
+      </nav>
+    }
+  </header>
+
+  <div class="hero__inner">
+    <div class="hero__grid">
+      <div class="hero__content">
+        <h1 class="hero__title">{{ 'LANDING.HERO.TITLE' | translate }}</h1>
+        <p class="hero__subtitle">{{ 'LANDING.HERO.SUBTITLE' | translate }}</p>
+        <div class="hero__actions">
+          <a routerLink="/auth/sign-in" class="hero__btn hero__btn--primary">
+            {{ 'LANDING.HERO.TRY_FREE' | translate }}
+          </a>
+          <a href="#about" class="hero__btn hero__btn--outline">
+            {{ 'LANDING.HERO.LEARN_MORE' | translate }}
+          </a>
+        </div>
+      </div>
+
+      <div class="hero__illustration">
+        <img src="assets/images/city-bg.png" alt="" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section id="about" class="about">
+  <div class="about__inner">
+    <div class="about__grid">
+      <span class="about__label">{{ 'LANDING.ABOUT.LABEL' | translate }}</span>
+
+      <div class="about__heading-wrap">
+        <h2 class="about__title">
+          <span class="about__title-line">{{ 'LANDING.ABOUT.TITLE_1' | translate }}</span>
+          <span class="about__title-line">{{ 'LANDING.ABOUT.TITLE_2' | translate }}</span>
+        </h2>
+      </div>
+
+      <div class="about__carousel-wrap">
+        <p-carousel
+          #aboutCarousel
+          class="about__carousel"
+          [value]="aboutFeatures"
+          [circular]="true"
+          [showNavigators]="false"
+          [showIndicators]="false"
+          [autoplayInterval]="5000"
+        >
+          <ng-template let-feature #item>
+            <h4 class="about__carousel__title">{{ feature.titleKey | translate }}</h4>
+            <ul class="about__carousel__list">
+              @for (descKey of feature.descKeys; track $index) {
+                <li class="about__carousel__list__item">&mdash;&nbsp;&nbsp;{{ descKey | translate }}</li>
+              }
+            </ul>
+          </ng-template>
+        </p-carousel>
+
+        <div class="about__carousel-nav">
+          <button class="about__carousel-nav__btn" (click)="carousel().navBackward($event)">
+            <i class="pi pi-arrow-left"></i>
+          </button>
+          <button class="about__carousel-nav__btn" (click)="carousel().navForward($event)">
+            <i class="pi pi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FEATURES ===================== -->
+<section id="features" class="features">
+  <div class="features__inner">
+    <div class="features__grid">
+      <span class="features__label">{{ 'LANDING.FEATURES.LABEL' | translate }}</span>
+
+      <div class="features__list">
+        @for (feature of features; track feature.titleKey; let i = $index) {
+          <div class="features__item">
+            <div class="features__item-body">
+              <div class="features__bar"></div>
+              <div class="features__item-text">
+                <h3 class="features__item-title">{{ feature.titleKey | translate }}</h3>
+                <p class="features__item-desc">{{ feature.descKey | translate }}</p>
+              </div>
+            </div>
+            <div class="features__item-image"></div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section id="cta" class="cta">
+  <div class="cta__inner">
+    <h2 class="cta__title">{{ 'LANDING.CTA.TITLE' | translate }}</h2>
+    <p class="cta__subtitle">{{ 'LANDING.CTA.SUBTITLE' | translate }}</p>
+    <a routerLink="/auth/sign-in" class="cta__btn">{{ 'LANDING.CTA.BUTTON' | translate }}</a>
+    <div class="cta__glow"></div>
+  </div>
+
+  <div class="cta__cityscape">
+    <img src="assets/images/cityscape.png" alt="cityscape">
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer" id="contact">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <div class="site-footer__contact">
+        <div class="site-footer__contact-group">
+          <span class="site-footer__contact-label">Telegram</span>
+          <a href="https://t.me/dudes_inc" target="_blank" class="site-footer__contact-value">@dudes_inc</a>
+        </div>
+        <!-- <div class="site-footer__contact-group">
+          <span class="site-footer__contact-label">{{ 'LANDING.FOOTER.EMAIL_LABEL' | translate }}</span>
+          <a [href]="'mailto: support@urbancrm.app'" class="site-footer__contact-value">support@urbancrm.app</a>
+        </div> -->
+        <!-- <div class="site-footer__contact-group">
+          <span class="site-footer__contact-label">{{ 'LANDING.FOOTER.PHONE_LABEL' | translate }}</span>
+          <a [href]="'tel: 8 800 555 35 35'" class="site-footer__contact-value">8 800 555 35 35</a>
+        </div> -->
+      </div>
+      <div class="site-footer__sections">
+        <a href="#about" class="site-footer__sections__link">{{ 'LANDING.NAV.ABOUT' | translate }}</a>
+        <a href="#features" class="site-footer__sections__link">{{ 'LANDING.NAV.FEATURES' | translate }}</a>
+      </div>
+    </div>
+
+    <div class="site-footer__brand">
+      <div class="site-footer__brand-logo">
+        <img src="assets/images/footer-logo.svg" alt="footer logo">
+      </div>
+
+      <div class="site-footer__legal">
+        <span class="site-footer__copy">2026 Dudes Inc.</span>
+        <div class="site-footer__legal-links">
+          <a href="https://daffy-dance-197.notion.site/Terms-of-Service-UrbanCRM-34e4723efe0e80bb98fae3eb1e82c7e6" target="_blank" class="site-footer__legal-link">{{ 'LANDING.FOOTER.TERMS' | translate }}</a>
+          <a href="https://daffy-dance-197.notion.site/34e4723efe0e80fba3e9ef8f03474138" target="_blank" class="site-footer__legal-link">{{ 'LANDING.FOOTER.PRIVACY' | translate }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

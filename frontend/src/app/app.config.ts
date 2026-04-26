@@ -1,5 +1,5 @@
 import { ApplicationConfig, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
-import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
+import { provideRouter, TitleStrategy, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -15,11 +15,12 @@ import { routes } from './app.routes';
 import { authInterceptor, AuthState, CatalogState } from './core';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TRANSLATE_HTTP_LOADER_CONFIG, TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TransferStateLoader } from './shared/utils/translate-loader';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ContactsState } from './core/contacts/state/contacts.state';
 import { ListingsState } from './core/listings/state';
 import { ProfileState } from './core/profile/state';
+import { TitleService } from './core/services';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,17 +33,17 @@ export const appConfig: ApplicationConfig = {
       }),
       withEnabledBlockingInitialNavigation(),
     ),
+    { provide: TitleStrategy, useClass: TitleService },
     provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
     importProvidersFrom(
       TranslateModule.forRoot({
         fallbackLang: 'en',
         loader: {
           provide: TranslateLoader,
-          useFactory: () => new TranslateHttpLoader(),
+          useClass: TransferStateLoader,
         },
       }),
     ),
-    { provide: TRANSLATE_HTTP_LOADER_CONFIG, useValue: { prefix: './assets/i18n/', suffix: '.json' } },
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {

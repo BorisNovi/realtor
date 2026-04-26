@@ -7,4 +7,5 @@ export { ImportExportService } from './import-export.service';
 export { LanguageSelectService } from './language-select.service';
 export { QueryParamsService } from './query-params.service';
 export { StorageService } from './storage.service';
+export { TitleService } from './title.service';
 export { ViewMode, ViewModeService } from './view-mode.service';
