@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { LanguageSelectService } from './core/services';
 import { Toast } from 'primeng/toast';
 
 @Component({
@@ -9,5 +10,8 @@ import { Toast } from 'primeng/toast';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = 'frontend';
+  constructor() {
+    // Инициализирует язык из localStorage/браузера при старте, до любого лэйаута
+    inject(LanguageSelectService);
+  }
 }

@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.conf import settings
 from users.models import User, PasswordResetRequest
 
 class PasswordRecoveryView(APIView):
@@ -38,7 +39,7 @@ class PasswordRecoveryView(APIView):
         send_mail(
             "Password Reset Request",
             f"To reset your password, click the following link: {reset_url}",
-            "no-reply@example.com",
+            settings.DEFAULT_FROM_EMAIL,
             [email],
             fail_silently=False,
         )
