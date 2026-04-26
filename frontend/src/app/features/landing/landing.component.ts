@@ -69,6 +69,8 @@ export class LandingComponent {
     { titleKey: 'LANDING.FEATURES.ITEM_1_TITLE', descKey: 'LANDING.FEATURES.ITEM_1_DESC' },
     { titleKey: 'LANDING.FEATURES.ITEM_2_TITLE', descKey: 'LANDING.FEATURES.ITEM_2_DESC' },
     { titleKey: 'LANDING.FEATURES.ITEM_3_TITLE', descKey: 'LANDING.FEATURES.ITEM_3_DESC' },
+    { titleKey: 'LANDING.FEATURES.ITEM_4_TITLE', descKey: 'LANDING.FEATURES.ITEM_4_DESC' },
+    { titleKey: 'LANDING.FEATURES.ITEM_5_TITLE', descKey: 'LANDING.FEATURES.ITEM_5_DESC' },
   ];
 
   readonly faqItems: IFaqItem[] = [

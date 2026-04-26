@@ -10,8 +10,8 @@
 
       <nav class="landing-nav__links">
         <a href="#about" class="landing-nav__link">{{ 'LANDING.NAV.ABOUT' | translate }}</a>
-        <a href="#features" class="landing-nav__link">{{ 'LANDING.NAV.SOLUTIONS' | translate }}</a>
-        <a href="#faq" class="landing-nav__link">{{ 'LANDING.NAV.FAQS' | translate }}</a>
+        <a href="#features" class="landing-nav__link">{{ 'LANDING.NAV.FEATURES' | translate }}</a>
+        <!-- <a href="#faq" class="landing-nav__link">{{ 'LANDING.NAV.FAQS' | translate }}</a> -->
         <a href="#contact" class="landing-nav__link">{{ 'LANDING.NAV.CONTACT' | translate }}</a>
       </nav>
 
@@ -46,7 +46,7 @@
           'LANDING.NAV.ABOUT' | translate
         }}</a>
         <a href="#features" class="landing-nav__mobile-link" (click)="mobileMenuOpen.set(false)">{{
-          'LANDING.NAV.SOLUTIONS' | translate
+          'LANDING.NAV.FEATURES' | translate
         }}</a>
         <a href="#faq" class="landing-nav__mobile-link" (click)="mobileMenuOpen.set(false)">{{
           'LANDING.NAV.FAQS' | translate
@@ -145,7 +145,7 @@
                 <p class="features__item-desc">{{ feature.descKey | translate }}</p>
               </div>
             </div>
-            <div class="features__item-image">screenshot {{ i + 1 }}</div>
+            <div class="features__item-image"></div>
           </div>
         }
       </div>
@@ -153,106 +153,54 @@
   </div>
 </section>
 
-<!-- ===================== FAQ ===================== -->
-<section id="faq" class="faq">
-  <div class="faq__inner">
-    <div class="faq__grid">
-      <span class="faq__label">{{ 'LANDING.FAQ.LABEL' | translate }}</span>
-
-      <div>
-        <h2 class="faq__title">{{ 'LANDING.FAQ.TITLE' | translate }}</h2>
-
-        <div class="faq__list">
-          @for (item of faqItems; track item.questionKey; let i = $index) {
-            <div class="faq__item">
-              <button class="faq__question" (click)="toggleFaq(i)">
-                <span class="faq__question-text">{{ item.questionKey | translate }}</span>
-                <svg
-                  class="faq__question-icon"
-                  [class.faq__question-icon--open]="openFaqIndex() === i"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              @if (openFaqIndex() === i) {
-                <p class="faq__answer">{{ item.answerKey | translate }}</p>
-              }
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ===================== CTA ===================== -->
-<section id="contact" class="cta">
+<section id="cta" class="cta">
   <div class="cta__inner">
     <h2 class="cta__title">{{ 'LANDING.CTA.TITLE' | translate }}</h2>
     <p class="cta__subtitle">{{ 'LANDING.CTA.SUBTITLE' | translate }}</p>
     <a routerLink="/auth/sign-in" class="cta__btn">{{ 'LANDING.CTA.BUTTON' | translate }}</a>
+    <div class="cta__glow"></div>
   </div>
 
   <div class="cta__cityscape">
-    <svg viewBox="0 0 1200 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-      <path
-        d="M0,160 L0,135 L40,135 L40,115 L70,115 L70,85 L85,85 L85,55 L95,55 L100,30 L105,55 L115,55 L115,85 L130,85 L130,105 L160,105 L160,80 L190,80 L190,55 L200,55 L200,80 L230,80 L230,110 L260,110 L260,88 L290,88 L290,68 L300,50 L310,68 L320,68 L320,88 L350,88 L350,120 L390,120 L390,88 L420,88 L420,58 L432,42 L444,58 L460,58 L460,88 L490,88 L490,68 L510,68 L515,48 L520,68 L530,68 L530,88 L560,88 L560,110 L600,110 L600,85 L630,85 L630,58 L642,42 L654,58 L670,58 L670,85 L700,85 L700,115 L740,115 L740,88 L770,88 L780,62 L790,88 L810,88 L810,115 L850,115 L850,85 L880,85 L890,58 L900,85 L930,85 L930,110 L970,110 L970,88 L1010,88 L1010,68 L1025,50 L1040,68 L1060,68 L1060,100 L1100,100 L1100,120 L1140,120 L1140,135 L1200,135 L1200,160 Z"
-        fill="var(--color-green-500)"
-        opacity="0.15"
-      />
-      <path
-        d="M0,160 L0,145 L60,145 L60,125 L100,125 L100,95 L115,75 L130,95 L155,95 L155,115 L195,115 L195,90 L225,90 L240,70 L255,90 L280,90 L280,120 L330,120 L330,105 L370,105 L380,80 L390,105 L420,105 L420,125 L465,125 L465,100 L500,100 L510,75 L520,100 L545,100 L545,120 L590,120 L590,100 L635,100 L645,75 L655,100 L685,100 L685,125 L730,125 L730,140 L790,140 L800,115 L840,115 L850,90 L860,115 L895,115 L895,130 L945,130 L945,108 L985,108 L1000,90 L1015,108 L1055,108 L1055,128 L1100,128 L1100,145 L1200,145 L1200,160 Z"
-        fill="var(--color-green-500)"
-        opacity="0.25"
-      />
-    </svg>
+    <img src="assets/images/cityscape.png" alt="cityscape">
   </div>
 </section>
 
 <!-- ===================== FOOTER ===================== -->
-<footer class="site-footer">
+<footer class="site-footer" id="contact">
   <div class="site-footer__inner">
-    <div class="site-footer__cols">
+    <div class="site-footer__links">
       <div class="site-footer__contact">
         <div class="site-footer__contact-group">
+          <span class="site-footer__contact-label">Telegram</span>
+          <a href="https://t.me/dudes_inc" target="_blank" class="site-footer__contact-value">@dudes_inc</a>
+        </div>
+        <!-- <div class="site-footer__contact-group">
           <span class="site-footer__contact-label">{{ 'LANDING.FOOTER.EMAIL_LABEL' | translate }}</span>
-          <a [href]="'mailto:' + ('LANDING.FOOTER.EMAIL' | translate)" class="site-footer__contact-value">
-            {{ 'LANDING.FOOTER.EMAIL' | translate }}
-          </a>
-        </div>
-        <div class="site-footer__contact-group">
+          <a [href]="'mailto: support@urbancrm.app'" class="site-footer__contact-value">support@urbancrm.app</a>
+        </div> -->
+        <!-- <div class="site-footer__contact-group">
           <span class="site-footer__contact-label">{{ 'LANDING.FOOTER.PHONE_LABEL' | translate }}</span>
-          <a [href]="'tel:' + ('LANDING.FOOTER.PHONE' | translate)" class="site-footer__contact-value">
-            {{ 'LANDING.FOOTER.PHONE' | translate }}
-          </a>
-        </div>
+          <a [href]="'tel: 8 800 555 35 35'" class="site-footer__contact-value">8 800 555 35 35</a>
+        </div> -->
       </div>
-
-      <div class="site-footer__social">
-        <a href="#" class="site-footer__social-link">Facebook</a>
-        <a href="#" class="site-footer__social-link">Instagram</a>
-        <a href="#" class="site-footer__social-link">LinkedIn</a>
+      <div class="site-footer__sections">
+        <a href="#about" class="site-footer__sections__link">{{ 'LANDING.NAV.ABOUT' | translate }}</a>
+        <a href="#features" class="site-footer__sections__link">{{ 'LANDING.NAV.FEATURES' | translate }}</a>
       </div>
     </div>
 
     <div class="site-footer__brand">
       <div class="site-footer__brand-logo">
-        <svg class="site-footer__brand-icon" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-        </svg>
-        <span class="site-footer__brand-name site-footer__brand-name--solid">URBAN</span>
-        <span class="site-footer__brand-name site-footer__brand-name--outline">CRM</span>
+        <img src="assets/images/footer-logo.svg" alt="footer logo">
       </div>
 
       <div class="site-footer__legal">
-        <span class="site-footer__copy">{{ 'LANDING.FOOTER.COPY' | translate }}</span>
+        <span class="site-footer__copy">2026 Dudes Inc.</span>
         <div class="site-footer__legal-links">
-          <a href="#" class="site-footer__legal-link">{{ 'LANDING.FOOTER.TERMS' | translate }}</a>
-          <a href="#" class="site-footer__legal-link">{{ 'LANDING.FOOTER.PRIVACY' | translate }}</a>
+          <a href="https://daffy-dance-197.notion.site/Terms-of-Service-UrbanCRM-34e4723efe0e80bb98fae3eb1e82c7e6" target="_blank" class="site-footer__legal-link">{{ 'LANDING.FOOTER.TERMS' | translate }}</a>
+          <a href="https://daffy-dance-197.notion.site/34e4723efe0e80fba3e9ef8f03474138" target="_blank" class="site-footer__legal-link">{{ 'LANDING.FOOTER.PRIVACY' | translate }}</a>
         </div>
       </div>
     </div>

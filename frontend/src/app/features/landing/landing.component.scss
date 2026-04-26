@@ -38,14 +38,14 @@ $gap-lg: 3rem;
   }
 }
 
-// Лейблы секций (features, faq)
+// Лейблы секций
 @mixin section-label {
-  padding-top: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--p-green-500);
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1rem;
+  letter-spacing: 0.5px;
+  text-wrap: nowrap;
+  width: fit-content;
 }
 
 // Базовый сброс для ссылок
@@ -59,6 +59,7 @@ $gap-lg: 3rem;
 // =============================================================
 :host {
   display: block;
+  overflow: hidden;
   font-family: 'Manrope', sans-serif;
 }
 
@@ -372,6 +373,7 @@ $gap-lg: 3rem;
 // About
 // =============================================================
 .about {
+  overflow: hidden;
   z-index: 1;
   @include section-padding(5rem, 5.5rem, 7rem, 5.5rem);
   background: var(--p-green-500);
@@ -392,15 +394,10 @@ $gap-lg: 3rem;
   }
 
   &__label {
+    @include section-label;
     display: block;
-    width: fit-content;
     padding-right: 1.5rem;
     border-right: 1px solid var(--p-surface-0);
-    font-size: 1.1rem;
-    font-weight: 400;
-    line-height: 1rem;
-    letter-spacing: 0.5px;
-    text-wrap: nowrap;
     color: var(--p-surface-0);
 
     // На мобильном border-right теряет смысл — заменяем на bottom
@@ -497,9 +494,7 @@ $gap-lg: 3rem;
   @include section-padding;
   background: var(--p-surface-0);
 
-  &__inner {
-    @include container;
-  }
+  &__inner { @include container(100rem); }
 
   &__grid {
     display: grid;
@@ -513,162 +508,78 @@ $gap-lg: 3rem;
 
   &__label {
     @include section-label;
+    color: var(--p-green-500)
   }
 
-  &__list {
-    border-top: 1px solid var(--p-surface-100);
-  }
+  &__list { }
 
   &__item {
+    position: relative;
+    z-index: 1;
     display: grid;
     gap: $gap-sm;
-    align-items: center;
-    padding-block: 3rem;
-    border-bottom: 1px solid var(--p-surface-100);
+    align-items: flex-start;
+    padding-bottom: 2rem;
 
     @media (min-width: $bp-md) {
       grid-template-columns: 1fr 1fr;
-      gap: 4rem;
+      gap: 8rem;
     }
   }
 
   &__item-body {
     display: flex;
-    gap: 1.25rem;
+    gap: 4rem;
+
+    @media (min-width: $bp-md) {
+      gap: 8rem;
+    }
   }
 
   &__bar {
     flex-shrink: 0;
-    width: 4px;
+    width: 1px;
     min-height: 4.5rem;
-    border-radius: 9999px;
     background: var(--p-green-500);
   }
 
   &__item-text {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 2rem;
   }
 
   &__item-title {
     margin: 0;
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.3;
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 1.5px;
     color: var(--p-surface-900);
 
-    @media (min-width: $bp-lg) {
-      font-size: 1.5rem;
-    }
+    @media (min-width: $bp-md) { font-size: 2rem; }
+    @media (min-width: $bp-lg) { font-size: 2.5rem; }
   }
 
   &__item-desc {
     margin: 0;
-    font-size: 0.875rem;
     line-height: 1.7;
-    color: var(--p-surface-500);
+    color: var(--p-surface-800);
   }
 
   &__item-image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    aspect-ratio: 16 / 9;
-    border: 1px solid var(--p-surface-200);
+    max-width: 450px;
+    aspect-ratio: 5 / 3;
     border-radius: $r-card;
-    font-size: 0.75rem;
-    color: var(--p-surface-300);
-    background: var(--p-surface-50);
-    user-select: none;
-  }
-}
+    background: linear-gradient(145deg, var(--p-surface-900) 0%, var(--p-surface-700) 100%);
+    overflow: hidden;
 
-// =============================================================
-// FAQ
-// =============================================================
-.faq {
-  @include section-padding;
-  background: var(--p-surface-50);
-
-  &__inner {
-    @include container;
-  }
-
-  &__grid {
-    display: grid;
-    gap: $gap-sm;
-
-    @media (min-width: $bp-lg) {
-      grid-template-columns: 4.5rem 1fr;
-      gap: $gap-lg;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top left;
     }
-  }
-
-  &__label {
-    @include section-label;
-  }
-
-  &__title {
-    margin: 0 0 3rem;
-    font-size: 1.875rem;
-    font-weight: 800;
-    color: var(--p-surface-900);
-
-    @media (min-width: $bp-md) {
-      font-size: 2.25rem;
-    }
-    @media (min-width: $bp-lg) {
-      font-size: 3rem;
-    }
-  }
-
-  &__list {
-    border-top: 1px solid var(--p-surface-200);
-  }
-
-  &__item {
-    border-bottom: 1px solid var(--p-surface-200);
-  }
-
-  &__question {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
-    padding-block: 1.25rem;
-    border: none;
-    background: none;
-    cursor: pointer;
-    text-align: left;
-    font-family: inherit;
-
-    &-text {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--p-surface-900);
-    }
-
-    &-icon {
-      flex-shrink: 0;
-      width: 1.25rem;
-      height: 1.25rem;
-      color: var(--p-surface-400);
-      transition: transform 0.2s;
-
-      &--open {
-        transform: rotate(180deg);
-      }
-    }
-  }
-
-  &__answer {
-    margin: 0;
-    padding-bottom: 1.25rem;
-    font-size: 0.875rem;
-    line-height: 1.7;
-    color: var(--p-surface-500);
   }
 }
 
@@ -676,8 +587,10 @@ $gap-lg: 3rem;
 // CTA
 // =============================================================
 .cta {
+  position: relative;
+  background: var(--p-surface-0);
+  height: 50rem;
   padding-top: 5rem;
-  background: var(--p-green-50);
 
   @media (min-width: $bp-lg) {
     padding-top: 7rem;
@@ -685,12 +598,15 @@ $gap-lg: 3rem;
 
   &__inner {
     @include container;
+    position: relative;
     padding-bottom: 5rem;
     text-align: center;
   }
 
   &__title {
-    margin: 0 0 1rem;
+    position: relative;
+    z-index: 1;
+    margin: 0 0 -.25rem;
     font-size: 2.5rem;
     font-weight: 800;
     color: var(--p-surface-900);
@@ -699,27 +615,31 @@ $gap-lg: 3rem;
       font-size: 3rem;
     }
     @media (min-width: $bp-lg) {
-      font-size: 3.75rem;
+      font-size: 4rem;
     }
   }
 
   &__subtitle {
-    max-width: 28rem;
+    position: relative;
+    z-index: 1;
+    max-width: 35rem;
     margin: 0 auto 2.5rem;
-    font-size: 1.125rem;
-    line-height: 1.7;
-    color: var(--p-surface-500);
+    font-size: 1.75rem;
+    line-height: 1.4;
+    color: var(--p-surface-900);
   }
 
   &__btn {
+    position: relative;
+    z-index: 1;
     display: inline-flex;
     align-items: center;
     padding: 0.875rem 2rem;
     border-radius: 0.5rem;
     background: var(--p-surface-900);
     text-decoration: none;
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 500;
     font-family: inherit;
     color: var(--p-surface-0);
     transition: $tr-bg;
@@ -729,9 +649,24 @@ $gap-lg: 3rem;
     }
   }
 
-  &__cityscape svg {
+  &__glow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 0;
     display: block;
-    width: 100%;
+    width: 120%;
+    height: 410%;
+    border-radius: 50%;
+    transform: translate(10%, -33%);
+    pointer-events: none;
+    opacity: 0.5;
+    background: radial-gradient(circle, var(--p-green-400) 0%, transparent 70%);
+  }
+
+  &__cityscape {
+    bottom: -10rem;
+    position: absolute;
   }
 }
 
@@ -739,31 +674,34 @@ $gap-lg: 3rem;
 // Footer
 // =============================================================
 .site-footer {
+  position: relative;
+  z-index: 1;
   padding-top: 3.5rem;
   padding-bottom: 2rem;
-  background: var(--p-green-950);
+  background: var(--p-green-500);
 
   &__inner {
-    @include container;
+    padding-inline: 2rem;
   }
 
-  &__cols {
-    display: grid;
+  &__links {
+    @include container;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     gap: 2.5rem;
     margin-bottom: 3.5rem;
+  }
 
-    @media (min-width: $bp-md) {
-      grid-template-columns: 1fr 1fr;
-    }
-    @media (min-width: $bp-lg) {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
+  &__sections {
+    display: flex;
+    flex-direction: column;
   }
 
   &__contact {
     display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    flex-wrap: wrap;
+    gap: 4rem;
   }
 
   &__contact-group {
@@ -775,80 +713,44 @@ $gap-lg: 3rem;
   &__contact-label {
     font-size: 0.75rem;
     letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--p-green-400) 50%, transparent);
+    text-transform: capitalize;
+    color: var(--p-green-200);
   }
 
   &__contact-value {
     @include link-base;
-    font-size: 0.875rem;
     color: var(--p-surface-0);
 
     &:hover {
-      color: var(--p-green-400);
+      color: var(--p-green-900);
     }
   }
 
-  &__social {
+  &__sections {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-  }
 
-  &__social-link {
-    @include link-base;
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.4);
-
-    &:hover {
-      color: rgba(255, 255, 255, 0.8);
+    &__link {
+      &:hover {
+        color: var(--p-green-900);
+      }
     }
   }
 
   &__brand {
+    display: flex;
+    flex-wrap: wrap;
     padding-top: 2.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 3rem;
+    align-items: flex-end;
+    justify-content: space-between;
   }
 
   &__brand-logo {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  &__brand-icon {
-    flex-shrink: 0;
-    width: 2.5rem;
-    height: 2.5rem;
-    color: var(--p-surface-0);
-
-    @media (min-width: $bp-md) {
-      width: 3rem;
-      height: 3rem;
-    }
-  }
-
-  &__brand-name {
-    font-size: 2.5rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    line-height: 1;
-
-    @media (min-width: $bp-md) {
-      font-size: 3.75rem;
-    }
-    @media (min-width: $bp-lg) {
-      font-size: 4.5rem;
-    }
-
-    &--solid {
-      color: var(--p-surface-0);
-    }
-    &--outline {
-      color: transparent;
-      -webkit-text-stroke: 2px var(--p-surface-0);
-    }
   }
 
   &__legal {
