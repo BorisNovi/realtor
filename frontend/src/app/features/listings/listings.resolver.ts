@@ -3,8 +3,7 @@ import { ActivatedRouteSnapshot, ResolveFn, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { LISTINGS_PAGINATION_KEY } from '@shared/constants';
 import { map, switchMap, take } from 'rxjs';
-import { QueryParamsService } from 'src/app/core';
-import { FetchListings, ListingsState, SetListingsPagination } from 'src/app/core/listings/state';
+import { FetchListings, ListingsState, QueryParamsService, SetListingsPagination } from 'src/app/core';
 
 export const listingsResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapshot) => {
   const queryParamsService = inject(QueryParamsService);

@@ -3,9 +3,7 @@ import { ActivatedRouteSnapshot, ResolveFn, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { CONTACTS_PAGINATION_KEY } from '@shared/constants';
 import { map, switchMap, take } from 'rxjs';
-import { QueryParamsService } from 'src/app/core';
-import { FetchContacts, SetContactsPagination } from 'src/app/core/contacts/state/contacts.actions';
-import { ContactsState } from 'src/app/core/contacts/state/contacts.state';
+import { ContactsState, FetchContacts, QueryParamsService, SetContactsPagination } from 'src/app/core';
 
 export const contactsResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapshot) => {
   const queryParamsService = inject(QueryParamsService);

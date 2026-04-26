@@ -10,12 +10,10 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Divider } from 'primeng/divider';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Popover, PopoverModule } from 'primeng/popover';
-import { first } from 'rxjs';
-import { CatalogState, DeletePropertyObjects, DeletionConfirmationService } from 'src/app/core';
-import { ListingsService } from 'src/app/core/listings';
-import { ListingsState, UpdateListing } from 'src/app/core/listings/state';
-import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 import { TooltipModule } from 'primeng/tooltip';
+import { first } from 'rxjs';
+import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, ListingsService, ListingsState, UpdateListing } from 'src/app/core';
+import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
 @Component({
   selector: 'rx-catalog-item',

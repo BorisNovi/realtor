@@ -11,6 +11,7 @@ export const CURRENCY_SYMBOLS: Record<Currency, string> = {
   PLN: 'zł',
   CZK: 'Kč',
   HUF: 'Ft',
+  RSD: 'RSD',
   RUB: '₽',
 
   // Азия
