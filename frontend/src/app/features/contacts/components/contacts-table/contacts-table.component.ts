@@ -15,7 +15,15 @@ import { PaginatorState } from 'primeng/paginator';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { ContactsState, DeleteContact, DeletionConfirmationService, FetchContacts, SetContactsSearch, ViewMode, ViewModeService } from 'src/app/core';
+import {
+  ContactsState,
+  DeleteContact,
+  DeletionConfirmationService,
+  FetchContacts,
+  SetContactsSearch,
+  ViewMode,
+  ViewModeService,
+} from 'src/app/core';
 import { CreateContactComponent } from '../create-contact/create-contact.component';
 
 @Component({

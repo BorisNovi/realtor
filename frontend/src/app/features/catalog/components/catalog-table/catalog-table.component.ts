@@ -254,10 +254,7 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
     if (data?.id) {
       open();
     } else {
-      this.#store
-        .dispatch(FetchProfile)
-        .pipe(tap(open), takeUntilDestroyed(this.#destroyRef))
-        .subscribe();
+      this.#store.dispatch(FetchProfile).pipe(tap(open), takeUntilDestroyed(this.#destroyRef)).subscribe();
     }
   }
 

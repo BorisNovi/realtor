@@ -9,7 +9,6 @@ import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { AuthState, RecoverPassword } from 'src/app/core';
 
-
 @Component({
   selector: 'rx-forgot',
   imports: [
