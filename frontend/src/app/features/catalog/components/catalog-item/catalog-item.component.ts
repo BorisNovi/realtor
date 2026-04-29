@@ -12,7 +12,14 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { TooltipModule } from 'primeng/tooltip';
 import { first } from 'rxjs';
-import { CatalogState, DeletePropertyObjects, DeletionConfirmationService, ListingsService, ListingsState, UpdateListing } from 'src/app/core';
+import {
+  CatalogState,
+  DeletePropertyObjects,
+  DeletionConfirmationService,
+  ListingsService,
+  ListingsState,
+  UpdateListing,
+} from 'src/app/core';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
 
 @Component({
