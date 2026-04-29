@@ -5,7 +5,7 @@ import { Store } from '@ngxs/store';
 import { InputWrapperComponent, SelectSingleComponent } from '@shared/components';
 import { IAddress, ICountry, IFetchOptions } from '@shared/interfaces';
 import { InputTextModule } from 'primeng/inputtext';
-import { AuthState, CountryService } from 'src/app/core';
+import { CountryService, ProfileState } from 'src/app/core';
 
 @Component({
   selector: 'rx-address-form',
@@ -20,7 +20,7 @@ export class AddressFormComponent implements OnInit {
   readonly #store = inject(Store);
   readonly #countryService = inject(CountryService);
 
-  readonly #user = this.#store.selectSignal(AuthState.user);
+  readonly #user = this.#store.selectSignal(ProfileState.user);
 
   readonly countryFetchMethod = (options: IFetchOptions) => this.#countryService.fetchCountries(options);
   readonly countryMapToSelect = (item: ICountry | string) => {
@@ -36,7 +36,7 @@ export class AddressFormComponent implements OnInit {
   ngOnInit(): void {
     const f = this.form();
     const v = this.value();
-    f.addControl('country', new FormControl(v?.country || this.#user()?.country?.name || '', Validators.required));
+    f.addControl('country', new FormControl(v?.country || this.#user()?.country?.name || null, Validators.required));
     f.addControl('state', new FormControl(v?.state || ''));
     f.addControl('city', new FormControl(v?.city || '', Validators.required));
     f.addControl('road', new FormControl(v?.road || '', Validators.required));

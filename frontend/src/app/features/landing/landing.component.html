@@ -145,7 +145,9 @@
                 <p class="features__item-desc">{{ feature.descKey | translate }}</p>
               </div>
             </div>
-            <div class="features__item-image"></div>
+            <div class="features__item-image">
+              <img [src]="`assets/images/landing-examples/image-${i}.png`" alt="feature-image" />
+            </div>
           </div>
         }
       </div>
@@ -163,7 +165,7 @@
   </div>
 
   <div class="cta__cityscape">
-    <img src="assets/images/cityscape.png" alt="cityscape">
+    <img src="assets/images/cityscape.png" alt="cityscape" />
   </div>
 </section>
 
@@ -193,14 +195,24 @@
 
     <div class="site-footer__brand">
       <div class="site-footer__brand-logo">
-        <img src="assets/images/footer-logo.svg" alt="footer logo">
+        <img src="assets/images/footer-logo.svg" alt="footer logo" />
       </div>
 
       <div class="site-footer__legal">
         <span class="site-footer__copy">2026 Dudes Inc.</span>
         <div class="site-footer__legal-links">
-          <a href="https://daffy-dance-197.notion.site/Terms-of-Service-UrbanCRM-34e4723efe0e80bb98fae3eb1e82c7e6" target="_blank" class="site-footer__legal-link">{{ 'LANDING.FOOTER.TERMS' | translate }}</a>
-          <a href="https://daffy-dance-197.notion.site/34e4723efe0e80fba3e9ef8f03474138" target="_blank" class="site-footer__legal-link">{{ 'LANDING.FOOTER.PRIVACY' | translate }}</a>
+          <a
+            href="https://daffy-dance-197.notion.site/Terms-of-Service-UrbanCRM-34e4723efe0e80bb98fae3eb1e82c7e6"
+            target="_blank"
+            class="site-footer__legal-link"
+            >{{ 'LANDING.FOOTER.TERMS' | translate }}</a
+          >
+          <a
+            href="https://daffy-dance-197.notion.site/34e4723efe0e80fba3e9ef8f03474138"
+            target="_blank"
+            class="site-footer__legal-link"
+            >{{ 'LANDING.FOOTER.PRIVACY' | translate }}</a
+          >
         </div>
       </div>
     </div>

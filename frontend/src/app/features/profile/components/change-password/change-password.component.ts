@@ -11,7 +11,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { tap } from 'rxjs';
-import { ChangePassword } from 'src/app/core/profile/state';
+import { ChangePassword } from 'src/app/core';
 
 @Component({
   imports: [

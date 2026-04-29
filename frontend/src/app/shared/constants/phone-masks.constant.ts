@@ -14,6 +14,7 @@ export const PHONE_MASKS: Record<string, IPhoneMaskConfig> = {
   '+374': { maxLength: 8, formatGroups: [2, 2, 2, 2], countryIsoCode: 'AM' }, // Армения: +XXX(XX)XX-XX-XX
   '+375': { maxLength: 9, formatGroups: [2, 3, 2, 2], countryIsoCode: 'BY' }, // Беларусь: +XXX(XX)XXX-XX-XX
   '+380': { maxLength: 9, formatGroups: [2, 3, 2, 2], countryIsoCode: 'UA' }, // Украина: +XXX(XX)XXX-XX-XX
+  '+381': { maxLength: 9, formatGroups: [2, 4, 3], countryIsoCode: 'RS' }, // Сербия: +XXX(XX)XXXX-XXX
   '+420': { maxLength: 9, formatGroups: [3, 3, 3], countryIsoCode: 'CZ' }, // Чехия: +XXX(XXX)XXX-XXX
   '+421': { maxLength: 9, formatGroups: [3, 3, 3], countryIsoCode: 'SK' }, // Словакия: +XXX(XXX)XXX-XXX
   '+971': { maxLength: 9, formatGroups: [2, 3, 2, 2], countryIsoCode: 'AE' }, // ОАЭ: +XXX(XX)XXX-XX-XX

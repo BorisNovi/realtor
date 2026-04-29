@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { ResolveFn, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { catchError, filter, map, of, take, timeout } from 'rxjs';
-import { FetchListing, ListingsState } from 'src/app/core/listings/state';
+import { FetchListing, ListingsState } from 'src/app/core';
 
 export const publicListingResolver: ResolveFn<boolean> = (route, state) => {
   const store = inject(Store);

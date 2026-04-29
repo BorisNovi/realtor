@@ -16,8 +16,14 @@ import { Divider } from 'primeng/divider';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { map } from 'rxjs';
-import { CatalogService, DeletionConfirmationService } from 'src/app/core';
-import { ChangeListingAvaliability, DeleteListing, ListingsState, UpdateListing } from 'src/app/core/listings/state';
+import {
+  CatalogService,
+  ChangeListingAvaliability,
+  DeleteListing,
+  DeletionConfirmationService,
+  ListingsState,
+  UpdateListing,
+} from 'src/app/core';
 
 @Component({
   selector: 'rx-catalog-item',

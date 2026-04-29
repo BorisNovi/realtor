@@ -9,6 +9,7 @@ export enum Currency {
   PLN = 'PLN',
   CZK = 'CZK',
   HUF = 'HUF',
+  RSD = 'RSD',
   RUB = 'RUB',
 
   // Азия

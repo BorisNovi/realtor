@@ -8,8 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
-import { ActivateAfterRecover } from 'src/app/core/auth/state/auth.actions';
-import { AuthState } from 'src/app/core/auth/state/auth.state';
+import { ActivateAfterRecover, AuthState } from 'src/app/core';
 
 @Component({
   selector: 'rx-recovery',
