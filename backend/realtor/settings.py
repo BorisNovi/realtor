@@ -19,6 +19,7 @@ ENVIRONMENT = config('ENVIRONMENT', default='development')
 DEBUG = config('DEBUG', default=False, cast=bool)
 SECRET_KEY = config('SECRET_KEY')
 BASE_URL = config('BASE_URL', default='http://localhost:8000')
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:4200')
 APPEND_SLASH = False
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')

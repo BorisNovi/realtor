@@ -28,7 +28,7 @@ interface IFeature {
 export class LandingComponent {
   readonly #languageSelectService = inject(LanguageSelectService);
 
-  readonly carousel = viewChild.required<Carousel>('aboutCarousel');
+  readonly carousel = viewChild<Carousel>('aboutCarousel');
 
   readonly mobileMenuOpen = signal(false);
   readonly openFaqIndex = signal<number | null>(null);

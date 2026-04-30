@@ -34,7 +34,7 @@ class PasswordRecoveryView(APIView):
         token = secrets.token_urlsafe(32)
         PasswordResetRequest.objects.create(user=user, token=token)
 
-        reset_url = request.build_absolute_uri(f"/auth/password-reset-activate/?token={token}")
+        reset_url = f"{settings.FRONTEND_URL}/auth/recovery?token={token}"
 
         send_mail(
             "Password Reset Request",

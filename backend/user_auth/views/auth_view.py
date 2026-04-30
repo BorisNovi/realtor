@@ -45,7 +45,7 @@ class AuthViewSet(viewsets.GenericViewSet):
         token = str(uuid.uuid4())
         cache.set(f"signup_token:{token}", user_data, timeout=CACHE_TIMEOUT)
 
-        activation_link = f"http://localhost:4200/auth/sign-up?token={token}"
+        activation_link = f"{settings.FRONTEND_URL}/auth/sign-up?token={token}"
 
         try:
             send_mail(
