@@ -13,6 +13,7 @@ def check_session(request):
         "position": [country.capital_lng, country.capital_lat],
     } if country else None
 
+
     return Response({
         "user": {
             "id": user.id,
@@ -33,5 +34,11 @@ def check_session(request):
             "banned_at": user.banned_at.isoformat() if user.banned_at else None,
             "last_logout_at": user.last_logout_at.isoformat() if user.last_logout_at else None,
             "date_added": user.date_added.isoformat(),
+            "plan": user.plan,
+            "limits": {
+                "objects": 25,
+                "contacts": 25,
+                "listings": 5,
+            }
         }
     })
