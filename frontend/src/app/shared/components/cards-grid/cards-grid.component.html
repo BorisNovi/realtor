@@ -25,7 +25,13 @@
     }
   }
 
-  <div class="flex items-center justify-center px-4">
+  <div class="flex items-center px-4">
+    @let limit = limitText();
+    @if (limit) {
+      <span class="text-sm text-surface-400 shrink-0 pr-2">
+        @if (limitLabel()) { {{ limitLabel() }}: }{{ limit }}
+      </span>
+    }
     <div class="flex-1">
       <p-paginator
         [first]="first()"

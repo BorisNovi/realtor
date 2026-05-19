@@ -38,6 +38,8 @@ export class CardsGridComponent<T> {
   readonly rows = input.required<number>();
   readonly loading = input(false);
   readonly emptyText = input('');
+  readonly limitText = input('');
+  readonly limitLabel = input('');
   readonly trackBy = input.required<(item: T) => unknown>();
 
   readonly pageChange = output<PaginatorState>();

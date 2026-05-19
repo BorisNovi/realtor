@@ -25,7 +25,10 @@
       [tableStyle]="{ 'min-width': '40rem' }"
     >
       <ng-template pTemplate="paginatorleft">
-        <span></span>
+        @let limit = limitTextS();
+        @if (limit) {
+          <span class="text-sm text-surface-400">{{ 'CATALOG.TABLE.PAGINATOR.LIMIT' | translate }}: {{ limit }}</span>
+        }
       </ng-template>
       <ng-template pTemplate="paginatorright">
         <p-button
@@ -40,8 +43,16 @@
         />
       </ng-template>
       <ng-template #caption>
+        @let limitReached = limitReachedS();
         <div class="flex flex-wrap gap-4 items-center justify-between">
-          <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openItemDialog()" />
+          <p-button
+            [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+            icon="pi pi-plus"
+            [disabled]="limitReached"
+            [pTooltip]="limitReached ? ('CATALOG.TABLE.PAGINATOR.LIMIT_REACHED' | translate) : ''"
+            tooltipPosition="top"
+            (click)="openItemDialog()"
+          />
 
           <rx-search-input
             class="grow basis-48 order-last sm:order-0"
@@ -197,12 +208,22 @@
     [rows]="paginationS().rows"
     [loading]="loadingS()"
     [emptyText]="'CATALOG.TABLE.EMPTY' | translate"
+    [limitText]="limitTextS()"
+    [limitLabel]="'CATALOG.TABLE.PAGINATOR.LIMIT' | translate"
     [trackBy]="catalogTrackBy"
     (pageChange)="onCardsPageChange($event)"
   >
     <ng-template #caption>
+      @let limitReached = limitReachedS();
       <div class="flex flex-wrap gap-4 items-center justify-between">
-        <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openItemDialog()" />
+        <p-button
+          [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+          icon="pi pi-plus"
+          [disabled]="limitReached"
+          [pTooltip]="limitReached ? ('CATALOG.TABLE.PAGINATOR.LIMIT_REACHED' | translate) : ''"
+          tooltipPosition="top"
+          (click)="openItemDialog()"
+        />
 
         <rx-search-input
           class="grow basis-48 order-last sm:order-0"

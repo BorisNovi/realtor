@@ -24,7 +24,10 @@
       [tableStyle]="{ 'min-width': '40rem' }"
     >
       <ng-template pTemplate="paginatorleft">
-        <span></span>
+        @let limit = limitTextS();
+        @if (limit) {
+          <span class="text-sm text-surface-400">{{ 'CONTACTS.TABLE.PAGINATOR.LIMIT' | translate }}: {{ limit }}</span>
+        }
       </ng-template>
       <ng-template pTemplate="paginatorright">
         <p-button
@@ -39,8 +42,16 @@
         />
       </ng-template>
       <ng-template #caption>
+        @let limitReached = limitReachedS();
         <div class="flex flex-wrap gap-4 items-center">
-          <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openDialog()" />
+          <p-button
+            [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+            icon="pi pi-plus"
+            [disabled]="limitReached"
+            [pTooltip]="limitReached ? ('CONTACTS.TABLE.PAGINATOR.LIMIT_REACHED' | translate) : ''"
+            tooltipPosition="top"
+            (click)="openDialog()"
+          />
 
           <rx-search-input
             class="grow basis-48"
@@ -109,12 +120,22 @@
     [rows]="paginationS().rows"
     [loading]="loadingS()"
     [emptyText]="'CONTACTS.TABLE.EMPTY' | translate"
+    [limitText]="limitTextS()"
+    [limitLabel]="'CONTACTS.TABLE.PAGINATOR.LIMIT' | translate"
     [trackBy]="contactTrackBy"
     (pageChange)="onCardsPageChange($event)"
   >
     <ng-template #caption>
+      @let limitReached = limitReachedS();
       <div class="flex flex-wrap gap-4 items-center">
-        <p-button [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate" icon="pi pi-plus" (click)="openDialog()" />
+        <p-button
+          [label]="'CATALOG.TABLE.BUTTONS.ADD' | translate"
+          icon="pi pi-plus"
+          [disabled]="limitReached"
+          [pTooltip]="limitReached ? ('CONTACTS.TABLE.PAGINATOR.LIMIT_REACHED' | translate) : ''"
+          tooltipPosition="top"
+          (click)="openDialog()"
+        />
 
         <rx-search-input
           class="grow basis-48"

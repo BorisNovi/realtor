@@ -270,7 +270,9 @@
       "PAGINATOR": {
         "CURRENT_PAGE_REPORT": "Showing {first} to {last} of {totalRecords} entries",
         "CARDS_VIEW": "Card view",
-        "TABLE_VIEW": "Table view"
+        "TABLE_VIEW": "Table view",
+        "LIMIT": "Objects",
+        "LIMIT_REACHED": "Subscription limit reached. Contact support to upgrade your plan or remove excess objects"
       },
       "BUTTONS": {
         "ADD": "Add",
@@ -337,6 +339,10 @@
         "NAME": "Name",
         "PHONE": "Phone"
       },
+      "PAGINATOR": {
+        "LIMIT": "Contacts",
+        "LIMIT_REACHED": "Subscription limit reached. Contact support to upgrade your plan or remove excess contacts"
+      },
       "EMPTY": "There are no contacts. You can add first"
     },
     "DIALOG": {
@@ -369,6 +375,10 @@
         "QUANTITY": "Objects quantity",
         "DATE": "Date",
         "LINK_AVAILABLE": "Available by link"
+      },
+      "PAGINATOR": {
+        "LIMIT": "Listings",
+        "LIMIT_REACHED": "Subscription limit reached. Contact support to upgrade your plan or remove excess listings"
       },
       "EMPTY": "There are no listings. You can add first"
     },
@@ -435,6 +445,19 @@
     "IMPORT_EXPORT": "Import and export",
     "DATE_ADDED": "Date added",
     "ROLE": "Role",
+    "ROLES": {
+      "default": "User",
+      "admin": "Administrator"
+    },
+    "PLAN": "Plan",
+    "PLANS": {
+      "free": "Free",
+      "standard": "Standard"
+    },
+    "LIMITS": "Plan limits",
+    "LIMITS_OBJECTS": "Objects",
+    "LIMITS_CONTACTS": "Contacts",
+    "LIMITS_LISTINGS": "Listings",
     "NOTIFICATION": {
       "UPDATED": "Profile updated successfully",
       "UPDATE_FAILED": "Failed to update profile",

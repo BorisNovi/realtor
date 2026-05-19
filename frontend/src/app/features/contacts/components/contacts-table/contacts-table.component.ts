@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnDestroy, output, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, inject, OnDestroy, output, viewChild } from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
 import { CardsGridComponent, SearchInputComponent } from '@shared/components';
@@ -16,6 +16,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { Table, TableLazyLoadEvent, TableModule, TablePageEvent } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import {
+  AuthState,
   ContactsState,
   DeleteContact,
   DeletionConfirmationService,
@@ -69,6 +70,19 @@ export class ContactsTableComponent implements AfterViewInit, OnDestroy {
   readonly tableDataS = this.#store.selectSignal(ContactsState.contacts);
   readonly paginationS = this.#store.selectSignal(ContactsState.pagination);
   readonly loadingS = this.#store.selectSignal(ContactsState.loading);
+  readonly #userS = this.#store.selectSignal(AuthState.user);
+  readonly #limitInfoS = computed(() => {
+    const user = this.#userS();
+    if (!user?.limits) return null;
+    const current = this.tableDataS()?.total ?? 0;
+    const max = user.limits.contacts;
+    return { current, max, reached: current >= max };
+  });
+  readonly limitTextS = computed(() => {
+    const info = this.#limitInfoS();
+    return info ? `${info.current} / ${info.max}` : '';
+  });
+  readonly limitReachedS = computed(() => this.#limitInfoS()?.reached ?? false);
 
   ViewMode = ViewMode;
 

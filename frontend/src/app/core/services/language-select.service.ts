@@ -8,7 +8,7 @@ export class LanguageSelectService {
   readonly #translateService = inject(TranslateService);
   readonly #storageService = inject(StorageService);
 
-  readonly availableLanguages = ['en', 'ru']; // es, pt
+  readonly availableLanguages = ['en', 'ru', 'rs']; // es, pt
   readonly #defaultLanguage = 'en';
 
   readonly #currentLangSignal = signal<string>(this.#getInitialLanguage());
@@ -25,6 +25,7 @@ export class LanguageSelectService {
   readonly languageOptions = computed<ILanguageOption[]>(() => [
     { value: 'en', label: 'English' },
     { value: 'ru', label: 'Русский' },
+    { value: 'rs', label: 'Srpski' },
     // { value: 'es', label: 'Español' },
     // { value: 'pt', label: 'Português' },
   ]);
