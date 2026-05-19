@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnDestroy, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -25,6 +25,7 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { startWith, switchMap, tap } from 'rxjs';
 import {
+  AuthState,
   CatalogState,
   DeletePropertyObjects,
   DeletionConfirmationService,
@@ -96,6 +97,19 @@ export class CatalogTableComponent implements AfterViewInit, OnDestroy {
   readonly tableDataS = this.#store.selectSignal(CatalogState.catalog);
   readonly paginationS = this.#store.selectSignal(CatalogState.pagination);
   readonly loadingS = this.#store.selectSignal(CatalogState.loading);
+  readonly #userS = this.#store.selectSignal(AuthState.user);
+  readonly #limitInfoS = computed(() => {
+    const user = this.#userS();
+    if (!user?.limits) return null;
+    const current = this.tableDataS()?.total ?? 0;
+    const max = user.limits.objects;
+    return { current, max, reached: current >= max };
+  });
+  readonly limitTextS = computed(() => {
+    const info = this.#limitInfoS();
+    return info ? `${info.current} / ${info.max}` : '';
+  });
+  readonly limitReachedS = computed(() => this.#limitInfoS()?.reached ?? false);
 
   ViewMode = ViewMode;
 

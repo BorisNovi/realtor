@@ -279,7 +279,20 @@
       <div class="card flex flex-col gap-4">
         <div class="font-semibold text-xl">{{ 'PROFILE.ABOUT' | translate }}</div>
         <div>{{ 'PROFILE.DATE_ADDED' | translate }}: {{ user()?.dateAdded | date: 'dd.MM.y HH:mm' }}</div>
-        <div>{{ 'PROFILE.ROLE' | translate }}: {{ user()?.role }}</div>
+        <div>{{ 'PROFILE.ROLE' | translate }}: {{ 'PROFILE.ROLES.' + user()?.role | translate }}</div>
+        @let plan = user()?.plan;
+        <div>{{ 'PROFILE.PLAN' | translate }}: {{ plan !== undefined ? ('PROFILE.PLANS.' + UserPlan[plan] | translate) : '' }}</div>
+        @let limits = user()?.limits;
+        @if (limits) {
+          <div class="flex flex-col gap-1">
+            <div>{{ 'PROFILE.LIMITS' | translate }}</div>
+            <div class="flex flex-wrap gap-x-4 text-sm">
+              <span>{{ 'PROFILE.LIMITS_OBJECTS' | translate }}: {{ limits.objects }}</span>
+              <span>{{ 'PROFILE.LIMITS_CONTACTS' | translate }}: {{ limits.contacts }}</span>
+              <span>{{ 'PROFILE.LIMITS_LISTINGS' | translate }}: {{ limits.listings }}</span>
+            </div>
+          </div>
+        }
 
         <p-divider />
 

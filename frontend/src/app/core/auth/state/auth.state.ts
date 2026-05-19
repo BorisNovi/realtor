@@ -1,8 +1,14 @@
 // core/auth/auth.state.ts
+import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { State, Action, StateContext, Selector } from '@ngxs/store';
-import { tap, catchError } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { Navigate } from '@ngxs/router-plugin';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { ISessionUser, IUser } from '@shared/interfaces';
+import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { AuthService } from '..';
 import {
   ActivateAfterRecover,
   ActivateAfterSignup,
@@ -27,12 +33,6 @@ import {
   TerminationFailed,
   TerminationSuccess,
 } from './auth.actions';
-import { ISessionUser, IUser } from '@shared/interfaces';
-import { AuthService } from '..';
-import { Navigate } from '@ngxs/router-plugin';
-import { MessageService } from 'primeng/api';
-import { HttpErrorResponse } from '@angular/common/http';
-import { TranslateService } from '@ngx-translate/core';
 
 // Интерфейс состояния
 interface AuthStateModel {

@@ -8,7 +8,7 @@ import { AvatarComponent, ImportExportComponent, InputWrapperComponent, SelectSi
 import { CURRENCY_SYMBOLS } from '@shared/constants';
 import { WorldPhoneMasksDirective } from '@shared/directives';
 import { Currency } from '@shared/enums';
-import { ICountry, IFetchOptions, IImportExportSection, IUser } from '@shared/interfaces';
+import { ICountry, IFetchOptions, IImportExportSection, IUser, UserPlan } from '@shared/interfaces';
 import { mapEnumToOptions } from '@shared/utils';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -61,6 +61,7 @@ export class ProfileComponent {
   #ref!: DynamicDialogRef | null;
 
   readonly user = this.#store.selectSignal(ProfileState.user);
+  readonly UserPlan = UserPlan;
 
   readonly countryFetchMethod = (options: IFetchOptions) => this.#countryService.fetchCountries(options);
   readonly countryMapToSelect = (item: ICountry) => ({

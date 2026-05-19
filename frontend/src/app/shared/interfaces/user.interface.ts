@@ -21,11 +21,27 @@ export interface IUserEditable {
 
 export interface IUser extends IEntity, IUserEditable {
   bannedAt: string | null;
-  role: string;
+  role: UserRole;
+  plan: UserPlan;
+  limits: {
+    objects: number;
+    contacts: number;
+    listings: number;
+  }
 }
 
 export interface IPasswordChange {
   oldPassword: string;
   newPassword: string;
   newPasswordConfirmation: string;
+}
+
+export enum UserRole {
+  default = 'User',
+  admin = 'Admin',
+}
+
+export enum UserPlan {
+  free,
+  standard,
 }
