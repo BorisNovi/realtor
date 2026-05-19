@@ -281,7 +281,7 @@
         <div>{{ 'PROFILE.DATE_ADDED' | translate }}: {{ user()?.dateAdded | date: 'dd.MM.y HH:mm' }}</div>
         <div>{{ 'PROFILE.ROLE' | translate }}: {{ 'PROFILE.ROLES.' + user()?.role | translate }}</div>
         @let plan = user()?.plan;
-        <div>{{ 'PROFILE.PLAN' | translate }}: {{ plan !== undefined ? ('PROFILE.PLANS.' + UserPlan[plan] | translate) : '' }}</div>
+        <div>{{ 'PROFILE.PLAN' | translate }}: {{ plan !== undefined ? ('PROFILE.PLANS.' + plan | translate) : '' }}</div>
         @let limits = user()?.limits;
         @if (limits) {
           <div class="flex flex-col gap-1">
