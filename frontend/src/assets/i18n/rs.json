@@ -1,0 +1,792 @@
+{
+  "TOPBAR": {
+    "LANGUAGE": "Srpski",
+    "PROFILE": "Profil",
+    "THEME": "Tema"
+  },
+  "NOTIFICATIONS": {
+    "SUCCESS": "Uspeh",
+    "ERROR": "Greška"
+  },
+  "MENU": {
+    "CATALOG": "Katalog",
+    "LIST": "Lista",
+    "MAP": "Mapa",
+    "SHARING": "Deljenje",
+    "LISTINGS": "Oglasi",
+    "INFO": "Info",
+    "CONTACTS": "Kontakti"
+  },
+  "ACTIONS": {
+    "EDIT": "Izmeni",
+    "DELETE": "Obriši",
+    "CANCEL": "Otkaži",
+    "SAVE": "Sačuvaj",
+    "CHANGE": "Promeni",
+    "OPEN": "Otvori"
+  },
+  "FORM": {
+    "LABELS": {
+      "PHOTOS": "Fotografije",
+      "PREVIEW": "Pregled",
+      "PROPERTY_TYPE": "Tip nekretnine",
+      "STATUS": "Status",
+      "ZONING": "Zoniranje",
+      "AREA": "Površina (m²)",
+      "ADDRESS": "Adresa",
+      "COUNTRY": "Zemlja",
+      "STATE": "Država/Region",
+      "CITY": "Grad",
+      "ROAD": "Ulica",
+      "HOUSE": "Kuća",
+      "APARTMENT": "Stan",
+      "PICK": "Odaberi na mapi",
+      "POSITION": "Pozicija",
+      "PRICE": "Cena",
+      "CURRENCY": "Valuta",
+      "CONTACT": "Kontakt",
+      "CONTACT_NAME": "Ime kontakta",
+      "CONTACT_PHONE": "Telefon kontakta",
+      "CREATE_CONTACT": "Kreiraj kontakt",
+      "ADDITIONAL_CONTACT_PHONE": "Dodatni telefon kontakta",
+      "LISTING_NAME": "Naziv oglasa",
+      "LINK_AVAILABLE": "Dostupno putem linka",
+      "COMMENT": "Komentar",
+      "ADDITIONAL_PARAMS": "Dodatni parametri",
+      "CURRENT_FLOOR": "Sprat",
+      "TOTAL_FLOORS": "Ukupno spratova",
+      "ROOMS": "Sobe",
+      "FURNISHED": "Nameštaj",
+      "RENOVATION": "Renovacija",
+      "KITCHEN": "Kuhinja",
+      "SHARED_FACILITIES": "Zajednički prostori",
+      "SHARED_KITCHEN": "Kuhinja",
+      "BATHROOM": "Kupatilo",
+      "UTILITIES": "Komunalije",
+      "ELECTRICITY": "Struja",
+      "WATER_SUPPLY": "Vodosnabdevanje",
+      "NATURAL_GAS": "Prirodni gas",
+      "SEWERAGE": "Kanalizacija",
+      "HEATING": "Grejanje",
+      "INTERNET": "Internet",
+      "OTHER": "Ostalo",
+      "PARKING": "Parking",
+      "BATH": "Kada",
+      "SHOWER": "Tuš",
+      "AIR_CONDITIONING": "Klima uređaj",
+      "FIREPLACE": "Kamin",
+      "BEAUTIFUL_VIEW": "Lep pogled",
+      "NEW_BUILDING": "Nova gradnja",
+      "ELEVATOR": "Lift",
+      "BALCONY": "Balkon",
+      "GARDEN": "Bašta",
+      "GARAGE": "Garaža",
+      "PROPERTY_OBJECTS": "Objekti nekretnina",
+      "NAME": "Ime"
+    },
+    "PLACEHOLDERS": {
+      "NAME": "Unesite ime",
+      "PROPERTY_TYPE": "Izaberite tip nekretnine",
+      "STATUS": "Izaberite status",
+      "ZONING": "Izaberite tip zoniranja",
+      "MAP_LINK": "Unesite link mape",
+      "AREA": "Unesite površinu",
+      "ADDRESS": "Unesite adresu",
+      "COUNTRY": "Unesite zemlju",
+      "STATE": "Unesite državu/region",
+      "CITY": "Unesite grad",
+      "ROAD": "Unesite ulicu",
+      "HOUSE": "Unesite broj kuće",
+      "APARTMENT": "Unesite broj stana",
+      "PRICE": "Unesite cenu",
+      "CURRENCY": "npr. USD",
+      "CONTACT_NAME": "Unesite ime kontakta",
+      "CONTACT_PHONE": "Unesite telefon",
+      "LISTING_NAME": "Unesite naziv oglasa",
+      "UPLOAD_PHOTOS": "Prevucite fajlove ovde za otpremanje",
+      "CURRENT_FLOOR": "Unesite sprat",
+      "TOTAL_FLOORS": "Unesite ukupan broj spratova",
+      "ROOMS": "Unesite broj soba",
+      "HEATING": "Izaberite tip grejanja",
+      "FURNISHED": "Izaberite nameštaj",
+      "RENOVATION": "Izaberite renovaciju",
+      "KITCHEN": "Izaberite tip kuhinje",
+      "NOT_SELECTED": "Nije izabrano",
+      "SELECTED_COUNT": "{count} stavki izabrano"
+    },
+    "PROPERTIES": {
+      "PROPERTY_TYPE": {
+        "flat": "Stan",
+        "house": "Kuća",
+        "room": "Soba",
+        "office": "Kancelarija",
+        "land": "Zemljište"
+      },
+      "PROPERTY_STATUS": {
+        "available": "Slobodno",
+        "reserved": "Rezervisano",
+        "rented": "Iznajmljeno"
+      },
+      "ZONING_TYPE": {
+        "residential": "Stambeno",
+        "commercial": "Komercijalno",
+        "agricultural": "Poljoprivredno",
+        "mixed": "Mešovito"
+      },
+      "FURNISHED_STATUS": {
+        "fully": "Potpuno opremljeno",
+        "partially": "Delimično opremljeno",
+        "unfurnished": "Neopremljeno"
+      },
+      "RENOVATION_STATUS": {
+        "recent": "Nedavno renovirano",
+        "needs": "Potrebna renovacija",
+        "none": "Bez renovacije"
+      },
+      "KITCHEN_TYPE": {
+        "separated": "Odvojena",
+        "combined": "Spojena",
+        "none": "Bez kuhinje"
+      },
+      "HEATING_TYPE": {
+        "gas": "Gas",
+        "electric": "Električno",
+        "central": "Centralno",
+        "none": "Bez grejanja"
+      }
+    },
+    "ERRORS": {
+      "REQUIRED": "{{label}} je obavezno",
+      "MIN": "{{label}} mora biti najmanje {{min}}",
+      "MAX": "{{label}} ne sme biti više od {{max}}",
+      "MINLENGTH": "Mora biti duže od {{max}}",
+      "MAXLENGTH": "Mora biti kraće od {{max}}",
+      "INVALID": "{{label}} je nevažeće"
+    }
+  },
+  "AUTH": {
+    "WELCOME": "Dobrodošli u Urban CRM!",
+    "SIGN_IN_TO_CONTINUE": "Prijavite se za nastavak",
+    "JOIN": "Pridružite se Urban CRM-u!",
+    "SIGN_UP_TO_GET_STARTED": "Registrujte se za početak",
+    "RESET_PASSWORD": "Resetovanje lozinke",
+    "ENTER_YOUR_EMAIL_TO_CONTINUE": "Unesite e-mail za nastavak",
+    "SET_NEW_PASSWORD": "Postavite novu lozinku",
+    "ENTER_YOUR_NEW_PASSWORD": "Unesite novu lozinku",
+    "EMAIL_LABEL": "E-mail",
+    "EMAIL_PLACEHOLDER": "E-mail adresa",
+    "EMAIL_REQUIRED_ERROR": "E-mail je obavezan.",
+    "EMAIL_INVALID_ERROR": "Unesite validnu e-mail adresu.",
+    "PASSWORD_LABEL": "Lozinka",
+    "NEW_PASSWORD_LABEL": "Nova lozinka",
+    "OLD_PASSWORD_LABEL": "Stara lozinka",
+    "PASSWORD_PLACEHOLDER": "Lozinka",
+    "NEW_PASSWORD_PLACEHOLDER": "Nova lozinka",
+    "PASSWORD_REQUIRED_ERROR": "Lozinka je obavezna.",
+    "PASSWORD_MINLENGTH_ERROR": "Lozinka mora imati najmanje 8 znakova.",
+    "PASSWORD_PATTERN_ERROR": "Lozinka mora sadržati veliko slovo, broj i specijalni znak.",
+    "REPEAT_PASSWORD_LABEL": "Ponovite lozinku",
+    "REPEAT_PASSWORD_PLACEHOLDER": "Ponovite lozinku",
+    "REPEAT_NEW_PASSWORD_PLACEHOLDER": "Ponovite novu lozinku",
+    "PASSWORD_MISMATCH_ERROR": "Lozinke se ne podudaraju.",
+    "FORGOT_PASSWORD_LINK": "Zaboravili ste lozinku?",
+    "DONT_HAVE_ACCOUNT_TEXT": "Nemate nalog?",
+    "SIGN_UP": "Registracija",
+    "SIGN_IN": "Prijava",
+    "SIGN_OUT": "Odjava",
+    "TERMINATE": "Otkažite sve sesije",
+    "ALREADY_HAVE_ACCOUNT_TEXT": "Već imate nalog?",
+    "BACK_TO_TEXT": "Nazad na",
+    "SEND_BUTTON": "Pošalji",
+    "NOTIFICATION": {
+      "SESSION_EXPIRED": {
+        "SUMMARY": "Sesija istekla",
+        "DETAIL": "Prijavite se ponovo"
+      },
+      "LOGIN_SUCCESS": {
+        "SUMMARY": "Prijava uspešna",
+        "DETAIL": "Uspešno ste se prijavili"
+      },
+      "LOGIN_FAILED": {
+        "SUMMARY": "Prijava nije uspela",
+        "DETAIL": "Proverite ispravnost podataka"
+      },
+      "SIGNUP_SUCCESS": {
+        "SUMMARY": "Link za registraciju poslat",
+        "DETAIL": "Proverite e-mail"
+      },
+      "SIGNUP_FAILED": {
+        "SUMMARY": "Link za registraciju nije poslat",
+        "DETAIL": "Proverite ispravnost podataka"
+      },
+      "ACTIVATION_SIGNUP_SUCCESS": {
+        "SUMMARY": "Registracija uspešna",
+        "DETAIL": "Dobrodošli u aplikaciju"
+      },
+      "ACTIVATION_SIGNUP_FAILED": {
+        "SUMMARY": "Registracija nije uspela",
+        "DETAIL": "Pokušajte ponovo"
+      },
+      "RECOVER_SUCCESS": {
+        "SUMMARY": "Link za oporavak poslat",
+        "DETAIL": "Proverite e-mail"
+      },
+      "RECOVER_FAILED": {
+        "SUMMARY": "Link za oporavak nije poslat",
+        "DETAIL": "Proverite ispravnost e-maila"
+      },
+      "ACTIVATION_RECOVER_SUCCESS": {
+        "SUMMARY": "Oporavak uspešan",
+        "DETAIL": "Nova lozinka je kreirana"
+      },
+      "ACTIVATION_RECOVER_FAILED": {
+        "SUMMARY": "Oporavak nije uspeo",
+        "DETAIL": "Zatražite link za aktivaciju ponovo"
+      },
+      "TERMINATION_SUCCESS": {
+        "SUMMARY": "Otkaz sesija uspešan",
+        "DETAIL": "Sve sesije su otkazane"
+      },
+      "TERMINATION_FAILED": {
+        "SUMMARY": "Otkaz sesija nije uspeo",
+        "DETAIL": "Nešto je pošlo naopako, pokušajte ponovo"
+      }
+    }
+  },
+  "CATALOG": {
+    "SEARCH_PLACEHOLDER": "Naziv nekretnine",
+    "TABLE": {
+      "HEADERS": {
+        "PHOTO": "Fotografija",
+        "NAME": "Naziv",
+        "TYPE": "Tip",
+        "ZONING": "Zoniranje",
+        "ADDRESS": "Adresa",
+        "PRICE": "Cena",
+        "AREA": "Površina",
+        "DATE": "Datum",
+        "STATUS": "Status"
+      },
+      "PAGINATOR": {
+        "CURRENT_PAGE_REPORT": "Prikazano od {first} do {last} od ukupno {totalRecords} unosa",
+        "CARDS_VIEW": "Prikaz kartica",
+        "TABLE_VIEW": "Prikaz tabele",
+        "LIMIT": "Objekti",
+        "LIMIT_REACHED": "Dostignut limit pretplate. Kontaktirajte podršku za nadogradnju plana ili uklonite suvišne objekte"
+      },
+      "BUTTONS": {
+        "ADD": "Dodaj",
+        "FILTERS": "Filteri",
+        "ADD_TO_LISTING": "Dodaj u oglas"
+      },
+      "FOOTER": {
+        "SELECTED": "Izabrano {{count}}"
+      },
+      "DIALOG": {
+        "ADD": "Dodaj novu stavku",
+        "EDIT": "Izmeni stavku",
+        "DELETE_REQUEST_SINGLE": "Obrisati stavku?",
+        "DELETE_REQUEST_MANY": "Obrisati stavke?",
+        "DELETE_HINT": "Pažnja! Ova akcija je nepovratna!"
+      },
+      "CONFIRM_DIALOG": {
+        "YES": "Da",
+        "NO": "Ne"
+      },
+      "EMPTY": "Nema nekretnina. Možete dodati prvu"
+    },
+    "LABELS": {
+      "ABOUT": "O nekretnini",
+      "OPTIONS": "Opcije",
+      "LOCATION": "Lokacija"
+    },
+    "FILTERS": {
+      "LABEL": "Filteri",
+      "RESET": "Resetuj",
+      "HAS_PHOTOS": "Samo sa fotografijama",
+      "DATE": {
+        "LABEL": "Datum",
+        "FROM": "Datum od",
+        "TO": "Datum do",
+        "PLACEHOLDER": "nije izabrano"
+      },
+      "PROPERTIES": "Karakteristike",
+      "AREA": {
+        "LABEL": "Površina",
+        "MIN": "Min površina",
+        "MAX": "Maks površina"
+      },
+      "PRICE": {
+        "LABEL": "Cena",
+        "MIN": "Min cena",
+        "MAX": "Maks cena"
+      }
+    },
+    "NOTIFICATION": {
+      "CREATED": "Objekat nekretnine uspešno kreiran",
+      "CREATE_FAILED": "Kreiranje objekta nije uspelo",
+      "UPDATED": "Objekat nekretnine uspešno ažuriran",
+      "UPDATE_FAILED": "Ažuriranje objekta nije uspelo",
+      "STATUS_UPDATED": "Status uspešno ažuriran",
+      "STATUS_UPDATE_FAILED": "Ažuriranje statusa nije uspelo",
+      "DELETED": "Objekat nekretnine uspešno obrisan",
+      "DELETE_FAILED": "Brisanje objekta nije uspelo"
+    }
+  },
+  "CONTACTS": {
+    "TABLE": {
+      "HEADERS": {
+        "NAME": "Ime",
+        "PHONE": "Telefon"
+      },
+      "PAGINATOR": {
+        "LIMIT": "Kontakti",
+        "LIMIT_REACHED": "Dostignut limit pretplate. Kontaktirajte podršku za nadogradnju plana ili uklonite suvišne kontakte"
+      },
+      "EMPTY": "Nema kontakata. Možete dodati prvi"
+    },
+    "DIALOG": {
+      "ADD": "Dodaj novi kontakt",
+      "EDIT": "Izmeni kontakt",
+      "DELETE_REQUEST_SINGLE": "Obrisati kontakt?"
+    },
+    "SEARCH_PLACEHOLDER": "Ime ili broj telefona",
+    "NOTIFICATION": {
+      "CREATED": "Kontakt uspešno kreiran",
+      "CREATE_FAILED": "Kreiranje kontakta nije uspelo",
+      "UPDATED": "Kontakt uspešno ažuriran",
+      "UPDATE_FAILED": "Ažuriranje kontakta nije uspelo",
+      "DELETED": "Kontakt uspešno obrisan",
+      "DELETE_FAILED": "Brisanje kontakta nije uspelo"
+    }
+  },
+  "LISTINGS": {
+    "SEARCH_PLACEHOLDER": "Naziv oglasa",
+    "ACTIONS": {
+      "ADD_OBJECT": "Dodaj objekat u oglas",
+      "DELETE_OBJECT": "Ukloni iz oglasa",
+      "DELETE_LISTING": "Obriši oglas",
+      "COPY_LINK": "Kopiraj link",
+      "ALREADY_ADDED": "Već dodato"
+    },
+    "TABLE": {
+      "HEADERS": {
+        "NAME": "Naziv",
+        "QUANTITY": "Broj objekata",
+        "DATE": "Datum",
+        "LINK_AVAILABLE": "Dostupno putem linka"
+      },
+      "PAGINATOR": {
+        "LIMIT": "Oglasi",
+        "LIMIT_REACHED": "Dostignut limit pretplate. Kontaktirajte podršku za nadogradnju plana ili uklonite suvišne oglase"
+      },
+      "EMPTY": "Nema oglasa. Možete dodati prvi"
+    },
+    "DIALOG": {
+      "ADD": "Dodaj novi oglas",
+      "EDIT": "Izmeni oglas",
+      "DELETE_REQUEST_SINGLE": "Obrisati oglas?"
+    },
+    "LINK_STATUS": {
+      "AVAILABLE": "Dostupno",
+      "UNAVAILABLE": "Nedostupno"
+    },
+    "ITEM": {
+      "EMPTY": "Nema objekata nekretnina u ovom oglasu"
+    },
+    "NOTIFICATION": {
+      "CREATED": "Oglas uspešno kreiran",
+      "CREATE_FAILED": "Kreiranje oglasa nije uspelo",
+      "UPDATED": "Oglas uspešno ažuriran",
+      "UPDATE_FAILED": "Ažuriranje oglasa nije uspelo",
+      "DELETED": "Oglas uspešno obrisan",
+      "DELETE_FAILED": "Brisanje oglasa nije uspelo",
+      "LINK_AVAILABILITY_CHANGED": "Dostupnost linka promenjena",
+      "LINK_AVAILABILITY_FAILED": "Promena dostupnosti linka nije uspela",
+      "LINK_COPIED": "Javni link kopiran u klipbord"
+    }
+  },
+  "IMPORT_EXPORT": {
+    "CATALOG": "Objekti nekretnina",
+    "CONTACTS": "Kontakti",
+    "IMPORT": "Uvezi {{type}}",
+    "EXPORT": "Izvezi {{type}}",
+    "UPLOADING": "Otpremanje...",
+    "UPLOAD_SUCCESS": "Gotovo",
+    "UPLOAD_ERROR": "Neuspelo",
+    "RESULT": {
+      "TITLE": "Rezultat uvoza",
+      "CREATED": "Kreirani zapisi: {{count}}",
+      "INVALID_ROWS": "Nevažeći redovi: {{count}}",
+      "INVALID_ROWS_LIST": "Brojevi redova"
+    }
+  },
+  "COMMON": {
+    "CLOSE": "Zatvori"
+  },
+  "PROFILE": {
+    "INFO": "Osnovne informacije profila",
+    "EMAIL": "E-mail",
+    "FIRST_NAME": "Ime",
+    "LAST_NAME": "Prezime",
+    "PHONE": "Telefon",
+    "COUNTRY": "Podrazumevana zemlja",
+    "CURRENCY": "Podrazumevana valuta",
+    "COMPANY_NAME": "Naziv kompanije",
+    "COMPANY_LOGO": "Logo kompanije",
+    "CHANGE_PASSWORD": "Promeni lozinku",
+    "DELETE_ACCOUNT": "Obriši nalog",
+    "DELETE_ACCOUNT_WARNING_TITLE": "Upozorenje! Ova akcija je nepovratna",
+    "DELETE_ACCOUNT_WARNING_MESSAGE": "Nakon brisanja naloga, svi vaši podaci biće trajno obrisani. Ova operacija ne može biti poništena.",
+    "DELETE_ACCOUNT_PASSWORD_LABEL": "Unesite lozinku za potvrdu",
+    "DELETE_ACCOUNT_PASSWORD_PLACEHOLDER": "Vaša trenutna lozinka",
+    "DELETE_ACCOUNT_CONFIRM": "Trajno obriši nalog",
+    "ABOUT": "O profilu",
+    "IMPORT_EXPORT": "Uvoz i izvoz",
+    "DATE_ADDED": "Datum kreiranja",
+    "ROLE": "Uloga",
+    "ROLES": {
+      "default": "Korisnik",
+      "admin": "Administrator"
+    },
+    "PLAN": "Pretplata",
+    "PLANS": {
+      "free": "Besplatna",
+      "standard": "Standardna"
+    },
+    "LIMITS": "Ograničenja plana",
+    "LIMITS_OBJECTS": "Objekti",
+    "LIMITS_CONTACTS": "Kontakti",
+    "LIMITS_LISTINGS": "Oglasi",
+    "NOTIFICATION": {
+      "UPDATED": "Profil uspešno ažuriran",
+      "UPDATE_FAILED": "Ažuriranje profila nije uspelo",
+      "ACCOUNT_DELETED": "Nalog uspešno obrisan",
+      "ACCOUNT_DELETE_FAILED": "Brisanje naloga nije uspelo",
+      "PASSWORD_CHANGED": "Lozinka uspešno promenjena",
+      "PASSWORD_CHANGE_FAILED": "Promena lozinke nije uspela"
+    }
+  },
+  "ADDRESS_PICKER": {
+    "PLACEHOLDER": "Grad, Ulica, Broj ...",
+    "TOOLTIP": {
+      "FILL": "Popuni odabranu adresu",
+      "LOCATE": "Lociraj trenutnu poziciju",
+      "UNLOCK_SCROLL": "Otključaj zumiranje skrolom",
+      "LOCK_SCROLL": "Zaključaj zumiranje skrolom"
+    },
+    "POPUP": {
+      "DEFAULT": "Geokodirana adresa",
+      "GEO_DISABLED": "Dozvolite geolokaciju ili pomerite marker",
+      "NOT_FOUND": "Ništa nije pronađeno",
+      "COUNTRY": "Zemlja",
+      "STATE": "Država/Region",
+      "CITY": "Grad",
+      "ROAD": "Ulica",
+      "HOUSE": "Kuća"
+    }
+  },
+  "MAP": {
+    "LOCATE": "Trenutna lokacija",
+    "SHOW_ON_MAP": "Prikaži na Google Maps",
+    "SHOW_ON_INTERNAL_MAP": "Prikaži na mapi"
+  },
+  "FILE_UPLOAD": {
+    "UPLOAD": "Otpremi",
+    "ERRORS": {
+      "INVALID_TYPE": "Dozvoljeni su samo fajlovi slika",
+      "FILE_TOO_LARGE": "Veličina fajla premašuje limit od {{size}}MB",
+      "UPLOAD_FAILED": "Otpremanje nije uspelo"
+    }
+  },
+  "PREFIXES": {
+    "APARTMENT": "Stan."
+  },
+  "NOT_FOUND": {
+    "LABEL": "Nije pronađeno",
+    "DESCRIPTION": "Traženi resurs nije dostupan.",
+    "SOLUTION": "Centar rešenja",
+    "SOLUTION_DESCRIPTION": "Prijavi grešku",
+    "LOG_IN": "Prijavite se u aplikaciju",
+    "LOG_IN_DESCRIPTION": "Za agente nekretnina i osoblje",
+    "GO_TO_MAIN": "Idi na početnu"
+  },
+  "INFO_BLOCK": {
+    "TITLE": "Alati za efikasan rad agenta nekretnina",
+    "CATALOG_TITLE": "Katalog nekretnina",
+    "CATALOG_DESC": "Stanovi, kuće, kancelarije i placevi — sve na jednom mestu",
+    "LISTINGS_TITLE": "Oglasi",
+    "LISTINGS_DESC": "Kreirajte personalizovane oglase za vaše klijente",
+    "MAP_TITLE": "Mapa",
+    "MAP_DESC": "Pregledajte nekretnine na mapi, pretražujte po adresi",
+    "CONTACTS_TITLE": "Kontakti vlasnika",
+    "CONTACTS_DESC": "Držite kontakte vlasnika nekretnina pri ruci"
+  },
+  "LANDING": {
+    "NAV": {
+      "ABOUT": "O nama",
+      "FEATURES": "Funkcionalnosti",
+      "FAQS": "Pitanja i odgovori",
+      "CONTACT": "Kontaktirajte nas"
+    },
+    "HERO": {
+      "TITLE": "Pregledajte i upravljajte svojim nekretninama",
+      "SUBTITLE": "Upravljajte listingima nekretnina sa preglednim prikazom na mapi. Kreirajte personalizovane selekcije i delite ih sa klijentima.",
+      "TRY_FREE": "Isprobajte besplatno",
+      "LEARN_MORE": "Saznajte više",
+      "CTA": "Počnite odmah"
+    },
+    "ABOUT": {
+      "LABEL": "o nama",
+      "TITLE_1": "Umoran od haosa?",
+      "TITLE_2": "Mi smo to rešili.",
+      "ITEM_1_TITLE": "Objedinjena baza nekretnina",
+      "ITEM_1_1_DESC": "Čuvajte sve oglase na jednom mestu.",
+      "ITEM_1_2_DESC": "Svaka nekretnina uključuje punu adresu (automatski detektovanu putem mape), do 25 fotografija, tip (stan, kuća, kancelarija, zemljište), veličinu, sprat, cenu, status, detalje enterijera i kontakt osobu.",
+      "ITEM_1_3_DESC": "Filtrirajte po datumu, tipu, statusu, zoniranju, veličini ili ceni.",
+      "ITEM_2_TITLE": "Interaktivna mapa nekretnina",
+      "ITEM_2_1_DESC": "Svi oglasi su prikazani na pametnoj mapi sa grupisanjem. Ikone odražavaju tip i status nekretnine.",
+      "ITEM_2_2_DESC": "Pređite mišem za pregled, kliknite za otvaranje pune galerije.",
+      "ITEM_2_3_DESC": "Savršeno za rad u pokretu — čak i sa telefona.",
+      "ITEM_3_TITLE": "Selekcije za klijente",
+      "ITEM_3_1_DESC": "Izaberite nekretnine, grupišite ih u imenovanu kolekciju i podelite putem linka.",
+      "ITEM_3_2_DESC": "Klijenti je otvaraju na bilo kom uređaju — bez prijave, bez PDF-a, bez komplikacija.",
+      "ITEM_3_3_DESC": "Sa brendiranjem vašeg agencijskog logotipa i podataka.",
+      "ITEM_4_TITLE": "Opozivljiv pristup",
+      "ITEM_4_1_DESC": "Završili ste saradnju sa klijentom?",
+      "ITEM_4_2_DESC": "Onemogućite pristup kolekciji jednim klikom.",
+      "ITEM_4_3_DESC": "Više nema zastarelih linkova ni nekontrolisanog deljenja.",
+      "ITEM_5_TITLE": "Baza kontakata",
+      "ITEM_5_1_DESC": "Čuvajte sve vlasnike i kontakte na jednom mestu.",
+      "ITEM_5_2_DESC": "Pretražujte po imenu ili telefonu.",
+      "ITEM_5_3_DESC": "Povežite kontakte sa nekretninama ili ih dodajte u hodu.",
+      "ITEM_6_TITLE": "Brendiranje kompanije",
+      "ITEM_6_1_DESC": "Dodajte naziv i logo vaše agencije.",
+      "ITEM_6_2_DESC": "Automatski se prikazuju na stranicama okrenenim ka klijentima.",
+      "ITEM_7_TITLE": "Uvoz i izvoz",
+      "ITEM_7_1_DESC": "Otpremite postojeće podatke iz Excela ili Google tablica (CSV).",
+      "ITEM_7_2_DESC": "Izvezite u bilo kom trenutku za izveštaje, rezervne kopije ili migraciju."
+    },
+    "FEATURES": {
+      "LABEL": "funkcionalnosti",
+      "ITEM_1_TITLE": "Kreirajte i upravljajte listama nekretnina",
+      "ITEM_1_DESC": "Lako kreirajte, sortirajte i filtrirajte nekretnine po svom ukusu. Dodelite tipove, statuse i karakteristike nekretninama, povežite kontakte i dodajte beleške.",
+      "ITEM_2_TITLE": "Selekcije za vaše klijente",
+      "ITEM_2_DESC": "Dodajte nekretnine u personalizovane kolekcije i podelite ih sa klijentima. Lako upravljajte dostupnošću pomoću preklopke vidljivosti.",
+      "ITEM_3_TITLE": "Sve vaše nekretnine — na mapi",
+      "ITEM_3_DESC": "Vidite svoju zonu uticaja: nema potrebe za stalnim traženjem adresa ili pamćenjem lokacija — mapa je već ugrađena u vaš CRM.",
+      "ITEM_4_TITLE": "Lična baza vlasnika",
+      "ITEM_4_DESC": "Čuvajte bazu vlasnika sa beleškama na jednom mestu.",
+      "ITEM_5_TITLE": "Laka migracija",
+      "ITEM_5_DESC": "Uvezite postojeću bazu nekretnina iz Google tablica ili Excela u CSV formatu i nastavite da radite sa nama!"
+    },
+    "CTA": {
+      "TITLE": "Postanite deo",
+      "SUBTITLE": "jednostavnog i pristupačnog sistema koji čini upravljanje bazom nekretnina lakim i pogodnim!",
+      "BUTTON": "Počnite odmah"
+    },
+    "FOOTER": {
+      "EMAIL_LABEL": "Pišite nam",
+      "PHONE_LABEL": "Pozovite nas",
+      "TERMS": "Uslovi korišćenja",
+      "PRIVACY": "Politika privatnosti"
+    }
+  },
+  "SELECT": {
+    "EMPTY": "Lista je prazna"
+  },
+  "COUNTRIES": {
+    "af": "Avganistan",
+    "al": "Albanija",
+    "dz": "Alžir",
+    "ad": "Andora",
+    "ao": "Angola",
+    "ag": "Antigva i Barbuda",
+    "ar": "Argentina",
+    "am": "Jermenija",
+    "au": "Australija",
+    "at": "Austrija",
+    "az": "Azerbejdžan",
+    "bs": "Bahami",
+    "bh": "Bahrein",
+    "bd": "Bangladeš",
+    "bb": "Barbados",
+    "by": "Belorusija",
+    "be": "Belgija",
+    "bz": "Belize",
+    "bj": "Benin",
+    "bt": "Butan",
+    "bo": "Bolivija",
+    "ba": "Bosna i Hercegovina",
+    "bw": "Bocvana",
+    "br": "Brazil",
+    "bn": "Brunej",
+    "bg": "Bugarska",
+    "bf": "Burkina Faso",
+    "bi": "Burundi",
+    "cv": "Zelenortska Ostrva",
+    "kh": "Kambodža",
+    "cm": "Kamerun",
+    "ca": "Kanada",
+    "cf": "Centralnoafrička Republika",
+    "td": "Čad",
+    "cl": "Čile",
+    "cn": "Kina",
+    "co": "Kolumbija",
+    "km": "Komori",
+    "cg": "Kongo",
+    "cd": "Kongo, Dem. Rep.",
+    "cr": "Kostarika",
+    "hr": "Hrvatska",
+    "cu": "Kuba",
+    "cy": "Kipar",
+    "cz": "Češka",
+    "dk": "Danska",
+    "dj": "Džibuti",
+    "dm": "Dominika",
+    "do": "Dominikanska Republika",
+    "ec": "Ekvador",
+    "eg": "Egipat",
+    "sv": "Salvador",
+    "gq": "Ekvatorijalna Gvineja",
+    "er": "Eritreja",
+    "ee": "Estonija",
+    "sz": "Esvatini",
+    "et": "Etiopija",
+    "fj": "Fidži",
+    "fi": "Finska",
+    "fr": "Francuska",
+    "ga": "Gabon",
+    "gm": "Gambija",
+    "ge": "Gruzija",
+    "de": "Nemačka",
+    "gh": "Gana",
+    "gr": "Grčka",
+    "gd": "Grenada",
+    "gt": "Gvatemala",
+    "gn": "Gvineja",
+    "gw": "Gvineja Bisao",
+    "gy": "Gvajana",
+    "ht": "Haiti",
+    "hn": "Honduras",
+    "hu": "Mađarska",
+    "is": "Island",
+    "in": "Indija",
+    "id": "Indonezija",
+    "ir": "Iran",
+    "iq": "Irak",
+    "ie": "Irska",
+    "il": "Izrael",
+    "it": "Italija",
+    "jm": "Jamajka",
+    "jp": "Japan",
+    "jo": "Jordan",
+    "kz": "Kazahstan",
+    "ke": "Kenija",
+    "ki": "Kiribati",
+    "kw": "Kuvajt",
+    "kg": "Kirgistan",
+    "la": "Laos",
+    "lv": "Letonija",
+    "lb": "Liban",
+    "ls": "Lesoto",
+    "lr": "Liberija",
+    "ly": "Libija",
+    "li": "Lihtenštajn",
+    "lt": "Litvanija",
+    "lu": "Luksemburg",
+    "mg": "Madagaskar",
+    "mw": "Malavi",
+    "my": "Malezija",
+    "mv": "Maldivi",
+    "ml": "Mali",
+    "mt": "Malta",
+    "mh": "Maršalska Ostrva",
+    "mr": "Mauritanija",
+    "mu": "Mauricijus",
+    "mx": "Meksiko",
+    "fm": "Mikronezija",
+    "md": "Moldavija",
+    "mc": "Monako",
+    "mn": "Mongolija",
+    "me": "Crna Gora",
+    "ma": "Maroko",
+    "mz": "Mozambik",
+    "mm": "Mijanmar",
+    "na": "Namibija",
+    "nr": "Nauru",
+    "np": "Nepal",
+    "nl": "Holandija",
+    "nz": "Novi Zeland",
+    "ni": "Nikaragva",
+    "ne": "Niger",
+    "ng": "Nigerija",
+    "mk": "Severna Makedonija",
+    "no": "Norveška",
+    "om": "Oman",
+    "pk": "Pakistan",
+    "pw": "Palau",
+    "pa": "Panama",
+    "pg": "Papua Nova Gvineja",
+    "py": "Paragvaj",
+    "pe": "Peru",
+    "ph": "Filipini",
+    "pl": "Poljska",
+    "pt": "Portugalija",
+    "qa": "Katar",
+    "ro": "Rumunija",
+    "ru": "Rusija",
+    "rw": "Ruanda",
+    "kn": "Sveti Kits i Nevis",
+    "lc": "Sveta Lucija",
+    "vc": "Sveti Vinsent i Grenadini",
+    "ws": "Samoa",
+    "sm": "San Marino",
+    "st": "Sao Tome i Principe",
+    "sa": "Saudijska Arabija",
+    "sn": "Senegal",
+    "rs": "Srbija",
+    "sc": "Sejšeli",
+    "sl": "Sijera Leone",
+    "sg": "Singapur",
+    "sk": "Slovačka",
+    "si": "Slovenija",
+    "sb": "Solomonska Ostrva",
+    "so": "Somalija",
+    "za": "Južna Afrika",
+    "ss": "Južni Sudan",
+    "es": "Španija",
+    "lk": "Šri Lanka",
+    "sd": "Sudan",
+    "sr": "Surinam",
+    "se": "Švedska",
+    "ch": "Švajcarska",
+    "sy": "Sirija",
+    "tw": "Tajvan",
+    "tj": "Tadžikistan",
+    "tz": "Tanzanija",
+    "th": "Tajland",
+    "tl": "Timor-Leste",
+    "tg": "Togo",
+    "to": "Tonga",
+    "tt": "Trinidad i Tobago",
+    "tn": "Tunis",
+    "tr": "Turska",
+    "tm": "Turkmenistan",
+    "tv": "Tuvalu",
+    "ug": "Uganda",
+    "ua": "Ukrajina",
+    "ae": "Ujedinjeni Arapski Emirati",
+    "gb": "Ujedinjeno Kraljevstvo",
+    "us": "Sjedinjene Države",
+    "uy": "Urugvaj",
+    "uz": "Uzbekistan",
+    "vu": "Vanuatu",
+    "va": "Vatikan",
+    "ve": "Venecuela",
+    "vn": "Vijetnam",
+    "ye": "Jemen",
+    "zm": "Zambija",
+    "zw": "Zimbabve"
+  }
+}
