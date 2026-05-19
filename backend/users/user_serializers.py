@@ -11,6 +11,7 @@ User = get_user_model()
 
 class ProfileSerializer(serializers.ModelSerializer):   
     country = CountryInputSerializer(required=False, allow_null=True, write_only=True)
+    limits = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -27,8 +28,18 @@ class ProfileSerializer(serializers.ModelSerializer):
             'role',
             'marketing_consent1',
             'marketing_consent2',
+            'limits',
+            'plan',
         ]
         read_only_fields = ['date_added', 'role']
+
+    # хардкод лимитов.
+    def get_limits(self, obj):
+        return {
+            "objects": 25,
+            "contacts": 25,
+            "listings": 5,
+        }
 
     def validate_phone(self, value):
         if not value:

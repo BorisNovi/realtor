@@ -72,6 +72,18 @@ class ContactSerializer(serializers.ModelSerializer):
         name = attrs.get('name')
         user = self.context.get('user') or self.context['request'].user
 
+        LIMIT_FREE = 25  # временный костыль
+
+        current_count = Contact.objects.filter(
+            user=user
+        ).count()
+
+        if current_count >= LIMIT_FREE:
+            raise serializers.ValidationError({
+                "error": "FREE_LIMIT_REACHED",
+                "message": "The quota has been reached. Delete some contacts or change the billing plan"
+            })
+
         instance = getattr(self, 'instance', None)
 
         # Ищем контакт ТОЛЬКО у текущего пользователя

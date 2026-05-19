@@ -1,12 +1,14 @@
-from colorama import init, Fore
-from file.file_utils import make_files_permanent
+from django.db import transaction
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
+from colorama import init, Fore
+from realtor.settings import MAX_FILES
 from contacts.contact_serializers import ContactIDField
 from contacts.models import Contact
 from .catalog_address_serializer import AddressSerializer
 from .catalog_price_serializer import PriceSerializer 
-from realtor.settings import MAX_FILES
-from django.db import transaction
+from catalog.catalog_models import Property
+from file.file_utils import make_files_permanent
 
 init()
 
@@ -50,11 +52,29 @@ class BaseCreateUpdateSerializer(serializers.ModelSerializer):
             })
         return value
     
-    
+
     @transaction.atomic
     def create(self, validated_data):
         print(Fore.YELLOW + "=== Initiating Creating Property... ===" + Fore.RESET)
         print(f"Validated data: {validated_data}")
+
+        user = self.context["request"].user
+
+        LIMIT_FREE = 25
+
+        with transaction.atomic():
+            current_count = Property.objects.filter(
+                user=user,
+                is_deleted=False
+            ).count()
+
+            print(current_count)
+
+            if current_count >= LIMIT_FREE:
+                raise serializers.ValidationError({
+                    "error": "FREE_LIMIT_REACHED",
+                    "message": "The quota has been reached. Delete some objects or change the billing plan"
+                })
 
         # Извлекаем вложенные данные
         photos = validated_data.pop('photos', [])
