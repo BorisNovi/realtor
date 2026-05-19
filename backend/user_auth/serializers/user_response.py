@@ -4,6 +4,8 @@ from users.models import User
 # Используется для ответа на запросы чек, профиль и т.д. 
 # Там, где нужно отдать данные о пользователе, но не нужно их менять.
 class UserResponseSerializer(serializers.ModelSerializer):
+    limits = serializers.SerializerMethodField()
+    
     class Meta:
         model = User
         fields = [
@@ -19,9 +21,19 @@ class UserResponseSerializer(serializers.ModelSerializer):
             'marketing_consent2',
             'date_added', 
             'role',
+            'limits',
+            'plan',
         ]
         read_only_fields = ['date_added', 'role']
 
+    # хардкод лимитов.
+    def get_limits(self, obj):
+        return {
+            "objects": 25,
+            "contacts": 25,
+            "listings": 5,
+        }
+    
     # -------------------- ДОСТАЕМ АТРИБУТЫ ПОЛЬЗОВАТЕЛЯ --------------------
     
     def get_company_name(self, obj):

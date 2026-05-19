@@ -124,6 +124,23 @@ class ListingSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
+        user = self.context["request"].user
+
+        LIMIT_FREE = 5
+
+        with transaction.atomic():
+            current_count = Listing.objects.filter(
+                user=user,
+            ).count()
+
+            print("listings count:", current_count)
+
+            if current_count >= LIMIT_FREE:
+                raise serializers.ValidationError({
+                    "error": "LISTINGS_FREE_LIMIT_REACHED",
+                    "message": "The quota has been reached. Delete some listings or change the billing plan"
+                })
+        
         public = validated_data.pop("public_link", {})
         listing = super().create(validated_data)
 

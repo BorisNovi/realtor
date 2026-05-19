@@ -34,6 +34,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     country = models.CharField(max_length=255, blank=True, null=True, default=None)
     currency = models.CharField(max_length=255, blank=True, null=True, default=None)
     
+    # говно, переделать. 
+    plan = models.CharField(default='free')
+
+    # вот так надо будет  
+    # plan = models.ForeignKey(
+    #     "plans.Plan",
+    #     on_delete=models.PROTECT,
+    #     default='free'
+    # )
     
     company_name = models.CharField(max_length=255, blank=True)
     company_logo = models.URLField(max_length=500, blank=True)
