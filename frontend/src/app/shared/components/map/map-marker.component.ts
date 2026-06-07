@@ -132,7 +132,10 @@ export class MapMarkerComponent implements OnInit, OnDestroy {
         ul.style.margin = '0';
         for (const item of title) {
           const li = document.createElement('li');
-          li.innerHTML = `<b>${item.name}:</b> ${item.value}`;
+          const b = document.createElement('b');
+          b.textContent = `${item.name}:`;
+          li.appendChild(b);
+          li.appendChild(document.createTextNode(` ${item.value}`));
           ul.appendChild(li);
         }
         content = ul;

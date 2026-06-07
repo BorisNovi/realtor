@@ -156,17 +156,27 @@ export class CatalogMapComponent implements AfterViewInit {
       const item = JSON.parse(e.features?.[0].properties['raw']) as IPropertyObject;
 
       hoverPopup?.remove();
+
+      const popupContent = document.createElement('div');
+      const fields: [string, string][] = [
+        [this.#translateService.instant('ADDRESS_PICKER.POPUP.COUNTRY'), this.#translateService.instant('COUNTRIES.' + item.address.country)],
+        [this.#translateService.instant('ADDRESS_PICKER.POPUP.STATE'), item.address.state || '-'],
+        [this.#translateService.instant('ADDRESS_PICKER.POPUP.CITY'), item.address.city],
+        [this.#translateService.instant('ADDRESS_PICKER.POPUP.ROAD'), item.address.road],
+        [this.#translateService.instant('ADDRESS_PICKER.POPUP.HOUSE'), item.address.house],
+      ];
+      for (const [label, value] of fields) {
+        const row = document.createElement('div');
+        const strong = document.createElement('strong');
+        strong.textContent = label;
+        row.appendChild(strong);
+        row.appendChild(document.createTextNode(': ' + value));
+        popupContent.appendChild(row);
+      }
+
       hoverPopup = new maplibregl.Popup({ closeButton: false, closeOnMove: true })
         .setLngLat(e.lngLat)
-        .setHTML(
-          `
-          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.COUNTRY')}</strong>: ${this.#translateService.instant('COUNTRIES.' + item.address.country)}</div>
-          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.STATE')}</strong>: ${item.address.state || '-'}</div>
-          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.CITY')}</strong>: ${item.address.city}</div>
-          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.ROAD')}</strong>: ${item.address.road}</div>
-          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.HOUSE')}</strong>: ${item.address.house}</div>
-          `,
-        )
+        .setDOMContent(popupContent)
         .addTo(map);
     });
 
