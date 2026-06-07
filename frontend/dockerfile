@@ -12,7 +12,10 @@ RUN npm install
 COPY . .
 
 # Build the Angular application
+ARG APP_VERSION=dev
+ENV APP_VERSION=$APP_VERSION
 ENV NODE_OPTIONS="--max-old-space-size=1536"
+RUN node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.version=process.env.APP_VERSION;fs.writeFileSync('package.json',JSON.stringify(p,null,2));"
 RUN npm run build --prod
 
 # Stage 2: Serve the application with Nginx

@@ -578,14 +578,16 @@
       "LABEL": "features",
       "ITEM_1_TITLE": "Create and manage property lists",
       "ITEM_1_DESC": "Easily create, sort, and filter properties the way you like. Assign types, statuses, and characteristics to properties, link contacts, and add notes.",
-      "ITEM_2_TITLE": "Selections for your clients",
-      "ITEM_2_DESC": "Add properties to personalized collections and share them with clients. Easily manage availability using a visibility toggle.",
+      "ITEM_2_TITLE": "Filter and sort properties any way you like",
+      "ITEM_2_DESC": "A wide range of filters is at your disposal, making it easier to navigate your property database.",
       "ITEM_3_TITLE": "All your properties — on the map",
       "ITEM_3_DESC": "See your area of influence: no need to constantly search for addresses or remember locations — the map is already built into your CRM.",
-      "ITEM_4_TITLE": "Personal owner database",
-      "ITEM_4_DESC": "Keep your owner database with notes all in one place.",
-      "ITEM_5_TITLE": "Easy migration",
-      "ITEM_5_DESC": "Import your existing property database from Google Sheets or Excel in CSV format and continue working with us!"
+      "ITEM_4_TITLE": "Selections for your clients",
+      "ITEM_4_DESC": "Add properties to personalized collections and share them with clients. Easily manage availability using a visibility toggle.",
+      "ITEM_5_TITLE": "Personal owner database",
+      "ITEM_5_DESC": "Keep your owner database with notes all in one place.",
+      "ITEM_6_TITLE": "Easy migration",
+      "ITEM_6_DESC": "Import your existing property database from Google Sheets or Excel in CSV format and continue working with us!"
     },
     "CTA": {
       "TITLE": "Become part",

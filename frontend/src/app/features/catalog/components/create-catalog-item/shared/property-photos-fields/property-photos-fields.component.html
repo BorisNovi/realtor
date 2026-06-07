@@ -21,6 +21,10 @@
     </ng-template>
     <ng-template #file></ng-template>
     <ng-template #content let-chooseCallback="chooseCallback">
+      @if (uploadProgressS() !== null) {
+        <p-progressbar [value]="uploadProgressS()!" [showValue]="false" class="w-full mb-4" />
+      }
+
       @if (uploadErrorS()) {
         <p-message severity="error" [text]="uploadErrorS() || ''" class="w-full mb-4" />
       }

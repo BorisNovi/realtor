@@ -571,14 +571,16 @@
       "LABEL": "funkcionalnosti",
       "ITEM_1_TITLE": "Kreirajte i upravljajte listama nekretnina",
       "ITEM_1_DESC": "Lako kreirajte, sortirajte i filtrirajte nekretnine po svom ukusu. Dodelite tipove, statuse i karakteristike nekretninama, povežite kontakte i dodajte beleške.",
-      "ITEM_2_TITLE": "Selekcije za vaše klijente",
-      "ITEM_2_DESC": "Dodajte nekretnine u personalizovane kolekcije i podelite ih sa klijentima. Lako upravljajte dostupnošću pomoću preklopke vidljivosti.",
+      "ITEM_2_TITLE": "Filtrirajte i sortirajte nekretnine kako vam odgovara",
+      "ITEM_2_DESC": "Na raspolaganju vam je širok skup filtera koji olakšavaju pregled baze nekretnina.",
       "ITEM_3_TITLE": "Sve vaše nekretnine — na mapi",
       "ITEM_3_DESC": "Vidite svoju zonu uticaja: nema potrebe za stalnim traženjem adresa ili pamćenjem lokacija — mapa je već ugrađena u vaš CRM.",
-      "ITEM_4_TITLE": "Lična baza vlasnika",
-      "ITEM_4_DESC": "Čuvajte bazu vlasnika sa beleškama na jednom mestu.",
-      "ITEM_5_TITLE": "Laka migracija",
-      "ITEM_5_DESC": "Uvezite postojeću bazu nekretnina iz Google tablica ili Excela u CSV formatu i nastavite da radite sa nama!"
+      "ITEM_4_TITLE": "Selekcije za vaše klijente",
+      "ITEM_4_DESC": "Dodajte nekretnine u personalizovane kolekcije i podelite ih sa klijentima. Lako upravljajte dostupnošću pomoću preklopke vidljivosti.",
+      "ITEM_5_TITLE": "Lična baza vlasnika",
+      "ITEM_5_DESC": "Čuvajte bazu vlasnika sa beleškama na jednom mestu.",
+      "ITEM_6_TITLE": "Laka migracija",
+      "ITEM_6_DESC": "Uvezite postojeću bazu nekretnina iz Google tablica ili Excela u CSV formatu i nastavite da radite sa nama!"
     },
     "CTA": {
       "TITLE": "Postanite deo",

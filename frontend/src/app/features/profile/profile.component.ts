@@ -19,7 +19,8 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
-import { catchError, of } from 'rxjs';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { catchError, filter, map, of } from 'rxjs';
 import { CountryService, EditProfile, FileUploadService, Logout, ProfileState, Terminate } from 'src/app/core';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { DeleteAccountComponent } from './components/delete-account/delete-account.component';
@@ -102,7 +103,11 @@ export class ProfileComponent {
 
       this.#fileUploadService
         .upload(files)
-        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .pipe(
+          filter((e): e is HttpResponse<string[]> => e.type === HttpEventType.Response),
+          map(e => e.body ?? []),
+          takeUntilDestroyed(this.#destroyRef),
+        )
         .subscribe({
           next: (newUrls: string[]) => {
             this.userForm.controls['companyLogo'].setValue(newUrls[0]);

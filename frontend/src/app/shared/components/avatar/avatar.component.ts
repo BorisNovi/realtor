@@ -11,6 +11,8 @@ import {
   viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { filter, map } from 'rxjs';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { FileUploadService } from 'src/app/core';
@@ -122,7 +124,11 @@ export class AvatarComponent implements ControlValueAccessor {
 
     this.#fileUploadService
       .upload([file])
-      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .pipe(
+        filter((e): e is HttpResponse<string[]> => e.type === HttpEventType.Response),
+        map(e => e.body ?? []),
+        takeUntilDestroyed(this.#destroyRef),
+      )
       .subscribe({
         next: (urls: string[]) => {
           const url = urls[0];

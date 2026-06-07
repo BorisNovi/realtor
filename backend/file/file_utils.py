@@ -49,18 +49,15 @@ def make_files_permanent(temp_url: str) -> str:
     return new_url
 
 
-# Сжатие изображений
 def compress_image(image_field):
-    print("=== compress_image START ===")
-    print(f"Имя файла: {image_field.name}")
-    print(f"Исходный размер: {image_field.size} байт")
-    print(f"Content type: {getattr(image_field, 'content_type', 'unknown')}")
-
-    img = Image.open(image_field)
-    print(f"Открыто изображение: {img.format}, {img.size}, {img.mode}")
-
+    # Читаем весь файл в память до того, как отдаём PIL.
+    # PIL ленив: Image.open() читает только заголовок, а пиксельные данные
+    # подгружает позже, держа ссылку на исходный файловый объект.
+    # Через Nginx/Gunicorn позиция указателя или буферизация могут дать PIL
+    # неполные данные → сохраняется обрезанный JPEG. BytesIO это исключает.
+    image_field.seek(0)
+    img = Image.open(BytesIO(image_field.read()))
     img = img.convert("RGB")
-    print("Конвертировано в RGB")
 
     buffer = BytesIO()
     quality = 85
@@ -69,29 +66,13 @@ def compress_image(image_field):
         buffer.seek(0)
         buffer.truncate()
 
-        img.save(
-            buffer,
-            format="JPEG",
-            quality=quality,
-            optimize=True
-        )
+        img.save(buffer, format="JPEG", quality=quality, optimize=True)
 
-        size = buffer.tell()
-        print(f"Пробуем quality={quality} → размер={size} байт")
-
-        if size <= MAX_SIZE:
-            print("Размер ОК, выходим из цикла")
-            break
-
-        if quality <= 30:
-            print("Достигнут минимальный quality, выходим")
+        if buffer.tell() <= MAX_SIZE or quality <= 30:
             break
 
         quality -= 5
 
-    print(f"Финальный quality={quality}")
-    print(f"Финальный размер={size} байт")
-    print("=== compress_image END ===\n")
-
-    return ContentFile(buffer.getvalue(), name=image_field.name)
+    original_name = os.path.splitext(os.path.basename(image_field.name))[0]
+    return ContentFile(buffer.getvalue(), name=f"{original_name}.jpg")
 
