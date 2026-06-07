@@ -57,7 +57,7 @@ def compress_image(image_field):
     # неполные данные → сохраняется обрезанный JPEG. BytesIO это исключает.
     image_field.seek(0)
     data = image_field.read()
-    logger.info("compress_image: %s uploaded=%d bytes", image_field.name, len(data))
+    print(f"[compress] {image_field.name} uploaded={len(data)} bytes", flush=True)
 
     img = Image.open(BytesIO(data))
     img.load()
@@ -78,7 +78,7 @@ def compress_image(image_field):
         quality -= 5
 
     compressed_size = buffer.tell()
-    logger.info("compress_image: %s compressed=%d bytes quality=%d", image_field.name, compressed_size, quality)
+    print(f"[compress] {image_field.name} compressed={compressed_size} bytes quality={quality}", flush=True)
 
     original_name = os.path.splitext(os.path.basename(image_field.name))[0]
     return ContentFile(buffer.getvalue(), name=f"{original_name}.jpg")
