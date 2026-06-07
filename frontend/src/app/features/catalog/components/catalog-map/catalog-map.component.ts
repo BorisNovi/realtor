@@ -152,7 +152,9 @@ export class CatalogMapComponent implements AfterViewInit {
     let hoverPopup: maplibregl.Popup | null = null;
     map.on('mouseenter', 'objects-unclustered-point', e => {
       map.getCanvas().style.cursor = 'pointer';
-      const item = JSON.parse(e.features?.[0].properties['raw']) as IPropertyObject;
+      const item = this.#parseFeature(e.features?.[0]);
+      if (!item)
+        return;
 
       hoverPopup?.remove();
 
@@ -187,7 +189,9 @@ export class CatalogMapComponent implements AfterViewInit {
 
     // Marker click → drawer
     map.on('click', 'objects-unclustered-point', e => {
-      const item = JSON.parse(e.features?.[0].properties['raw']) as IPropertyObject;
+      const item = this.#parseFeature(e.features?.[0]);
+      if (!item)
+        return;
       this.onMarkerClick(item);
     });
 
@@ -340,5 +344,13 @@ export class CatalogMapComponent implements AfterViewInit {
         takeUntilDestroyed(this.#destroyRef),
       )
       .subscribe();
+  }
+
+  #parseFeature(feature: maplibregl.MapGeoJSONFeature | undefined): IPropertyObject | null {
+    try {
+      return JSON.parse(feature?.properties?.['raw']) as IPropertyObject;
+    } catch {
+      return null;
+    }
   }
 }
