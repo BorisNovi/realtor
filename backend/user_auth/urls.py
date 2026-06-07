@@ -1,12 +1,12 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 from user_auth.views.terminate_sessions import LogoutAllView
+from user_auth.views.sign_out_view import SignOutView
 from .views import (
     AuthViewSet,
     PasswordRecoveryView,
     PasswordResetActivateView,
     refresh_view,
-    session_check_view
 )
 
 router = DefaultRouter()
@@ -24,8 +24,7 @@ urlpatterns = [
     # refresh токена
     path('/refresh', refresh_view.RefreshTokenView.as_view(), name='token_refresh'),
 
-    # проверка сессии
-    path('/sessions/check', session_check_view.check_session, name='check_session'),
+    path('/sign-out', SignOutView.as_view(), name='sign_out'),
     path('/logout-all', LogoutAllView.as_view(), name='logout_all'),
 ]
 

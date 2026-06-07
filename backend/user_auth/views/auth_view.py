@@ -15,13 +15,25 @@ from ..serializers import SignupSerializer, SigninSerializer
 User = get_user_model()
 CACHE_TIMEOUT = 3600 # 1 hour
 
-# Хелпер для шаблона ответа
 def build_auth_response(user, access_token, refresh_token, status_code=status.HTTP_200_OK):
-    return Response({
+    response = Response({
         'user': UserResponseSerializer(user).data,
         'access_token': access_token,
-        'refresh_token': refresh_token,
     }, status=status_code)
+
+    refresh_lifetime = settings.SIMPLE_JWT.get('REFRESH_TOKEN_LIFETIME')
+    max_age = int(refresh_lifetime.total_seconds()) if refresh_lifetime else 86400
+
+    response.set_cookie(
+        key='refresh_token',
+        value=refresh_token,
+        httponly=True,
+        secure=not settings.DEBUG,
+        samesite='Strict',
+        path='/api/v1/auth/refresh',
+        max_age=max_age,
+    )
+    return response
 
 class AuthViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
