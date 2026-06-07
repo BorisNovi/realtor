@@ -115,5 +115,6 @@ jobs:
             sed -i "s|ghcr.io/borisnovi/realtor-backend:.*|ghcr.io/borisnovi/realtor-backend:$TAG|" /opt/realtor/docker-compose.prod.yml
             sed -i "s|ghcr.io/borisnovi/realtor-frontend:.*|ghcr.io/borisnovi/realtor-frontend:$TAG|" /opt/realtor/docker-compose.prod.yml
             docker compose -f /opt/realtor/docker-compose.prod.yml --env-file /opt/realtor/backend/.env.prod up -d --remove-orphans
+            docker compose -f /opt/realtor/docker-compose.prod.yml exec nginx rm -rf /var/cache/nginx/spa
             docker compose -f /opt/realtor/docker-compose.prod.yml --env-file /opt/realtor/backend/.env.prod restart nginx
             docker image prune -f
