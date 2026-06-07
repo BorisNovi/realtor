@@ -23,6 +23,5 @@ export class ViewModeService {
     const next: ViewMode = this.#viewMode() === ViewMode.Table ? ViewMode.Cards : ViewMode.Table;
     this.#viewMode.set(next);
     this.#storageService.setItem(VIEW_MODE_KEY, next);
-    console.log('viewMode:', next);
   }
 }

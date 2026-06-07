@@ -16,8 +16,7 @@ export class AuthSocketSyncService {
         filter(([user, token]) => !!user && !!token),
         map(([user, token]) => ({ user, token })),
       )
-      .subscribe(({ user, token }) => {
-        console.debug('Сейчас мы должны были вызывать connetc у сокет сервис с ', user, token);
+      .subscribe(() => {
         // this.#socketService.connect(user, token);
       });
   }

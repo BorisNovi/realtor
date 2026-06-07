@@ -144,8 +144,7 @@ export class CatalogMapComponent implements AfterViewInit {
       try {
         const zoom = await source.getClusterExpansionZoom(features[0].properties?.['cluster_id']);
         map.easeTo({ center: (features[0].geometry as GeoJSON.Point).coordinates as LngLatLike, zoom });
-      } catch (err) {
-        console.error(err);
+      } catch {
       }
     });
 

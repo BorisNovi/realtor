@@ -152,7 +152,6 @@ export class CreateCatalogItemComponent implements OnInit {
     address.get('position')?.setValue(picked?.coordinates);
 
     address.get('country')?.markAsDirty();
-    console.log(address.valid);
   }
 
   onSubmit(): void {
