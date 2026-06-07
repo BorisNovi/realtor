@@ -56,7 +56,11 @@ def compress_image(image_field):
     # Через Nginx/Gunicorn позиция указателя или буферизация могут дать PIL
     # неполные данные → сохраняется обрезанный JPEG. BytesIO это исключает.
     image_field.seek(0)
-    img = Image.open(BytesIO(image_field.read()))
+    data = image_field.read()
+    logger.info("compress_image: %s uploaded=%d bytes", image_field.name, len(data))
+
+    img = Image.open(BytesIO(data))
+    img.load()
     img = img.convert("RGB")
 
     buffer = BytesIO()
@@ -72,6 +76,9 @@ def compress_image(image_field):
             break
 
         quality -= 5
+
+    compressed_size = buffer.tell()
+    logger.info("compress_image: %s compressed=%d bytes quality=%d", image_field.name, compressed_size, quality)
 
     original_name = os.path.splitext(os.path.basename(image_field.name))[0]
     return ContentFile(buffer.getvalue(), name=f"{original_name}.jpg")
