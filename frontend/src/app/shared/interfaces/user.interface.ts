@@ -4,7 +4,6 @@ import { IEntity } from './entity.interface';
 export interface ISessionUser {
   user: IUser;
   accessToken: string;
-  refreshToken: string;
 }
 
 export interface IUserEditable {

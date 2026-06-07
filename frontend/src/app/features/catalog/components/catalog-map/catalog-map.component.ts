@@ -144,8 +144,7 @@ export class CatalogMapComponent implements AfterViewInit {
       try {
         const zoom = await source.getClusterExpansionZoom(features[0].properties?.['cluster_id']);
         map.easeTo({ center: (features[0].geometry as GeoJSON.Point).coordinates as LngLatLike, zoom });
-      } catch (err) {
-        console.error(err);
+      } catch {
       }
     });
 
@@ -153,20 +152,32 @@ export class CatalogMapComponent implements AfterViewInit {
     let hoverPopup: maplibregl.Popup | null = null;
     map.on('mouseenter', 'objects-unclustered-point', e => {
       map.getCanvas().style.cursor = 'pointer';
-      const item = JSON.parse(e.features?.[0].properties['raw']) as IPropertyObject;
+      const item = this.#parseFeature(e.features?.[0]);
+      if (!item)
+        return;
 
       hoverPopup?.remove();
+
+      const popupContent = document.createElement('div');
+      const fields: [string, string][] = [
+        [this.#translateService.instant('ADDRESS_PICKER.POPUP.COUNTRY'), this.#translateService.instant('COUNTRIES.' + item.address.country)],
+        [this.#translateService.instant('ADDRESS_PICKER.POPUP.STATE'), item.address.state || '-'],
+        [this.#translateService.instant('ADDRESS_PICKER.POPUP.CITY'), item.address.city],
+        [this.#translateService.instant('ADDRESS_PICKER.POPUP.ROAD'), item.address.road],
+        [this.#translateService.instant('ADDRESS_PICKER.POPUP.HOUSE'), item.address.house],
+      ];
+      for (const [label, value] of fields) {
+        const row = document.createElement('div');
+        const strong = document.createElement('strong');
+        strong.textContent = label;
+        row.appendChild(strong);
+        row.appendChild(document.createTextNode(': ' + value));
+        popupContent.appendChild(row);
+      }
+
       hoverPopup = new maplibregl.Popup({ closeButton: false, closeOnMove: true })
         .setLngLat(e.lngLat)
-        .setHTML(
-          `
-          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.COUNTRY')}</strong>: ${this.#translateService.instant('COUNTRIES.' + item.address.country)}</div>
-          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.STATE')}</strong>: ${item.address.state || '-'}</div>
-          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.CITY')}</strong>: ${item.address.city}</div>
-          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.ROAD')}</strong>: ${item.address.road}</div>
-          <div><strong>${this.#translateService.instant('ADDRESS_PICKER.POPUP.HOUSE')}</strong>: ${item.address.house}</div>
-          `,
-        )
+        .setDOMContent(popupContent)
         .addTo(map);
     });
 
@@ -178,7 +189,9 @@ export class CatalogMapComponent implements AfterViewInit {
 
     // Marker click → drawer
     map.on('click', 'objects-unclustered-point', e => {
-      const item = JSON.parse(e.features?.[0].properties['raw']) as IPropertyObject;
+      const item = this.#parseFeature(e.features?.[0]);
+      if (!item)
+        return;
       this.onMarkerClick(item);
     });
 
@@ -331,5 +344,13 @@ export class CatalogMapComponent implements AfterViewInit {
         takeUntilDestroyed(this.#destroyRef),
       )
       .subscribe();
+  }
+
+  #parseFeature(feature: maplibregl.MapGeoJSONFeature | undefined): IPropertyObject | null {
+    try {
+      return JSON.parse(feature?.properties?.['raw']) as IPropertyObject;
+    } catch {
+      return null;
+    }
   }
 }

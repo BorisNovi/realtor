@@ -2,11 +2,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ISessionUser } from '@shared/interfaces';
 
 // Log in
-export class CheckSession {
-  static readonly type = '[Auth] Check Session';
-}
-
-// Log in
 export class Login {
   static readonly type = '[Auth] Login';
   constructor(

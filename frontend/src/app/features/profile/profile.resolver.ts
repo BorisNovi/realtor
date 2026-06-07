@@ -9,9 +9,6 @@ export const profileResolver: ResolveFn<boolean> = () => {
 
   return store.dispatch(new FetchProfile()).pipe(
     map(() => true),
-    catchError(err => {
-      console.error('Profile request failed:', err);
-      return of(false);
-    }),
+    catchError(() => of(false)),
   );
 };

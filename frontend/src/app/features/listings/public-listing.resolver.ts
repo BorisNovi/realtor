@@ -10,8 +10,7 @@ export const publicListingResolver: ResolveFn<boolean> = (route, state) => {
 
   return store.dispatch(new FetchListing(route.queryParams['token'])).pipe(
     map(() => true),
-    catchError(err => {
-      console.error('Listing request failed:', err);
+    catchError(() => {
       router.navigate(['/not-found']);
       return of(false);
     }),

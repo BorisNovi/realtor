@@ -203,8 +203,7 @@ export class MapComponent implements AfterViewInit {
         const img = await this.map.loadImage(src);
         if (!this.map.hasImage(key)) this.map.addImage(key, img.data);
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
     }
   }
 

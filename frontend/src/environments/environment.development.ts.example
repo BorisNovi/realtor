@@ -1,0 +1,10 @@
+import { version } from '../../package.json';
+
+export const environment = {
+  version,
+  production: false,
+  apiUrl: 'http://localhost:8000/api/v1',
+  tilesLightUrl: 'https://api.maptiler.com/maps/basic-v2/style.json?key=YOUR_MAPTILER_KEY',
+  tilesDarkUrl: 'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=YOUR_MAPTILER_KEY',
+  staticMapUrl: 'https://maps.geoapify.com/v1/staticmap?style=osm-bright-smooth&apiKey=YOUR_GEOAPIFY_KEY',
+};

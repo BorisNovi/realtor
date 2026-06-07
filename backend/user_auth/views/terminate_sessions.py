@@ -24,7 +24,9 @@ class LogoutAllView(APIView):
         for token in tokens:
             BlacklistedToken.objects.get_or_create(token=token)
 
-        return Response(status=status.HTTP_205_RESET_CONTENT)
+        response = Response(status=status.HTTP_205_RESET_CONTENT)
+        response.delete_cookie('refresh_token', path='/api/v1/auth/refresh')
+        return response
 
 
 

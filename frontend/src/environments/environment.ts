@@ -4,7 +4,7 @@ export const environment = {
   version,
   production: true,
   apiUrl: '/api/v1',
-  tilesLightUrl: 'https://api.maptiler.com/maps/basic-v2/style.json?key=avRs8Wpb6tLavx9UIcJA',
-  tilesDarkUrl: 'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=avRs8Wpb6tLavx9UIcJA',
-  staticMapUrl: 'https://maps.geoapify.com/v1/staticmap?style=osm-bright-smooth&apiKey=16d41c4a93204cb9bbe33315b6ce7eb6',
+  tilesLightUrl: 'https://api.maptiler.com/maps/basic-v2/style.json?key=__MAPTILER_KEY__',
+  tilesDarkUrl: 'https://api.maptiler.com/maps/basic-v2-dark/style.json?key=__MAPTILER_KEY__',
+  staticMapUrl: 'https://maps.geoapify.com/v1/staticmap?style=osm-bright-smooth&apiKey=__GEOAPIFY_KEY__',
 };

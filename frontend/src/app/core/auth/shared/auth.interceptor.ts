@@ -10,15 +10,11 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const isRefreshing = signal(false);
 
   const accessToken$ = store.select(AuthState.accessToken);
-  const refreshToken$ = store.select(AuthState.refreshToken);
 
   const addTokenToRequest = (req: HttpRequest<unknown>, token: string | null): HttpRequest<unknown> => {
     return token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
   };
 
-  /*
-   * Handles 401 Unauthorized responses by attempting to refresh the access token
-   */
   const handleUnauthorized = (req: HttpRequest<unknown>): Observable<HttpEvent<unknown>> => {
     if (!isRefreshing()) {
       isRefreshing.set(true);
@@ -35,23 +31,19 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
           return throwError(() => err);
         }),
       );
-    } else {
+    }
+    else
       return accessToken$.pipe(
         filter(token => !!token),
         take(1),
         switchMap(token => next(addTokenToRequest(req, token))),
       );
-    }
   };
 
-  /*
-   * Interceptor logic for API requests
-   */
   if (request.url.startsWith(environment.apiUrl)) {
+    // Refresh-запрос — cookie отправляется браузером автоматически, Bearer не нужен
     if (request.url.endsWith('auth/refresh')) {
-      return refreshToken$.pipe(
-        take(1),
-        switchMap(token => next(addTokenToRequest(request, token))),
+      return next(request).pipe(
         catchError(() => {
           store.dispatch(new Logout());
           return throwError(() => new Error('Session refresh failed'));
@@ -59,25 +51,16 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
       );
     }
 
-    if (!request.url.endsWith('auth/refresh')) {
-      /*
-       * Handles protected requests that require an access token
-       */
-      return accessToken$.pipe(
-        take(1),
-        switchMap(token => next(addTokenToRequest(request, token))),
-        catchError(err => {
-          if (err instanceof HttpErrorResponse && err.status === 401) {
-            return handleUnauthorized(request);
-          }
-          return throwError(() => err);
-        }),
-      );
-    }
+    return accessToken$.pipe(
+      take(1),
+      switchMap(token => next(addTokenToRequest(request, token))),
+      catchError(err => {
+        if (err instanceof HttpErrorResponse && err.status === 401)
+          return handleUnauthorized(request);
+        return throwError(() => err);
+      }),
+    );
   }
 
-  /*
-   * Handles public requests that do not require a token
-   */
   return next(request);
 };

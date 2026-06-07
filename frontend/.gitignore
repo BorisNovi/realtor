@@ -40,3 +40,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Local environment with API keys — use environment.development.ts.example as template
+src/environments/environment.development.ts

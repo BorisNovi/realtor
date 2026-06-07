@@ -6,7 +6,7 @@ import { Navigate } from '@ngxs/router-plugin';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { ISessionUser, IUser } from '@shared/interfaces';
 import { MessageService } from 'primeng/api';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { AuthService } from '..';
 import {
@@ -15,7 +15,6 @@ import {
   ActivationAfterRecoverSuccess,
   ActivationAfterSignupFailed,
   ActivationAfterSignupSuccess,
-  CheckSession,
   Login,
   LoginFailed,
   LoginRedirect,
@@ -34,12 +33,10 @@ import {
   TerminationSuccess,
 } from './auth.actions';
 
-// Интерфейс состояния
 interface AuthStateModel {
   user: IUser | null;
   loading: boolean;
   accessToken: string | null;
-  refreshToken: string | null;
   error: HttpErrorResponse | null;
 }
 
@@ -49,7 +46,6 @@ interface AuthStateModel {
     user: null,
     loading: false,
     accessToken: null,
-    refreshToken: null,
     error: null,
   },
 })
@@ -76,47 +72,13 @@ export class AuthState {
   }
 
   @Selector()
-  static refreshToken(state: AuthStateModel): string | null {
-    return state.refreshToken;
-  }
-
-  @Selector()
   static isAuthenticated(state: AuthStateModel): boolean {
     return !!state.accessToken;
   }
 
-  // Dispatch CheckSession on start
+  // Восстанавливаем сессию через HttpOnly cookie при каждом старте приложения
   ngxsOnInit(ctx: StateContext<AuthStateModel>) {
-    ctx.dispatch(new CheckSession());
-  }
-
-  @Action(CheckSession)
-  checkSession(ctx: StateContext<AuthStateModel>) {
-    const { accessToken } = ctx.getState();
-    if (!accessToken) {
-      ctx.dispatch(new LoginRedirect());
-      return;
-    }
-
-    return this.#authService.checkSession().pipe(
-      tap(res => {
-        ctx.patchState({ user: res.user });
-        // if (!this.socketService.socket && user) {
-        //   this.socketService.connect(user, token);
-        // }
-      }),
-      catchError(error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Session expired',
-          detail: 'Log In again',
-          life: 3000,
-        });
-
-        ctx.dispatch(new Logout());
-        return of(error);
-      }),
-    );
+    ctx.dispatch(new RefreshToken());
   }
 
   // Log in
@@ -139,7 +101,6 @@ export class AuthState {
       user: session.user,
       loading: false,
       accessToken: session.accessToken,
-      refreshToken: session.refreshToken,
       error: null,
     });
 
@@ -222,7 +183,6 @@ export class AuthState {
       user: session.user,
       loading: false,
       accessToken: session.accessToken,
-      refreshToken: session.refreshToken,
       error: null,
     });
 
@@ -325,20 +285,17 @@ export class AuthState {
   // Refresh
   @Action(RefreshToken)
   onRefreshToken(ctx: StateContext<AuthStateModel>) {
-    const { user } = ctx.getState();
-
-    return this.#authService.refreshToken(user?.id || 0).pipe(
+    return this.#authService.refreshToken().pipe(
       tap((result: ISessionUser) => {
         ctx.patchState({
           accessToken: result.accessToken,
-          refreshToken: result.refreshToken,
+          user: result.user,
           error: null,
         });
       }),
       catchError(error => {
         ctx.patchState({
           accessToken: null,
-          refreshToken: null,
           user: null,
           error,
         });
@@ -347,7 +304,7 @@ export class AuthState {
 
         // this.errorSnackBarService.showError('Auth Error');
 
-        return error(error);
+        return throwError(() => error);
       }),
     );
   }
@@ -355,7 +312,11 @@ export class AuthState {
   // Logout
   @Action(Logout)
   onLogout(ctx: StateContext<AuthStateModel>) {
-    ctx.dispatch([new RemoveUser(), new LoginRedirect()]);
+    // Удаляем HttpOnly cookie на сервере, после — чистим стейт и редиректим
+    return this.#authService.signOut().pipe(
+      catchError(() => of(null)),
+      tap(() => ctx.dispatch([new RemoveUser(), new LoginRedirect()])),
+    );
   }
 
   @Action(RemoveUser)
@@ -364,7 +325,6 @@ export class AuthState {
       user: null,
       loading: false,
       accessToken: null,
-      refreshToken: null,
       error: null,
     });
     // this.socketService.leaveChannel();

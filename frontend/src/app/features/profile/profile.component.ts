@@ -113,9 +113,7 @@ export class ProfileComponent {
             this.userForm.controls['companyLogo'].setValue(newUrls[0]);
             this.userForm.controls['companyLogo'].markAsDirty();
           },
-          error: err => {
-            console.error('File upload failed:', err);
-          },
+          error: () => {},
         });
     }
   }
