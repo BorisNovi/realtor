@@ -37,6 +37,7 @@ interface AuthStateModel {
   user: IUser | null;
   loading: boolean;
   accessToken: string | null;
+  initialized: boolean;
   error: HttpErrorResponse | null;
 }
 
@@ -46,6 +47,7 @@ interface AuthStateModel {
     user: null,
     loading: false,
     accessToken: null,
+    initialized: false,
     error: null,
   },
 })
@@ -74,6 +76,11 @@ export class AuthState {
   @Selector()
   static isAuthenticated(state: AuthStateModel): boolean {
     return !!state.accessToken;
+  }
+
+  @Selector()
+  static initialized(state: AuthStateModel): boolean {
+    return state.initialized;
   }
 
   // Восстанавливаем сессию через HttpOnly cookie при каждом старте приложения
@@ -290,6 +297,7 @@ export class AuthState {
         ctx.patchState({
           accessToken: result.accessToken,
           user: result.user,
+          initialized: true,
           error: null,
         });
       }),
@@ -297,6 +305,7 @@ export class AuthState {
         ctx.patchState({
           accessToken: null,
           user: null,
+          initialized: true,
           error,
         });
 
