@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, signal, viewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngxs/store';
@@ -21,6 +21,7 @@ import {
   UpdateListing,
 } from 'src/app/core';
 import { CreateCatalogItemComponent } from '../create-catalog-item/create-catalog-item.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'rx-catalog-item',
@@ -56,6 +57,7 @@ export class CatalogItemComponent implements OnDestroy {
   readonly #listingsService = inject(ListingsService);
   readonly #router = inject(Router);
   readonly #deletionConfirmationService = inject(DeletionConfirmationService);
+  readonly #destroyRef = inject(DestroyRef);
 
   readonly #listingLoading = this.#store.selectSignal(ListingsState.loading);
   readonly item = this.#store.selectSignal(CatalogState.propertyObject);
@@ -78,8 +80,9 @@ export class CatalogItemComponent implements OnDestroy {
 
   deleteItem(): void {
     this.#deletionConfirmationService.confirm(() => {
-      this.#store.dispatch(new DeletePropertyObjects([this.item()?.id || 0]));
-      this.#router.navigate(['/app/catalog']);
+      this.#store.dispatch(new DeletePropertyObjects([this.item()?.id || 0]))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(() => this.#router.navigate(['/app/catalog']));
     });
   }
 
